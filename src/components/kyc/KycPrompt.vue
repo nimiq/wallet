@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { getUserLimits } from '@nimiq/fastspot-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
@@ -35,7 +36,8 @@ export default defineComponent({
         },
     },
     setup() {
-        const { kycLimits, setKycLimits } = useKycStore();
+        const { kycLimits } = storeToRefs(useKycStore());
+        const { setKycLimits } = useKycStore();
 
         if (!kycLimits.value) {
             getUserLimits(

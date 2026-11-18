@@ -7,7 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -36,8 +37,8 @@ export default defineComponent({
     setup() {
         const { config } = useConfig();
         const router = useRouter();
-        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const checkResult = (result: string) => {
             console.debug('Scanned QR code:', result); // eslint-disable-line no-console
@@ -200,7 +201,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
+@use "../../scss/variables.scss" as *;
 
 .modal ::v-deep .close-button {
     display: none;

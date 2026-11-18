@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
@@ -54,7 +55,7 @@ export default defineComponent({
         },
     },
     setup() {
-        const { validatorsList } = useStakingStore();
+        const { validatorsList } = storeToRefs(useStakingStore());
         const { config } = useConfig();
 
         const validatorList$ = ref<HTMLElement | null>(null);
@@ -149,7 +150,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/mixins.scss';
+    @use '../../scss/mixins.scss' as *;
 
     @include scroll-mask(true, true, true);
 

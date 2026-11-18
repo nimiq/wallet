@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { RegisteredValidator } from '@/stores/Staking';
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import { i18n } from '../../i18n/i18n-setup';
@@ -196,7 +196,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .validator-score-details {
     --border-color: #{nimiq-blue(0.1)};

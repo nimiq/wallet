@@ -7,7 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Amount } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
 import { CryptoCurrency } from '../lib/Constants';
@@ -25,7 +26,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit } = storeToRefs(useSettingsStore());
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {

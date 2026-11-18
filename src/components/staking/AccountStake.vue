@@ -6,7 +6,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { CryptoCurrency } from '../../lib/Constants';
@@ -14,7 +15,7 @@ import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
-        const { totalAccountStake } = useStakingStore();
+        const { totalAccountStake } = storeToRefs(useStakingStore());
 
         return {
             totalAccountStake,

@@ -63,7 +63,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, computed, ref, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CircleSpinner, PageHeader, PageBody } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';
@@ -96,13 +97,18 @@ export default defineComponent({
     },
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress } = useAddressStore();
+        const { activeAddress } = storeToRefs(useAddressStore());
         const {
-            activeStake, setStake, activeValidator, totalActiveStake,
+            activeStake,
+            activeValidator,
+            totalActiveStake,
             pendingOperation,
+        } = storeToRefs(useStakingStore());
+        const {
+            setStake,
             clearSwitchOperation,
         } = useStakingStore();
-        const { height } = useNetworkStore();
+        const { height } = storeToRefs(useNetworkStore());
 
         // Retired stake counts too: a retired-only staker still exists on chain and must never be
         // overwritten by the zero placeholder written for a first validator selection.
@@ -325,7 +331,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 .validator-details-overlay {
     display: flex;

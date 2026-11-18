@@ -163,12 +163,12 @@ export function isCurrentMonthAndStakingOngoing(monthKey: string): boolean {
 
     // Check if the user is currently staking with any of the validators in this list
     const { activeStake, monthlyRewards } = useStakingStore();
-    if (!activeStake.value || !activeStake.value.validator) return false;
+    if (!activeStake || !activeStake.validator) return false;
 
     // Check if the active validator is the last one in the list (most recent rewards)
-    const validators = monthlyRewards.value.get(monthKey)?.validators;
+    const validators = monthlyRewards.get(monthKey)?.validators;
     const lastValidatorAddress = validators?.[validators.length - 1];
-    return activeStake.value.validator === lastValidatorAddress;
+    return activeStake.validator === lastValidatorAddress;
 }
 
 /**

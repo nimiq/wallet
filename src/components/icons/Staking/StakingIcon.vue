@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     props: {
@@ -70,7 +70,9 @@ svg {
 
         $delay: 200ms;
         @for $i from 1 through 3 {
-            path:nth-child(#{if($i == 3, 4, $i)}) {
+            $child: $i;
+            @if $i == 3 { $child: 4; }
+            path:nth-child(#{$child}) {
                 animation-delay: $delay * $i;
             }
         }

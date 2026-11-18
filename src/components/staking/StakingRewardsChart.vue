@@ -7,10 +7,8 @@
         <component
             :is="LineChartComponent"
             v-else-if="chartData && LineChartComponent"
-            :chart-data="chartData"
-            :chart-options="chartOptions"
-            :height="null"
-            :width="null"
+            :data="chartData"
+            :options="chartOptions"
         />
         <div v-else-if="!chartData" class="no-rewards">
             {{ $t('No rewards yet') }}
@@ -38,7 +36,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, shallowRef, computed, onMounted, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import type { Line } from 'vue-chartjs';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
@@ -99,12 +99,12 @@ const verticalLinesBelowLine = {
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
-        const { stakingEvents } = useStakingStore();
+        const { stakingEvents } = storeToRefs(useStakingStore());
         const selectedRange = ref<TimeRange>('ALL');
         const isLoading = ref(true);
         const loadError = ref(false);
-        const LineChartComponent = ref(null);
-        const ChartJSInstance = ref<any>(null);
+        const LineChartComponent = shallowRef<typeof Line | null>(null);
+        const ChartJSInstance = ref<any | null>(null);
 
         // Calculate date range based on selected time period
         const getDateRange = (
@@ -145,16 +145,13 @@ export default defineComponent({
                 loadError.value = false;
 
                 // Import Chart.js components and Vue wrapper
-                // Dynamic imports - eslint errors are false positives for lazy-loaded dependencies
-                /* eslint-disable import/no-unresolved, import/extensions */
                 const [
                     { Chart: ChartJS, Title, Tooltip, LineElement, LinearScale, CategoryScale, PointElement },
                     { Line },
                 ] = await Promise.all([
                     import('chart.js'),
-                    import('vue-chartjs/legacy'),
+                    import('vue-chartjs'),
                 ]);
-                /* eslint-enable import/no-unresolved, import/extensions */
 
                 // Register all required Chart.js components
                 ChartJS.register(

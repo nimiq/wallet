@@ -1,4 +1,5 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
@@ -21,8 +22,9 @@ import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
 export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
-    const { addressInfo, state: addresses$ } = usePolygonAddressStore();
-    const { getLabel } = useUsdtContactsStore();
+    const { addressInfo } = storeToRefs(usePolygonAddressStore());
+    const { $state: addresses$ } = usePolygonAddressStore();
+    const { getLabel } = storeToRefs(useUsdtContactsStore());
 
     const txValue = computed(() => {
         if (transaction.value.event?.name === 'Swap') {
@@ -32,7 +34,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
         return transaction.value.value;
     });
 
-    const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
+    const isIncoming = computed(() => {
         if (transaction.value.event?.name === 'Swap') {
             const { amountOut } = transaction.value.event;
             return transaction.value.value < amountOut;
@@ -41,7 +43,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
         return transaction.value.recipient === addressInfo.value?.address;
     });
 
-    const { getSwapByTransactionHash } = useSwapsStore();
+    const { getSwapByTransactionHash } = storeToRefs(useSwapsStore());
     const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
     const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
     useOasisPayoutStatusUpdater(swapData);
@@ -52,12 +54,12 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
         if (!swapData.value) return null;
 
         if (swapData.value.asset === SwapAsset.NIM) {
-            let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
+            let swapTx = useTransactionsStore().$state.transactions[swapData.value.transactionHash];
             if (swapTx?.relatedTransactionHash) {
                 // Avoid showing the swap proxy, instead show our related address. Note that we don't test for
                 // the swap proxy detection extra data here as the swap tx holds htlc data instead. Only the related
                 // tx holds the proxy identifying extra data.
-                swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                swapTx = useTransactionsStore().$state.transactions[swapTx.relatedTransactionHash];
             }
             return swapTx || null;
         }
@@ -72,7 +74,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
                 const swapPeerAddress = isIncoming.value
                     ? swapTransaction.value.sender
                     : swapTransaction.value.recipient;
-                if (!useAddressStore().state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
+                if (!useAddressStore().$state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
                     && !swapTransaction.value.relatedTransactionHash) {
                     // Avoid displaying proxy address identicon until we know related address.
                     return '';
@@ -92,7 +94,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
 
         if (swapData.value) {
             if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                return useAddressStore().state.addressInfos[peerAddress.value]?.label
+                return useAddressStore().$state.addressInfos[peerAddress.value]?.label
                     // avoid displaying proxy address until we know related peer address
                     || i18n.t('Swap') as string;
             }
@@ -113,7 +115,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
         if (ownedAddressInfo) {
             // Find account label
             const { accountInfos } = useAccountStore();
-            return Object.values(accountInfos.value)
+            return Object.values(accountInfos)
                 .find((accountInfo) => accountInfo
                     .polygonAddresses?.includes(ownedAddressInfo.address))?.label;
         }
@@ -123,7 +125,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     // Data
-    const data = computed(() => { // eslint-disable-line arrow-body-style
+    const data = computed(() => {
         if (swapData.value && !isCancelledSwap.value) {
             const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
                 fromAsset: isIncoming.value
@@ -158,7 +160,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     // Fiat currency
-    const { currency: preferredFiatCurrency } = useFiatStore();
+    const { currency: preferredFiatCurrency } = storeToRefs(useFiatStore());
     const fiat = computed(() => {
         const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
         const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(

@@ -16,7 +16,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
 import { useRouter, RouteName } from '@/router';
@@ -32,11 +33,11 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 export default defineComponent({
     setup() {
         const router = useRouter();
-        const { activeAddressInfo, addressInfos } = useAddressStore();
-        const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { accountBalance: btcBalance } = useBtcAddressStore();
-        const { accountUsdcBalance, accountUsdtBridgedBalance } = usePolygonAddressStore();
+        const { activeAddressInfo, accountAddressInfos: addressInfos } = storeToRefs(useAddressStore());
+        const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = storeToRefs(useAccountStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { accountBalance: btcBalance } = storeToRefs(useBtcAddressStore());
+        const { accountUsdcBalance, accountUsdtBridgedBalance } = storeToRefs(usePolygonAddressStore());
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -123,7 +124,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .mobile-action-bar {
     justify-content: space-between;

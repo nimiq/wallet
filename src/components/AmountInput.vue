@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 
 const AmountInput = defineComponent({
@@ -67,10 +67,10 @@ const AmountInput = defineComponent({
         const isFocussed = ref(false);
 
         // Refs
-        const fullWidth$ = ref<HTMLDivElement>(null);
-        const input$ = ref<HTMLInputElement>(null);
-        const widthPlaceholder$ = ref<HTMLSpanElement>(null);
-        const widthValue$ = ref<HTMLSpanElement>(null);
+        const fullWidth$ = ref<HTMLDivElement | null>(null);
+        const input$ = ref<HTMLInputElement | null>(null);
+        const widthPlaceholder$ = ref<HTMLSpanElement | null>(null);
+        const widthValue$ = ref<HTMLSpanElement | null>(null);
 
         onMounted(() => {
             if (props.maxFontSize) {
@@ -95,7 +95,7 @@ const AmountInput = defineComponent({
             width.value = (liveValue.value ? (fontSizeFactor === 1 ? valueWidth : maxWidth.value) : placeholderWidth);
         }
 
-        watch(liveValue, updateWidth);
+        watch(liveValue, updateWidth, { immediate: true });
 
         function formatValue(val: string) {
             // Handle exponential decimal notation
@@ -151,22 +151,22 @@ const AmountInput = defineComponent({
 
         function onToggleFocus(_isFocussed: boolean) {
             isFocussed.value = _isFocussed;
-            context.emit(_isFocussed ? 'focus' : 'blur', context.refs.input$);
+            context.emit(_isFocussed ? 'focus' : 'blur', input$.value);
         }
 
         watch(() => props.value, (newValue: number | undefined) => {
             if (newValue === valueInLuna.value) return;
             lastEmittedValue.value = newValue || 0;
             updateValue(newValue ? String(newValue / 10 ** props.decimals) : '');
-        });
+        }, { immediate: true });
 
         watch(() => props.max, (newMax: number | undefined) => {
             // Disabling a max value, or setting it higher than the current value, has no effect on
             // the current value, but will take effect only on the next input.
             if (!newMax || newMax >= valueInLuna.value) return;
 
-            onInput({ target: context.refs.input$ as EventTarget });
-        });
+            onInput({ target: input$.value as EventTarget });
+        }, { immediate: true });
 
         return {
             focus, // exposed for use from other components
@@ -193,7 +193,7 @@ export default AmountInput;
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/functions.scss';
+@use '../scss/functions.scss' as *;
 
 .label-input {
     position: relative;

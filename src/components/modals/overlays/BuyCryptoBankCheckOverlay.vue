@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
 import { nextTick } from '@/lib/nextTick';
@@ -37,7 +37,7 @@ import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
     setup() {
-        const bankCheckInput$ = ref<BankCheckInput>(null);
+        const bankCheckInput$ = ref<BankCheckInput | null>(null);
         const bankName = ref('');
 
         const writing = computed(() => bankName.value.length !== 0);

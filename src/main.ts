@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import VueCompositionApi, { watch } from '@vue/composition-api';
+import Vue, { watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -8,6 +8,8 @@ import { init as initOasisApi } from '@nimiq/oasis-api';
 // @ts-expect-error missing types for this package
 import VuePortal from '@linusborg/vue-simple-portal';
 
+// Must be imported before any modules that use stores, see pinia.ts
+import { pinia } from './pinia';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
@@ -44,7 +46,6 @@ setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}
 
 Vue.config.productionTip = false;
 
-Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 Vue.use(VuePortal, { name: 'Portal' });
 
@@ -53,18 +54,19 @@ async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
-    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
+    // Must run after storage was initialized. Could potentially run in background and in parallel to syncFromHub, but
+    // RedirectRpcClient.init does not actually run async code anyways.
     await initHubApi();
     syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
-    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
+    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().$state.updateAvailable = hasUpdate);
 
     // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
     // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
     // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
     // remaining time first.
-    const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
+    const { timestamp: lastSuccessfulExchangeRateUpdate } = storeToRefs(useFiatStore());
+    const { updateExchangeRates } = useFiatStore();
     const { isUserInactive } = useInactivityDetection();
     let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
     const TWO_MINUTES = 2 * 60 * 1000;
@@ -91,10 +93,11 @@ async function start() {
             queueExchangeRateUpdate();
         }, remainingTime);
     }
-    watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
+    // (Re)schedule exchange rate updates at the desired interval.
+    watch(isUserInactive, queueExchangeRateUpdate, { immediate: true });
 
     // Fetch language file
-    const { language } = useSettingsStore();
+    const { language } = storeToRefs(useSettingsStore());
     loadLanguage(language.value);
 
     const { config } = useConfig();
@@ -103,22 +106,22 @@ async function start() {
         document.title = 'Nimiq Testnet Wallet';
     }
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.oasis.apiEndpoint) return;
         initOasisApi(config.oasis.apiEndpoint);
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.ten31Pass.enabled) return;
         initKycConnection();
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.matomo.enabled) return;
         initMatomo(config.matomo.host, config.matomo.siteId);
     });
@@ -129,19 +132,20 @@ async function start() {
     new Vue({
         router,
         i18n,
+        pinia,
         render: (h) => h(App),
     }).$mount('#app');
 
     launchNetwork();
 
-    const { state: { activeCurrency } } = useAccountStore();
+    const { $state: { activeCurrency } } = useAccountStore();
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.enableBitcoin) return;
         launchElectrum();
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.polygon.enabled) return;
         launchPolygon();
         // Untracked, so that changes to the pending payments do not re-run this effect
@@ -157,14 +161,14 @@ async function start() {
     const addressStore = useAddressStore();
 
     // Recalculate staking fiat values when currency changes
-    watch(fiatStoreInstance.currency, (newCurrency) => {
+    watch(() => fiatStoreInstance.currency, (newCurrency) => {
         stakingStore.calculateMonthlyFiatValues(newCurrency);
-    });
+    }, { immediate: true });
 
     // Recalculate staking fiat values when active address changes (loads different rewards)
-    watch(addressStore.activeAddress, () => {
+    watch(() => addressStore.activeAddress, () => {
         stakingStore.calculateMonthlyFiatValues();
-    });
+    }, { immediate: true });
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
@@ -179,11 +183,5 @@ start();
 declare module 'vue/types/vue' {
     interface Vue {
         $config: ReturnType<typeof useConfig>['config'];
-    }
-}
-
-declare module '@vue/composition-api/dist/component/component' {
-    interface SetupContext {
-        readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }

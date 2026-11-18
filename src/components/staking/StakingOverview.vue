@@ -95,7 +95,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
@@ -115,7 +116,7 @@ import * as Constants from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
-        const { activeAddressInfo } = useAddressStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
         const {
             activeStake: stake,
             activeValidator: validator,
@@ -126,9 +127,9 @@ export default defineComponent({
             pendingOperationNeedsManualStep,
             switchStall,
             switchTargetLabel,
-        } = useStakingStore();
+        } = storeToRefs(useStakingStore());
         const router = useRouter();
-        const { height } = useNetworkStore();
+        const { height } = storeToRefs(useNetworkStore());
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
         const stakedBalance = computed(() => stake.value
@@ -212,9 +213,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
-@import '../../scss/mixins.scss';
-@import '../../scss/variables.scss';
+@use '../../scss/functions.scss' as *;
+@use '../../scss/mixins.scss' as *;
+@use '../../scss/variables.scss' as *;
 
 .staking-overview {
     display: flex;

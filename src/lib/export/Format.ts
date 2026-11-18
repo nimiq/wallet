@@ -33,7 +33,7 @@ export abstract class Format {
     ) {}
 
     protected getNimiqAddressInfo(address: string) {
-        return useAddressStore().state.addressInfos[address];
+        return useAddressStore().$state.addressInfos[address];
     }
 
     protected getTxDate(timestamp: number, utc = false) {
@@ -69,7 +69,7 @@ export abstract class Format {
     protected formatNimiqData(transaction: NimTx, isIncoming: boolean) {
         let message = '';
         if (isProxyData(transaction.data.raw, ProxyType.CASHLINK)) {
-            const { state: proxies$ } = useProxyStore();
+            const { $state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming ? transaction.sender : transaction.recipient;
             const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
             if (hubCashlink && hubCashlink.message) {
@@ -145,7 +145,7 @@ export abstract class Format {
             let messageOverride: string | undefined;
 
             // Detect swaps and add them in the same row
-            const swapInfo = useSwapsStore().getSwapByTransactionHash.value(tx.transactionHash);
+            const swapInfo = useSwapsStore().getSwapByTransactionHash(tx.transactionHash);
             if (swapInfo) {
                 let isIncoming = false;
                 switch (tx.asset) {
@@ -298,7 +298,7 @@ export abstract class Format {
                     ...(fiatAsset ? { fiatValue: (tx as NimTx).fiatValue?.[fiatAsset] || undefined } : {}),
                 };
             case 'BTC':
-                if (isIncoming) { // eslint-disable-line no-lonely-if
+                if (isIncoming) {
                     // Sum outputs that are ours
                     const [value, fiatValue] = (tx as BtcTx).outputs.reduce(([satsSum, fiatSum], output) => {
                         if (output.address && this.btcAddresses.external.includes(output.address)) {
@@ -318,7 +318,7 @@ export abstract class Format {
                 } else { // eslint-disable-line no-else-return
                     // Sum up all inputs, if we have all parent transactions
                     let totalInput = 0;
-                    const { state: btcTransactions$ } = useBtcTransactionsStore();
+                    const { $state: btcTransactions$ } = useBtcTransactionsStore();
                     for (const input of (tx as BtcTx).inputs) {
                         const value = btcTransactions$
                             .transactions[input.transactionHash]?.outputs[input.outputIndex]?.value;

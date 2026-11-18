@@ -23,7 +23,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
@@ -60,7 +61,7 @@ export default defineComponent({
                     consensus: btcConsensus,
                     height: btcHeight,
                     isFetchingTxHistory: isFetchingBtcHistory,
-                } = useBtcNetworkStore();
+                } = storeToRefs(useBtcNetworkStore());
 
                 if (btcConsensus.value !== 'established' || !btcHeight.value) {
                     message = $t('Connecting to Bitcoin network') as string;
@@ -71,7 +72,7 @@ export default defineComponent({
             }
 
             if (props.assets.includes(CryptoCurrency.NIM)) {
-                const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
+                const { effectiveConsensus: nimiqConsensus, height: nimiqHeight } = storeToRefs(useNetworkStore());
 
                 if (nimiqConsensus.value !== 'established') {
                     message = $t('Connecting to Nimiq network') as string;
@@ -81,7 +82,7 @@ export default defineComponent({
             }
 
             if (props.assets.includes(CryptoCurrency.USDC)) {
-                const { consensus: polygonConsensus } = usePolygonNetworkStore();
+                const { consensus: polygonConsensus } = storeToRefs(usePolygonNetworkStore());
 
                 if (polygonConsensus.value !== 'established') {
                     message = $t('Connecting to USDC on Polygon') as string;

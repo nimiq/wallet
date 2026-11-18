@@ -37,7 +37,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from '@vue/composition-api';
+import { computed, defineComponent, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
@@ -62,7 +63,7 @@ export default defineComponent({
         // .sort((a, b) => b.trust - a.trust)
         // .map((validator) => validator.icon));
 
-        const { validatorsList } = useStakingStore();
+        const { validatorsList } = storeToRefs(useStakingStore());
         const { config } = useConfig();
 
         const validators = computed(() => {

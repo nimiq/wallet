@@ -1,7 +1,6 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useBtcNetworkStore = createStore({
-    id: 'btcNetwork',
+export const useBtcNetworkStore = defineStore('btcNetwork', {
     state: () => ({
         consensus: 'syncing',
         peerCount: 0,
@@ -11,9 +10,6 @@ export const useBtcNetworkStore = createStore({
     }),
     getters: {
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
-        height: (state): Readonly<number> => state.height,
-        timestamp: (state): Readonly<number> => state.timestamp,
-        consensus: (state): Readonly<string> => state.consensus,
     },
     actions: {},
 });

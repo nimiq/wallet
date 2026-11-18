@@ -6,7 +6,8 @@ import {
     SettlementInfo,
     SettlementStatus,
 } from '@nimiq/oasis-api';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';
@@ -17,10 +18,10 @@ import { i18n } from '../../../i18n/i18n-setup';
 import { assets, calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 import { getFeePerUnit } from './Functions';
 
-const { activeSwap: swap } = useSwapsStore();
-const { exchangeRates } = useFiatStore();
-const { activeCurrency } = useAccountStore();
-const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
+const { activeSwap: swap } = storeToRefs(useSwapsStore());
+const { exchangeRates } = storeToRefs(useFiatStore());
+const { activeCurrency } = storeToRefs(useAccountStore());
+const { accountBalance: accountBtcBalance, accountUtxos } = storeToRefs(useBtcAddressStore());
 
 /**
  * Sell - Sell crypto related things
@@ -114,7 +115,7 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
         } else {
             throw new Error(i18n.t('The fees determine the minimum amount.') as string);
         }
-    } // eslint-disable-line brace-style
+    }
 
     const { estimate } = useSwapEstimate();
     estimate.value = newEstimate;

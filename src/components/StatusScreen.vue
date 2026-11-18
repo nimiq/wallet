@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 
@@ -199,9 +199,9 @@ export default defineComponent({
                 if (props.state !== State.LOADING) return;
                 loadingTitle.value = newTitle;
             });
-        });
+        }, { immediate: true });
 
-        watch(() => props.state, (newState: string, oldState: string) => {
+        watch(() => props.state, (newState: string, oldState: string | undefined) => {
             if (newState === State.LOADING) {
                 // Starting in or changing to LOADING
                 if (hideLoadingBackgroundTimeout !== -1) {
@@ -222,7 +222,7 @@ export default defineComponent({
                     showLoadingBackground.value = false;
                 }
             }
-        });
+        }, { immediate: true });
 
         watch(() => props.status || '', async (newStatus: string) => {
             if (statusUpdateTimeout !== -1) {
@@ -242,7 +242,7 @@ export default defineComponent({
                 currentStatus.value = newStatus;
                 isTransitioningStatus.value = false;
             }, 500);
-        });
+        }, { immediate: true });
 
         function onMainAction() {
             context.emit(Events.MAIN_ACTION);

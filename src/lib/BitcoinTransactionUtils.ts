@@ -116,7 +116,8 @@ export function validateAddressSync(address: string, { addressFromBase58Check, a
 
     try {
         const parsedAddress = addressFromBech32(address);
-        return BIP84_ADDRESS_PREFIX[network] === parsedAddress.prefix;
+        // Only native segwit v0 addresses. Taproot (v1) addresses are decodable since bitcoinjs-lib 6 (bech32m).
+        return BIP84_ADDRESS_PREFIX[network] === parsedAddress.prefix && parsedAddress.version === 0;
     } catch (error) {
         // Ignore
     }

@@ -165,7 +165,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
@@ -191,13 +192,13 @@ type Country = {
 export default defineComponent({
     name: 'buy-options-modal',
     setup() {
-        const { activeCurrency: cryptoCurrency } = useAccountStore();
-        const { currency: fiatCurrency } = useFiatStore();
-        const { canUseSwaps/* , trials */ } = useSettingsStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { activeCurrency: cryptoCurrency } = storeToRefs(useAccountStore());
+        const { currency: fiatCurrency } = storeToRefs(useFiatStore());
+        const { canUseSwaps } = storeToRefs(useSettingsStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const { config } = useConfig();
 
-        const country = ref<Country>(null);
+        const country = ref<Country | null>(null);
 
         const isCoinifyAvailable = computed(() => { // eslint-disable-line arrow-body-style
             return config.coinify.enabled
@@ -252,8 +253,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 .modal ::v-deep .small-page {
     width: 70rem !important;

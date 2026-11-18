@@ -151,7 +151,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -203,15 +204,14 @@ export default defineComponent({
     setup(props) {
         const { $t } = useI18n();
         const {
-            state: addresses$,
             accountUtxos,
             accountBalance,
-        } = useBtcAddressStore();
-        const {
-            setRecipientLabel,
-            getRecipientLabel,
-        } = useBtcLabelsStore();
-        const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
+        } = storeToRefs(useBtcAddressStore());
+        const { $state: addresses$ } = useBtcAddressStore();
+        const { getRecipientLabel } = storeToRefs(useBtcLabelsStore());
+        const { setRecipientLabel } = useBtcLabelsStore();
+        const { isFetchingTxHistory } = storeToRefs(useBtcNetworkStore());
+        const { $state: network$ } = useBtcNetworkStore();
 
         function reset() {
             gotRequestUriRecipient.value = false;
@@ -271,7 +271,7 @@ export default defineComponent({
             const ownedAddressInfo = addresses$.addressInfos[address];
             if (ownedAddressInfo) {
                 // Find account label
-                const { accountInfos } = useAccountStore();
+                const { accountInfos } = storeToRefs(useAccountStore());
                 label = Object.values(accountInfos.value)
                     .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
                     || Object.values(accountInfos.value)
@@ -303,7 +303,6 @@ export default defineComponent({
         watch(
             () => recipientInfo.value?.flaggedInfo,
             (flaggedInfo) => recipientFlaggedAddressWarningOpened.value = !!flaggedInfo,
-            { lazy: true },
         );
 
         const amount = ref(0);
@@ -362,7 +361,8 @@ export default defineComponent({
             activeCurrency.value = currency;
         }
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
@@ -383,9 +383,9 @@ export default defineComponent({
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
             fiatAmount.value = amount.value * fiat$.exchangeRates.btc[currency]! * fiatToBtcDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.BTC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -452,8 +452,13 @@ export default defineComponent({
             addressInputValue.value = parsedRequestLink.recipient;
             // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientInfo.
             await new Promise<void>((resolve) => {
-                const unwatch = watch(() => {
-                    if (recipientInfo.value?.address !== parsedRequestLink.recipient) return;
+                const isRecipientSet = () => recipientInfo.value?.address === parsedRequestLink.recipient;
+                if (isRecipientSet()) {
+                    resolve();
+                    return;
+                }
+                const unwatch = watch(isRecipientSet, (isSet) => {
+                    if (!isSet) return;
                     resolve();
                     unwatch();
                 });
@@ -471,12 +476,12 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<BtcAddressInput>(null);
-        const labelInput$ = ref<BtcLabelInput>(null);
+        const addressInput$ = ref<BtcAddressInput | null>(null);
+        const labelInput$ = ref<BtcLabelInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(element$: Ref<BtcAddressInput | BtcLabelInput | null>) {
+        async function focus(element$: Ref<{ focus(): void } | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -490,8 +495,12 @@ export default defineComponent({
                 // If an initial address was set via request link, focus the label input instead of the address input,
                 // once the request link populated and the label input showed up.
                 await new Promise<void>((resolve) => {
-                    const unwatch = watch(() => {
-                        if (!labelInput$.value) return;
+                    if (labelInput$.value) {
+                        resolve();
+                        return;
+                    }
+                    const unwatch = watch(labelInput$, (labelInput) => {
+                        if (!labelInput) return;
                         resolve();
                         unwatch();
                     });
@@ -509,7 +518,7 @@ export default defineComponent({
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         async function sign() {
             if (!canSend.value) return;
@@ -522,7 +531,7 @@ export default defineComponent({
 
             let changeAddress: string;
             if (requiredInputs.value.changeAmount > 0) {
-                const { nextChangeAddress } = useBtcAddressStore();
+                const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
                 if (!nextChangeAddress.value) {
                     // FIXME: If no unused change address is found, need to request new ones from Hub!
                     throw new Error('No more unused change addresses)');
@@ -532,7 +541,7 @@ export default defineComponent({
 
             try {
                 const plainTx = await sendBtcTransaction({
-                    accountId: useAccountStore().state.activeAccountId!,
+                    accountId: useAccountStore().$state.activeAccountId!,
                     inputs: requiredInputs.value.utxos.map((utxo) => ({
                         address: utxo.address,
                         transactionHash: utxo.transactionHash,
@@ -607,7 +616,7 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit } = storeToRefs(useSettingsStore());
         const router = useRouter();
 
         function back() {
@@ -692,7 +701,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/variables.scss";
+    @use "../../scss/variables.scss" as *;
 
     .page {
         flex-grow: 1;

@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Identicon, LockLockedIcon, CircleSpinner } from '@nimiq/vue-components';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
@@ -69,7 +70,7 @@ export default defineComponent({
             }
         });
 
-        const { totalStakesByAddress } = useStakingStore();
+        const { totalStakesByAddress } = storeToRefs(useStakingStore());
         const totalStake = computed(() => totalStakesByAddress.value[props.addressInfo.address] || 0);
 
         return {
@@ -95,8 +96,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
-@import '../scss/functions.scss';
+@use '../scss/variables.scss' as *;
+@use '../scss/functions.scss' as *;
 
 .address-button {
     font-size: var(--body-size);

@@ -31,7 +31,7 @@
                 <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
-                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="_self">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
                                 1 NIM = <FiatAmount :amount="eurPerNim || 0"
                                     :maxRelativeDeviation="0.001" currency="eur"/>
@@ -54,7 +54,7 @@
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
                             :currency="selectedFiatCurrency"
-                            :container="this"
+                            :container="_self"
                         >
                             <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fiatFees.isHigh}">
                                 <LightningIcon v-if="fiatFees.isHigh"/>
@@ -62,7 +62,7 @@
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="_self"
                             class="limits-tooltip" :class="{ 'kyc-connected': kycUser }">
                             <div slot="trigger" class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
                                 <LimitIcon />
@@ -295,7 +295,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -392,13 +393,14 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup() {
-        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
-        const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { exchangeRates } = useFiatStore();
-        const { btcUnit } = useSettingsStore();
-        const { activeSwap: swap } = useSwapsStore();
-        const { bank, setBank } = useBankStore();
-        const { connectedUser: kycUser } = useKycStore();
+        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = storeToRefs(useAccountStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { exchangeRates } = storeToRefs(useFiatStore());
+        const { btcUnit } = storeToRefs(useSettingsStore());
+        const { activeSwap: swap } = storeToRefs(useSwapsStore());
+        const { bank } = storeToRefs(useBankStore());
+        const { setBank } = useBankStore();
+        const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
         const { config } = useConfig();
         const { isMobile } = useWindowSize();
@@ -407,14 +409,14 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const eurAmountInput$ = ref<AmountInput>(null);
+        const eurAmountInput$ = ref<AmountInput | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const page = ref(bank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
-        const estimateError = ref<string>(null);
-        const swapError = ref<string>(null);
+        const estimateError = ref<string | null>(null);
+        const swapError = ref<string | null>(null);
 
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
@@ -526,7 +528,7 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion!: PreSwap;
 
-                const { availableExternalAddresses } = useBtcAddressStore();
+                const { availableExternalAddresses } = storeToRefs(useBtcAddressStore());
                 const nimAddress = activeAddress.value!;
                 const btcAddress = availableExternalAddresses.value[0];
 
@@ -571,13 +573,13 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
 
-                    if (useNetworkStore().state.consensus !== 'established') {
+                    if (useNetworkStore().$state.consensus !== 'established') {
                         await nimiqClient.waitForConsensusEstablished();
                     }
 
                     const headHeight = await nimiqClient.getHeadHeight();
                     if (headHeight > 100) {
-                        useNetworkStore().state.height = headHeight;
+                        useNetworkStore().$state.height = headHeight;
                     } else {
                         throw new Error('Invalid network state, try please reloading the app');
                     }
@@ -611,7 +613,7 @@ export default defineComponent({
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
-                        validityStartHeight: useNetworkStore().state.height,
+                        validityStartHeight: useNetworkStore().$state.height,
                     };
                 } else if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     redeem = {
@@ -877,7 +879,7 @@ export default defineComponent({
             if (_fiatAmount.value || _cryptoAmount.value) {
                 updateEstimate();
             }
-        }, { lazy: true });
+        });
 
         function onPaid() {
             if (!swap.value!.fundingInstructions || swap.value!.fundingInstructions.type !== 'sepa') {
@@ -984,7 +986,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .modal {
     &.wider-overlay ::v-deep .overlay {

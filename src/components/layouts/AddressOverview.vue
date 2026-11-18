@@ -314,7 +314,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     Identicon,
     GearIcon,
@@ -364,24 +365,25 @@ export default defineComponent({
     name: 'address-overview',
     props: {},
     setup() {
-        const { activeAccountId, activeCurrency, activeAccountInfo } = useAccountStore();
-        const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { activeAccountId, activeCurrency, activeAccountInfo } = storeToRefs(useAccountStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
             accountUsdtBridgedBalance,
             addressInfo: usdcAddressInfo,
-        } = usePolygonAddressStore();
-        const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-        const { totalActiveStake, totalAccountStake } = useStakingStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { promoBoxVisible } = storeToRefs(useSwapsStore());
+        const { setPromoBoxVisible } = useSwapsStore();
+        const { totalActiveStake, totalAccountStake } = storeToRefs(useStakingStore());
 
         const searchString = ref('');
 
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
 
-        const address$ = ref<HTMLDivElement>(null);
+        const address$ = ref<HTMLDivElement | null>(null);
         const addressMasked = ref<boolean>(false);
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
@@ -418,16 +420,16 @@ export default defineComponent({
             if (address !== oldAddress && promoBoxVisible) {
                 setPromoBoxVisible(false);
             }
-        });
+        }, { immediate: true });
 
         watch(activeCurrency, (currency, oldCurrency) => {
             if (currency !== oldCurrency && promoBoxVisible) {
                 setPromoBoxVisible(false);
             }
-        });
+        }, { immediate: true });
 
         function rescan() {
-            const { addressSet } = useBtcAddressStore();
+            const { addressSet } = storeToRefs(useBtcAddressStore());
             checkHistory(
                 addressSet.value.external,
                 [],
@@ -541,7 +543,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 .address-overview > svg:first-child {
     width: 0px;

@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal from './Modal.vue';
@@ -84,7 +85,7 @@ declare global {
             on(event: string, handler: (...args: any[]) => any): void,
         };
         Simplex: {
-            init: (options: { public_key: string}) => void, // eslint-disable-line camelcase
+            init: (options: { public_key: string}) => void,
             subscribe: (
                 event: 'onlineFlowFinished',
                 handler: (event: {
@@ -103,31 +104,31 @@ declare global {
 }
 
 export default defineComponent({
-    setup(props, context) {
-        const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
-        const fiatCurrencyCode = useFiatStore().state.currency;
-        const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
-        const { stablecoin } = useAccountSettingsStore();
+    setup() {
+        const language = useSettingsStore().$state.language; // eslint-disable-line prefer-destructuring
+        const fiatCurrencyCode = useFiatStore().$state.currency;
+        const cryptoCurrencyCode = ref(useAccountStore().$state.activeCurrency);
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
-        const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses.value[0];
+        const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses[0];
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdcAddress = stablecoin.value === CryptoCurrency.USDC
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdtAddress = stablecoin.value === CryptoCurrency.USDT
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
-            nim: useAddressStore().state.activeAddress || undefined,
+            nim: useAddressStore().$state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
             ...(usdcAddress ? { usdc: usdcAddress } : {}),
             ...(usdtAddress ? { usdt: usdtAddress } : {}),
@@ -261,6 +262,7 @@ export default defineComponent({
             window.document.body.appendChild(style$);
         }
 
+        const simplex$ = ref<HTMLFormElement | null>(null);
         const showAddressCopyUi = ref(true);
 
         let observer: MutationObserver | undefined;
@@ -298,7 +300,7 @@ export default defineComponent({
                     }
                 }
             });
-            observer.observe((context.refs.simplex$ as HTMLFormElement), { childList: true, subtree: true });
+            observer.observe(simplex$.value!, { childList: true, subtree: true });
 
             window.simplex.on('crypto-changed', (crypto: string) => {
                 if (crypto === 'USDC-MATIC') crypto = 'USDC';
@@ -313,7 +315,7 @@ export default defineComponent({
             // If we find an iframe in the simplex-form that has no src attribute, it means the user continued
             // to the checkout flow. This state is not recoverable once the modal has been closed.
             // The only workaround is to reload the page and start with a fresh Javascript context.
-            const iframe$ = (context.refs.simplex$ as HTMLFormElement).querySelector('iframe');
+            const iframe$ = simplex$.value!.querySelector('iframe');
             mustReload.value = window.simplex && (!!iframe$ && !iframe$.src);
         });
 
@@ -330,6 +332,7 @@ export default defineComponent({
         }
 
         return {
+            simplex$,
             showAddressCopyUi,
             currentlyShownAddress,
             mustReload,
@@ -351,7 +354,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .modal ::v-deep .small-page {
     height: 83.25rem; /* Height to fit Simplex confirmation page without iframe scrollbar, with two-line disclaimer */

@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import {
     CircleSpinner,
     AlertTriangleIcon,
@@ -178,7 +178,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 svg {
     display: block;

@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { normalizeAddress } from '../lib/BitcoinTransactionUtils';
 
 export type BtcLabelsState = {
@@ -6,17 +6,14 @@ export type BtcLabelsState = {
     senderLabels: {[address: string]: string},
 };
 
-export const useBtcLabelsStore = createStore({
-    id: 'btcLabels',
+export const useBtcLabelsStore = defineStore('btcLabels', {
     state: () => ({
         recipientLabels: {},
         senderLabels: {},
     } as BtcLabelsState),
     getters: {
-        recipientLabels: (state): Readonly<{ [address: string]: string }> => state.recipientLabels,
         getRecipientLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
             state.recipientLabels[address],
-        senderLabels: (state): Readonly<{ [address: string]: string }> => state.senderLabels,
         getSenderLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
             state.senderLabels[address],
     },
@@ -27,16 +24,16 @@ export const useBtcLabelsStore = createStore({
             // console.debug('Updating recipient label', address, label);
             if (!label.trim()) {
                 // Remove label
-                const labels = { ...this.state.recipientLabels };
+                const labels = { ...this.$state.recipientLabels };
                 delete labels[address];
-                this.state.recipientLabels = labels;
+                this.$state.recipientLabels = labels;
                 return;
             }
 
             // Need to assign whole object for change detection of new labels.
             // TODO: Simply set new label in Vue 3.
-            this.state.recipientLabels = {
-                ...this.state.recipientLabels,
+            this.$state.recipientLabels = {
+                ...this.$state.recipientLabels,
                 [address]: label.trim(),
             };
         },
@@ -46,16 +43,16 @@ export const useBtcLabelsStore = createStore({
             // console.debug('Updating sender label', address, label);
             if (!label.trim()) {
                 // Remove label
-                const labels = { ...this.state.senderLabels };
+                const labels = { ...this.$state.senderLabels };
                 delete labels[address];
-                this.state.senderLabels = labels;
+                this.$state.senderLabels = labels;
                 return;
             }
 
             // Need to assign whole object for change detection of new labels.
             // TODO: Simply set new label in Vue 3.
-            this.state.senderLabels = {
-                ...this.state.senderLabels,
+            this.$state.senderLabels = {
+                ...this.$state.senderLabels,
                 [address]: label.trim(),
             };
         },

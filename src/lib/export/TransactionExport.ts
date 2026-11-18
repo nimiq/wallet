@@ -18,7 +18,7 @@ export enum ExportFormat {
 const RECEIPTS_TIMEOUT = 15000;
 const NETWORK_TIMEOUT = 30000;
 const TRANSACTION_CONCURRENCY = 5;
-type Receipt = { block_height: number, hash: string }; // eslint-disable-line camelcase
+type Receipt = { block_height: number, hash: string };
 
 async function withTimeout<T>(promise: Promise<T>, milliseconds: number, onTimeout?: () => void): Promise<T> {
     let timer: number | undefined;
@@ -91,7 +91,7 @@ export async function exportTransactions(
         ...btcAddresses.external,
     ];
 
-    const { state: nimTransactions$, addTransactions } = useTransactionsStore();
+    const { $state: nimTransactions$, addTransactions } = useTransactionsStore();
     const nimTransactions = nimAddresses.length === 0 ? [] : Object.values(nimTransactions$.transactions)
         .filter( // Only account transactions
             (tx) => nimAddresses.includes(tx.sender) || nimAddresses.includes(tx.recipient),
@@ -129,7 +129,7 @@ export async function exportTransactions(
 
         if (format === ExportFormat.GENERIC) {
             // Wait for transactions to receive their fiatValue
-            const fiatCurrency = useFiatStore().state.currency;
+            const fiatCurrency = useFiatStore().$state.currency;
             const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
                 ? fiatCurrency
                 : FiatCurrency.USD;
@@ -149,19 +149,19 @@ export async function exportTransactions(
     }
     /* eslint-enable no-await-in-loop */
 
-    const { state: btcTransactions$ } = useBtcTransactionsStore();
+    const { $state: btcTransactions$ } = useBtcTransactionsStore();
     const btcTransactions = btcAddressesList.length === 0 ? [] : Object.values(btcTransactions$.transactions)
         .filter((tx) => tx.addresses.some((address) => btcAddressesList.includes(address))) // Only account transactions
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
-    const { state: usdcTransactions$ } = useUsdcTransactionsStore();
+    const { $state: usdcTransactions$ } = useUsdcTransactionsStore();
     const usdcTransactions = usdcAddresses.length === 0 ? [] : Object.values(usdcTransactions$.transactions)
         .filter((tx) => usdcAddresses.includes(tx.sender) || usdcAddresses.includes(tx.recipient))
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
-    const { state: usdtTransactions$ } = useUsdtTransactionsStore();
+    const { $state: usdtTransactions$ } = useUsdtTransactionsStore();
     const usdtTransactions = usdtAddresses.length === 0 ? [] : Object.values(usdtTransactions$.transactions)
         .filter((tx) => usdtAddresses.includes(tx.sender) || usdtAddresses.includes(tx.recipient))
         .filter((tx) => tx.timestamp) // Only confirmed transactions

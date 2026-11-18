@@ -1,4 +1,5 @@
-import { computed, ref, Ref } from '@vue/composition-api';
+import { computed, ref, Ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { AddressBook } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
 import { useAddressStore } from '../stores/Address';
@@ -29,7 +30,7 @@ import { useWindowSize } from './useWindowSize';
  *
  * @example
  * import { useTransactionList } from '@/composables/useTransactionList';
- * import { ref } from '@vue/composition-api';
+ * import { ref } from 'vue';
  *
  * const searchString = ref('');
  * const scrollerBuffer = 300;
@@ -73,10 +74,11 @@ export interface UseTransactionListOptions {
 
 export function useTransactionList(options: UseTransactionListOptions) {
     const { $t, locale } = useI18n();
-    const { state: addresses$, transactionsForActiveAddress } = useAddressStore();
-    const { isFetchingTxHistory } = useNetworkStore();
-    const { getLabel: getContactLabel } = useContactsStore();
-    const { monthlyRewards } = useStakingStore();
+    const { transactionsForActiveAddress } = storeToRefs(useAddressStore());
+    const { $state: addresses$ } = useAddressStore();
+    const { isFetchingTxHistory } = storeToRefs(useNetworkStore());
+    const { getLabel: getContactLabel } = storeToRefs(useContactsStore());
+    const { monthlyRewards } = storeToRefs(useStakingStore());
     const { isMobile } = useWindowSize();
 
     // Height of items in pixel

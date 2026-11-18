@@ -1,4 +1,5 @@
-import { ref, computed, watch, Ref } from '@vue/composition-api';
+import { ref, computed, watch, Ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { useFiatStore } from '@/stores/Fiat';
 import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
@@ -27,7 +28,7 @@ export function useTotalRewardsFiatValue(
         | Ref<AggregatedRestakingEvent[] | undefined | null>
         | Ref<Readonly<AggregatedRestakingEvent[] | null>>,
 ) {
-    const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
+    const { currency: preferredFiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
     const stakingStore = useStakingStore();
 
     const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
@@ -46,7 +47,7 @@ export function useTotalRewardsFiatValue(
         }
 
         // Get cached monthly rewards from store
-        const cachedMonthlyRewards = (stakingStore.monthlyRewards as any).value as Map<string, any>;
+        const cachedMonthlyRewards = stakingStore.monthlyRewards as Map<string, any>;
 
         // Collect only timestamps for months that don't have cached values
         const allTimestamps: number[] = [];
@@ -135,7 +136,7 @@ export function useTotalRewardsFiatValue(
         fiatCurrency,
         stakingEvents, // Watch stakingEvents to detect when it changes from null to loaded
         exchangeRates, // Watch exchange rates for real-time updates
-    ], calculateTotalRewardsFiatValue, { lazy: false });
+    ], calculateTotalRewardsFiatValue, { immediate: true });
 
     return {
         totalRewardsFiatValue,

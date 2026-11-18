@@ -29,7 +29,8 @@
 import { useConfig } from '@/composables/useConfig';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { CryptoCurrency } from '../lib/Constants';
 import { AccountType, useAccountStore } from '../stores/Account';
@@ -55,10 +56,10 @@ export default defineComponent({
     },
     setup(props) {
         const { config } = useConfig();
-        const { accountInfos } = useAccountStore();
-        const { totalStakesByAccount } = useStakingStore();
-        const { state: addressState } = useAddressStore();
-        const { pendingTransactionsBySender } = useTransactionsStore();
+        const { accountInfos } = storeToRefs(useAccountStore());
+        const { totalStakesByAccount } = storeToRefs(useStakingStore());
+        const { $state: addressState } = useAddressStore();
+        const { pendingTransactionsBySender } = storeToRefs(useTransactionsStore());
 
         const accountInfo = computed(() => accountInfos.value[props.id]);
         const addressInfos = computed(() => accountInfo.value.addresses.map((addr) => addressState.addressInfos[addr]));
@@ -84,7 +85,7 @@ export default defineComponent({
         const btcAddressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return null;
 
-            const { state: btcAddressState } = useBtcAddressStore();
+            const { $state: btcAddressState } = useBtcAddressStore();
             return accountInfo.value.btcAddresses
                 ? {
                     internal: accountInfo.value.btcAddresses.internal
@@ -110,12 +111,12 @@ export default defineComponent({
             return internalBalance + externalBalance;
         });
 
-        const { state: polygonAddressState } = usePolygonAddressStore();
+        const { $state: polygonAddressState } = usePolygonAddressStore();
         const polygonAddressInfos = computed(() => accountInfo.value.polygonAddresses
             ? accountInfo.value.polygonAddresses.map((addr) => polygonAddressState.addressInfos[addr])
             : []);
 
-        const { state: accountSettingsState } = useAccountSettingsStore();
+        const { $state: accountSettingsState } = useAccountSettingsStore();
         const stablecoin = computed(() => accountSettingsState.settings[props.id]?.stablecoin);
 
         const stablecoinAccountBalance = computed(() => polygonAddressInfos.value.reduce((sum, ai) => sum + {
@@ -125,7 +126,7 @@ export default defineComponent({
         }[stablecoin.value || 'none'], 0));
 
         // TODO: Dedupe double code with AccountBalance
-        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        const { currency: fiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
         const fiatAccountBalance = computed(() => {
             let amount = 0;
 
@@ -179,7 +180,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .account-menu-item {
     align-items: center;

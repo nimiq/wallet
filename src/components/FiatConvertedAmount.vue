@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
@@ -42,8 +42,8 @@ export default defineComponent({
     setup(props) {
         const fiatStore = useFiatStore();
 
-        const fiatCurrency = computed(() => props.fiat || fiatStore.currency.value);
-        const exchangeRate = computed(() => fiatStore.exchangeRates.value[props.currency]?.[fiatCurrency.value]);
+        const fiatCurrency = computed(() => props.fiat || fiatStore.currency);
+        const exchangeRate = computed(() => fiatStore.exchangeRates[props.currency]?.[fiatCurrency.value]);
         const currencyDecimals = computed(() => {
             switch (props.currency) {
                 case CryptoCurrency.BTC: return 8;

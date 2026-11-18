@@ -32,7 +32,8 @@
 
 <script lang="ts">
 import { Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
@@ -47,8 +48,8 @@ export default defineComponent({
         },
     },
     setup() {
-        const { activeCurrency, hasBitcoinAddresses } = useAccountStore();
-        const { addressInfos, activeAddressInfo } = useAddressStore();
+        const { activeCurrency, hasBitcoinAddresses } = storeToRefs(useAccountStore());
+        const { accountAddressInfos: addressInfos, activeAddressInfo } = storeToRefs(useAddressStore());
 
         const backgroundAddresses = computed(() =>
             addressInfos.value

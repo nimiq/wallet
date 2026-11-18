@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
 // A proxy is an address for forwarding funds. Most prominently Cashlinks are an example of a proxy.
 
@@ -18,8 +18,7 @@ export type Cashlink = {
     value: number,
 };
 
-export const useProxyStore = createStore({
-    id: 'proxies',
+export const useProxyStore = defineStore('proxies', {
     state: (): ProxyState => ({
         claimed: [], // TODO: Use Sets in Vue 3
         funded: [],
@@ -28,32 +27,31 @@ export const useProxyStore = createStore({
     }),
     getters: {
         allProxies: (state): Readonly<string[]> => state.claimed.concat(state.funded),
-        networkTrigger: (state): Readonly<number> => state.networkTrigger,
     },
     actions: {
         addClaimedProxy(proxyAddress: string) {
-            if (this.state.funded.includes(proxyAddress) || this.state.claimed.includes(proxyAddress)) return;
-            this.state.claimed.push(proxyAddress);
+            if (this.$state.funded.includes(proxyAddress) || this.$state.claimed.includes(proxyAddress)) return;
+            this.$state.claimed.push(proxyAddress);
         },
         addFundedProxy(proxyAddress: string) {
-            if (this.state.funded.includes(proxyAddress) || this.state.claimed.includes(proxyAddress)) return;
-            this.state.funded.push(proxyAddress);
+            if (this.$state.funded.includes(proxyAddress) || this.$state.claimed.includes(proxyAddress)) return;
+            this.$state.funded.push(proxyAddress);
         },
         removeProxy(proxyAddress: string) {
-            const indexClaimed = this.state.claimed.indexOf(proxyAddress);
-            if (indexClaimed > -1) this.state.claimed.splice(indexClaimed, 1);
+            const indexClaimed = this.$state.claimed.indexOf(proxyAddress);
+            if (indexClaimed > -1) this.$state.claimed.splice(indexClaimed, 1);
 
-            const indexFunded = this.state.funded.indexOf(proxyAddress);
-            if (indexFunded > -1) this.state.funded.splice(indexFunded, 1);
+            const indexFunded = this.$state.funded.indexOf(proxyAddress);
+            if (indexFunded > -1) this.$state.funded.splice(indexFunded, 1);
         },
         triggerNetwork() {
-            this.state.networkTrigger++;
+            this.$state.networkTrigger++;
         },
         addHubCashlink(cashlink: Cashlink) {
             // Need to assign whole object for change detection of new cashlinks.
             // TODO: Simply set new addressInfo in Vue 3.
-            this.state.hubCashlinks = {
-                ...this.state.hubCashlinks,
+            this.$state.hubCashlinks = {
+                ...this.$state.hubCashlinks,
                 [cashlink.address]: cashlink,
             };
         },
@@ -64,7 +62,7 @@ export const useProxyStore = createStore({
                 newCashlinks[cashlink.address] = cashlink;
             }
 
-            this.state.hubCashlinks = newCashlinks;
+            this.$state.hubCashlinks = newCashlinks;
         },
     },
 });

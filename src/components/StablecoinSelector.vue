@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
 
 export default defineComponent({
@@ -56,7 +56,7 @@ export default defineComponent({
             if (!key) return;
             innerKey.value = key;
             setPillPosition();
-        });
+        }, { immediate: true, flush: 'post' });
 
         function setKey(key: string) {
             innerKey.value = key;

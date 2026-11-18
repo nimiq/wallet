@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody, PageHeader, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal from './Modal.vue';
@@ -47,7 +47,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 export default defineComponent({
     name: 'stablecoin-selection-modal',
     setup() {
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         const selection = ref<Stablecoin>(CryptoCurrency.USDC);
 

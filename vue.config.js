@@ -4,6 +4,7 @@ const child_process = require('child_process');
 const createHash = require('crypto').createHash;
 
 const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools/optimizer/webpack');
 
 // Fix build for Node version with OpenSSL 3
@@ -29,6 +30,21 @@ if (process.env.NODE_ENV !== 'production') {
 }
 if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
+}
+
+/**
+ * vue-loader 15 imports the default export of each style block, but its proxy modules re-export the style blocks via
+ * `export *`, which does not include a default export, unless they are CSS modules. As the default export is only used
+ * for CSS modules, the warnings that webpack emits about it for all other style blocks can be ignored. This is done in a
+ * plugin instead of via webpack's ignoreWarnings, because Vue CLI's build output reads the unfiltered warnings.
+ */
+class IgnoreVueStyleDefaultImportWarnings {
+    apply(compiler) {
+        const warningRegex = /export 'default' \(imported as 'style\d+'\) was not found in '.+\.vue\?vue&type=style/;
+        compiler.hooks.afterCompile.tap('IgnoreVueStyleDefaultImportWarnings', (compilation) => {
+            compilation.warnings = compilation.warnings.filter((warning) => !warningRegex.test(warning.message));
+        });
+    }
 }
 
 /**
@@ -91,6 +107,7 @@ module.exports = {
     // integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
         plugins: [
+            new IgnoreVueStyleDefaultImportWarnings(),
             new PoLoaderOptimizer(),
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
@@ -125,6 +142,19 @@ module.exports = {
         },
     },
     chainWebpack(config) {
+        // Lint during builds, as @vue/cli-plugin-eslint's default lintOnSave did, which does not support ESLint 9+ with
+        // its flat configs. Errors fail the build, warnings are only reported.
+        config
+            .plugin('eslint')
+            .use(ESLintPlugin, [{
+                extensions: ['js', 'jsx', 'vue', 'ts', 'tsx'],
+                cache: true,
+                cacheLocation: path.join(__dirname, 'node_modules/.cache/eslint/'),
+                failOnError: true,
+                failOnWarning: false,
+                formatter: 'stylish',
+            }]);
+
         config
             .plugin('copy')
             .tap(([options]) => {

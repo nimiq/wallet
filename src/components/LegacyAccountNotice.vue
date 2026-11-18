@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import LegacyAccountUpgradeButton from './LegacyAccountUpgradeButton.vue';
 
@@ -54,7 +54,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .legacy-account-notice {
     flex-grow: 1;

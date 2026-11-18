@@ -1,4 +1,5 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { AddressBook, isHistorySupportedFiatCurrency, ValidationUtils } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
@@ -28,8 +29,9 @@ import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
 
 export function useTransactionInfo(transaction: Ref<Transaction>) {
-    const { activeAddress, state: addresses$ } = useAddressStore();
-    const { getLabel } = useContactsStore();
+    const { activeAddress } = storeToRefs(useAddressStore());
+    const { $state: addresses$ } = useAddressStore();
+    const { getLabel } = storeToRefs(useContactsStore());
 
     const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
         // const haveSender = !!addresses$.addressInfos[props.transaction.sender];
@@ -43,13 +45,13 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     // Related Transaction
-    const { state: transactions$ } = useTransactionsStore();
+    const { $state: transactions$ } = useTransactionsStore();
     const relatedTx = computed(() => {
         if (!transaction.value.relatedTransactionHash) return null;
         return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
     });
 
-    const { getSwapByTransactionHash } = useSwapsStore();
+    const { getSwapByTransactionHash } = storeToRefs(useSwapsStore());
     const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash)
             || (transaction.value.relatedTransactionHash
                 ? getSwapByTransactionHash.value(transaction.value.relatedTransactionHash)
@@ -166,7 +168,7 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     // Data
     const data = computed(() => {
         if (isCashlink.value) {
-            const { state: proxies$ } = useProxyStore();
+            const { $state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming.value ? transaction.value.sender : transaction.value.recipient;
             const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
             if (hubCashlink && hubCashlink.message) return hubCashlink.message;
@@ -221,7 +223,7 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     // Fiat currency
-    const { currency: preferredFiatCurrency } = useFiatStore();
+    const { currency: preferredFiatCurrency } = storeToRefs(useFiatStore());
     const fiat = computed(() => {
         const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
         const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(

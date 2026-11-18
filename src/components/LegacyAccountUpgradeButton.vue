@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
 import { useRouter } from '@/router';
 import { useAccountStore, AccountType } from '../stores/Account';
@@ -21,8 +22,8 @@ import { onboard } from '../hub';
 export default defineComponent({
     setup(props, context) {
         const router = useRouter();
-        const { accountInfos } = useAccountStore();
-        const { activeAddressInfo } = useAddressStore();
+        const { accountInfos } = storeToRefs(useAccountStore());
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
 
         const multiAddressAccount = computed(() =>
             Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY));

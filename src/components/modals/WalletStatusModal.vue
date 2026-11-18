@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { PageHeader, PageBody, ViewIcon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
@@ -57,8 +57,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
-@import '../../scss/variables.scss';
+@use '../../scss/functions.scss' as *;
+@use '../../scss/variables.scss' as *;
 
 .modal {
     ::v-deep .small-page {

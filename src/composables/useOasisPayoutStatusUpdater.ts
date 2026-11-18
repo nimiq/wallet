@@ -1,4 +1,4 @@
-import { onUnmounted, Ref, watch } from '@vue/composition-api';
+import { onUnmounted, Ref, watch } from 'vue';
 import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';
@@ -80,7 +80,7 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return stop();
         if (oasisPayoutCheckTimeout) return; // eslint-disable-line consistent-return
         checkOasisPayoutStatus();
-    });
+    }, { immediate: true });
 
     onUnmounted(() => {
         stop();

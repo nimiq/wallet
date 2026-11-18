@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import { useI18n } from '@/lib/useI18n';
@@ -83,8 +83,8 @@ export default defineComponent({
 
         const searchTerm = ref('');
 
-        const input$ = ref<HTMLInputElement>(null);
-        const list$ = ref<HTMLUListElement>(null);
+        const input$ = ref<HTMLInputElement | null>(null);
+        const list$ = ref<HTMLUListElement | null>(null);
 
         async function setOpen(open: boolean) {
             isOpen.value = open;
@@ -131,7 +131,7 @@ export default defineComponent({
             return intlCollator.compare(a.name, b.name);
         }));
 
-        watch(searchTerm, () => selectedIndex.value = 0);
+        watch(searchTerm, () => selectedIndex.value = 0, { immediate: true });
 
         function onKeyDown(event: KeyboardEvent) {
             if (!isOpen.value) return;
@@ -196,7 +196,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 .country-selector {
     position: relative;

@@ -6,7 +6,8 @@ import {
     Htlc as OasisHtlc,
     HtlcStatus,
 } from '@nimiq/oasis-api';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';
@@ -14,9 +15,9 @@ import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { i18n } from '../../../i18n/i18n-setup';
 import { calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 
-const { activeSwap: swap } = useSwapsStore();
-const { exchangeRates } = useFiatStore();
-const { activeCurrency } = useAccountStore();
+const { activeSwap: swap } = storeToRefs(useSwapsStore());
+const { exchangeRates } = storeToRefs(useFiatStore());
+const { activeCurrency } = storeToRefs(useAccountStore());
 const { estimate } = useSwapEstimate();
 
 /**
@@ -94,7 +95,7 @@ export async function updateBuyEstimate({ fiatAmount, cryptoAmount }
         } else {
             throw new Error(i18n.t('The fees determine the minimum amount.') as string);
         }
-    } // eslint-disable-line brace-style
+    }
 
     estimate.value = newEstimate;
 }

@@ -15,8 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
-import { VNode } from 'vue';
+import { VNode, defineComponent, onMounted, ref } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 
 export default defineComponent({

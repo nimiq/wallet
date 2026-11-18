@@ -10,7 +10,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useAccountStore } from '../../stores/Account';
@@ -19,20 +20,21 @@ import AddressList from '../AddressList.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const { addressInfos, activeAddress, selectAddress } = useAddressStore();
-        const { activeCurrency } = useAccountStore();
+        const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());
+        const { selectAddress } = useAddressStore();
+        const { activeCurrency } = storeToRefs(useAccountStore());
 
         const selectNIMAddress = (address: string) => {
             selectAddress(address);
             context.emit('selected');
         };
 
-        const root = ref<HTMLElement>(null);
+        const root = ref<HTMLElement | null>(null);
         const scrollbarVisible = ref(false);
         onMounted(() => {
             watch(addressInfos, () => {
                 scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
-            });
+            }, { immediate: true, flush: 'post' });
         });
 
         return {
@@ -72,7 +74,7 @@ export default defineComponent({
         }
     }
 
-    // @import '../../scss/mixins.scss';
+    // @use '../../scss/mixins.scss' as *;
 
     // .overlay,
     // .overlay .page-body {

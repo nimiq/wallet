@@ -1,7 +1,6 @@
-import { nonReactive } from '@vue/composition-api';
-import Vue from 'vue';
+import Vue, { markRaw } from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { createStore } from 'pinia';
+import { defineStore, storeToRefs } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
 import { useFiatStore } from './Fiat';
@@ -38,11 +37,9 @@ export type StakingState = {
 }
 
 export type AggregatedRestakingEvent = {
-    /* eslint-disable camelcase */
     sender_address: string,
     time_window: string, // ISO 8601 encoded
     aggregated_value: number,
-    /* eslint-enable camelcase */
 }
 
 export interface MonthlyReward {
@@ -138,7 +135,7 @@ function hasPendingPayout(stake: Stake): boolean {
 // Inactive stake its cooldown no longer holds: from this block on it can be paid out or re-delegated.
 function isInactiveStakeReleased(stake: Stake): boolean {
     return stake.inactiveBalance > 0 && !!stake.inactiveRelease
-        && stake.inactiveRelease <= useNetworkStore().state.height;
+        && stake.inactiveRelease <= useNetworkStore().$state.height;
 }
 
 // Nobody is going to send an operation's queued follow-up (retire/remove, or update-staker): the
@@ -172,7 +169,7 @@ type Policy = Awaited<ReturnType<typeof usePolicy>>;
 // a failed one registers nothing and is skipped.
 function currentDeactivationBlock(stake: Stake, policy: Policy): number | undefined {
     if (stake.inactiveFrom === undefined) return undefined;
-    const heights = Object.values(useTransactionsStore().state.transactions)
+    const heights = Object.values(useTransactionsStore().$state.transactions)
         .filter((tx) => tx.sender === stake.address && tx.data.type === 'set-active-stake'
             && tx.blockHeight !== undefined && tx.executionResult !== false
             && policy.electionBlockAfter(tx.blockHeight) === stake.inactiveFrom)
@@ -181,7 +178,7 @@ function currentDeactivationBlock(stake: Stake, policy: Policy): number | undefi
 }
 
 function isRegistrationWindowOver(deactivationBlock: number, policy: Policy): boolean {
-    return useNetworkStore().state.height > policy.macroBlockAfter(deactivationBlock) + WATCHTOWER_REGISTRATION_MARGIN;
+    return useNetworkStore().$state.height > policy.macroBlockAfter(deactivationBlock) + WATCHTOWER_REGISTRATION_MARGIN;
 }
 
 // Without the deactivation in our history the answer is "not yet" — the last answer stands, as for a
@@ -244,19 +241,18 @@ function removeRecord(prefix: string, address: string): boolean {
 }
 
 function isTransactionPending(hash: string): boolean {
-    const tx = useTransactionsStore().state.transactions[hash];
+    const tx = useTransactionsStore().$state.transactions[hash];
     return !!tx && (tx.state === TransactionState.NEW || tx.state === TransactionState.PENDING);
 }
 
 function hasTransactionFailed(hash: string): boolean {
-    const tx = useTransactionsStore().state.transactions[hash];
+    const tx = useTransactionsStore().$state.transactions[hash];
     return !!tx && (tx.state === TransactionState.EXPIRED || tx.state === TransactionState.INVALIDATED);
 }
 
 export type StakingScoringRules = any
 
-export const useStakingStore = createStore({
-    id: 'staking',
+export const useStakingStore = defineStore('staking', {
     state: () => ({
         chainValidators: {},
         apiValidators: {},
@@ -288,7 +284,9 @@ export const useStakingStore = createStore({
 
             return validators;
         },
-        validatorsList: (state, { validators }): Readonly<Validator[]> => Object.values(validators.value),
+        validatorsList(): Readonly<Validator[]> {
+            return Object.values(this.validators);
+        },
 
         // stake object for each addresses
         stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
@@ -304,13 +302,13 @@ export const useStakingStore = createStore({
         // stake object for the active address
         activeStake: (state): Readonly<Stake | null> => {
             const { activeAddress } = useAddressStore();
-            if (!activeAddress.value) return null;
+            if (!activeAddress) return null;
 
-            return state.stakeByAddress[activeAddress.value] || null;
+            return state.stakeByAddress[activeAddress] || null;
         },
         // total stake amount for the active address
-        totalActiveStake: (state, { activeStake }): Readonly<number> => {
-            const stake = activeStake.value as Stake | null;
+        totalActiveStake(): Readonly<number> {
+            const stake = this.activeStake as Stake | null;
 
             return stake
                 ? stake.activeBalance + stake.inactiveBalance + stake.retiredBalance
@@ -320,7 +318,7 @@ export const useStakingStore = createStore({
         // cumulated stake object for each account
         stakesByAccount: (state): Readonly<Record<string, Stake>> => {
             const { accountInfos } = useAccountStore();
-            const accounts = Object.values(accountInfos.value);
+            const accounts = Object.values(accountInfos);
 
             const stakes: Record<string, Stake> = {};
             for (const accountInfo of accounts) { // for each account
@@ -347,8 +345,8 @@ export const useStakingStore = createStore({
             return stakes;
         },
         // total stake amount for each account
-        totalStakesByAccount: (state, { stakesByAccount }): Readonly<Record<string, number>> => {
-            const stakes = Object.entries(stakesByAccount.value as Record<string, Stake>);
+        totalStakesByAccount(): Readonly<Record<string, number>> {
+            const stakes = Object.entries(this.stakesByAccount as Record<string, Stake>);
             const stakeByAccount: Record<string, number> = {};
 
             for (const [accountId, stake] of stakes) {
@@ -359,26 +357,26 @@ export const useStakingStore = createStore({
         },
 
         // cumulated stake object for the active account
-        accountStake: (state, { stakesByAccount }): Readonly<Stake | null> => {
+        accountStake(): Readonly<Stake | null> {
             const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return null;
+            if (!activeAccountId) return null;
 
-            return (stakesByAccount.value as Record<string, Stake>)[activeAccountId.value] ?? null;
+            return (this.stakesByAccount as Record<string, Stake>)[activeAccountId] ?? null;
         },
         // total stake amount for the active account
-        totalAccountStake: (state, { totalStakesByAccount }) => {
+        totalAccountStake(): number {
             const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return 0;
+            if (!activeAccountId) return 0;
 
-            return (totalStakesByAccount.value as Record<string, number>)[activeAccountId.value] ?? 0;
+            return (this.totalStakesByAccount as Record<string, number>)[activeAccountId] ?? 0;
         },
 
         // validator object for the active address, if staking
-        activeValidator: (state, { activeStake, validators }): Validator | null => {
-            const stake = activeStake.value as Stake | null;
+        activeValidator(): Validator | null {
+            const stake = this.activeStake as Stake | null;
             if (!stake || !stake.validator) return null;
 
-            return validators.value[stake.validator] || {
+            return this.validators[stake.validator] || {
                 address: stake.validator,
                 dominance: 0,
                 active: false,
@@ -387,25 +385,25 @@ export const useStakingStore = createStore({
 
         activeWatchtowerJob: (state): WatchtowerJob | null | undefined => {
             const { activeAddress } = useAddressStore();
-            if (!activeAddress.value) return undefined;
-            return state.watchtowerJobByAddress[activeAddress.value];
+            if (!activeAddress) return undefined;
+            return state.watchtowerJobByAddress[activeAddress];
         },
         activeSwitchOperation: (state): Readonly<SwitchValidatorRecord | null> => {
             void state.operationRecordTrigger; // eslint-disable-line no-void
             const { activeAddress } = useAddressStore();
-            if (!activeAddress.value) return null;
-            return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, activeAddress.value);
+            if (!activeAddress) return null;
+            return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, activeAddress);
         },
         // Deactivated stake still at the old validator per our record, or with a watchtower switch job. Not
         // keyed on `activeBalance === 0`: a reward landing as active stake mid-cooldown must not read
         // as "switch done" (it makes the queued update-staker fail on-chain, the record stays relevant).
-        isSwitchingValidator: (state, { activeStake, activeSwitchOperation, activeWatchtowerJob }): boolean => {
-            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
-            const stake = activeStake.value as Stake | null;
+        isSwitchingValidator(): boolean {
+            const record = this.activeSwitchOperation as SwitchValidatorRecord | null;
+            const stake = this.activeStake as Stake | null;
             if (!stake || stake.inactiveBalance <= 0) return false;
             if (record) return stake.validator !== record.targetValidatorAddress;
             // Started in another browser: no record here, only the watchtower's job.
-            return (activeWatchtowerJob.value as WatchtowerJob | null | undefined)?.kind === 'switch';
+            return (this.activeWatchtowerJob as WatchtowerJob | null | undefined)?.kind === 'switch';
         },
         // Why a switch can no longer complete by itself, if it can't:
         // - 'activation': the cooldown is over and the stake still sits at the old validator, so the
@@ -415,19 +413,16 @@ export const useStakingStore = createStore({
         //   grows until the user deactivates again, so the queued update-staker is doomed from that
         //   moment and nothing self-heals. Deliberately not gated on the cooldown: waiting it out first
         //   would cost the user a second full one for nothing.
-        switchStall: (
-            state,
-            { activeStake, activeSwitchOperation, isSwitchingValidator },
-        ): 'activation' | 'interrupted' | null => {
-            if (!isSwitchingValidator.value) return null;
-            const stake = activeStake.value as Stake;
+        switchStall(): 'activation' | 'interrupted' | null {
+            if (!this.isSwitchingValidator) return null;
+            const stake = this.activeStake as Stake;
             if (stake.activeBalance > 0) {
                 // A record is written as soon as its deactivation is broadcast, while the snapshot is
                 // still the one from before it, which has exactly this active stake. Reading that as
                 // interrupted would let the user supersede a switch that is going fine, orphaning the job
                 // just registered for it. 'activation' is not exposed to this: no switch starts from zero
                 // active stake.
-                const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+                const record = this.activeSwitchOperation as SwitchValidatorRecord | null;
                 if (record && isTransactionPending(record.deactivationTxHash)) return null;
                 return 'interrupted';
             }
@@ -440,14 +435,11 @@ export const useStakingStore = createStore({
         // another browser, whose target this one never learnt). A list that has not loaded, or failed to,
         // leaves the recorded target in place rather than a footer with nothing to press; the action then
         // loads the list before signing, since a jailed target would lock the stake until its jail ends.
-        switchTargetStatus: (
-            state,
-            { activeSwitchOperation, validators, validatorsList },
-        ): 'active' | 'inactive' | 'unknown' => {
-            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+        switchTargetStatus(): 'active' | 'inactive' | 'unknown' {
+            const record = this.activeSwitchOperation as SwitchValidatorRecord | null;
             if (!record) return 'unknown';
-            if (!(validatorsList.value as Validator[]).length) return 'active';
-            const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
+            if (!(this.validatorsList as Validator[]).length) return 'active';
+            const known = (this.validators as Record<string, Validator>)[record.targetValidatorAddress];
             return known ? 'active' : 'inactive';
         },
         // Whether a switch to another validator can replace the stalled one without racing it. An interrupted
@@ -458,98 +450,89 @@ export const useStakingStore = createStore({
         // release past that transaction's validity. A restart towards the same target is not affected: it signs
         // that same transaction. A due switch keeps the earlier rule: an immediate switch supersedes it, the
         // chain rejecting whichever update-staker comes second.
-        canReplaceStalledSwitch: (state, { activeStake, switchStall }): boolean => {
-            if (switchStall.value !== 'interrupted') return switchStall.value === 'activation';
-            const { inactiveFrom } = activeStake.value as Stake;
-            return inactiveFrom !== undefined && useNetworkStore().state.height >= inactiveFrom;
+        canReplaceStalledSwitch(): boolean {
+            if (this.switchStall !== 'interrupted') return this.switchStall === 'activation';
+            const { inactiveFrom } = this.activeStake as Stake;
+            return inactiveFrom !== undefined && useNetworkStore().$state.height >= inactiveFrom;
         },
         activeUnstakingOperation: (state): Readonly<UnstakingRecord | null> => {
             void state.operationRecordTrigger; // eslint-disable-line no-void
             const { activeAddress } = useAddressStore();
-            if (!activeAddress.value) return null;
-            return readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, activeAddress.value);
+            if (!activeAddress) return null;
+            return readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, activeAddress);
         },
         // True while the watchtower still owes the payout. The record or job alone is not enough — a
         // deactivation that never landed must not block anything.
-        isUnstaking: (state, { activeStake, activeUnstakingOperation, activeWatchtowerJob }): boolean => {
-            const record = activeUnstakingOperation.value as UnstakingRecord | null;
-            const stake = activeStake.value as Stake | null;
+        isUnstaking(): boolean {
+            const record = this.activeUnstakingOperation as UnstakingRecord | null;
+            const stake = this.activeStake as Stake | null;
             if (!stake) return false;
-            const job = activeWatchtowerJob.value as WatchtowerJob | null | undefined;
+            const job = this.activeWatchtowerJob as WatchtowerJob | null | undefined;
             if (!record && job?.kind !== 'unstake') return false;
             return hasPendingPayout(stake);
         },
         // The watchtower operation that currently owns the stake, if any. Starting another staking
         // operation on top would orphan its queued transactions, and the watchtower does not reject
         // overlapping requests itself — so this is what every such entry point must be gated on.
-        pendingOperation: (
-            state,
-            {
-                activeStake, activeUnstakingOperation, activeWatchtowerJob,
-                canReplaceStalledSwitch, isSwitchingValidator, isUnstaking,
-            },
-        ): 'switch' | 'unstake' | null => {
-            if (isUnstaking.value) {
+        pendingOperation(): 'switch' | 'unstake' | null {
+            if (this.isUnstaking) {
                 // An unstaking still queued with the watchtower keeps blocking. One nobody is going to finish
                 // holds nothing back once its cooldown is over, so the user is not forced to pay out before
                 // re-delegating the released stake.
-                const record = activeUnstakingOperation.value as UnstakingRecord | null;
-                const job = activeWatchtowerJob.value as WatchtowerJob | null | undefined;
-                if (!isFollowUpUnscheduled(record, job) || !isInactiveStakeReleased(activeStake.value as Stake)) {
+                const record = this.activeUnstakingOperation as UnstakingRecord | null;
+                const job = this.activeWatchtowerJob as WatchtowerJob | null | undefined;
+                if (!isFollowUpUnscheduled(record, job) || !isInactiveStakeReleased(this.activeStake as Stake)) {
                     return 'unstake';
                 }
             }
             // A stalled switch another switch can replace holds nothing back (see `canReplaceStalledSwitch`).
-            if (isSwitchingValidator.value && !canReplaceStalledSwitch.value) return 'switch';
+            if (this.isSwitchingValidator && !this.canReplaceStalledSwitch) return 'switch';
             return null;
         },
         // Nobody is going to send the queued follow-up (see `isFollowUpUnscheduled`), so once the cooldown
         // ends the user has to.
-        pendingOperationNeedsManualStep: (
-            state,
-            { pendingOperation, activeStake, activeWatchtowerJob, activeSwitchOperation, activeUnstakingOperation },
-        ): boolean => {
-            const stake = activeStake.value as Stake | null;
+        pendingOperationNeedsManualStep(): boolean {
+            const stake = this.activeStake as Stake | null;
             if (!stake || !hasPendingPayout(stake)) return false;
             // The watchtower's answer always counts, the record's own outcome only while its operation is pending.
-            const operation = pendingOperation.value as 'switch' | 'unstake' | null;
+            const operation = this.pendingOperation as 'switch' | 'unstake' | null;
             let record: UnstakingRecord | SwitchValidatorRecord | null = null;
             if (operation) {
-                record = (operation === 'unstake' ? activeUnstakingOperation : activeSwitchOperation)
-                    .value as UnstakingRecord | SwitchValidatorRecord | null;
+                record = (operation === 'unstake' ? this.activeUnstakingOperation : this.activeSwitchOperation) as
+                    UnstakingRecord | SwitchValidatorRecord | null;
             }
-            return isFollowUpUnscheduled(record, activeWatchtowerJob.value as WatchtowerJob | null | undefined);
+            return isFollowUpUnscheduled(record, this.activeWatchtowerJob as WatchtowerJob | null | undefined);
         },
         // The validator the pending switch is heading for. Falls back to the name recorded when the
         // switch started, for a target that is not (or no longer) in the validator list.
-        switchTarget: (state, { activeSwitchOperation, validators }): ValidatorRef | null => {
-            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+        switchTarget(): ValidatorRef | null {
+            const record = this.activeSwitchOperation as SwitchValidatorRecord | null;
             if (!record) return null;
-            const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
+            const known = (this.validators as Record<string, Validator>)[record.targetValidatorAddress];
             return known
                 ? toValidatorRef(known)
                 : { address: record.targetValidatorAddress, name: record.targetValidatorName };
         },
-        switchTargetLabel: (state, { switchTarget }): string => {
-            const target = switchTarget.value as ValidatorRef | null;
+        switchTargetLabel(): string {
+            const target = this.switchTarget as ValidatorRef | null;
             return target ? validatorLabel(target) : '';
         },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();
-            if (!activeAddress.value) return null;
+            if (!activeAddress) return null;
 
-            const events = state.stakingEventsByAddress[activeAddress.value] || null;
+            const events = state.stakingEventsByAddress[activeAddress] || null;
             if (!events || !Array.isArray(events)) return null;
             return events;
         },
-        restakingRewards: (state, { stakingEvents, activeStake, activeValidator }): Readonly<number | null> => {
-            const events: Readonly<AggregatedRestakingEvent[] | null> = stakingEvents.value;
+        restakingRewards(): Readonly<number | null> {
+            const events: Readonly<AggregatedRestakingEvent[] | null> = this.stakingEvents;
             if (!events || !Array.isArray(events)) return null;
 
             // If we have validator API data and it's not a restaking validator, return 0 (no restaking rewards)
-            if (activeValidator.value
-                && (activeValidator.value as RegisteredValidator).payoutType
-                && (activeValidator.value as RegisteredValidator).payoutType !== 'restake') {
+            if (this.activeValidator
+                && (this.activeValidator as RegisteredValidator).payoutType
+                && (this.activeValidator as RegisteredValidator).payoutType !== 'restake') {
                 return 0;
             }
 
@@ -559,12 +542,12 @@ export const useStakingStore = createStore({
             const eventCount = events.length;
 
             // Get validator address from stake (blockchain data) if available
-            const stake = activeStake.value as Stake | null;
+            const stake = this.activeStake as Stake | null;
             const validatorAddress = stake?.validator;
 
             // Get rewardAddress from activeValidator if available (from API), but don't wait for it
-            const validatorRewardAddress = activeValidator.value
-                ? (activeValidator.value as RegisteredValidator).rewardAddress
+            const validatorRewardAddress = this.activeValidator
+                ? (this.activeValidator as RegisteredValidator).rewardAddress
                 : undefined;
 
             // If we don't have validator info yet, sum all events (will be refined once validator data loads)
@@ -595,14 +578,14 @@ export const useStakingStore = createStore({
             return totalRestakingRewards;
         },
         // monthly rewards grouped by month
-        monthlyRewards: (state, { stakingEvents }): Readonly<Map<string, MonthlyReward>> => {
-            const events: Readonly<AggregatedRestakingEvent[] | null> = stakingEvents.value;
+        monthlyRewards(state): Readonly<Map<string, MonthlyReward>> {
+            const events: Readonly<AggregatedRestakingEvent[] | null> = this.stakingEvents;
             const rewardsByMonth = new Map<string, MonthlyReward>();
             if (!events) return rewardsByMonth;
 
             // Get previously cached monthly rewards for the ACTIVE ADDRESS to preserve fiatValue
             const { activeAddress } = useAddressStore();
-            const cachedRewards = (activeAddress.value && state.cachedMonthlyRewardsByAddress[activeAddress.value])
+            const cachedRewards = (activeAddress && state.cachedMonthlyRewardsByAddress[activeAddress])
                 || new Map<string, MonthlyReward>();
 
             // Cache event count, to avoid repeatedly accessing it with the overhead of Vue's reactivity system, which
@@ -655,11 +638,11 @@ export const useStakingStore = createStore({
     },
     actions: {
         setStake(stake: Stake) {
-            const previous = this.state.stakeByAddress[stake.address] as Stake | undefined;
+            const previous = this.$state.stakeByAddress[stake.address] as Stake | undefined;
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new stake in Vue 3.
-            this.state.stakeByAddress = {
-                ...this.state.stakeByAddress,
+            this.$state.stakeByAddress = {
+                ...this.$state.stakeByAddress,
                 [stake.address]: stake,
             };
             this.reconcileOperationRecords(stake.address, stake);
@@ -668,7 +651,7 @@ export const useStakingStore = createStore({
             // A full retire clears `inactiveFrom` as well, without deactivating anything.
             const redeactivated = !!previous && hasPendingPayout(previous)
                 && stake.inactiveFrom !== undefined && previous.inactiveFrom !== stake.inactiveFrom;
-            if (redeactivated) Vue.delete(this.state.watchtowerJobByAddress, stake.address);
+            if (redeactivated) Vue.delete(this.$state.watchtowerJobByAddress, stake.address);
             // A payout that just became pending is worth asking about right away (the periodic sync
             // covers the rest): on a browser that did not start the operation, this is what reveals it.
             if (hasPendingPayout(stake) && (redeactivated || !(previous && hasPendingPayout(previous)))) {
@@ -682,31 +665,31 @@ export const useStakingStore = createStore({
                 newStakes[stake.address] = stake;
             }
 
-            this.state.stakeByAddress = newStakes;
+            this.$state.stakeByAddress = newStakes;
 
             for (const stake of stakes) {
                 this.reconcileOperationRecords(stake.address, stake);
             }
         },
         patchStake(address: string, patch: Partial<Omit<Stake, 'address'>>) {
-            if (!this.state.stakeByAddress[address]) return;
+            if (!this.$state.stakeByAddress[address]) return;
 
             this.setStake({
-                ...this.state.stakeByAddress[address],
+                ...this.$state.stakeByAddress[address],
                 ...patch,
             });
         },
         removeStake(address: string) {
-            if (!(address in this.state.stakeByAddress)) return;
-            const stakes = { ...this.state.stakeByAddress };
+            if (!(address in this.$state.stakeByAddress)) return;
+            const stakes = { ...this.$state.stakeByAddress };
             delete stakes[address];
-            this.state.stakeByAddress = stakes;
+            this.$state.stakeByAddress = stakes;
         },
         setValidator(validator: RawValidator) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new validator in Vue 3.
-            this.state.chainValidators = {
-                ...this.state.chainValidators,
+            this.$state.chainValidators = {
+                ...this.$state.chainValidators,
                 [validator.address]: validator,
             };
         },
@@ -717,7 +700,7 @@ export const useStakingStore = createStore({
                 newValidators[validator.address] = validator;
             }
 
-            this.state.chainValidators = newValidators;
+            this.$state.chainValidators = newValidators;
         },
         setApiValidators(apiValidators: ApiValidator[]) {
             const newApiValidators: {[address: string]: ApiValidator} = {};
@@ -726,38 +709,38 @@ export const useStakingStore = createStore({
                 newApiValidators[validator.address] = validator;
             }
 
-            this.state.apiValidators = newApiValidators;
+            this.$state.apiValidators = newApiValidators;
         },
         // At most one operation per staker: recording one kind supersedes whatever the other kind
         // still held (e.g. a switch record kept as a manual-recovery handle).
         setSwitchOperation(address: string, record: SwitchValidatorRecord) {
             const clearedOther = removeRecord(UNSTAKING_LS_PREFIX, address);
             const written = writeRecord(SWITCH_VALIDATOR_LS_PREFIX, address, record);
-            if (clearedOther || written) this.state.operationRecordTrigger++;
+            if (clearedOther || written) this.$state.operationRecordTrigger++;
             // An operation of our own supersedes whatever the watchtower said about the stake before.
-            Vue.delete(this.state.watchtowerJobByAddress, address);
+            Vue.delete(this.$state.watchtowerJobByAddress, address);
         },
         // By address, for a flow that captured its staker before the Hub round-trip.
         getSwitchOperation(address: string): SwitchValidatorRecord | null {
             return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, address);
         },
         clearSwitchOperation(address: string) {
-            if (removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address)) this.state.operationRecordTrigger++;
+            if (removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address)) this.$state.operationRecordTrigger++;
         },
         setUnstakingOperation(address: string, record: UnstakingRecord) {
             const clearedOther = removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address);
             const written = writeRecord(UNSTAKING_LS_PREFIX, address, record);
-            if (clearedOther || written) this.state.operationRecordTrigger++;
-            Vue.delete(this.state.watchtowerJobByAddress, address);
+            if (clearedOther || written) this.$state.operationRecordTrigger++;
+            Vue.delete(this.$state.watchtowerJobByAddress, address);
         },
         clearUnstakingOperation(address: string) {
-            if (removeRecord(UNSTAKING_LS_PREFIX, address)) this.state.operationRecordTrigger++;
+            if (removeRecord(UNSTAKING_LS_PREFIX, address)) this.$state.operationRecordTrigger++;
         },
         // `stake` is the latest chain snapshot; `null` means the staker no longer exists on chain (a full
         // unstake has paid out), so nothing can be pending anymore.
         reconcileOperationRecords(address: string, stake: Stake | null) {
             // Nothing left to pay out means nothing the watchtower could still owe.
-            if (!stake || !hasPendingPayout(stake)) Vue.delete(this.state.watchtowerJobByAddress, address);
+            if (!stake || !hasPendingPayout(stake)) Vue.delete(this.$state.watchtowerJobByAddress, address);
             if (!stake) {
                 this.clearSwitchOperation(address);
                 this.clearUnstakingOperation(address);
@@ -796,7 +779,7 @@ export const useStakingStore = createStore({
                 resyncAddresses.add(address);
                 return;
             }
-            const stake = this.state.stakeByAddress[address];
+            const stake = this.$state.stakeByAddress[address];
             if (!stake || !hasPendingPayout(stake)) return;
 
             const unstakingRecord = readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, address);
@@ -812,7 +795,7 @@ export const useStakingStore = createStore({
             // The payout may have gone through (and the entry been dropped) while a request was out, or the
             // stake was deactivated again: that one's answer is for the sync it asked for, so nothing is written.
             // Decisions are taken on the current snapshot.
-            const currentStake = () => this.state.stakeByAddress[address] as Stake | undefined;
+            const currentStake = () => this.$state.stakeByAddress[address] as Stake | undefined;
             const stillPending = () => {
                 const current = currentStake();
                 return !!current && hasPendingPayout(current) && current.inactiveFrom === stake.inactiveFrom;
@@ -828,7 +811,7 @@ export const useStakingStore = createStore({
                     // errors, so a missing job is inconclusive: the last answer stands.
                     if (!job) return;
                     if (job.status !== 'confirmed') {
-                        Vue.set(this.state.watchtowerJobByAddress, address, job);
+                        Vue.set(this.$state.watchtowerJobByAddress, address, job);
                         return;
                     }
                     // Our operation is over, yet a payout is pending: it was deactivated again from
@@ -842,7 +825,7 @@ export const useStakingStore = createStore({
                 // Only a job that belongs to the payout pending now (not a confirmed one from a previous cycle).
                 const job = jobs.find((candidate) => belongsToCurrentPayout(candidate, currentStake()!));
                 if (job) {
-                    Vue.set(this.state.watchtowerJobByAddress, address, job);
+                    Vue.set(this.$state.watchtowerJobByAddress, address, job);
                     return;
                 }
                 // Capped lists prove nothing — the job may have fallen off them — so the last answer
@@ -855,11 +838,11 @@ export const useStakingStore = createStore({
                 // A record still waiting for its registration outcome may be for a deactivation the stake
                 // snapshot does not show yet, so "no job" also waits out that transaction's own window.
                 if (record && !record.watchtowerJobId) {
-                    const { transactions } = useTransactionsStore().state;
+                    const { transactions } = useTransactionsStore().$state;
                     const blockHeight = transactions[record.deactivationTxHash]?.blockHeight;
                     if (blockHeight === undefined || !isRegistrationWindowOver(blockHeight, policy)) return;
                 }
-                Vue.set(this.state.watchtowerJobByAddress, address, null);
+                Vue.set(this.$state.watchtowerJobByAddress, address, null);
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.warn('watchtower: sync failed for', address, error);
@@ -869,7 +852,7 @@ export const useStakingStore = createStore({
             }
         },
         syncWatchtowerOperations() {
-            for (const stake of Object.values(this.state.stakeByAddress) as Stake[]) {
+            for (const stake of Object.values(this.$state.stakeByAddress) as Stake[]) {
                 if (hasPendingPayout(stake)) this.syncWatchtowerOperation(stake.address);
             }
         },
@@ -881,8 +864,8 @@ export const useStakingStore = createStore({
             // overhead, that Vue's reactivity system would add when setting the data, and on any data access. The
             // change of the stakingEventsByAddress property itself is still detected and correctly triggers the
             // recalculation of all computed composables.
-            this.state.stakingEventsByAddress = nonReactive({
-                ...this.state.stakingEventsByAddress,
+            this.$state.stakingEventsByAddress = markRaw({
+                ...this.$state.stakingEventsByAddress,
                 [address]: events,
             });
 
@@ -890,7 +873,7 @@ export const useStakingStore = createStore({
             // This is called here (not just on address change) because staking events are loaded
             // asynchronously after address changes, so we need to wait until they're actually available
             const { activeAddress } = useAddressStore();
-            if (activeAddress.value === address) {
+            if (activeAddress === address) {
                 // Only calculate if this is for the currently active address
                 this.calculateMonthlyFiatValues();
             }
@@ -898,18 +881,18 @@ export const useStakingStore = createStore({
 
         async calculateMonthlyFiatValues(fiatCurrency?: FiatCurrency) {
             const fiatStore = useFiatStore();
-            const { activeAddress } = useAddressStore();
+            const { activeAddress } = storeToRefs(useAddressStore());
 
             // Need an active address to know which cache to update
             if (!activeAddress.value) return;
 
-            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            fiatCurrency = fiatCurrency || fiatStore.currency;
             const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
                 ? fiatCurrency
                 : FiatCurrency.USD;
 
             // Get monthly rewards from getter (already filtered by active address)
-            const monthlyRewards = (this.monthlyRewards as any).value as Map<string, MonthlyReward>;
+            const monthlyRewards = this.monthlyRewards as Map<string, MonthlyReward>;
             if (!monthlyRewards || monthlyRewards.size === 0) return;
 
             // Filter months that need fiat value calculation
@@ -939,7 +922,7 @@ export const useStakingStore = createStore({
             );
 
             // Get or create the cache for this address
-            const addressCache = this.state.cachedMonthlyRewardsByAddress[activeAddress.value] || new Map();
+            const addressCache = this.$state.cachedMonthlyRewardsByAddress[activeAddress.value] || new Map();
             const newCachedMonthlyRewards = new Map(addressCache);
 
             for (const { monthKey, monthData, timestamp } of monthsToUpdate) {
@@ -963,11 +946,11 @@ export const useStakingStore = createStore({
 
             // Update the cached monthly rewards for this address in state
             // Need to use Vue.set for proper reactivity in Vue 2
-            Vue.set(this.state.cachedMonthlyRewardsByAddress, activeAddress.value, newCachedMonthlyRewards);
+            Vue.set(this.$state.cachedMonthlyRewardsByAddress, activeAddress.value, newCachedMonthlyRewards);
 
             // Manually notify the store of deep changes to trigger subscriptions
             // TODO this hack is likely not necessary in newer pinia versions
-            this.patch({});
+            this.$patch({});
         },
     },
 });

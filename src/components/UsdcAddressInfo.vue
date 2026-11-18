@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CryptoCurrency } from '@nimiq/utils';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';
@@ -66,9 +67,12 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { addressInfo } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore());
+        const { setContact } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcContactsStore()
             : useUsdtContactsStore();
 
@@ -80,13 +84,13 @@ export default defineComponent({
             if (newLabel !== undefined) {
                 localLabel.value = newLabel;
             }
-        });
+        }, { immediate: true });
 
         watch(localLabel, (newLabel) => {
             if (props.editable && newLabel !== props.label) {
                 setContact(props.address, newLabel);
             }
-        });
+        }, { immediate: true });
 
         return {
             CryptoCurrency,
@@ -107,7 +111,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/variables.scss";
+@use "../scss/variables.scss" as *;
 
 .usdc-address-info {
     align-items: center;

@@ -74,7 +74,7 @@
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
                     class="nim-btc-swap-button"
                     ref="nimBtcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
@@ -105,7 +105,7 @@
                     class="nim-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="nimUsdcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
@@ -176,7 +176,7 @@
                     class="btc-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="btcUsdcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
@@ -305,7 +305,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onActivated } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
@@ -350,19 +351,19 @@ export default defineComponent({
         const {
             activeAccountInfo,
             activeAccountId,
-            setActiveCurrency,
             activeCurrency,
             hasBitcoinAddresses,
             hasPolygonAddresses,
-        } = useAccountStore();
-        const { accountBalance: nimAccountBalance } = useAddressStore();
-        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        } = storeToRefs(useAccountStore());
+        const { setActiveCurrency } = useAccountStore();
+        const { accountBalance: nimAccountBalance } = storeToRefs(useAddressStore());
+        const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
             accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin, knowsAboutUsdt } = useAccountSettingsStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin, knowsAboutUsdt } = storeToRefs(useAccountSettingsStore());
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -420,12 +421,12 @@ export default defineComponent({
             determineIfShowModalLegacyAccountNotice();
         }
 
-        watch(activeAccountInfo, determineModalToShow);
+        watch(activeAccountInfo, determineModalToShow, { immediate: true });
 
-        const { consensus: btcConsensus } = useBtcNetworkStore();
-        const { consensus: polygonConsensus } = usePolygonNetworkStore();
+        const { consensus: btcConsensus } = storeToRefs(useBtcNetworkStore());
+        const { consensus: polygonConsensus } = storeToRefs(usePolygonNetworkStore());
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable } = storeToRefs(useSettingsStore());
 
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);
@@ -454,7 +455,7 @@ export default defineComponent({
 
         const isNimiqAddressListScrolling = computed(() => {
             // trick to force Vue to update the scrolling on component resize
-            forceUpdateRef.value; // eslint-disable-line no-unused-expressions
+            forceUpdateRef.value; // eslint-disable-line @typescript-eslint/no-unused-expressions
 
             return nimiqAccount$.value && nimiqAccount$.value.scrollHeight > nimiqAccount$.value.clientHeight;
         });
@@ -540,7 +541,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 .account-overview {
     @include flex-full-height;

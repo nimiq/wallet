@@ -1,7 +1,6 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const usePolygonNetworkStore = createStore({
-    id: 'polygonNetwork',
+export const usePolygonNetworkStore = defineStore('polygonNetwork', {
     state: () => ({
         consensus: 'syncing',
         outdatedHeight: 0,
@@ -11,8 +10,6 @@ export const usePolygonNetworkStore = createStore({
     getters: {
         isFetchingUsdcTxHistory: (state) => state.fetchingUsdcTxHistory > 0,
         isFetchingUsdtTxHistory: (state) => state.fetchingUsdtTxHistory > 0,
-        outdatedHeight: (state): Readonly<number> => state.outdatedHeight,
-        consensus: (state): Readonly<string> => state.consensus,
     },
     actions: {},
 });

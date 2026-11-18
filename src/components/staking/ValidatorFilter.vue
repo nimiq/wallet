@@ -22,7 +22,7 @@
             <span class="validator-search-icon">
                 <FatSearchIcon />
             </span>
-            <input type="text" ref="$search" class="validator-search-box"
+            <input type="text" ref="search$" class="validator-search-box"
                 :placeholder="$t('Type to search...')" v-model="searchValue" />
             <button class="validator-search-close-icon" @click="state = FilterState.TRUST">
                 <XCloseIcon />
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from 'vue';
 import { SliderToggle } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';
@@ -42,25 +42,25 @@ import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 export default defineComponent({
     setup(props, context) {
         const state = ref(FilterState.TRUST);
-        const $search = ref<HTMLInputElement>();
+        const search$ = ref<HTMLInputElement>();
         const searchValue = ref('');
 
         watch(state, () => {
             context.emit('changed', state.value);
 
             if (state.value === FilterState.SEARCH) {
-                nextTick(() => $search.value?.focus());
+                nextTick(() => search$.value?.focus());
             }
-        });
+        }, { immediate: true });
 
         watch(searchValue, () => {
             context.emit('search', searchValue.value);
-        });
+        }, { immediate: true });
 
         return {
             state,
             FilterState,
-            $search,
+            search$,
             searchValue,
         };
     },

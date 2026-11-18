@@ -1,5 +1,5 @@
-@import 'variables.scss';
-@import 'functions.scss';
+@use 'variables.scss' as *;
+@use 'functions.scss' as *;
 
 @mixin defaults {
     --bg-base: var(--nimiq-gray); /* Groundfloor */

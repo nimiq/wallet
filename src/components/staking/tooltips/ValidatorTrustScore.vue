@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import StarIcon from '../../icons/Staking/StarIcon.vue';
 
 export default defineComponent({
@@ -53,7 +53,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../scss/functions.scss';
+@use '../../../scss/functions.scss' as *;
 
 .validator-trust-score {
     white-space: nowrap;

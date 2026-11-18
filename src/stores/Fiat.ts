@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import {
     Provider,
     RateType,
@@ -136,28 +136,22 @@ class ExchangeRateRequest {
 
 let lastExchangeRateRequest: ExchangeRateRequest | undefined;
 
-export const useFiatStore = createStore({
-    id: 'fiat',
+export const useFiatStore = defineStore('fiat', {
     state: (): FiatState => ({
         currency: guessUserCurrency(),
         timestamp: 0, // Time when the exchange rates were retrieved
         exchangeRates: {},
     }),
-    getters: {
-        currency: (state) => state.currency,
-        exchangeRates: (state) => state.exchangeRates,
-        timestamp: (state): Readonly<number> => state.timestamp,
-    },
     actions: {
         setCurrency(currency: FiatCurrencyOffered) {
-            this.state.currency = currency;
+            this.$state.currency = currency;
             this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
             useBtcTransactionsStore().calculateFiatAmounts();
             useUsdcTransactionsStore().calculateFiatAmounts();
         },
         async updateExchangeRates(failGracefully = true) {
-            const currentCurrency = this.state.currency;
+            const currentCurrency = this.$state.currency;
             // If a currency is bridged, but not by a bridge that supports historic rates, it's bridged via CPL Api.
             const isCplBridgedFiatCurrency = (currency: FiatCurrency) => isBridgedFiatCurrency(
                 currency,
@@ -242,8 +236,8 @@ export const useFiatStore = createStore({
                 // meantime, which already finished, such that we don't want to override its result.
                 return;
             }
-            this.state.exchangeRates = exchangeRates;
-            this.state.timestamp = Date.now();
+            this.$state.exchangeRates = exchangeRates;
+            this.$state.timestamp = Date.now();
         },
     },
 });

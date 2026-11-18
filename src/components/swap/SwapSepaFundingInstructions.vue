@@ -22,7 +22,7 @@
                         </Copyable>
                         <Tooltip
                             preferredPosition="top left"
-                            :container="this"
+                            :container="_self"
                             theme="inverse"
                             :styles="{'width': '35rem'}"
                         >
@@ -62,7 +62,7 @@
                     <span class="text">{{ $t('Your transaction must be SEPA Instant') }}</span>
                     <Tooltip
                         preferredPosition="top left"
-                        :container="this"
+                        :container="_self"
                         theme="inverse"
                         :styles="{'width': '35rem'}"
                     >
@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onUnmounted, ref } from 'vue';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 
@@ -243,7 +243,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
+@use "../../scss/variables.scss" as *;
 
 .swap-sepa-funding-instructions {
     padding: 2.25rem;

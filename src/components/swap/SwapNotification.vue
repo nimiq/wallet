@@ -48,7 +48,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
@@ -87,15 +88,15 @@ enum SwapError {
 
 export default defineComponent({
     setup() {
+        const { activeSwap } = storeToRefs(useSwapsStore());
         const {
-            activeSwap,
             setActiveSwap,
             addFundingData,
             addSettlementData,
             setPromoBoxVisible,
-            state: swap$,
+            $state: swap$,
         } = useSwapsStore();
-        const { bank, bankAccount } = useBankStore();
+        const { bank, bankAccount } = storeToRefs(useBankStore());
         const { config } = useConfig();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
@@ -199,7 +200,7 @@ export default defineComponent({
                 // A new swap started, start processing it
                 processSwap();
             }
-        }, { lazy: true });
+        });
 
         function updateSwap(update: Partial<ActiveSwap>) {
             setActiveSwap({
@@ -208,7 +209,7 @@ export default defineComponent({
             });
         }
 
-        const currentError = ref<string>(null);
+        const currentError = ref<string | null>(null);
 
         const processingError = computed(() => {
             if (currentError.value) return currentError.value;
@@ -223,30 +224,30 @@ export default defineComponent({
                 const swap = activeSwap.value;
 
                 if ([SwapState.AWAIT_INCOMING, SwapState.SETTLE_INCOMING].includes(swap.state)) {
-                    if (swap.to.asset === SwapAsset.NIM && useNetworkStore().state.consensus !== 'established') {
+                    if (swap.to.asset === SwapAsset.NIM && useNetworkStore().$state.consensus !== 'established') {
                         return consensusErrorMsg('Nimiq');
                     }
-                    if (swap.to.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
+                    if (swap.to.asset === SwapAsset.BTC && useBtcNetworkStore().$state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
                     }
                     if (
                         (swap.to.asset === SwapAsset.USDC_MATIC || swap.to.asset === SwapAsset.USDT_MATIC)
-                        && usePolygonNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().$state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
                 }
 
                 if ([SwapState.CREATE_OUTGOING, SwapState.AWAIT_SECRET].includes(swap.state)) {
-                    if (swap.from.asset === SwapAsset.NIM && useNetworkStore().state.consensus !== 'established') {
+                    if (swap.from.asset === SwapAsset.NIM && useNetworkStore().$state.consensus !== 'established') {
                         return consensusErrorMsg('Nimiq');
                     }
-                    if (swap.from.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
+                    if (swap.from.asset === SwapAsset.BTC && useBtcNetworkStore().$state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
                     }
                     if (
                         (swap.from.asset === SwapAsset.USDC_MATIC || swap.from.asset === SwapAsset.USDT_MATIC)
-                        && usePolygonNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().$state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
@@ -259,7 +260,7 @@ export default defineComponent({
         watch(processingError, (error: string | undefined) => {
             if (!activeSwap.value) return;
             updateSwap({ error });
-        });
+        }, { immediate: true });
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
@@ -298,15 +299,15 @@ export default defineComponent({
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
 
             // Await Nimiq and Bitcoin consensus
-            if (swapsNim && useNetworkStore().state.consensus !== 'established') {
+            if (swapsNim && useNetworkStore().$state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
                 await nimiqClient.waitForConsensusEstablished();
             }
-            if (swapsBtc && useBtcNetworkStore().state.consensus !== 'established') {
+            if (swapsBtc && useBtcNetworkStore().$state.consensus !== 'established') {
                 const electrum = await getElectrumClient();
                 await electrum.waitForConsensusEstablished();
             }
-            if ((swapsUsdc || swapsUsdt) && usePolygonNetworkStore().state.consensus !== 'established') {
+            if ((swapsUsdc || swapsUsdt) && usePolygonNetworkStore().$state.consensus !== 'established') {
                 await getPolygonClient();
             }
 
@@ -339,7 +340,7 @@ export default defineComponent({
                 case SwapState.SIGN_SWAP: {
                     let unsubscribe: () => void;
                     await new Promise((resolve, reject) => {
-                        unsubscribe = useSwapsStore().subscribe((mutation, state) => {
+                        unsubscribe = useSwapsStore().$subscribe((mutation, state) => {
                             if (!state.activeSwap) {
                                 reject(new Error('Swap deleted'));
                                 return;
@@ -655,6 +656,7 @@ export default defineComponent({
                         if (isSwapModalRoute(router.currentRoute)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
+                    break;
                 }
                 /* eslint-enable no-fallthrough */
                 default:
@@ -721,7 +723,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
+@use "../../scss/variables.scss" as *;
 
 .swap-notification {
     width: 34rem;

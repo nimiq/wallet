@@ -86,7 +86,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { isGaslessTransferConfigured, quoteGaslessFee } from '@/lib/usdc/Gasless';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -111,7 +112,7 @@ const LOCALSTORAGE_KEY = 'network-info-dismissed';
 export default defineComponent({
     setup() {
         const { $t } = useI18n();
-        const { consensus, peerCount } = useNetworkStore();
+        const { effectiveConsensus: consensus, peerCount } = storeToRefs(useNetworkStore());
         const { config } = useConfig();
 
         const consensusStateString = computed(() => ({
@@ -128,7 +129,7 @@ export default defineComponent({
             showNetworkInfo.value = false;
         }
 
-        const map$ = ref<HTMLDivElement>(null);
+        const map$ = ref<HTMLDivElement | null>(null);
         function scrollMap(x: number) {
             const mapWidth = map$.value!.children[0]!.clientWidth;
             const adjustedX = x * (mapWidth / WIDTH);
@@ -137,7 +138,7 @@ export default defineComponent({
             map$.value!.scrollTo(scrollTarget, 0);
         }
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable } = storeToRefs(useSettingsStore());
 
         const btcFee = ref(0);
         const polygonFee = ref(0);
@@ -177,7 +178,7 @@ export default defineComponent({
             }
         }
 
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         return {
             CryptoCurrency,
@@ -208,7 +209,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
+@use "../../scss/variables.scss" as *;
 
 .network {
     background: var(--nimiq-blue);

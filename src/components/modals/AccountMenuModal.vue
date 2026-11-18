@@ -57,7 +57,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
 
@@ -76,7 +77,8 @@ import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 export default defineComponent({
     setup() {
         const router = useRouter();
-        const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
+        const { accountInfos, activeAccountInfo, activeAccountId } = storeToRefs(useAccountStore());
+        const { selectAccount } = useAccountStore();
         const { isMobile } = useWindowSize();
 
         const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
@@ -129,7 +131,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 @media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
     .menu {

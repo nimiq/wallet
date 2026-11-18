@@ -24,7 +24,7 @@ export function init() {
     const { trials } = useSettingsStore();
     const { config } = useConfig();
 
-    for (const trial of trials.value) {
+    for (const trial of trials) {
         switch (trial) { // eslint-disable-line default-case
             case Trial.TEN31Pass:
                 config.ten31Pass.enabled = true;

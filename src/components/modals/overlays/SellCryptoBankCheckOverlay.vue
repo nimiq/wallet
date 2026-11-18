@@ -74,7 +74,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';
@@ -92,10 +93,10 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { bank, bankAccount } = useBankStore();
+        const { bank, bankAccount } = storeToRefs(useBankStore());
 
-        const bankCheckInput$ = ref<BankCheckInput>(null);
-        const accountNameInput$ = ref<LabelInput>(null);
+        const bankCheckInput$ = ref<BankCheckInput | null>(null);
+        const accountNameInput$ = ref<LabelInput | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(bank.value?.name || '');
@@ -122,12 +123,12 @@ export default defineComponent({
             } else if (currentStep.value === Step.IBAN_CHECK) {
                 if (accountNameInput$.value) accountNameInput$.value.focus();
             }
-        });
+        }, { immediate: true });
 
         watch(bank, () => {
             accountName.value = bankAccount.value?.accountName || '';
             iban.value = bankAccount.value?.iban || '';
-        });
+        }, { immediate: true });
 
         function onBankSelected(selectedBank: Bank) {
             context.emit('bank-selected', selectedBank);

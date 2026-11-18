@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
@@ -66,7 +66,7 @@ const BtcAddressInput = defineComponent({
         const { $t } = useI18n();
         const { config } = useConfig();
 
-        const input$ = ref<LabelInput>(null);
+        const input$ = ref<LabelInput | null>(null);
         const inputFontSizeScaleFactor = ref(1);
         let inputPadding: number | null = null;
 
@@ -184,7 +184,7 @@ const BtcAddressInput = defineComponent({
         watch(() => props.value, () => {
             address.value = props.value;
             onUpdate();
-        });
+        }, { immediate: true });
 
         return {
             focus, // exposed for use from other components

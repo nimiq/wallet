@@ -7,7 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import { useNetworkStore } from '../stores/Network';
 import WorldIcon from './icons/WorldIcon.vue';
@@ -16,7 +17,7 @@ import WorldAlertIcon from './icons/WorldAlertIcon.vue';
 
 export default defineComponent({
     setup() {
-        const { consensus } = useNetworkStore();
+        const { effectiveConsensus: consensus } = storeToRefs(useNetworkStore());
 
         return {
             consensus,

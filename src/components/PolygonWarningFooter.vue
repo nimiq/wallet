@@ -9,7 +9,7 @@
                     ? $t('You can receive from Polygon {ticker} addresses only!', { ticker })
                     : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
             }}
-            <Tooltip :container="this" autoWidth :margin="{
+            <Tooltip :container="_self" autoWidth :margin="{
                 left: Math.min(88, .18 * windowWidth),
                 right: Math.min(88, .18 * windowWidth),
             }">
@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
@@ -42,17 +43,17 @@ export default defineComponent({
         type: {
             type: String,
             required: true,
-            validator: (type) => ['sending', 'receiving'].includes(type),
+            validator: (type: string) => ['sending', 'receiving'].includes(type),
         },
         level: {
             type: String,
             default: 'info',
-            validator: (level) => ['info', 'warning'].includes(level),
+            validator: (level: string) => ['info', 'warning'].includes(level),
         },
     },
     setup() {
         const { width: windowWidth } = useWindowSize();
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const ticker = computed(() => (stablecoin.value || 'usdc').toUpperCase());
 

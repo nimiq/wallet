@@ -50,7 +50,6 @@ enum NodeType {
 // TODO
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace NodeType {
-    // eslint-disable-next-line no-inner-declarations
     export function fromType(type: string) {
         if (type === 'history') return NodeType.FULL_NODE;
         if (type === 'full') return NodeType.FULL_NODE;
@@ -81,7 +80,7 @@ class Hexagon {
     public position: {x: number, y: number} = {
         x: 0,
         y: 0,
-    }
+    };
 
     public constructor(x: number, y: number) {
         this.position.x = x;
@@ -580,7 +579,7 @@ export default class NetworkMap {
         return null;
     }
 
-    private _getPeerHost(multiAddress: string) { // eslint-disable-line class-methods-use-this
+    private _getPeerHost(multiAddress: string) {
         const locator = this._getPeerLocator(multiAddress);
         if (locator && !this._isIp(locator)) {
             return locator;

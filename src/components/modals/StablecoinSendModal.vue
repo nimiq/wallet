@@ -280,7 +280,8 @@ import {
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -347,17 +348,21 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
-        const { state: addresses$, addressInfo } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { $state: addresses$ } = usePolygonAddressStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { $state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcTransactionsStore()
             : useUsdtTransactionsStore();
-        const { contactsArray: contacts, setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+        const { contactsArray: contacts, getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore());
+        const { setContact } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcContactsStore()
             : useUsdtContactsStore();
-        const { state: network$ } = usePolygonNetworkStore();
+        const { $state: network$ } = usePolygonNetworkStore();
         const { config } = useConfig();
 
         // These are non-reactive because we're only interested in whether the user had ever sent USDC/T when the modal
@@ -453,7 +458,7 @@ export default defineComponent({
                     isResolvingUnstoppableDomain.value = false;
                 }
             }
-        });
+        }, { immediate: true });
 
         function onAddressEntered(address: string, fallbackLabel = '') {
             // In StablecoinSendModal we allow double invocation of onAddressEntered (different to SendModal), as we
@@ -465,7 +470,7 @@ export default defineComponent({
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
-            const ownAccountLabel = Object.values(useAccountStore().accountInfos.value).find(
+            const ownAccountLabel = Object.values(useAccountStore().accountInfos).find(
                 (ai) => ai.polygonAddresses?.includes(address),
             )?.label || '';
 
@@ -517,7 +522,6 @@ export default defineComponent({
                     recipientFlaggedAddressWarningOpened.value = false;
                 }
             },
-            { lazy: true },
         );
 
         function resetRecipient() {
@@ -539,7 +543,7 @@ export default defineComponent({
         const amount = ref(0);
         const fee = ref<number>(0);
         const feeLoading = ref(true); // Only true for first fee loading, not for updates.
-        const feeError = ref<string>(null);
+        const feeError = ref<string | null>(null);
 
         const feeQuote = ref<GaslessFeeQuote | null>(null);
         /**
@@ -566,7 +570,8 @@ export default defineComponent({
         const activeCurrency = ref<CryptoCurrency.USDC | CryptoCurrency.USDT | FiatCurrency>(stablecoin.value!);
         const fiatAmount = ref(0);
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
@@ -589,9 +594,9 @@ export default defineComponent({
             fiatAmount.value = amount.value
                 * fiat$.exchangeRates[stablecoin.value!][currency]!
                 * fiatToCoinDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (
                 activeCurrency.value === CryptoCurrency.USDC
                 || activeCurrency.value === CryptoCurrency.USDT
@@ -689,13 +694,13 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<AddressInput>(null);
-        const labelInput$ = ref<LabelInput>(null);
-        const amountInput$ = ref<AmountInput>(null);
+        const addressInput$ = ref<AddressInput | null>(null);
+        const labelInput$ = ref<LabelInput | null>(null);
+        const amountInput$ = ref<AmountInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
+        async function focus(elementRef: Ref<{ focus(): void } | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -710,7 +715,7 @@ export default defineComponent({
             } else if (currentPage === Pages.AMOUNT_INPUT) {
                 focus(amountInput$);
             }
-        });
+        }, { immediate: true });
 
         watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
             if (warningOpened) {
@@ -726,7 +731,7 @@ export default defineComponent({
             } else {
                 focus(amountInput$);
             }
-        });
+        }, { immediate: true });
 
         /**
          * Status Screen
@@ -919,7 +924,7 @@ export default defineComponent({
                 // Avoid changing the fees while signing.
                 stopFeeUpdates();
             }
-        });
+        }, { immediate: true });
 
         onBeforeUnmount(() => {
             stopFeeUpdates();
@@ -1045,7 +1050,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 .send-modal {
     .page {

@@ -186,7 +186,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter, getContextRouteName } from '@/router';
@@ -218,7 +219,7 @@ enum SellProvider {
 
 export default defineComponent({
     props: {},
-    setup(props, context) {
+    setup() {
         const router = useRouter();
         const { config } = useConfig();
         const { isMobile, height: windowHeight } = useWindowSize();
@@ -239,7 +240,7 @@ export default defineComponent({
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
             // current route, but with the modal still open on top.
             const modalRoute = router.resolve({ name: targetRouteName }).route;
-            // Search for the closest parent, as the outermost route is named root also for the Settings page.
+            // Search for the closest named parent.
             const expectedParentRoute = [...modalRoute.matched].reverse()
                 .find(({ name }) => !!name && name !== targetRouteName);
             if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {
@@ -268,7 +269,8 @@ export default defineComponent({
             }
         }
 
-        const { addressInfos, selectAddress } = useAddressStore();
+        const { accountAddressInfos: addressInfos } = storeToRefs(useAddressStore());
+        const { selectAddress } = useAddressStore();
         function resetState() {
             navigateTo('/');
 
@@ -277,9 +279,9 @@ export default defineComponent({
             }
         }
 
-        const { updateAvailable, canUseSwaps } = useSettingsStore();
+        const { updateAvailable, canUseSwaps } = storeToRefs(useSettingsStore());
 
-        const { activeAccountInfo, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { activeAccountInfo, hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
         const walletActivatedCurrencies = computed(() => [
@@ -297,36 +299,37 @@ export default defineComponent({
             ),
         );
 
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, usePolygonAddressStore]
             .some((useStore) => {
                 const store = useStore();
                 return 'accountUsdcBalance' in store
                     ? stablecoin.value === CryptoCurrency.USDC
                         // For USDC, only native USDC is supported for swapping.
-                        ? store.accountUsdcBalance.value
+                        ? store.accountUsdcBalance
                         : stablecoin.value === CryptoCurrency.USDT
-                            ? store.accountUsdtBridgedBalance.value
+                            ? store.accountUsdtBridgedBalance
                             : 0
-                    : store.accountBalance.value;
+                    : store.accountBalance;
             }),
         );
 
-        const { activeSwap } = useSwapsStore();
+        const { activeSwap } = storeToRefs(useSwapsStore());
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
         // The Sidebar's buttons have mousedown.prevent to circumvent focus issues on iOS. As this also causes focused
         // tooltips to not lose focus and close if such a button is clicked, we close them manually.
+        const { proxy: vm } = getCurrentInstance()!;
         function hideTooltips() {
-            for (const refComponent of Object.values(context.refs)) {
+            for (const refComponent of Object.values(vm.$refs)) {
                 if (!(refComponent instanceof Tooltip)) continue;
                 refComponent.hide();
             }
         }
 
-        const { activeCurrency } = useAccountStore();
+        const { activeCurrency } = storeToRefs(useAccountStore());
 
-        const canSellCryptoWithMoonpay = computed(() => { // eslint-disable-line arrow-body-style
+        const canSellCryptoWithMoonpay = computed(() => {
             if (!config.moonpay.enabled) return false;
             return activeCurrency.value !== CryptoCurrency.NIM;
         });
@@ -412,7 +415,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 // Breakpoints at which the price charts and balance distribution are shown via v-if. We use v-if and not display: none
 // to avoid unnecessarily mounting and updating them while they're not displayed.
 $price-chart-display-breakpoint: 520px;
@@ -473,10 +476,6 @@ $balance-distribution-display-breakpoint: 450px;
             padding: 1.25rem 1.5rem;
         }
     }
-}
-
-> * {
-    margin: 1rem 0;
 }
 
 .logo {

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 
 export default defineComponent({
     props: {
@@ -42,7 +42,7 @@ export default defineComponent({
             if (!key) return;
             innerKey.value = key;
             setPillPosition();
-        });
+        }, { immediate: true, flush: 'post' });
 
         function setKey(key: string) {
             if (props.options[key].disabled) return;
@@ -72,7 +72,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/functions.scss';
+@use '../scss/functions.scss' as *;
 
 .button-group {
     width: max-content;

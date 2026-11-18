@@ -121,7 +121,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageBody,
     PageHeader,
@@ -148,14 +149,12 @@ export default defineComponent({
         const { $t, $tc } = useI18n();
         const {
             availableExternalAddresses,
-            copiedExternalAddresses,
-            setCopiedAddress,
-        } = useBtcAddressStore();
+            accountCopiedExternalAddresses: copiedExternalAddresses,
+        } = storeToRefs(useBtcAddressStore());
+        const { setCopiedAddress } = useBtcAddressStore();
 
-        const {
-            senderLabels,
-            setSenderLabel,
-        } = useBtcLabelsStore();
+        const { senderLabels } = storeToRefs(useBtcLabelsStore());
+        const { setSenderLabel } = useBtcLabelsStore();
 
         const second = 1000;
         const minute = 60 * second;
@@ -202,8 +201,8 @@ export default defineComponent({
         }
 
         // Copied addresses
-        const addressList$ = ref<HTMLDivElement>(null);
-        const copiedAddresses$ = ref<BtcCopiedAddress[]>(null);
+        const addressList$ = ref<HTMLDivElement | null>(null);
+        const copiedAddresses$ = ref<BtcCopiedAddress[] | null>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
@@ -282,11 +281,12 @@ export default defineComponent({
                     }
                 }
             },
+            { immediate: true },
         );
 
         // Auto-adapt font-size for the address to always fit the grey box
-        const availableAddressCopyable$ = ref<Copyable>(null);
-        const addressWidthFinder$ = ref<HTMLDivElement>(null);
+        const availableAddressCopyable$ = ref<Copyable | null>(null);
+        const addressWidthFinder$ = ref<HTMLDivElement | null>(null);
         const addressFontSizeScaleFactor = ref(1);
         let addressPadding: number | null = null;
 
@@ -314,7 +314,7 @@ export default defineComponent({
             return addressFontSizeScaleFactor.value;
         }
 
-        watch(currentlyShownAddress, updateAddressFontSizeScaleFactor);
+        watch(currentlyShownAddress, updateAddressFontSizeScaleFactor, { immediate: true, flush: 'post' });
         onMounted(() => {
             updateAddressFontSizeScaleFactor();
             window.addEventListener('resize', updateAddressFontSizeScaleFactor);
@@ -366,7 +366,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 @include scroll-mask(true, true, true);
 

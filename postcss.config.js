@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies, no-unused-vars */
+/* eslint-disable import/no-extraneous-dependencies */
 const autoprefixer = require('autoprefixer');
 
 const postcssPurgecss = require('@fullhuman/postcss-purgecss');
@@ -12,9 +12,9 @@ const postcssPurgecss = require('@fullhuman/postcss-purgecss');
     // Include any special characters you're using in this regular expression.
     // See: https://tailwindcss.com/docs/controlling-file-size/#understanding-the-regex
     defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
-    // Whitelist auto generated classes for transitions and router links.
+    // Safelist auto generated classes for transitions and router links.
     // From: https://github.com/ky-is/vue-cli-plugin-tailwind
-    // whitelistPatterns: [
+    // safelist: [
     //     /-(leave|enter|appear)(|-(to|from|active))$/,
     //     /^(?!(|.*?:)cursor-move).+-move$/,
     //     /^router-link(|-exact)-active$/,

@@ -24,7 +24,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, Ref, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { LabelInput } from '@nimiq/vue-components';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';
@@ -49,9 +50,9 @@ const BtcLabelInput = defineComponent({
             set(value) { context.emit('input', value); },
         });
 
-        const { recipientLabels } = useBtcLabelsStore();
-        const input$ = ref<LabelInput>(null);
-        const btcLabelAutocomplete$ = ref<HTMLUListElement>(null);
+        const { recipientLabels } = storeToRefs(useBtcLabelsStore());
+        const input$ = ref<LabelInput | null>(null);
+        const btcLabelAutocomplete$ = ref<HTMLUListElement | null>(null);
         const selectedLabelIndex: Ref<number> = ref(0);
 
         function focus() {
@@ -69,11 +70,11 @@ const BtcLabelInput = defineComponent({
         );
 
         /* Reset the currently selected label to 0 on text input */
-        watch(localValue, () => selectedLabelIndex.value = 0);
+        watch(localValue, () => selectedLabelIndex.value = 0, { immediate: true });
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if (!matchingLabels || !btcLabelAutocomplete$.value) return;
+            if (!matchingLabels.value || !btcLabelAutocomplete$.value) return;
             const oldIndex = selectedLabelIndex.value;
 
             switch (event.keyCode) {
@@ -131,7 +132,7 @@ export default BtcLabelInput;
 </script>
 
 <style lang="scss" scoped>
-    @import '../scss/mixins.scss';
+    @use '../scss/mixins.scss' as *;
 
     .btc-label-input {
         position: relative;

@@ -65,7 +65,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
 import { createRequestLink, CurrencyInfo, GeneralRequestLinkOptions, NimiqRequestLinkType } from '@nimiq/utils';
 import { useSettingsStore } from '@/stores/Settings';
@@ -90,7 +91,7 @@ export default defineComponent({
     setup(props/* , context */) {
         const amount = ref(0);
         const message = ref('');
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit } = storeToRefs(useSettingsStore());
 
         const requestLinkOptions = computed(() => ({
             type: props.currency === CryptoCurrency.NIM ? NimiqRequestLinkType.URI : undefined,
@@ -107,7 +108,8 @@ export default defineComponent({
         const activeCurrency = ref(props.currency);
         const fiatAmount = ref(0);
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
@@ -131,9 +133,9 @@ export default defineComponent({
             fiatAmount.value = amount.value
                 * fiat$.exchangeRates[props.currency][currency]!
                 * fiatToCoinDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) return;
             amount.value = Math.floor(
                 fiatAmount.value

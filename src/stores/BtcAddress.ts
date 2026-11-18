@@ -1,5 +1,4 @@
-import { Ref } from '@vue/composition-api';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { Transaction } from './BtcTransactions';
 
@@ -30,8 +29,7 @@ export type BtcAddressInfo = {
 
 export type BtcCopiedAddresses = { [address: string]: number } // timestamps per address
 
-export const useBtcAddressStore = createStore({
-    id: 'btcAddresses',
+export const useBtcAddressStore = defineStore('btcAddresses', {
     state: () => ({
         addressInfos: {},
         copiedExternalAddresses: {},
@@ -39,7 +37,7 @@ export const useBtcAddressStore = createStore({
     getters: {
         addressSet: (state): BtcAddressSet => {
             const { activeAccountInfo } = useAccountStore();
-            const accountInfo = activeAccountInfo.value;
+            const accountInfo = activeAccountInfo;
             return accountInfo && accountInfo.btcAddresses
                 ? {
                     internal: accountInfo.btcAddresses.internal
@@ -54,18 +52,20 @@ export const useBtcAddressStore = createStore({
                     external: [],
                 };
         },
-        activeInternalAddresses: (state, { addressSet }): string[] =>
-            (addressSet.value as BtcAddressSet).internal.map((btcAddressInfo) => btcAddressInfo.address),
-        activeExternalAddresses: (state, { addressSet }): string[] =>
-            (addressSet.value as BtcAddressSet).external.map((btcAddressInfo) => btcAddressInfo.address),
-        activeAddresses: (state, { activeInternalAddresses, activeExternalAddresses }): string[] =>
-            (activeInternalAddresses.value as string[]).concat((activeExternalAddresses.value as string[])),
-        accountUtxos: (state, { addressSet }) => {
+        activeInternalAddresses(): string[] {
+            return (this.addressSet as BtcAddressSet).internal.map((btcAddressInfo) => btcAddressInfo.address);
+        },
+        activeExternalAddresses(): string[] {
+            return (this.addressSet as BtcAddressSet).external.map((btcAddressInfo) => btcAddressInfo.address);
+        },
+        activeAddresses(): string[] {
+            return (this.activeInternalAddresses as string[]).concat((this.activeExternalAddresses as string[]));
+        },
+        accountUtxos(): Array<UTXO & { address: string }> {
             const utxos = [] as Array<UTXO & { address: string }>;
 
             // Note: Using concat() as it is optimized for arrays and faster than array spread
-            const addressInfos = (addressSet as Ref<BtcAddressSet>).value.internal
-                .concat((addressSet as Ref<BtcAddressSet>).value.external);
+            const addressInfos = this.addressSet.internal.concat(this.addressSet.external);
 
             for (const addressInfo of addressInfos) {
                 for (const utxo of addressInfo.utxos) {
@@ -77,13 +77,14 @@ export const useBtcAddressStore = createStore({
             }
             return utxos;
         },
-        accountBalance: (state, { accountUtxos }) => (accountUtxos as Ref<UTXO[]>).value
-            .reduce((sum, utxo) => sum + utxo.witness.value, 0),
+        accountBalance(): number {
+            return this.accountUtxos.reduce((sum, utxo) => sum + utxo.witness.value, 0);
+        },
         // activeExternalAddresses that were copied
-        copiedExternalAddresses: (state, { activeExternalAddresses }): Readonly<BtcCopiedAddresses> => {
+        accountCopiedExternalAddresses(state): Readonly<BtcCopiedAddresses> {
             const tmp = {} as BtcCopiedAddresses;
 
-            for (const address of (activeExternalAddresses.value as string[])) {
+            for (const address of (this.activeExternalAddresses as string[])) {
                 if (state.copiedExternalAddresses[address]) {
                     tmp[address] = state.copiedExternalAddresses[address];
                 }
@@ -92,12 +93,15 @@ export const useBtcAddressStore = createStore({
             return tmp;
         },
         // activeExternalAddresses that were never copied
-        availableExternalAddresses: (state, { addressSet, copiedExternalAddresses }): string[] =>
-            addressSet.value.external
-                .filter(({ txoCount, address }: BtcAddressInfo) => !txoCount && !copiedExternalAddresses.value[address])
-                .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
-        nextChangeAddress: (state, { addressSet }): string | undefined =>
-            (addressSet as Ref<BtcAddressSet>).value.internal.find((addressInfo) => !addressInfo.txoCount)?.address,
+        availableExternalAddresses(): string[] {
+            return this.addressSet.external
+                .filter(({ txoCount, address }: BtcAddressInfo) =>
+                    !txoCount && !this.accountCopiedExternalAddresses[address])
+                .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address);
+        },
+        nextChangeAddress(): string | undefined {
+            return this.addressSet.internal.find((addressInfo) => !addressInfo.txoCount)?.address;
+        },
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {
@@ -107,16 +111,16 @@ export const useBtcAddressStore = createStore({
                 newAddressInfos[addressInfo.address] = addressInfo;
             }
 
-            this.state.addressInfos = {
-                ...this.state.addressInfos,
+            this.$state.addressInfos = {
+                ...this.$state.addressInfos,
                 ...newAddressInfos,
             };
         },
         patchAddress(address: string, patch: Partial<BtcAddressInfo>) {
-            if (!this.state.addressInfos[address]) return;
+            if (!this.$state.addressInfos[address]) return;
 
-            this.state.addressInfos[address] = {
-                ...this.state.addressInfos[address],
+            this.$state.addressInfos[address] = {
+                ...this.$state.addressInfos[address],
                 ...patch,
             };
         },
@@ -125,7 +129,7 @@ export const useBtcAddressStore = createStore({
             for (const { inputs } of transactions) {
                 for (const { address } of inputs) {
                     if (!address) continue;
-                    const addressInfo = this.state.addressInfos[address];
+                    const addressInfo = this.$state.addressInfos[address];
                     if (!addressInfo) continue;
 
                     this.patchAddress(address, {
@@ -141,7 +145,7 @@ export const useBtcAddressStore = createStore({
             for (const { outputs, transactionHash } of transactions) {
                 for (const { address, index, script, value } of outputs) {
                     if (!address) continue;
-                    const addressInfo = this.state.addressInfos[address];
+                    const addressInfo = this.$state.addressInfos[address];
                     if (!addressInfo) continue;
 
                     // Skip this output if it is already spent
@@ -167,49 +171,49 @@ export const useBtcAddressStore = createStore({
                 }
             }
             for (const [address, utxos] of utxosByAddress) {
-                const existingUtxos = this.state.addressInfos[address].utxos;
+                const existingUtxos = this.$state.addressInfos[address].utxos;
                 this.patchAddress(address, {
                     utxos: existingUtxos.concat(utxos),
-                    txoCount: (this.state.addressInfos[address].txoCount || 0) + utxos.length,
+                    txoCount: (this.$state.addressInfos[address].txoCount || 0) + utxos.length,
                 });
             }
             for (const [address, txoCount] of txoCountByAddress) {
                 this.patchAddress(address, {
-                    txoCount: (this.state.addressInfos[address].txoCount || 0) + txoCount,
+                    txoCount: (this.$state.addressInfos[address].txoCount || 0) + txoCount,
                 });
             }
             this.removeCopiedAddresses([...utxosByAddress.keys(), ...txoCountByAddress.keys()]);
         },
         removeAddresses(addresses: string[]) {
-            const addressInfos = { ...this.state.addressInfos };
+            const addressInfos = { ...this.$state.addressInfos };
             for (const address of addresses) {
                 delete addressInfos[address];
             }
-            this.state.addressInfos = addressInfos;
+            this.$state.addressInfos = addressInfos;
             this.removeCopiedAddresses(addresses);
         },
         // set an external address as copied
         setCopiedAddress(address: string, timestamp: number = Date.now()) {
-            if (!this.state.copiedExternalAddresses[address] && timestamp <= Date.now()) {
-                this.state.copiedExternalAddresses = {
-                    ...this.state.copiedExternalAddresses,
+            if (!this.$state.copiedExternalAddresses[address] && timestamp <= Date.now()) {
+                this.$state.copiedExternalAddresses = {
+                    ...this.$state.copiedExternalAddresses,
                     [address]: timestamp,
                 };
             }
         },
         // remove a list of addresses from the copiedAddresses list
         removeCopiedAddresses(addresses: string[]) {
-            const copiedExternalAddresses = { ...this.state.copiedExternalAddresses };
+            const copiedExternalAddresses = { ...this.$state.copiedExternalAddresses };
 
             for (const address of addresses) {
                 delete copiedExternalAddresses[address];
             }
 
-            this.state.copiedExternalAddresses = copiedExternalAddresses;
+            this.$state.copiedExternalAddresses = copiedExternalAddresses;
         },
         // remove a list of addresses from the copiedAddresses list and every other addresses copied before
         removeCopiedAddressesAndOlder(addresses: string[]) {
-            const copiedExternalAddresses = { ...this.state.copiedExternalAddresses };
+            const copiedExternalAddresses = { ...this.$state.copiedExternalAddresses };
             const mostRecentTimestamp = addresses.reduce((acc, cur) =>
                 copiedExternalAddresses[cur] > acc ? copiedExternalAddresses[cur] : acc, 0);
 
@@ -221,7 +225,7 @@ export const useBtcAddressStore = createStore({
                 }
             });
 
-            this.state.copiedExternalAddresses = copiedExternalAddresses;
+            this.$state.copiedExternalAddresses = copiedExternalAddresses;
         },
     },
 });

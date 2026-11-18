@@ -21,7 +21,7 @@
                         ? $t('Your {currency} would most likely be stolen.', { currency: currency.toUpperCase() })
                         : ''
                 }}
-                <Tooltip :container="this" theme="inverse" autoWidth :margin="{
+                <Tooltip :container="_self" theme="inverse" autoWidth :margin="{
                     left: Math.min(40, .1 * windowWidth),
                     right: Math.min(40, .1 * windowWidth),
                 }">
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { PageBody, AddressDisplay, Tooltip, AlertTriangleIcon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import { i18n } from '../i18n/i18n-setup';
@@ -108,7 +108,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/variables.scss";
+@use "../scss/variables.scss" as *;
 
 .flagged-address-warning {
     contain: size layout style paint;

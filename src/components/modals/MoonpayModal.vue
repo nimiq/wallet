@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { SignBtcTransactionRequest } from '@nimiq/hub-api';
 import Modal from './Modal.vue';
@@ -88,10 +89,10 @@ export default defineComponent({
     },
     setup(props) {
         const { config } = useConfig();
-        const { language } = useSettingsStore().state;
-        const baseCurrencyCode = useFiatStore().state.currency;
+        const { language } = useSettingsStore().$state;
+        const baseCurrencyCode = useFiatStore().$state.currency;
         type MoonpayCurrencyCode = CryptoCurrency | 'usdc_polygon' | 'usdt_polygon';
-        let defaultCurrencyCode: MoonpayCurrencyCode = useAccountStore().state.activeCurrency;
+        let defaultCurrencyCode: MoonpayCurrencyCode = useAccountStore().$state.activeCurrency;
         if (defaultCurrencyCode === CryptoCurrency.NIM && config.disableNetworkInteraction) {
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
@@ -106,25 +107,25 @@ export default defineComponent({
         // our signing endpoint config.moonpay.signatureEndpoint expects it.
         const nimAddress = !config.disableNetworkInteraction
             // Remove spaces in NIM address, as spaces are invalid URI components
-            ? useAddressStore().state.activeAddress?.replace(/\s/g, '')
+            ? useAddressStore().$state.activeAddress?.replace(/\s/g, '')
             : undefined;
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
-        const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0] as string | undefined;
+        const btcAddress = useBtcAddressStore().availableExternalAddresses[0] as string | undefined;
 
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdcAddress = stablecoin.value === CryptoCurrency.USDC && !config.polygon.maintenance.transfers
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdtAddress = stablecoin.value === CryptoCurrency.USDT && !config.polygon.maintenance.transfers
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         const walletAddresses = {
@@ -211,7 +212,7 @@ export default defineComponent({
             try {
                 // eslint-disable-next-line no-async-promise-executor
                 const request = new Promise<Omit<SignBtcTransactionRequest, 'appName'>>(async (resolve) => {
-                    const { accountUtxos, accountBalance } = useBtcAddressStore();
+                    const { accountUtxos, accountBalance } = storeToRefs(useBtcAddressStore());
 
                     const client = await getElectrumClient();
                     await client.waitForConsensusEstablished();
@@ -234,7 +235,7 @@ export default defineComponent({
 
                     let changeAddress: string | undefined;
                     if (requiredInputs.changeAmount > 0) {
-                        const { nextChangeAddress } = useBtcAddressStore();
+                        const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
                         if (!nextChangeAddress.value) {
                             // FIXME: If no unused change address is found,
                             //        need to request new ones from Hub!
@@ -244,7 +245,7 @@ export default defineComponent({
                     }
 
                     resolve({
-                        accountId: useAccountStore().state.activeAccountId!,
+                        accountId: useAccountStore().$state.activeAccountId!,
                         inputs: requiredInputs.utxos.map((utxo) => ({
                             address: utxo.address,
                             transactionHash: utxo.transactionHash,
@@ -299,7 +300,7 @@ export default defineComponent({
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
-                const { accountUsdcBalance } = usePolygonAddressStore();
+                const { accountUsdcBalance } = storeToRefs(usePolygonAddressStore());
                 // The relay fee is checked against the balance when sending
                 if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
@@ -346,7 +347,7 @@ export default defineComponent({
                     throw new Error('Invalid USDT contract address given by Moonpay');
                 }
 
-                const { accountUsdtBridgedBalance } = usePolygonAddressStore();
+                const { accountUsdtBridgedBalance } = storeToRefs(usePolygonAddressStore());
                 // The relay fee is checked against the balance when sending
                 if (accountUsdtBridgedBalance.value < value) {
                     throw new Error('Insufficient USDT balance');

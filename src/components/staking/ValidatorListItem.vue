@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { Validator } from '../../stores/Staking';
 
 import ValidatorReward from './tooltips/ValidatorReward.vue';
@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .validator-list-item {
     box-sizing: border-box;

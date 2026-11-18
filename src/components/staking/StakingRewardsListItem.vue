@@ -59,7 +59,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
@@ -98,7 +99,7 @@ export default defineComponent({
     },
     setup(props) {
         const router = useRouter();
-        const { validators: validatorList, stakingEvents } = useStakingStore();
+        const { validators: validatorList, stakingEvents } = storeToRefs(useStakingStore());
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const validators = computed(() => props.validatorsAddresses.map(
@@ -144,8 +145,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "../../scss/variables.scss";
-@import "../../scss/mixins.scss";
+@use "../../scss/variables.scss" as *;
+@use "../../scss/mixins.scss" as *;
 
 .staking-reward-item {
     display: flex;

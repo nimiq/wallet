@@ -93,7 +93,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onUnmounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -109,8 +110,8 @@ import { useRouter, RouteName } from '../../router';
 export default defineComponent({
     setup() {
         const router = useRouter();
-        const { activeAccountInfo } = useAccountStore();
-        const { state: settings$, setLanguage } = useSettingsStore();
+        const { activeAccountInfo } = storeToRefs(useAccountStore());
+        const { $state: settings$, setLanguage } = useSettingsStore();
         const { isMobile } = useWindowSize();
 
         const currencies = [
@@ -119,7 +120,7 @@ export default defineComponent({
             CryptoCurrency.USDC,
         ];
 
-        const modal$ = ref<InstanceType<typeof Modal>>(null);
+        const modal$ = ref<InstanceType<typeof Modal> | null>(null);
 
         const highlightedCurrencyIndex = ref(0);
         const highlightedCurrency = computed(() => currencies[highlightedCurrencyIndex.value]);
@@ -203,8 +204,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/variables.scss";
-    @import '../../scss/functions.scss';
+    @use "../../scss/variables.scss" as *;
+    @use '../../scss/functions.scss' as *;
 
     .modal {
         font-size: var(--body-size);

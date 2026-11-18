@@ -53,7 +53,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '@/stores/Fiat';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
@@ -84,8 +85,8 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { stakingEvents } = useStakingStore();
-        const { currency: preferredFiatCurrency } = useFiatStore();
+        const { stakingEvents } = storeToRefs(useStakingStore());
+        const { currency: preferredFiatCurrency } = storeToRefs(useFiatStore());
         const { $t, locale } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
@@ -250,7 +251,7 @@ export default defineComponent({
             () => props.month,
             () => props.validators,
             () => monthEvents.value.length,
-        ], calculateValidatorRewards, { lazy: false });
+        ], calculateValidatorRewards, { immediate: true });
 
         // Reload fiat values when currency changes (without recalculating the entire list)
         watch(() => fiatCurrency.value, () => {
@@ -261,7 +262,7 @@ export default defineComponent({
             const rewardsByValidator = buildRewardsByValidatorMap(events);
 
             loadFiatValues(events, rewardsByValidator);
-        });
+        }, { immediate: true });
 
         return {
             validatorRewards,
@@ -281,8 +282,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/mixins.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .validators-list-overlay {
     height: 100%;

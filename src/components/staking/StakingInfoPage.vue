@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex-column">
                     <Tooltip :disabled="!isStakeDeactivating && !pendingOperation" preferredPosition="bottom left"
-                        :container="this" class="adjust-stake">
+                        :container="_self" class="adjust-stake">
                         <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
                             :disabled="isStakeDeactivating || !!pendingOperation">
                             <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
@@ -249,7 +249,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     ArrowRightSmallIcon,
     CircleSpinner,
@@ -297,7 +298,7 @@ type Reward = {
 export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { activeAddress, activeAddressInfo } = storeToRefs(useAddressStore());
         const {
             activeStake: stake,
             activeValidator: validator,
@@ -313,9 +314,9 @@ export default defineComponent({
             restakingRewards,
             monthlyRewards,
             stakingEvents,
-            clearSwitchOperation,
-        } = useStakingStore();
-        const { height, consensus } = useNetworkStore();
+        } = storeToRefs(useStakingStore());
+        const { clearSwitchOperation } = useStakingStore();
+        const { height, effectiveConsensus: consensus } = storeToRefs(useNetworkStore());
         const networkNotice = computed(nimiqNetworkNotice);
         const { isMobile } = useWindowSize();
 
@@ -859,8 +860,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/mixins.scss';
-    @import '../../scss/variables.scss';
+    @use '../../scss/mixins.scss' as *;
+    @use '../../scss/variables.scss' as *;
 
     @include scroll-mask(false, true, true);
 

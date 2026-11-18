@@ -1,5 +1,8 @@
-@import 'functions.scss';
-@import 'variables.scss';
+// Forward the functions and variables, such that importing the mixins also provides them, as with @import.
+@forward 'functions.scss';
+@forward 'variables.scss';
+@use 'functions.scss' as *;
+@use 'variables.scss' as *;
 
 @mixin flex-full-height {
     display: flex;

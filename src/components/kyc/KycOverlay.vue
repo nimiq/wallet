@@ -46,7 +46,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
 import { KycProvider } from '../../stores/Kyc';
@@ -64,7 +65,7 @@ export default defineComponent({
             emit('connected');
         }
 
-        const { trials } = useSettingsStore();
+        const { trials } = storeToRefs(useSettingsStore());
         const isInOasisProTrial = computed(() => trials.value.includes(Trial.TEN31Pass));
 
         return {
@@ -85,8 +86,8 @@ export default defineComponent({
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/variables.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .kyc-overlay {
     flex-grow: 1;

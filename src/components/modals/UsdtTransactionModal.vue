@@ -258,7 +258,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     ArrowRightIcon,
     FiatAmount,
@@ -312,7 +313,7 @@ export default defineComponent({
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const { $t } = useI18n();
 
-        const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
+        const transaction = computed(() => useUsdtTransactionsStore().$state.transactions[props.hash]);
 
         const {
             txValue,
@@ -328,16 +329,16 @@ export default defineComponent({
             if (!swapData.value) return null;
 
             if (swapData.value.asset === SwapAsset.NIM) {
-                let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
+                let swapTx = useTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (swapTx?.relatedTransactionHash) {
                     // Avoid showing the swap proxy, instead show our related address.
-                    swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                    swapTx = useTransactionsStore().$state.transactions[swapTx.relatedTransactionHash];
                 }
                 return swapTx || null;
             }
 
             if (swapData.value.asset === SwapAsset.BTC) {
-                const btcTx = useBtcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                const btcTx = useBtcTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (!btcTx) return null;
                 return {
                     ...btcTx,
@@ -357,7 +358,7 @@ export default defineComponent({
             // instead. Only the related tx holds the proxy identifying extra data.
             return isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
                 || swapTransaction.value.relatedTransactionHash
-                || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
+                || !useAddressStore().$state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });
 
         // Data
@@ -370,7 +371,8 @@ export default defineComponent({
         });
 
         // Peer
-        const { getLabel, setContact } = useUsdtContactsStore();
+        const { getLabel } = storeToRefs(useUsdtContactsStore());
+        const { setContact } = useUsdtContactsStore();
 
         const peerAddress = computed(() => {
             if (swapData.value) {
@@ -409,7 +411,7 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Top left tooltip
-        const { outdatedHeight: outdatedBlockHeight } = usePolygonNetworkStore();
+        const { outdatedHeight: outdatedBlockHeight } = storeToRefs(usePolygonNetworkStore());
         getPolygonBlockNumber(); // Trigger blockHeight update
 
         const confirmations = computed(() =>
@@ -475,7 +477,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
+@use "../../scss/variables.scss" as *;
 
 .page-header {
     ::v-deep .nq-h1 {

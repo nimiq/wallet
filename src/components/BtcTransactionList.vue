@@ -80,7 +80,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
@@ -139,9 +140,10 @@ export default defineComponent({
     },
     setup(props) {
         const { $t, locale } = useI18n();
-        const { state: btcAddresses$, activeAddresses } = useBtcAddressStore();
-        const { state: btcTransactions$ } = useBtcTransactionsStore();
-        const { isFetchingTxHistory, consensus } = useBtcNetworkStore();
+        const { activeAddresses } = storeToRefs(useBtcAddressStore());
+        const { $state: btcAddresses$ } = useBtcAddressStore();
+        const { $state: btcTransactions$ } = useBtcTransactionsStore();
+        const { isFetchingTxHistory, consensus } = storeToRefs(useBtcNetworkStore());
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -165,7 +167,7 @@ export default defineComponent({
             const {
                 getRecipientLabel,
                 getSenderLabel,
-            } = useBtcLabelsStore();
+            } = storeToRefs(useBtcLabelsStore());
 
             return txsForActiveAddress.value.filter((tx) => {
                 const transaction = ref<Readonly<Transaction>>(tx);
@@ -184,7 +186,7 @@ export default defineComponent({
                     const ownedAddressInfo = btcAddresses$.addressInfos[address];
                     if (ownedAddressInfo) {
                         // Find account label
-                        const { accountInfos } = useAccountStore();
+                        const { accountInfos } = storeToRefs(useAccountStore());
                         const accountLabel = Object.values(accountInfos.value)
                             .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
                             || Object.values(accountInfos.value)
@@ -387,7 +389,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 .transaction-list {
     position: relative;

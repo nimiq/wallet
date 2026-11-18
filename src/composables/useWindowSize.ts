@@ -1,11 +1,10 @@
-import { ref, onMounted, onUnmounted, Ref, computed } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref, computed } from 'vue';
 import { mobileBreakpoint, tabletBreakpoint, halfMobileBreakpoint } from '../scss/modules/variables';
 
 let numberOfListeners = 0;
 
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, the width and height variables can be directly instantiated
-//        as refs.
+// Note: lazily initialized, which was required with the Vue 2 composition-api plugin. With Vue 2.7's built-in
+//       Composition API, the width and height variables could be directly instantiated as refs.
 let width: Ref<number> | null = null;
 let height: Ref<number> | null = null;
 

@@ -1,3 +1,4 @@
+import { storeToRefs } from 'pinia';
 import { Route } from 'vue-router';
 import HubApi, {
     type Account,
@@ -42,8 +43,8 @@ import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swa
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
         const { hubBehavior } = useSettingsStore();
-        if (hubBehavior.value === 'redirect') return true;
-        if (hubBehavior.value !== 'auto') return false;
+        if (hubBehavior === 'redirect') return true;
+        if (hubBehavior !== 'auto') return false;
     }
 
     const { canInstallPwa } = usePwaInstallPrompt();
@@ -112,8 +113,7 @@ function getBehavior({
     return defaultBehavior;
 }
 
-// We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
-// plugin has been registered in Vue 2.
+// Using the plain, non-reactive Config here, as the Hub endpoint is only read once on initialization.
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
@@ -249,7 +249,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
                 address: address.address,
                 type: AddressType.BASIC,
                 label: address.label,
-                balance: addressStore.state.addressInfos[address.address]?.balance ?? null,
+                balance: addressStore.$state.addressInfos[address.address]?.balance ?? null,
             });
         }
 
@@ -273,7 +273,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
             addressInfos.push({
                 ...contract,
-                balance: addressStore.state.addressInfos[contract.address]?.balance ?? null,
+                balance: addressStore.$state.addressInfos[contract.address]?.balance ?? null,
                 type: contract.type as number,
             });
         }
@@ -281,7 +281,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const btcAddress of account.btcAddresses[chain]) {
                 const existingAddressInfo: BtcAddressInfo | Record<string, never> = btcAddressStore
-                    .state.addressInfos[btcAddress] || {};
+                    .$state.addressInfos[btcAddress] || {};
 
                 btcAddressInfos.push({
                     address: btcAddress,
@@ -292,7 +292,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         }
 
         // Check if we know more BTC addresses in the Wallet than the Hub
-        const existingAccount = accountStore.state.accountInfos[account.accountId];
+        const existingAccount = accountStore.$state.accountInfos[account.accountId];
         if (existingAccount && existingAccount.btcAddresses) {
             account.btcAddresses = {
                 internal: existingAccount.btcAddresses.internal.length > account.btcAddresses.internal.length
@@ -307,10 +307,10 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const polygonAddress of account.polygonAddresses) {
             polygonAddressInfos.push({
                 address: polygonAddress,
-                balanceUsdcBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
-                balanceUsdc: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
-                balanceUsdtBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
-                pol: polygonAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
+                balanceUsdcBridged: polygonAddressStore.$state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
+                balanceUsdc: polygonAddressStore.$state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
+                balanceUsdtBridged: polygonAddressStore.$state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
+                pol: polygonAddressStore.$state.addressInfos[polygonAddress]?.pol ?? null,
             });
         }
 
@@ -407,7 +407,7 @@ export async function syncFromHub() {
     // check should become less aggressive and be done in onboard only (same as the Bitcoin activation check) because
     // for Ledgers USDC would not be enabled automatically on logins and the activation reminder on every app start
     // would be annoying for the user.
-    const { activeAccountInfo } = useAccountStore();
+    const { activeAccountInfo } = storeToRefs(useAccountStore());
     await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     if (
@@ -653,7 +653,7 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
         appName: APP_NAME,
         senderAddress,
         senderBalance,
-        fiatCurrency: useFiatStore().state.currency,
+        fiatCurrency: useFiatStore().$state.currency,
     }, getBehavior()).catch(onError);
     if (!cashlink) return false;
 
@@ -741,19 +741,19 @@ export async function logout(accountId: string) {
     const btcAddressStore = useBtcAddressStore();
     const btcTransactionStore = useBtcTransactionsStore();
 
-    const addressesToDelete = accountStore.state.accountInfos[accountId].addresses;
+    const addressesToDelete = accountStore.$state.accountInfos[accountId].addresses;
 
-    const remainingAddresses = Object.values(addressStore.state.addressInfos)
+    const remainingAddresses = Object.values(addressStore.$state.addressInfos)
         .map((addressInfo) => addressInfo.address)
         .filter((address) => !addressesToDelete.includes(address));
 
-    let transactionsToDelete = Object.values(transactionStore.state.transactions)
+    let transactionsToDelete = Object.values(transactionStore.$state.transactions)
         .filter((tx) => !remainingAddresses.includes(tx.sender) && !remainingAddresses.includes(tx.recipient));
 
     const transactionsToDeleteHashes = transactionsToDelete
         .map((tx) => tx.transactionHash);
 
-    const remainingTransactions = Object.values(transactionStore.state.transactions)
+    const remainingTransactions = Object.values(transactionStore.$state.transactions)
         .filter((tx) => !transactionsToDeleteHashes.includes(tx.transactionHash));
 
     const remainingTransactionRelatedTransactionHashes = remainingTransactions
@@ -777,14 +777,14 @@ export async function logout(accountId: string) {
     /**
      * Bitcoin
      */
-    const btcAddressesToDelete = accountStore.state.accountInfos[accountId].btcAddresses.internal
-        .concat(accountStore.state.accountInfos[accountId].btcAddresses.external);
+    const btcAddressesToDelete = accountStore.$state.accountInfos[accountId].btcAddresses.internal
+        .concat(accountStore.$state.accountInfos[accountId].btcAddresses.external);
 
-    const remainingBtcAddresses = Object.values(btcAddressStore.state.addressInfos)
+    const remainingBtcAddresses = Object.values(btcAddressStore.$state.addressInfos)
         .map((addressInfo) => addressInfo.address)
         .filter((address) => !btcAddressesToDelete.includes(address));
 
-    const btcTransactionsToDelete = Object.values(btcTransactionStore.state.transactions)
+    const btcTransactionsToDelete = Object.values(btcTransactionStore.$state.transactions)
         .filter((tx) => {
             for (const address of tx.addresses) {
                 if (remainingBtcAddresses.includes(address)) return false;
@@ -802,7 +802,7 @@ export async function logout(accountId: string) {
     btcAddressStore.removeAddresses(btcAddressesToDelete);
     accountStore.removeAccount(accountId);
 
-    if (!Object.values(accountStore.state.accountInfos).length) {
+    if (!Object.values(accountStore.$state.accountInfos).length) {
         onboard(true);
         return null;
     }
@@ -880,7 +880,7 @@ export async function sendPolygonTransaction(
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {
     const accountStore = useAccountStore();
-    const accountInfo = accountStore.state.accountInfos[accountId];
+    const accountInfo = accountStore.$state.accountInfos[accountId];
 
     const existingAddresses = accountInfo.btcAddresses[chain];
 
@@ -925,7 +925,7 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
 
 export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName' | 'kyc'>>)
     : Promise<SetupSwapResult | SetupSwapWithKycResult | null | /* for redirect requests */ void> {
-    const { connectedUser: { value: kycUser } } = useKycStore();
+    const { connectedUser: kycUser } = useKycStore();
     const requestWithAppNamePromise = requestPromise.then((request) => ({
         ...request,
         appName: APP_NAME,

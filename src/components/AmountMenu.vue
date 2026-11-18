@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { FiatCurrency, CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
@@ -96,7 +96,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 .button {
     align-items: center;

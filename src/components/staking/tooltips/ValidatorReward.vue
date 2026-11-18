@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
     props: {
@@ -53,7 +53,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../scss/functions.scss';
+@use '../../../scss/functions.scss' as *;
 
 .validator-reward {
     white-space: nowrap;

@@ -26,7 +26,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import { nextTick } from '@/lib/nextTick';
@@ -116,8 +117,8 @@ const Modal = defineComponent({
         });
 
         // Swiping
-        const main$ = ref<HTMLDivElement>(null);
-        const handle$ = ref<HTMLDivElement>(null);
+        const main$ = ref<HTMLDivElement | null>(null);
+        const handle$ = ref<HTMLDivElement | null>(null);
         const showSwipeHandle = ref(false);
 
         async function updateSwipeRestPosition(
@@ -144,7 +145,7 @@ const Modal = defineComponent({
 
         if (props.swipeToClose) {
             const { isMobile, height } = useWindowSize();
-            const { swipingEnabled } = useSettingsStore();
+            const { swipingEnabled } = storeToRefs(useSettingsStore());
 
             const { attachSwipe, detachSwipe } = useSwipes(main$ as Ref<HTMLDivElement>, {
                 onSwipeEnded: updateSwipeRestPosition,
@@ -163,7 +164,7 @@ const Modal = defineComponent({
                     detachSwipe();
                     showSwipeHandle.value = false;
                 }
-            }, { lazy: true });
+            });
 
             if (isMobile.value && swipingEnabled.value === 1) {
                 showSwipeHandle.value = true;
@@ -215,8 +216,8 @@ export default Modal;
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 .backdrop {
     position: fixed;
@@ -249,7 +250,7 @@ export default Modal;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
 
     height: auto;
-    min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function
+    min-height: min(70.5rem, 96vh);
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);
@@ -338,8 +339,8 @@ export default Modal;
 </style>
 
 <style lang="scss">
-@import "../../scss/variables.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 :root {
     --modal-transition-time: 0.45s;

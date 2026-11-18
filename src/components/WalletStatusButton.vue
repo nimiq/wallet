@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { RouteName } from '@/router';
 import CircledQuestionMark from './icons/CircledQuestionMark.vue';
 
@@ -24,7 +24,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .wallet-status-button {
     height: 4.25rem;

@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import ConsensusIcon from './ConsensusIcon.vue';
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .network-stats {
     flex-direction: column;

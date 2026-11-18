@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue';
 
 export default defineComponent({
     props: {
@@ -91,12 +91,12 @@ export default defineComponent({
         };
 
         watch(() => props.currentStep, (newStep, oldStep) => {
-            if (newStep > oldStep || (newStep === 1 && !isFirstStepAnimated.value)) {
+            if ((oldStep !== undefined && newStep > oldStep) || (newStep === 1 && !isFirstStepAnimated.value)) {
                 startAnimation();
-            } else if (newStep < oldStep) {
+            } else if (oldStep !== undefined && newStep < oldStep) {
                 animationProgress.value = 100;
             }
-        });
+        }, { immediate: true });
 
         onMounted(() => {
             if (props.currentStep === 1) {

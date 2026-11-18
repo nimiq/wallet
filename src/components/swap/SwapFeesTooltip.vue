@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { InfoCircleSmallIcon, Tooltip, FiatAmount } from '@nimiq/vue-components';
 import { FiatCurrency } from '../../lib/Constants';
 

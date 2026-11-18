@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import BankIcon from './icons/BankIcon.vue';
 import TriangleDownIcon from './icons/TriangleDownIcon.vue';
 

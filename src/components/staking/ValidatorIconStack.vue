@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api';
+import { computed, defineComponent, PropType } from 'vue';
 import type { Validator } from '../../stores/Staking';
 import ValidatorIcon from './ValidatorIcon.vue';
 

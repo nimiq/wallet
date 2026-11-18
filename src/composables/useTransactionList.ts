@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from '@vue/composition-api';
+import { computed, ref, Ref } from 'vue';
 import { AddressBook } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
 import { useAddressStore } from '../stores/Address';
@@ -29,7 +29,7 @@ import { useWindowSize } from './useWindowSize';
  *
  * @example
  * import { useTransactionList } from '@/composables/useTransactionList';
- * import { ref } from '@vue/composition-api';
+ * import { ref } from 'vue';
  *
  * const searchString = ref('');
  * const scrollerBuffer = 300;

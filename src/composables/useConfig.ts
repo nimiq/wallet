@@ -1,10 +1,7 @@
-import { reactive } from '@vue/composition-api';
-import { UnwrapRef } from '@vue/composition-api/dist/reactivity/index.d';
+import { reactive, UnwrapNestedRefs } from 'vue';
 import Config from 'config';
 
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, the reactiveConfig variable can be directly instantiated.
-let reactiveConfig: UnwrapRef<typeof Config> | null = null;
+let reactiveConfig: UnwrapNestedRefs<typeof Config> | null = null;
 
 export function useConfig() {
     // First-time setup

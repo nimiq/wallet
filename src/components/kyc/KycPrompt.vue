@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { getUserLimits } from '@nimiq/fastspot-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';

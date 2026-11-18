@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onUnmounted, ref } from 'vue';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 

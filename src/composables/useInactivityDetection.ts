@@ -1,11 +1,11 @@
-import { ref, onMounted, onUnmounted, Ref } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref } from 'vue';
 
 const INACTIVITY_TIME_TRESHOLD = 5 * 60 * 1000;
 const ACTIVITY_EVENTS_THROTTLE_TIME = 10 * 1000;
 const ACTIVITY_EVENTS = ['mousedown', 'touchstart', 'keydown', 'scrollend', 'focus'] as const;
 
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, the ref variable can be directly instantiated as refs.
+// Note: lazily initialized, which was required with the Vue 2 composition-api plugin. With Vue 2.7's built-in
+//       Composition API, the ref variable could be directly instantiated.
 let isUserInactive: Ref<boolean> | null = null;
 let subscriptionCount = 0;
 let inactivityTimeout = -1;

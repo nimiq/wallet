@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted } from 'vue';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import router from '@/router';

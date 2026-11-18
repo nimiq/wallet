@@ -1,6 +1,6 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
-import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
+import { computed, onUnmounted, ref, getCurrentInstance, Ref } from 'vue';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';
@@ -31,8 +31,8 @@ const { connectedUser: kycUser } = useKycStore();
  * Common - Refs
  */
 
-export const estimate = ref<Estimate>(null);
-export const assets = ref<AssetList>(null);
+export const estimate = ref<Estimate | null>(null);
+export const assets = ref<AssetList | null>(null);
 // Currently there is only EUR available to swap, but it may change in the future.
 export const selectedFiatCurrency = ref(FiatCurrency.EUR);
 

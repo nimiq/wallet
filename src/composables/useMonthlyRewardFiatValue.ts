@@ -1,4 +1,4 @@
-import { ref, computed, watch, Ref } from '@vue/composition-api';
+import { ref, computed, watch, Ref } from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { useFiatStore } from '@/stores/Fiat';
 import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
@@ -84,7 +84,7 @@ export function useMonthlyRewardFiatValue(
         fiatCurrency,
         () => stakingEvents.value?.length,
         exchangeRates, // Watch exchange rates for real-time updates
-    ], calculateFiatValue, { lazy: false });
+    ], calculateFiatValue, { immediate: true });
 
     return {
         fiatValue,

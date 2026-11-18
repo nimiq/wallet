@@ -2,7 +2,7 @@
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import idbReady from 'safari-14-idb-fix';
-import { set } from '@vue/composition-api';
+import { set } from 'vue';
 import type { Store, StateTree } from 'pinia';
 import { useTransactionsStore } from './stores/Transactions';
 import { useAddressStore } from './stores/Address';
@@ -282,7 +282,7 @@ export async function initStorage() {
             stakingStore,
             StorageKeys.STAKING,
             (state) => ({
-                // Only serialize persistable state (avoid nonReactive data)
+                // Only serialize persistable state (avoid markRaw data)
                 stakeByAddress: state.stakeByAddress,
                 cachedMonthlyRewardsByAddress: Object.fromEntries(
                     Object.entries(state.cachedMonthlyRewardsByAddress).map(([address, rewardsMap]) => [

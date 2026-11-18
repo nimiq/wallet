@@ -32,14 +32,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         function visitMultisig() {
             window.open('https://multisig.nimiq.com', '_blank', 'noopener,noreferrer');

@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { PageHeader, PageBody, ViewIcon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';

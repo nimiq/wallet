@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 
 import { formatNumber } from '../../lib/NumberFormatting';
 import { calculateStakingReward } from '../../lib/AlbatrossMath';

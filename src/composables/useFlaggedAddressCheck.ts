@@ -1,4 +1,4 @@
-import { watch, onUnmounted, Ref } from '@vue/composition-api';
+import { watch, onUnmounted, Ref } from 'vue';
 import { CryptoCurrency, ValidationUtils } from '@nimiq/utils';
 // Import the type only, because we want to load the database lazily on demand.
 import type { FlaggedAddressType, FlaggedAddressChain } from '../config/flagged-addresses';
@@ -42,7 +42,7 @@ export function useFlaggedAddressCheck<RTE extends { FLAGGED: number } & Numeric
             recipientInfo.value.type = RecipientTypeEnum.FLAGGED as RTE[keyof RTE];
             recipientInfo.value.label = i18n.t('Flagged Address') as string;
         },
-        { lazy: false },
+        { immediate: true },
     );
 
     onUnmounted(unwatch);

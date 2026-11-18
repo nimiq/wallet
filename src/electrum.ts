@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { watch, computed, ref } from '@vue/composition-api';
+import { watch, computed, ref } from 'vue';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import { useConfig } from './composables/useConfig';
@@ -207,7 +207,7 @@ export async function launchElectrum() {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();
                 }
-            }, { lazy: true });
+            });
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory();
             txHistoryWasInvalidatedSinceLastConsensus = true;
@@ -295,7 +295,7 @@ export async function launchElectrum() {
             }
         }
         subscribeToAddresses(addressesToWatch);
-    });
+    }, { immediate: true });
 
     const { addressSet } = btcAddressStore;
     const { isFetchingTxHistory } = useBtcNetworkStore();
@@ -328,7 +328,7 @@ export async function launchElectrum() {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!addresses) return;
         subscribeToAddresses(addresses);
-    });
+    }, { immediate: true });
 
     // Subscribe to all used external addresses that might get reused
     const maybeReusedExternalAddresses = computed(() => {
@@ -354,7 +354,7 @@ export async function launchElectrum() {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!addresses) return;
         subscribeToAddresses(addresses);
-    });
+    }, { immediate: true });
 
     // Subscribe to the next unused internal address per account
     // (This is not really necessary, since an internal address can only receive txs from an external
@@ -380,7 +380,7 @@ export async function launchElectrum() {
         if (isFetching) return; // Wait for fetching to finish before subscribing
         if (!address) return;
         subscribeToAddresses([address]);
-    });
+    }, { immediate: true });
 }
 
 // @ts-expect-error debugging

@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { useI18n } from '@/lib/useI18n';
-import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from 'vue';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 
@@ -80,7 +80,7 @@ export default defineComponent({
             if (!observer.value) return;
             if (searchBarInput.value) observer.value.observe(searchBarInput.value);
             if (containerDiv.value) observer.value.observe(containerDiv.value);
-        });
+        }, { immediate: true });
 
         onMounted(() => {
             if ('ResizeObserver' in window) {

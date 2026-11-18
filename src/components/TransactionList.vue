@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -123,7 +123,7 @@ export default defineComponent({
         ));
 
         // Count unclaimed cashlinks
-        watch(() => {
+        watchEffect(() => {
             const count = unclaimedCashlinkTxs.value.length;
             context.emit('unclaimed-cashlink-count', count);
         });
@@ -154,13 +154,13 @@ export default defineComponent({
             if (scroller.value) {
                 scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
             }
-        });
+        }, { immediate: true, flush: 'post' });
 
         watch(() => props.showUnclaimedCashlinkList, (show) => {
             if (show && scroller.value) {
                 scroller.value.scrollToPosition(0, true);
             }
-        });
+        }, { immediate: true, flush: 'post' });
 
         function onScroll() {
             context.emit('scroll');

@@ -1,4 +1,4 @@
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch, watchEffect } from 'vue';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
 import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { SwapEurData, useSwapsStore } from '../stores/Swaps';
@@ -37,7 +37,7 @@ const trigger = ref(0);
 
 let debouncing = false;
 
-watch(async () => {
+watchEffect(async () => {
     // We are using this statement to trigger a re-evaluation (re-run) of the watcher
     trigger.value; // eslint-disable-line no-unused-expressions
 
@@ -378,12 +378,12 @@ watch([activeCurrency, activeAddress], ([currency, address]) => {
     } else {
         nimAddress.value = undefined;
     }
-}, { lazy: true });
+});
 
 // Re-run limit calculation when exchange rates change
 watch(exchangeRates, () => {
     if (limits.value) recalculate();
-}, { lazy: true, deep: true });
+}, { deep: true });
 
 export function useSwapLimits(options: {
     nimAddress?: string,

@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';

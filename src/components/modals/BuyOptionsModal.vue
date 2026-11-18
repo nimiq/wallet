@@ -165,7 +165,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
@@ -197,7 +197,7 @@ export default defineComponent({
         const { stablecoin } = useAccountSettingsStore();
         const { config } = useConfig();
 
-        const country = ref<Country>(null);
+        const country = ref<Country | null>(null);
 
         const isCoinifyAvailable = computed(() => { // eslint-disable-line arrow-body-style
             return config.coinify.enabled

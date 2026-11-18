@@ -2,8 +2,7 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import { ENV_TEST } from '../lib/Constants';
 
 // Note: you'll usually want to use the reactive variant exported by useConfig instead of the plain Config, especially
-// in component templates (where the reactive config is also available as $config), computed props and watchers. Use of
-// the reactive config is not possible in Vue 2 before the composition-api plugin has been registered.
+// in component templates (where the reactive config is also available as $config), computed props and watchers.
 export default {
     hubEndpoint: 'https://hub.nimiq-testnet.com',
     environment: ENV_TEST,

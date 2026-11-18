@@ -247,7 +247,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -312,7 +312,7 @@ export default defineComponent({
         }
         const page = ref(Pages.RECIPIENT_INPUT);
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -408,7 +408,7 @@ export default defineComponent({
                     isResolvingUnstoppableDomain.value = false;
                 }
             }
-        });
+        }, { immediate: true });
 
         function onAddressEntered(address: string) {
             if (address === recipientInfo.value?.address) return; // ignore double invocations, e.g. on blur after input
@@ -459,7 +459,6 @@ export default defineComponent({
                     recipientFlaggedAddressWarningOpened.value = false;
                 }
             },
-            { lazy: true },
         );
 
         function resetRecipient() {
@@ -547,9 +546,9 @@ export default defineComponent({
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
             fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -627,13 +626,13 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<AddressInput>(null);
-        const labelInput$ = ref<LabelInput>(null);
-        const amountInput$ = ref<AmountInput>(null);
+        const addressInput$ = ref<AddressInput | null>(null);
+        const labelInput$ = ref<LabelInput | null>(null);
+        const amountInput$ = ref<AmountInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(element$: Ref<AddressInput | LabelInput | AmountInput | null>) {
+        async function focus(element$: Ref<{ focus(): void } | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -648,7 +647,7 @@ export default defineComponent({
             } else if (currentPage === Pages.AMOUNT_INPUT) {
                 focus(amountInput$);
             }
-        });
+        }, { immediate: true });
 
         watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
             if (warningOpened) {
@@ -664,7 +663,7 @@ export default defineComponent({
             } else {
                 focus(amountInput$);
             }
-        });
+        }, { immediate: true });
 
         /**
          * Status Screen

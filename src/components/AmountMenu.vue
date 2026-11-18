@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { FiatCurrency, CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from 'vue';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import VueMarkdown from '@adapttive/vue-markdown';
 import Modal from './Modal.vue';
@@ -37,7 +37,7 @@ type Release = {
 export default defineComponent({
     setup() {
         const { config } = useConfig();
-        const releases = ref<Release[]>(null);
+        const releases = ref<Release[] | null>(null);
 
         onMounted(() => {
             const network = config.environment === ENV_MAIN ? 'mainnet' : 'testnet';

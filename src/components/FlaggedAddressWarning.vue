@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { PageBody, AddressDisplay, Tooltip, AlertTriangleIcon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import { i18n } from '../i18n/i18n-setup';

@@ -305,7 +305,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onActivated } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
@@ -420,7 +420,7 @@ export default defineComponent({
             determineIfShowModalLegacyAccountNotice();
         }
 
-        watch(activeAccountInfo, determineModalToShow);
+        watch(activeAccountInfo, determineModalToShow, { immediate: true });
 
         const { consensus: btcConsensus } = useBtcNetworkStore();
         const { consensus: polygonConsensus } = usePolygonNetworkStore();

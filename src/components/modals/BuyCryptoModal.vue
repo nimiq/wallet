@@ -295,7 +295,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -407,14 +407,14 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const eurAmountInput$ = ref<AmountInput>(null);
+        const eurAmountInput$ = ref<AmountInput | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const page = ref(bank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
-        const estimateError = ref<string>(null);
-        const swapError = ref<string>(null);
+        const estimateError = ref<string | null>(null);
+        const swapError = ref<string | null>(null);
 
         const _fiatAmount = ref(0);
         const fiatAmount = computed({
@@ -877,7 +877,7 @@ export default defineComponent({
             if (_fiatAmount.value || _cryptoAmount.value) {
                 updateEstimate();
             }
-        }, { lazy: true });
+        });
 
         function onPaid() {
             if (!swap.value!.fundingInstructions || swap.value!.fundingInstructions.type !== 'sepa') {

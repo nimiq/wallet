@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from '@vue/composition-api';
+import { computed, ref, Ref } from 'vue';
 
 /**
  * The BeforeInstallPromptEvent is fired at the Window.onbeforeinstallprompt
@@ -33,8 +33,8 @@ export interface BeforeInstallPromptEvent extends Event {
     prompt(): Promise<void>;
 }
 
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, these variables can be directly instantiated as refs.
+// Note: lazily initialized, which was required with the Vue 2 composition-api plugin. With Vue 2.7's built-in
+//       Composition API, these variables could be directly instantiated as refs.
 let canInstallPwa: Ref<boolean> | null = null; // note: false can also mean that PWA is supported but already installed
 // Browser's install prompt; can be
 // - null until beforeinstallprompt event fires: if uninitialized, pwa not supported, or pwa already installed

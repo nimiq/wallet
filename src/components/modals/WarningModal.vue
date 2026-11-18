@@ -31,8 +31,7 @@
 </template>
 
 <script lang="ts">
-import { CreateElement } from 'vue';
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { CreateElement, computed, defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter, AlertTriangleIcon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
@@ -95,7 +94,7 @@ const WarningModal = defineComponent({
     },
     setup(props, { emit }) {
         const router = useRouter();
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         // On a colored background, the button is inverted, i.e. white with colored text, as in FlaggedAddressWarning.
         const buttonClasses = computed(() => (props.color ? [props.color, 'inverse'] : ['light-blue']));

@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { Identicon, LabelInput } from '@nimiq/vue-components';
 import AddressListItem from './AddressListItem.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
@@ -69,7 +69,7 @@ export default defineComponent({
 
         const { addressInfos, activeAddress } = useAddressStore();
 
-        const list$ = ref<HTMLDivElement>(null);
+        const list$ = ref<HTMLDivElement | null>(null);
 
         const ownAddressInfos = computed(() => addressInfos.value.filter(
             (addressInfo) => addressInfo.address !== activeAddress.value && addressInfo.type === AddressType.BASIC,

@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from '@/lib/useI18n';
 import { RouteName, STAKING_QUERY_SHOW_VALIDATORS, useRouter } from '@/router';
 import { useStakingStore, Validator } from '../../stores/Staking';
@@ -287,10 +287,10 @@ export default defineComponent({
         /* Watchers */
         watch(activeStake, (stake) => {
             if (!stake) page.value = totalAccountStake.value ? Page.ValidatorList : Page.Welcome;
-        }, { lazy: true });
+        });
 
-        watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));
-        watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
+        watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page), { immediate: true });
+        watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay), { immediate: true });
 
         // Watch for route changes to sync page with URL
         watch(() => props.month, (month) => {
@@ -305,7 +305,7 @@ export default defineComponent({
                 showRewardsBackArrow.value = false;
                 page.value = activeValidator.value ? Page.Info : Page.ValidatorList;
             }
-        });
+        }, { immediate: true });
 
         /* Component Lifecycle */
         onBeforeUnmount(() => {

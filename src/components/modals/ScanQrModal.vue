@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,

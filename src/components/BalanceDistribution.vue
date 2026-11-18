@@ -34,8 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import Vue, { defineComponent, computed, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
@@ -85,10 +84,10 @@ export default defineComponent({
         const RADIUS = (SVG_SIZE - STROKE_WIDTH) / 2;
         const ARC_GAP = STROKE_WIDTH;
 
-        const svg$ = ref<Vue>(null);
+        const svg$ = ref<Vue | null>(null);
         const fullCircleLength = ref(0);
-        const highlightedCurrency = ref<SupportedCurrency>(null);
-        const cachedCurrencyArcs = ref<Partial<Record<SupportedCurrency, CurrencyArc>>>(null);
+        const highlightedCurrency = ref<SupportedCurrency | null>(null);
+        const cachedCurrencyArcs = ref<Partial<Record<SupportedCurrency, CurrencyArc>> | null>(null);
 
         // Rotate by -90 degree to start at the top. Offset by linecap and half gap to have the gap centered at the top.
         // Note: positive values result in counterclockwise rotation, negative values in clockwise rotation.
@@ -101,7 +100,7 @@ export default defineComponent({
             await nextTick();
             fullCircleLength.value = svg$.value?.$el?.querySelector('circle')?.getTotalLength()
                 || 2 * Math.PI * RADIUS;
-        });
+        }, { immediate: true });
 
         const currencies = computed<Array<SupportedCurrency>>(() => [
             CryptoCurrency.NIM,
@@ -160,7 +159,7 @@ export default defineComponent({
             return result;
         });
 
-        watch(currencyArcs, () => cachedCurrencyArcs.value = currencyArcs.value);
+        watch(currencyArcs, () => cachedCurrencyArcs.value = currencyArcs.value, { immediate: true });
 
         const breakdown = computed(() => currencies.value
             .map((currency) => ({

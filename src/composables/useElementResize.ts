@@ -1,4 +1,4 @@
-import { onUnmounted, Ref, watch } from '@vue/composition-api';
+import { onUnmounted, Ref, watch } from 'vue';
 
 export function useElementResize(
     target: Ref<HTMLElement | null>,
@@ -31,7 +31,7 @@ export function useElementResize(
                 observer.observe(el);
             }
         },
-        { flush: 'post' },
+        { immediate: true, flush: 'post' },
     );
 
     onUnmounted(() => () => {

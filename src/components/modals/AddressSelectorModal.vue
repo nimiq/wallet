@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';

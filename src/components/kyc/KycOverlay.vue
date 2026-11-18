@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
 import { KycProvider } from '../../stores/Kyc';

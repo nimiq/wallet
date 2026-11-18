@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -119,7 +119,7 @@ export default defineComponent({
             CryptoCurrency.USDC,
         ];
 
-        const modal$ = ref<InstanceType<typeof Modal>>(null);
+        const modal$ = ref<InstanceType<typeof Modal> | null>(null);
 
         const highlightedCurrencyIndex = ref(0);
         const highlightedCurrency = computed(() => currencies[highlightedCurrencyIndex.value]);

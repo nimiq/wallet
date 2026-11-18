@@ -1,8 +1,7 @@
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
-import Vue from 'vue';
+import Vue, { provide, inject } from 'vue';
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 
-import { provide, inject } from '@vue/composition-api';
 import Config from 'config';
 
 import { i18n } from './i18n/i18n-setup';

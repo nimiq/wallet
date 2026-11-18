@@ -124,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { nextTick } from '@/lib/nextTick';
@@ -354,8 +354,8 @@ export default defineComponent({
         let currentCursorPosition = 0;
         let animationFrameHandle = 0;
 
-        const leftActiveBar$ = ref<HTMLDivElement[]>(null);
-        const rightActiveBar$ = ref<HTMLDivElement[]>(null);
+        const leftActiveBar$ = ref<HTMLDivElement[] | null>(null);
+        const rightActiveBar$ = ref<HTMLDivElement[] | null>(null);
         const leftActiveBar = computed(() =>
             leftDistributionData.value.find((def) => def.active)!,
         );
@@ -535,7 +535,7 @@ export default defineComponent({
         }
 
         /* Equilibrium point */
-        const separator$ = ref<HTMLDivElement>(null);
+        const separator$ = ref<HTMLDivElement | null>(null);
         const equiPointThreshold = 8;
         const equiPointPositionX = ref(0);
         const equiPointVisible = ref(false);
@@ -561,7 +561,7 @@ export default defineComponent({
             await nextTick();
             const { offsetLeft } = separator$.value!;
             equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
-        });
+        }, { immediate: true });
 
         function animatedReset() {
             animatingBars.value = true;

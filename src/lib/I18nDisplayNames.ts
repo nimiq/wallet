@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
 
 import type {
@@ -33,7 +33,7 @@ export default class I18nDisplayNames {
     constructor(type: 'region' | 'language' | 'currency') {
         this.type = type;
 
-        watch(language, this.updateIntlDisplayNames.bind(this));
+        watch(language, this.updateIntlDisplayNames.bind(this), { immediate: true });
         this.updateIntlDisplayNames();
     }
 

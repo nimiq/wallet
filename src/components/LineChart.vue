@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue';
 
 interface Point {
     x: number;
@@ -212,7 +212,7 @@ export default defineComponent({
             } else {
                 path$.value.style.strokeDasharray = '';
             }
-        });
+        }, { immediate: true, flush: 'post' });
 
         return {
             svg$,

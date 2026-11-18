@@ -121,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
 import {
     PageBody,
     PageHeader,
@@ -202,8 +202,8 @@ export default defineComponent({
         }
 
         // Copied addresses
-        const addressList$ = ref<HTMLDivElement>(null);
-        const copiedAddresses$ = ref<BtcCopiedAddress[]>(null);
+        const addressList$ = ref<HTMLDivElement | null>(null);
+        const copiedAddresses$ = ref<BtcCopiedAddress[] | null>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
@@ -282,11 +282,12 @@ export default defineComponent({
                     }
                 }
             },
+            { immediate: true },
         );
 
         // Auto-adapt font-size for the address to always fit the grey box
-        const availableAddressCopyable$ = ref<Copyable>(null);
-        const addressWidthFinder$ = ref<HTMLDivElement>(null);
+        const availableAddressCopyable$ = ref<Copyable | null>(null);
+        const addressWidthFinder$ = ref<HTMLDivElement | null>(null);
         const addressFontSizeScaleFactor = ref(1);
         let addressPadding: number | null = null;
 
@@ -314,7 +315,7 @@ export default defineComponent({
             return addressFontSizeScaleFactor.value;
         }
 
-        watch(currentlyShownAddress, updateAddressFontSizeScaleFactor);
+        watch(currentlyShownAddress, updateAddressFontSizeScaleFactor, { immediate: true, flush: 'post' });
         onMounted(() => {
             updateAddressFontSizeScaleFactor();
             window.addEventListener('resize', updateAddressFontSizeScaleFactor);

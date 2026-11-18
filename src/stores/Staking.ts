@@ -1,5 +1,4 @@
-import { nonReactive } from '@vue/composition-api';
-import Vue from 'vue';
+import Vue, { markRaw } from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
@@ -881,7 +880,7 @@ export const useStakingStore = createStore({
             // overhead, that Vue's reactivity system would add when setting the data, and on any data access. The
             // change of the stakingEventsByAddress property itself is still detected and correctly triggers the
             // recalculation of all computed composables.
-            this.state.stakingEventsByAddress = nonReactive({
+            this.state.stakingEventsByAddress = markRaw({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,
             });

@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, watchEffect } from 'vue';
 import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
 import { createRequestLink, CurrencyInfo, GeneralRequestLinkOptions, NimiqRequestLinkType } from '@nimiq/utils';
 import { useSettingsStore } from '@/stores/Settings';
@@ -131,9 +131,9 @@ export default defineComponent({
             fiatAmount.value = amount.value
                 * fiat$.exchangeRates[props.currency][currency]!
                 * fiatToCoinDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) return;
             amount.value = Math.floor(
                 fiatAmount.value

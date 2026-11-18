@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdtTransactionListItem from '@/components/UsdtTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
@@ -330,7 +330,7 @@ export default defineComponent({
             if (scroller.value) {
                 scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
             }
-        });
+        }, { immediate: true, flush: 'post' });
 
         function onScroll() {
             context.emit('scroll');

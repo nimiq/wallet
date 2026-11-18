@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import Modal from './Modal.vue';
@@ -40,7 +40,7 @@ export default defineComponent({
     name: 'usdt-added-modal',
     setup() {
         const router = useRouter();
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         useAccountSettingsStore().setKnowsAboutUsdt(true);
 

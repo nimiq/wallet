@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted, Ref, getCurrentInstance } from 'vue';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import { provideI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -63,9 +63,9 @@ import WalletStatusButton from './components/WalletStatusButton.vue';
 
 export default defineComponent({
     name: 'app',
-    setup(props, context) {
+    setup() {
         provideRouter(router);
-        provideI18n(context.root);
+        provideI18n(getCurrentInstance()!.proxy.$root);
 
         const { config } = useConfig();
         const isMainnet = config.environment === ENV_MAIN;
@@ -81,10 +81,10 @@ export default defineComponent({
         watch(amountsHidden, (hidden) => {
             if (hidden) document.body.classList.add('value-masked');
             else document.body.classList.remove('value-masked');
-        });
+        }, { immediate: true });
 
         // Swiping
-        const main$ = ref<HTMLDivElement>(null);
+        const main$ = ref<HTMLDivElement | null>(null);
         let mobileTapArea$: HTMLDivElement | null = null;
         const { width, isMobile } = useWindowSize();
 
@@ -163,7 +163,7 @@ export default defineComponent({
             } else if (!isMobileNow || newSwiping !== 1) {
                 detachSwipe();
             }
-        }, { lazy: true });
+        });
 
         onMounted(() => {
             if (isMobile.value && swipingEnabled.value === 1) attachSwipe();

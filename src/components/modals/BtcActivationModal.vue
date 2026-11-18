@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import Modal from './Modal.vue';
@@ -53,7 +53,7 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the

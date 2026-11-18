@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
@@ -72,7 +72,7 @@ export default defineComponent({
         const { activeAccountId, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
         const router = useRouter();
         const { $t } = useI18n();
 

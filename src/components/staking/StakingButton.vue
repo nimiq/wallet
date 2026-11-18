@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { Tooltip } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useAddressStore } from '../../stores/Address';
@@ -112,7 +112,7 @@ export default defineComponent({
             } else if (isMobile.value && $CTATooltip.value?.isShown) {
                 $CTATooltip.value.hide();
             }
-        });
+        }, { immediate: true, flush: 'post' });
 
         const isCTATooltipDisabled = computed(() =>
             !!(totalAccountStake.value || isMobile.value || !canStake.value),

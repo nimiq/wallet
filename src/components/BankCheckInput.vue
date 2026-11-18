@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
 import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT, loadBankList } from '@nimiq/oasis-bank-list';
 import BankIcon from './icons/BankIcon.vue';
@@ -148,18 +148,18 @@ const BankCheckInput = defineComponent({
             ),
         );
 
-        const bankSearchInput$ = ref<LabelInput>(null);
-        const bankAutocomplete$ = ref<HTMLUListElement>(null);
+        const bankSearchInput$ = ref<LabelInput | null>(null);
+        const bankAutocomplete$ = ref<HTMLUListElement | null>(null);
         const tooltips$ = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
-        const currentCountry = ref<CountryInfo>(null);
+        const currentCountry = ref<CountryInfo | null>(null);
         const countryDropdownOpened = ref(false);
         const isScrollable = ref(false);
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-        const bankToConfirm = ref<Bank & { tooltip: undefined }>(null);
+        const bankToConfirm = ref<Bank & { tooltip: undefined } | null>(null);
 
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
@@ -247,7 +247,7 @@ const BankCheckInput = defineComponent({
         watch(localValue, () => {
             selectedBankIndex.value = 0;
             bankToConfirm.value = null;
-        });
+        }, { immediate: true });
 
         /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
         watch(selectedBankIndex, () => {
@@ -257,7 +257,7 @@ const BankCheckInput = defineComponent({
                 if (index !== selectedBankIndex.value && bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
                 if (index === selectedBankIndex.value && bank.tooltip && !bank.tooltip.isShown) bank.tooltip.show();
             });
-        });
+        }, { immediate: true });
 
         /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
         watch(countryDropdownOpened, (newBool, oldBool) => {
@@ -266,9 +266,9 @@ const BankCheckInput = defineComponent({
                     bankSearchInput$.value.focus();
                 }
             }
-        });
+        }, { immediate: true });
 
-        watch([localValue, countryDropdownOpened], () => isScrollable.value = false);
+        watch([localValue, countryDropdownOpened], () => isScrollable.value = false, { immediate: true });
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {

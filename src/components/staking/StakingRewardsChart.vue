@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
@@ -104,7 +104,7 @@ export default defineComponent({
         const isLoading = ref(true);
         const loadError = ref(false);
         const LineChartComponent = ref(null);
-        const ChartJSInstance = ref<any>(null);
+        const ChartJSInstance = ref<any | null>(null);
 
         // Calculate date range based on selected time period
         const getDateRange = (

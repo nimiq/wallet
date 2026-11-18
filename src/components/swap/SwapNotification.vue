@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
@@ -199,7 +199,7 @@ export default defineComponent({
                 // A new swap started, start processing it
                 processSwap();
             }
-        }, { lazy: true });
+        });
 
         function updateSwap(update: Partial<ActiveSwap>) {
             setActiveSwap({
@@ -208,7 +208,7 @@ export default defineComponent({
             });
         }
 
-        const currentError = ref<string>(null);
+        const currentError = ref<string | null>(null);
 
         const processingError = computed(() => {
             if (currentError.value) return currentError.value;
@@ -259,7 +259,7 @@ export default defineComponent({
         watch(processingError, (error: string | undefined) => {
             if (!activeSwap.value) return;
             updateSwap({ error });
-        });
+        }, { immediate: true });
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {

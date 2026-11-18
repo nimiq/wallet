@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
 import { updateServiceWorker } from '../registerServiceWorker';
@@ -30,7 +30,7 @@ export default defineComponent({
         const { updateAvailable } = useSettingsStore();
         watch(updateAvailable, (isAvailable) => {
             if (isAvailable) isShown.value = true;
-        });
+        }, { immediate: true });
 
         const applyingWalletUpdate = ref(false);
 

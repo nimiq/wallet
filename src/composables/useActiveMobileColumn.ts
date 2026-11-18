@@ -1,4 +1,4 @@
-import { Ref, ref } from '@vue/composition-api';
+import { Ref, ref } from 'vue';
 import router, { Columns } from '../router';
 
 export enum ColumnType {
@@ -7,9 +7,8 @@ export enum ColumnType {
     SIDEBAR = 'column-sidebar',
 }
 
-// FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.
-//        When switching to Vue 3, the activeMobileColumn variable can be directly instantiated
-//        as ref.
+// Note: lazily initialized, which was required with the Vue 2 composition-api plugin. With Vue 2.7's built-in
+//       Composition API, the activeMobileColumn variable could be directly instantiated as ref.
 let activeMobileColumn: Ref<ColumnType> | null = null;
 
 // Adding this code at the end of the call stack so router is not undefined

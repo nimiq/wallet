@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, watch, onMounted, ref } from 'vue';
 import Modal from '../modals/Modal.vue';
 import { useStakingStore } from '../../stores/Staking';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
@@ -41,7 +41,7 @@ export default defineComponent({
             if (validator === null) {
                 redirectToRoot();
             }
-        });
+        }, { immediate: true });
 
         function onSwitchValidator() {
             router.push({ name: RouteName.Staking, query: STAKING_QUERY_SHOW_VALIDATORS })

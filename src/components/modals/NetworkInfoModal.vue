@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import Modal from './Modal.vue';
@@ -39,7 +39,7 @@ export default defineComponent({
          * Reminder: The `shape-outside` property needs the element to be floating and to have a defined height
          *  (and not `height: 100%`)
          */
-        const textDiv$ = ref<HTMLDivElement>(null);
+        const textDiv$ = ref<HTMLDivElement | null>(null);
         const height = ref<number>(0);
 
         async function updateHeight() {

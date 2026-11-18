@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal from './Modal.vue';
@@ -103,7 +103,7 @@ declare global {
 }
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const fiatCurrencyCode = useFiatStore().state.currency;
         const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
@@ -261,6 +261,7 @@ export default defineComponent({
             window.document.body.appendChild(style$);
         }
 
+        const simplex$ = ref<HTMLFormElement | null>(null);
         const showAddressCopyUi = ref(true);
 
         let observer: MutationObserver | undefined;
@@ -298,7 +299,7 @@ export default defineComponent({
                     }
                 }
             });
-            observer.observe((context.refs.simplex$ as HTMLFormElement), { childList: true, subtree: true });
+            observer.observe(simplex$.value!, { childList: true, subtree: true });
 
             window.simplex.on('crypto-changed', (crypto: string) => {
                 if (crypto === 'USDC-MATIC') crypto = 'USDC';
@@ -313,7 +314,7 @@ export default defineComponent({
             // If we find an iframe in the simplex-form that has no src attribute, it means the user continued
             // to the checkout flow. This state is not recoverable once the modal has been closed.
             // The only workaround is to reload the page and start with a fresh Javascript context.
-            const iframe$ = (context.refs.simplex$ as HTMLFormElement).querySelector('iframe');
+            const iframe$ = simplex$.value!.querySelector('iframe');
             mustReload.value = window.simplex && (!!iframe$ && !iframe$.src);
         });
 
@@ -330,6 +331,7 @@ export default defineComponent({
         }
 
         return {
+            simplex$,
             showAddressCopyUi,
             currentlyShownAddress,
             mustReload,

@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { ContactsIcon } from '@nimiq/vue-components';
 import IdenticonButton from './IdenticonButton.vue';
 

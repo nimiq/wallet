@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { CryptoCurrency } from '@nimiq/utils';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';
@@ -80,13 +80,13 @@ export default defineComponent({
             if (newLabel !== undefined) {
                 localLabel.value = newLabel;
             }
-        });
+        }, { immediate: true });
 
         watch(localLabel, (newLabel) => {
             if (props.editable && newLabel !== props.label) {
                 setContact(props.address, newLabel);
             }
-        });
+        }, { immediate: true });
 
         return {
             CryptoCurrency,

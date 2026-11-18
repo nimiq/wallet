@@ -29,6 +29,9 @@
       "viem": [
         "types/shims/viem.d.ts"
       ],
+      "@vue/composition-api": [
+        "node_modules/vue/types/index.d.ts"
+      ],
       "config": [
         "src/config/config.local.ts"
       ]

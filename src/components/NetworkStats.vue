@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import ConsensusIcon from './ConsensusIcon.vue';
 
 export default defineComponent({

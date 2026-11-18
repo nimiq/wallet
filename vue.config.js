@@ -105,7 +105,10 @@ module.exports = {
         // Resolve config for yarn build
         resolve: {
             alias: {
-                config: path.join(__dirname, `src/config/config.${buildName}.ts`)
+                config: path.join(__dirname, `src/config/config.${buildName}.ts`),
+                // pinia 0.0.5 imports ref, computed and watch from @vue/composition-api, which are built into Vue 2.7.
+                // Temporary until pinia is upgraded.
+                '@vue/composition-api$': 'vue/dist/vue.runtime.esm.js',
             },
             // In Webpack 5, NodeJS polyfills have to be explicitly configured. See here for a list of polyfills webpack
             // had used before webpack 5: https://webpack.js.org/configuration/resolve/#resolvefallback

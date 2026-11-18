@@ -17,8 +17,7 @@
     "release": "./scripts/deploy.sh",
     "test": "echo 'No tests'",
     "utils:getBankList": "oasis-bank-list-update",
-    "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js",
-    "postinstall": "node scripts/postinstall.js"
+    "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js"
   },
   "main": "src/main.ts",
   "dependencies": {
@@ -41,7 +40,6 @@
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/albatross",
     "@sentry/vue": "^8.39.0",
     "@unstoppabledomains/resolution": "^9.3.3",
-    "@vue/composition-api": "^0.4.0",
     "bitcoinjs-lib": "^5.2.0",
     "chart.js": "^3.8.0",
     "ethers": "^5.7.2",
@@ -54,7 +52,7 @@
     "sturdy-websocket": "^0.2.1",
     "v-click-outside": "^3.2.0",
     "viem": "^2.58.0",
-    "vue": "^2.6.11",
+    "vue": "^2.7.16",
     "vue-chartjs": "^4.0.0",
     "vue-i18n": "^8.28.2",
     "vue-matomo": "^4.2.0",
@@ -83,14 +81,12 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
-    "patch-package": "^8.0.0",
     "path-to-regexp": "^6.3.0",
-    "postinstall-postinstall": "^2.1.0",
     "readable-stream": "^4.8.0",
     "sass": "^1.46.0",
     "sass-loader": "^8.0.2",
     "typescript": "~4.5.5",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.7.16"
   },
   "license": "Apache-2.0"
 }

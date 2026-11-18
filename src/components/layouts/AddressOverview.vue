@@ -314,7 +314,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import {
     Identicon,
     GearIcon,
@@ -381,7 +381,7 @@ export default defineComponent({
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
 
-        const address$ = ref<HTMLDivElement>(null);
+        const address$ = ref<HTMLDivElement | null>(null);
         const addressMasked = ref<boolean>(false);
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
@@ -418,13 +418,13 @@ export default defineComponent({
             if (address !== oldAddress && promoBoxVisible) {
                 setPromoBoxVisible(false);
             }
-        });
+        }, { immediate: true });
 
         watch(activeCurrency, (currency, oldCurrency) => {
             if (currency !== oldCurrency && promoBoxVisible) {
                 setPromoBoxVisible(false);
             }
-        });
+        }, { immediate: true });
 
         function rescan() {
             const { addressSet } = useBtcAddressStore();

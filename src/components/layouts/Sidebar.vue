@@ -186,7 +186,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter, getContextRouteName } from '@/router';
@@ -218,7 +218,7 @@ enum SellProvider {
 
 export default defineComponent({
     props: {},
-    setup(props, context) {
+    setup() {
         const router = useRouter();
         const { config } = useConfig();
         const { isMobile, height: windowHeight } = useWindowSize();
@@ -317,8 +317,9 @@ export default defineComponent({
 
         // The Sidebar's buttons have mousedown.prevent to circumvent focus issues on iOS. As this also causes focused
         // tooltips to not lose focus and close if such a button is clicked, we close them manually.
+        const { proxy: vm } = getCurrentInstance()!;
         function hideTooltips() {
-            for (const refComponent of Object.values(context.refs)) {
+            for (const refComponent of Object.values(vm.$refs)) {
                 if (!(refComponent instanceof Tooltip)) continue;
                 refComponent.hide();
             }

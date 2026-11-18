@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueCompositionApi, { watch } from '@vue/composition-api';
+import Vue, { watch, watchEffect } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -44,7 +43,6 @@ setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}
 
 Vue.config.productionTip = false;
 
-Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 Vue.use(VuePortal, { name: 'Portal' });
 
@@ -53,8 +51,8 @@ async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
-    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
+    // Must run after storage was initialized. Could potentially run in background and in parallel to syncFromHub, but
+    // RedirectRpcClient.init does not actually run async code anyways.
     await initHubApi();
     syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
@@ -91,7 +89,8 @@ async function start() {
             queueExchangeRateUpdate();
         }, remainingTime);
     }
-    watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
+    // (Re)schedule exchange rate updates at the desired interval.
+    watch(isUserInactive, queueExchangeRateUpdate, { immediate: true });
 
     // Fetch language file
     const { language } = useSettingsStore();
@@ -103,22 +102,22 @@ async function start() {
         document.title = 'Nimiq Testnet Wallet';
     }
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.oasis.apiEndpoint) return;
         initOasisApi(config.oasis.apiEndpoint);
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.ten31Pass.enabled) return;
         initKycConnection();
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.matomo.enabled) return;
         initMatomo(config.matomo.host, config.matomo.siteId);
     });
@@ -136,12 +135,12 @@ async function start() {
 
     const { state: { activeCurrency } } = useAccountStore();
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.enableBitcoin) return;
         launchElectrum();
     });
 
-    watch(() => {
+    watchEffect(() => {
         if (!config.polygon.enabled) return;
         launchPolygon();
         // Untracked, so that changes to the pending payments do not re-run this effect
@@ -159,12 +158,12 @@ async function start() {
     // Recalculate staking fiat values when currency changes
     watch(fiatStoreInstance.currency, (newCurrency) => {
         stakingStore.calculateMonthlyFiatValues(newCurrency);
-    });
+    }, { immediate: true });
 
     // Recalculate staking fiat values when active address changes (loads different rewards)
     watch(addressStore.activeAddress, () => {
         stakingStore.calculateMonthlyFiatValues();
-    });
+    }, { immediate: true });
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
@@ -179,11 +178,5 @@ start();
 declare module 'vue/types/vue' {
     interface Vue {
         $config: ReturnType<typeof useConfig>['config'];
-    }
-}
-
-declare module '@vue/composition-api/dist/component/component' {
-    interface SetupContext {
-        readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }

@@ -112,8 +112,7 @@ function getBehavior({
     return defaultBehavior;
 }
 
-// We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
-// plugin has been registered in Vue 2.
+// Using the plain, non-reactive Config here, as the Hub endpoint is only read once on initialization.
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {

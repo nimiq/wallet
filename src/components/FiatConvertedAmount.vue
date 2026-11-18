@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';

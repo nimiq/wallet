@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, computed, ref, onBeforeUnmount } from 'vue';
 import { CircleSpinner, PageHeader, PageBody } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';

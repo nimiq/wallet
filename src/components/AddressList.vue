@@ -42,8 +42,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
+import Vue, {
+    defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted, getCurrentInstance,
+} from 'vue';
 
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -84,6 +85,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { proxy: vm } = getCurrentInstance()!;
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { availableExternalAddresses, accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
@@ -126,8 +128,8 @@ export default defineComponent({
         async function adjustBackgroundOffsetAndScale(address: string) {
             let offset = 0;
             let scalingRatio = 1;
-            // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
-            const refs = (context.refs[`address-button-${address}`] as Vue[] | undefined);
+            // TODO: In Vue 3, we will be able to use function refs.
+            const refs = (vm.$refs[`address-button-${address}`] as Vue[] | undefined);
             if (refs && refs.length) {
                 const el = refs[0].$el as HTMLElement;
 
@@ -139,7 +141,11 @@ export default defineComponent({
         }
 
         if (!props.embedded) {
-            watch(activeAddress, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+            watch(
+                activeAddress,
+                () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
+                { immediate: true, flush: 'post' },
+            );
             /* Update the .active-box after the decimals setting is changed */
             router.afterEach((to, from) => {
                 if (from.name === 'settings' && from.query.sidebar && to.name === 'root' && activeAddress.value) {
@@ -164,7 +170,7 @@ export default defineComponent({
 
             watch(addressInfos, () => {
                 scrollbarVisible.value = !!root$.value && root$.value.offsetWidth > root$.value.scrollWidth;
-            });
+            }, { immediate: true, flush: 'post' });
 
             if (!props.embedded) {
                 resizeObserver.observe(root$.value!);
@@ -172,7 +178,11 @@ export default defineComponent({
         });
 
         onActivated(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
-        watch(amountsHidden, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+        watch(
+            amountsHidden,
+            () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
+            { immediate: true, flush: 'post' },
+        );
         onUnmounted(() => {
             resizeObserver.disconnect();
         });
@@ -237,7 +247,7 @@ export default defineComponent({
             if (Boolean(newStake) !== Boolean(oldStake) && activeAddress.value) {
                 adjustBackgroundOffsetAndScale(activeAddress.value);
             }
-        }, { lazy: true });
+        }, { flush: 'post' });
 
         return {
             root$,

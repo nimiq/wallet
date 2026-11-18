@@ -1,4 +1,4 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { AddressBook, isHistorySupportedFiatCurrency, ValidationUtils } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';

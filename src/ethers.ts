@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -93,7 +93,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         if (!unwatchGetPolygonClientConfig) return;
         unwatchGetPolygonClientConfig();
         unwatchGetPolygonClientConfig = null;
-    }, { lazy: true });
+    });
 
     let provider: providers.BaseProvider;
     const ethers = await loadEthersLibrary();
@@ -507,7 +507,7 @@ export async function launchPolygon() {
 
         console.debug('Subscribing to Polygon addresses', newAddresses);
         subscribe(newAddresses);
-    });
+    }, { immediate: true });
 
     // Auto-detect stablecoin from balances and transactions
     const { stablecoin, setStablecoin } = useAccountSettingsStore();
@@ -533,7 +533,7 @@ export async function launchPolygon() {
                 setStablecoin(CryptoCurrency.USDT);
             }
         }
-    });
+    }, { immediate: true });
 
     watch(() => [
         usdcTransactionsStore.state.transactions,
@@ -560,7 +560,7 @@ export async function launchPolygon() {
             && (!latestUsdcTx || (latestUsdtTx.timestamp || Infinity) > (latestUsdcTx.timestamp || Infinity))) {
             setStablecoin(CryptoCurrency.USDT);
         }
-    });
+    }, { immediate: true });
 
     // Fetch transactions for active address
     const usdcBridgedTxFetchTrigger = ref(0);
@@ -862,7 +862,7 @@ export async function launchPolygon() {
                 fetchedUsdcBridgedAddresses.delete(address);
             })
             .then(() => network$.fetchingUsdcTxHistory--);
-    });
+    }, { immediate: true });
 
     const usdcTxFetchTrigger = ref(0);
     watch([
@@ -1119,7 +1119,7 @@ export async function launchPolygon() {
                 fetchedUsdcAddresses.delete(address);
             })
             .then(() => network$.fetchingUsdcTxHistory--);
-    });
+    }, { immediate: true });
 
     // Fetch transactions for active address
     const usdtBridgedTxFetchTrigger = ref(0);
@@ -1383,7 +1383,7 @@ export async function launchPolygon() {
                 fetchedUsdtBridgedAddresses.delete(address);
             })
             .then(() => network$.fetchingUsdtTxHistory--);
-    });
+    }, { immediate: true });
 }
 
 function logAndBlockToPlain(

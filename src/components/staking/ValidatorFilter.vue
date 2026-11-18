@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from 'vue';
 import { SliderToggle } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';
@@ -51,11 +51,11 @@ export default defineComponent({
             if (state.value === FilterState.SEARCH) {
                 nextTick(() => $search.value?.focus());
             }
-        });
+        }, { immediate: true });
 
         watch(searchValue, () => {
             context.emit('search', searchValue.value);
-        });
+        }, { immediate: true });
 
         return {
             state,

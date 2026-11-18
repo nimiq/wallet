@@ -151,7 +151,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -303,7 +303,6 @@ export default defineComponent({
         watch(
             () => recipientInfo.value?.flaggedInfo,
             (flaggedInfo) => recipientFlaggedAddressWarningOpened.value = !!flaggedInfo,
-            { lazy: true },
         );
 
         const amount = ref(0);
@@ -383,9 +382,9 @@ export default defineComponent({
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
             fiatAmount.value = amount.value * fiat$.exchangeRates.btc[currency]! * fiatToBtcDecimalRatio.value;
-        });
+        }, { immediate: true });
 
-        watch(() => {
+        watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.BTC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -452,8 +451,13 @@ export default defineComponent({
             addressInputValue.value = parsedRequestLink.recipient;
             // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientInfo.
             await new Promise<void>((resolve) => {
-                const unwatch = watch(() => {
-                    if (recipientInfo.value?.address !== parsedRequestLink.recipient) return;
+                const isRecipientSet = () => recipientInfo.value?.address === parsedRequestLink.recipient;
+                if (isRecipientSet()) {
+                    resolve();
+                    return;
+                }
+                const unwatch = watch(isRecipientSet, (isSet) => {
+                    if (!isSet) return;
                     resolve();
                     unwatch();
                 });
@@ -471,12 +475,12 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<BtcAddressInput>(null);
-        const labelInput$ = ref<BtcLabelInput>(null);
+        const addressInput$ = ref<BtcAddressInput | null>(null);
+        const labelInput$ = ref<BtcLabelInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(element$: Ref<BtcAddressInput | BtcLabelInput | null>) {
+        async function focus(element$: Ref<{ focus(): void } | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -490,8 +494,12 @@ export default defineComponent({
                 // If an initial address was set via request link, focus the label input instead of the address input,
                 // once the request link populated and the label input showed up.
                 await new Promise<void>((resolve) => {
-                    const unwatch = watch(() => {
-                        if (!labelInput$.value) return;
+                    if (labelInput$.value) {
+                        resolve();
+                        return;
+                    }
+                    const unwatch = watch(labelInput$, (labelInput) => {
+                        if (!labelInput) return;
                         resolve();
                         unwatch();
                     });
@@ -509,7 +517,7 @@ export default defineComponent({
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         async function sign() {
             if (!canSend.value) return;

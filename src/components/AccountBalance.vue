@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -92,8 +92,8 @@ export default defineComponent({
             return amount;
         });
 
-        const fiatAmountContainer$ = ref<HTMLDivElement>(null);
-        const fiatAmount$ = ref<FiatAmount>(null);
+        const fiatAmountContainer$ = ref<HTMLDivElement | null>(null);
+        const fiatAmount$ = ref<FiatAmount | null>(null);
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
         const { isFullDesktop } = useWindowSize();
@@ -141,11 +141,11 @@ export default defineComponent({
         // The window might have been resized while the account overview was not displayed.
         onActivated(updateFontSize);
 
-        watch([fiatAmount, fiatCurrency], updateFontSize, { lazy: true });
+        watch([fiatAmount, fiatCurrency], updateFontSize);
 
         watch(amountsHidden, (hidden) => {
             if (!hidden) updateFontSize();
-        }, { lazy: true });
+        });
 
         return {
             fiatAmount,

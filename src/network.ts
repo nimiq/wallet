@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
@@ -220,7 +220,7 @@ export async function launchNetwork() {
                 }),
             { maxRetries: 3 },
         ).catch(reportFor('fetch(aggregated restaking events)'));
-    });
+    }, { immediate: true });
 
     function forgetBalances(addresses: string[]) {
         for (const address of addresses) {
@@ -283,7 +283,7 @@ export async function launchNetwork() {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();
                 }
-            }, { lazy: true });
+            });
             networkWasReconnectedSinceLastConsensus = false;
         } else {
             network$.consensus = consensus;
@@ -455,7 +455,7 @@ export async function launchNetwork() {
 
         console.debug('Subscribing addresses', newAddresses);
         subscribe(newAddresses, /* isProxy */ false);
-    });
+    }, { immediate: true });
 
     watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
         const address = activeAddress as string | null;
@@ -531,7 +531,7 @@ export async function launchNetwork() {
             }
         }
         network$.fetchingTxHistory--;
-    });
+    }, { immediate: true });
 
     // Fetch transactions for proxies
     const proxyStore = useProxyStore();
@@ -610,7 +610,7 @@ export async function launchNetwork() {
                 })
                 .then(() => network$.fetchingTxHistory--);
         }
-    });
+    }, { immediate: true });
 }
 
 export async function sendTransaction(tx: SignedTransaction | string) {

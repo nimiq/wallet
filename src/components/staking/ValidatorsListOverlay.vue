@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '@/stores/Fiat';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
@@ -250,7 +250,7 @@ export default defineComponent({
             () => props.month,
             () => props.validators,
             () => monthEvents.value.length,
-        ], calculateValidatorRewards, { lazy: false });
+        ], calculateValidatorRewards, { immediate: true });
 
         // Reload fiat values when currency changes (without recalculating the entire list)
         watch(() => fiatCurrency.value, () => {
@@ -261,7 +261,7 @@ export default defineComponent({
             const rewardsByValidator = buildRewardsByValidatorMap(events);
 
             loadFiatValues(events, rewardsByValidator);
-        });
+        }, { immediate: true });
 
         return {
             validatorRewards,

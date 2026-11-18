@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody, ArrowLeftIcon, Tooltip } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';

@@ -293,8 +293,8 @@ export function getContextRouteName(baseRouteName: RouteName, route: Route = rou
 }
 
 const routes: RouteConfig[] = [{
+    // Not named, as the name of its default child route below is the one to navigate to.
     path: '/',
-    name: RouteName.Root,
     components: {
         groundfloor: Groundfloor,
     },

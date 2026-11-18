@@ -240,7 +240,7 @@ export default defineComponent({
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
             // current route, but with the modal still open on top.
             const modalRoute = router.resolve({ name: targetRouteName }).route;
-            // Search for the closest parent, as the outermost route is named root also for the Settings page.
+            // Search for the closest named parent.
             const expectedParentRoute = [...modalRoute.matched].reverse()
                 .find(({ name }) => !!name && name !== targetRouteName);
             if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {

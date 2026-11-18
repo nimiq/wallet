@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref } from 'vue';
+import { ref, onMounted, onUnmounted, getCurrentInstance, Ref } from 'vue';
 
 const INACTIVITY_TIME_TRESHOLD = 5 * 60 * 1000;
 const ACTIVITY_EVENTS_THROTTLE_TIME = 10 * 1000;
@@ -66,12 +66,12 @@ export function useInactivityDetection() {
     }
 
     let subscribedManually = false;
-    try {
+    if (getCurrentInstance()) {
         // FIXME: When switching to Vue 3, consider using onScopeDispose instead or in addition
         onMounted(subscribe);
         onUnmounted(unsubscribe);
-    } catch (e) {
-        // We're outside a component's setup method.
+    } else {
+        // We're outside a component's setup method, where lifecycle hooks can't be registered.
         subscribe();
         subscribedManually = true;
     }

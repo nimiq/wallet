@@ -298,7 +298,7 @@ export abstract class Format {
                     ...(fiatAsset ? { fiatValue: (tx as NimTx).fiatValue?.[fiatAsset] || undefined } : {}),
                 };
             case 'BTC':
-                if (isIncoming) { // eslint-disable-line no-lonely-if
+                if (isIncoming) {
                     // Sum outputs that are ours
                     const [value, fiatValue] = (tx as BtcTx).outputs.reduce(([satsSum, fiatSum], output) => {
                         if (output.address && this.btcAddresses.external.includes(output.address)) {

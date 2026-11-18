@@ -282,7 +282,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
         const secret = transaction.event.secret.substring(2);
         const hashRoot = bytesToHex(
             new Uint8Array(
-                await crypto.subtle.digest( // eslint-disable-line no-await-in-loop
+                await crypto.subtle.digest(
                     'SHA-256',
                     hexToBytes(secret) as Uint8Array<ArrayBuffer>, // a new array, not backed by a SharedArrayBuffer
                 ),

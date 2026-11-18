@@ -27,7 +27,6 @@ let clientStartTimestamp: number | undefined;
 export async function getNetworkClient() {
     const { config } = useConfig();
 
-    // eslint-disable-next-line no-async-promise-executor
     clientPromise = clientPromise || (async () => {
         // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
         // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
@@ -727,7 +726,7 @@ async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Part
     const { baseDelay, maxRetries } = { ...defaults, ...options };
 
     let i = 0;
-    while (true) { // eslint-disable-line no-constant-condition
+    while (true) {
         try {
             // Run the function (async or not) and return the result if sucessful
             return await func(); // eslint-disable-line no-await-in-loop

@@ -272,7 +272,7 @@ const BankCheckInput = defineComponent({
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if ((!matchingBanks || !bankAutocomplete$.value) && (!countryDropdownOpened.value)) return;
+            if ((!matchingBanks.value || !bankAutocomplete$.value) && (!countryDropdownOpened.value)) return;
             const oldBankIndex = selectedBankIndex.value;
 
             if (countryDropdownOpened.value) { // country list

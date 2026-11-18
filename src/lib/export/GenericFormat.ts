@@ -8,8 +8,6 @@ import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
 import { Format } from './Format';
 import { ExportFormat } from './TransactionExport';
 
-/* eslint-disable class-methods-use-this */
-
 export class GenericFormat extends Format {
     private static HEADERS = [
         // 'transaction_hash',

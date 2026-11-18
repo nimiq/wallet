@@ -85,7 +85,7 @@ declare global {
             on(event: string, handler: (...args: any[]) => any): void,
         };
         Simplex: {
-            init: (options: { public_key: string}) => void, // eslint-disable-line camelcase
+            init: (options: { public_key: string}) => void,
             subscribe: (
                 event: 'onlineFlowFinished',
                 handler: (event: {

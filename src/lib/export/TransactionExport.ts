@@ -18,7 +18,7 @@ export enum ExportFormat {
 const RECEIPTS_TIMEOUT = 15000;
 const NETWORK_TIMEOUT = 30000;
 const TRANSACTION_CONCURRENCY = 5;
-type Receipt = { block_height: number, hash: string }; // eslint-disable-line camelcase
+type Receipt = { block_height: number, hash: string };
 
 async function withTimeout<T>(promise: Promise<T>, milliseconds: number, onTimeout?: () => void): Promise<T> {
     let timer: number | undefined;

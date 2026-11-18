@@ -3,7 +3,6 @@ import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
 import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
@@ -292,7 +291,7 @@ export async function safeQueryFilter(
     while (currentEnd <= toBlock) {
         // Attempt to fetch logs in the current range.
         // Reduce the window size until it no longer exceeds alchemy's limits.
-        while (true) { // eslint-disable-line no-constant-condition
+        while (true) {
             try {
                 // eslint-disable-next-line no-await-in-loop
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);

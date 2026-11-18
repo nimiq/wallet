@@ -656,6 +656,7 @@ export default defineComponent({
                         if (isSwapModalRoute(router.currentRoute)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
+                    break;
                 }
                 /* eslint-enable no-fallthrough */
                 default:

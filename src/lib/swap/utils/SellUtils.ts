@@ -115,7 +115,7 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
         } else {
             throw new Error(i18n.t('The fees determine the minimum amount.') as string);
         }
-    } // eslint-disable-line brace-style
+    }
 
     const { estimate } = useSwapEstimate();
     estimate.value = newEstimate;

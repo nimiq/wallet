@@ -38,7 +38,6 @@ async function decodeBtcHtlcScript(script: string) {
 
     let branchesVerifiedIndividually = false;
 
-    /* eslint-disable no-plusplus */
     let i = 0;
 
     // Start redeem branch
@@ -81,7 +80,6 @@ async function decodeBtcHtlcScript(script: string) {
     }
 
     if (asm.length !== ++i) throw error;
-    /* eslint-enable no-plusplus */
 
     const addressPrefix = config.environment === ENV_MAIN ? 'bc' : 'tb';
     const refundAddress = addressToBech32(Buffer.from(refundAddressBytes, 'hex'), 0, addressPrefix);

@@ -35,7 +35,6 @@ const OPERATION_PATHS: Record<WatchtowerOperationKind, string> = {
     switch: '/switch-validator',
 };
 
-/* eslint-disable camelcase */
 // Serde's externally tagged enum: a unit variant is its bare name (`"Valid"`), any other variant a
 // one-key object (`{ "Pending": 5 }`, `{ "Sent": [5, 2] }`).
 type RawStatus = string | Record<string, unknown>;
@@ -47,7 +46,6 @@ type RawJob = {
     unstake_transaction?: RawTransaction,
     update_transaction?: RawTransaction,
 };
-/* eslint-enable camelcase */
 
 function toBasicAuth(username: string, password: string): string {
     // btoa expects binary string; credentials are ASCII
@@ -223,7 +221,6 @@ export async function fetchWatchtowerJobsForStaker(stakerAddress: string): Promi
     return { jobs, complete: lists.complete };
 }
 
-/* eslint-disable camelcase */
 export async function startUnstaking(input: StartUnstakeInput): Promise<string | undefined | null> {
     return postToWatchtower(OPERATION_PATHS.unstake, {
         staker_address: input.stakerAddress,
@@ -244,4 +241,3 @@ export async function startSwitchValidator(input: StartSwitchValidatorInput): Pr
         },
     });
 }
-/* eslint-enable camelcase */

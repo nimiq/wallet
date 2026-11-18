@@ -823,7 +823,7 @@ export default defineComponent({
         }): {
             from: SwapAsset | RequestAsset<SwapAsset>,
             to: RequestAsset<SwapAsset> | SwapAsset,
-        } { // eslint-disable-line indent
+        } {
             let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
             let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
 

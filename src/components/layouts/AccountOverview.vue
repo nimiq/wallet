@@ -455,7 +455,7 @@ export default defineComponent({
 
         const isNimiqAddressListScrolling = computed(() => {
             // trick to force Vue to update the scrolling on component resize
-            forceUpdateRef.value; // eslint-disable-line no-unused-expressions
+            forceUpdateRef.value; // eslint-disable-line @typescript-eslint/no-unused-expressions
 
             return nimiqAccount$.value && nimiqAccount$.value.scrollHeight > nimiqAccount$.value.clientHeight;
         });

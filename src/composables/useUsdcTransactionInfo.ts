@@ -34,7 +34,7 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
         return transaction.value.value;
     });
 
-    const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
+    const isIncoming = computed(() => {
         if (transaction.value.event?.name === 'Swap') {
             const { amountOut } = transaction.value.event;
             return transaction.value.value < amountOut;
@@ -129,7 +129,7 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     // Data
-    const data = computed(() => { // eslint-disable-line arrow-body-style
+    const data = computed(() => {
         if (swapData.value && !isCancelledSwap.value) {
             const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
                 fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : 'USDC',

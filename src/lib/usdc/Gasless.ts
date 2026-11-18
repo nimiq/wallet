@@ -176,7 +176,6 @@ let viemClient: Client | null = null;
 /** A viem client for the SDK's outcome check, on top of the Wallet's ethers provider. */
 async function getViemClient(): Promise<Client> {
     if (viemClient) return viemClient;
-    // eslint-disable-next-line import/no-unresolved, import/extensions
     const { createClient, custom } = await import(/* webpackChunkName: "gasless-sdk" */ 'viem');
     viemClient = createClient({
         transport: custom({

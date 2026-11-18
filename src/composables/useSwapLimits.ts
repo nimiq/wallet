@@ -40,7 +40,7 @@ let debouncing = false;
 
 watchEffect(async () => {
     // We are using this statement to trigger a re-evaluation (re-run) of the watcher
-    trigger.value; // eslint-disable-line no-unused-expressions
+    trigger.value; // eslint-disable-line @typescript-eslint/no-unused-expressions
 
     const uid = kycUser.value
         // If user is KYC-connected, there is no need to query limits by UID,

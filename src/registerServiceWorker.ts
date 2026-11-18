@@ -58,7 +58,7 @@ export async function updateServiceWorker() {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (isReloading) return;
         isReloading = true;
-        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
+        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!');
         // Must wait to reload to give cache enough time to be updated
         setTimeout(() => window.location.href = window.location.origin, 1500);
     });
@@ -74,7 +74,7 @@ if (navigator.serviceWorker) {
         if (updateTriggeredHere) return;
         if (isReloading) return;
         isReloading = true;
-        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
+        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!');
         // Must wait to reload to give cache enough time to be updated
         setTimeout(() => window.location.href = window.location.origin, 1500);
     });

@@ -7,8 +7,6 @@ import { Format } from './Format';
 import { useAddressStore } from '../../stores/Address';
 import { ExportFormat } from './TransactionExport';
 
-/* eslint-disable class-methods-use-this */
-
 export class BlockpitAppFormat extends Format {
     private static HEADERS = [
         'id',

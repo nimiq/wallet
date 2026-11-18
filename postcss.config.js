@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies, no-unused-vars */
+/* eslint-disable import/no-extraneous-dependencies */
 const autoprefixer = require('autoprefixer');
 
 const postcssPurgecss = require('@fullhuman/postcss-purgecss');

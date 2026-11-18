@@ -37,11 +37,9 @@ export type StakingState = {
 }
 
 export type AggregatedRestakingEvent = {
-    /* eslint-disable camelcase */
     sender_address: string,
     time_window: string, // ISO 8601 encoded
     aggregated_value: number,
-    /* eslint-enable camelcase */
 }
 
 export interface MonthlyReward {

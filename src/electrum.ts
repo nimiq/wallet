@@ -279,7 +279,7 @@ export async function launchElectrum() {
                 [],
                 0,
                 allowedGap,
-                console.error, // eslint-disable-line no-console
+                console.error,
                 false,
                 true,
             );

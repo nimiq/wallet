@@ -4,6 +4,7 @@ const child_process = require('child_process');
 const createHash = require('crypto').createHash;
 
 const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const PoLoaderOptimizer = require('webpack-i18n-tools/optimizer/webpack');
 
 // Fix build for Node version with OpenSSL 3
@@ -125,6 +126,19 @@ module.exports = {
         },
     },
     chainWebpack(config) {
+        // Lint during builds, as @vue/cli-plugin-eslint's default lintOnSave did, which does not support ESLint 9+ with
+        // its flat configs. Errors fail the build, warnings are only reported.
+        config
+            .plugin('eslint')
+            .use(ESLintPlugin, [{
+                extensions: ['js', 'jsx', 'vue', 'ts', 'tsx'],
+                cache: true,
+                cacheLocation: path.join(__dirname, 'node_modules/.cache/eslint/'),
+                failOnError: true,
+                failOnWarning: false,
+                formatter: 'stylish',
+            }]);
+
         config
             .plugin('copy')
             .tap(([options]) => {

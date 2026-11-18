@@ -329,7 +329,7 @@ export default defineComponent({
 
         const { activeCurrency } = storeToRefs(useAccountStore());
 
-        const canSellCryptoWithMoonpay = computed(() => { // eslint-disable-line arrow-body-style
+        const canSellCryptoWithMoonpay = computed(() => {
             if (!config.moonpay.enabled) return false;
             return activeCurrency.value !== CryptoCurrency.NIM;
         });

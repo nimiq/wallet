@@ -74,7 +74,7 @@ const BtcLabelInput = defineComponent({
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if (!matchingLabels || !btcLabelAutocomplete$.value) return;
+            if (!matchingLabels.value || !btcLabelAutocomplete$.value) return;
             const oldIndex = selectedLabelIndex.value;
 
             switch (event.keyCode) {

@@ -2,6 +2,7 @@
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import idbReady from 'safari-14-idb-fix';
+import { set } from '@vue/composition-api';
 import type { Store, StateTree } from 'pinia';
 import { useTransactionsStore } from './stores/Transactions';
 import { useAddressStore } from './stores/Address';
@@ -359,13 +360,32 @@ async function initStoreStore<State extends StateTree, StoredState>(
 ): Promise<StoredState | undefined> {
     const storedState = await Storage.get<StoredState>(storageKey);
     if (storedState) {
-        store.patch(readTransform(storedState));
+        // Not store.patch, which adds keys that are new to the state, like the entries of stored dictionaries such as
+        // addressInfos, by plain assignment. In Vue 2, that leaves them non-reactive, such that changes to them, like
+        // balance updates, neither updated the UI nor triggered the subscription below.
+        mergeReactively(store.state, readTransform(storedState));
     }
     unsubscriptions.push(
         // Write state back to storage on changes.
         store.subscribe(() => Storage.set(storageKey, writeTransform(store.state))),
     );
     return storedState;
+}
+
+// Merges like pinia's patch, recursing into plain objects and replacing other values, but adds new keys reactively.
+function mergeReactively(target: Record<string, any>, patch: Record<string, any>) {
+    for (const [key, value] of Object.entries(patch)) {
+        if (isPlainObject(target[key]) && isPlainObject(value)) {
+            mergeReactively(target[key], value);
+        } else {
+            set(target, key, value);
+        }
+    }
+}
+
+function isPlainObject(value: unknown): value is Record<string, any> {
+    return Object.prototype.toString.call(value) === '[object Object]'
+        && typeof (value as { toJSON?: unknown }).toJSON !== 'function';
 }
 
 export async function clearStorage(): Promise<boolean> {

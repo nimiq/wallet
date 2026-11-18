@@ -34,7 +34,6 @@ export function startSentry() {
         environment: config.environment,
         release: process.env.SENTRY_RELEASE,
         enabled: config.reportToSentry,
-        logErrors: true,
         sampleRate: config.environment === ENV_MAIN ? 0.2 : 1,
         beforeSend: stripUrlFragments,
     });

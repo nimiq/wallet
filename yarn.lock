@@ -1769,10 +1769,10 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.12.1.tgz#4eb97e9ec8348a7987ae1304fd1d9d85730455bc"
-  integrity sha512-AnOPakCbnSkGpWnc4RhG1S4xysI4tWXn+rCVImKMOkqG9GMAQrg9z2/g8y3H4Ngy7BivhfnsfbKIBdspyGPE/w==
+"@nimiq/utils@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.12.4.tgz#209317ee9a8656fe210db3ba600d6ea36f0583b9"
+  integrity sha512-AcXDfaVIaDrqIiOg4QTLVenBkDlluYCpmoZ4ERPXmsqKGcYOBRAXZNFw+rFJm7T1RMygkONGsveZ5mgQNi9WcA==
   dependencies:
     big-integer "^1.6.44"
 

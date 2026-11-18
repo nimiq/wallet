@@ -33,6 +33,21 @@ if (!release) {
 }
 
 /**
+ * vue-loader 15 imports the default export of each style block, but its proxy modules re-export the style blocks via
+ * `export *`, which does not include a default export, unless they are CSS modules. As the default export is only used
+ * for CSS modules, the warnings that webpack emits about it for all other style blocks can be ignored. This is done in a
+ * plugin instead of via webpack's ignoreWarnings, because Vue CLI's build output reads the unfiltered warnings.
+ */
+class IgnoreVueStyleDefaultImportWarnings {
+    apply(compiler) {
+        const warningRegex = /export 'default' \(imported as 'style\d+'\) was not found in '.+\.vue\?vue&type=style/;
+        compiler.hooks.afterCompile.tap('IgnoreVueStyleDefaultImportWarnings', (compilation) => {
+            compilation.warnings = compilation.warnings.filter((warning) => !warningRegex.test(warning.message));
+        });
+    }
+}
+
+/**
  * Generate a subresource integrity (SRI) hash
  * @param {Buffer} asset
  * @return {string}
@@ -92,6 +107,7 @@ module.exports = {
     // integrity: process.env.NODE_ENV === 'production',
     configureWebpack: {
         plugins: [
+            new IgnoreVueStyleDefaultImportWarnings(),
             new PoLoaderOptimizer(),
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,

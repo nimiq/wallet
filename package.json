@@ -40,7 +40,7 @@
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/albatross",
     "@sentry/vue": "^11.14.0",
     "@unstoppabledomains/resolution": "^9.3.3",
-    "bitcoinjs-lib": "^5.2.0",
+    "bitcoinjs-lib": "^7.0.5",
     "chart.js": "^4.6.1",
     "ethers": "^5.8.0",
     "iban": "^0.0.14",

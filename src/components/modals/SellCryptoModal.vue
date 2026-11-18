@@ -30,7 +30,7 @@
                 <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Sell Crypto') }}
                     <div slot="more" class="pills flex-row">
-                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="_self">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
                                 1 NIM = <FiatAmount :amount="eurPerNim || 0"
                                     :maxRelativeDeviation="0.001" currency="eur"/>
@@ -54,7 +54,7 @@
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
                             :currency="selectedFiatCurrency"
-                            :container="this"
+                            :container="_self"
                         >
                             <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fiatFees.isHigh}">
                                 <LightningIcon v-if="fiatFees.isHigh"/>
@@ -62,7 +62,7 @@
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="_self"
                             class="limits-tooltip" :class="{ 'kyc-connected': kycUser }">
                             <div slot="trigger" class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
                                 <LimitIcon />

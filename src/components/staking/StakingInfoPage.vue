@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex-column">
                     <Tooltip :disabled="!isStakeDeactivating && !pendingOperation" preferredPosition="bottom left"
-                        :container="this" class="adjust-stake">
+                        :container="_self" class="adjust-stake">
                         <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
                             :disabled="isStakeDeactivating || !!pendingOperation">
                             <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>

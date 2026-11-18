@@ -6,7 +6,7 @@ j<template>
             <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
                 theme="inverse"
-                :container="this"
+                :container="_self"
                 :preferredPosition="getPreferredTooltipPosition(node)"
                 :margin="{ left: 12, top: 12, right: 12, bottom: 12 }"
                 :style="`transform: translate(${Math.floor(node.x * scale)}px, ${Math.floor(node.y * scale)}px);`"

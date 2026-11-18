@@ -9,7 +9,7 @@
                     ? $t('You can receive from Polygon {ticker} addresses only!', { ticker })
                     : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
             }}
-            <Tooltip :container="this" autoWidth :margin="{
+            <Tooltip :container="_self" autoWidth :margin="{
                 left: Math.min(88, .18 * windowWidth),
                 right: Math.min(88, .18 * windowWidth),
             }">

@@ -53,7 +53,7 @@
                         :serviceSwapFeeFiat="serviceSwapFeeFiat"
                         :serviceSwapFeePercentage="serviceSwapFeePercentage"
                         :currency="currency"
-                        :container="this"
+                        :container="_self"
                     >
                         <div slot="trigger" class="flex-row" :class="{'high-fees': isHighRelativeFees}">
                             <LightningIcon v-if="isHighRelativeFees"/>
@@ -85,7 +85,7 @@
 
                     <strong class="dot">&middot;</strong>
 
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="_self"
                         class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="limitsTooltip$">
                         <div slot="trigger" class="limits flex-row" :class="{
                             'limit-reached': isLimitReached,

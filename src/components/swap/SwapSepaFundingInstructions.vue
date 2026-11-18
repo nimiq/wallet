@@ -22,7 +22,7 @@
                         </Copyable>
                         <Tooltip
                             preferredPosition="top left"
-                            :container="this"
+                            :container="_self"
                             theme="inverse"
                             :styles="{'width': '35rem'}"
                         >
@@ -62,7 +62,7 @@
                     <span class="text">{{ $t('Your transaction must be SEPA Instant') }}</span>
                     <Tooltip
                         preferredPosition="top left"
-                        :container="this"
+                        :container="_self"
                         theme="inverse"
                         :styles="{'width': '35rem'}"
                     >

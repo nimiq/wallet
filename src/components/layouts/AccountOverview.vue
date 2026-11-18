@@ -74,7 +74,7 @@
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
                     class="nim-btc-swap-button"
                     ref="nimBtcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
@@ -105,7 +105,7 @@
                     class="nim-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="nimUsdcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
@@ -176,7 +176,7 @@
                     class="btc-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="btcUsdcSwapTooltip$"
-                    :container="this"
+                    :container="_self"
                     preferredPosition="top"
                     noFocus
                 >

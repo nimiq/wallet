@@ -21,7 +21,7 @@
                         ? $t('Your {currency} would most likely be stolen.', { currency: currency.toUpperCase() })
                         : ''
                 }}
-                <Tooltip :container="this" theme="inverse" autoWidth :margin="{
+                <Tooltip :container="_self" theme="inverse" autoWidth :margin="{
                     left: Math.min(40, .1 * windowWidth),
                     right: Math.min(40, .1 * windowWidth),
                 }">

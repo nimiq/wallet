@@ -334,6 +334,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -399,13 +400,15 @@ export default defineComponent({
         const router = useRouter();
         const { $t } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
-        const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
+        const transaction = computed(() => useBtcTransactionsStore().$state.transactions[props.hash]);
 
         const {
-            setRecipientLabel,
             getRecipientLabel,
-            setSenderLabel,
             getSenderLabel,
+        } = storeToRefs(useBtcLabelsStore());
+        const {
+            setRecipientLabel,
+            setSenderLabel,
         } = useBtcLabelsStore();
 
         const state = computed(() => transaction.value.state);
@@ -437,20 +440,20 @@ export default defineComponent({
             if (!swapData.value) return null;
 
             if (swapData.value.asset === SwapAsset.NIM) {
-                let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
+                let swapTx = useTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (swapTx?.relatedTransactionHash) {
                     // Avoid showing the swap proxy, instead show our related address.
-                    swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                    swapTx = useTransactionsStore().$state.transactions[swapTx.relatedTransactionHash];
                 }
                 return swapTx || null;
             }
 
             if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
-                return useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+                return useUsdcTransactionsStore().$state.transactions[swapData.value.transactionHash] || null;
             }
 
             if (swapData.value.asset === SwapAsset.USDT_MATIC) {
-                return useUsdtTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+                return useUsdtTransactionsStore().$state.transactions[swapData.value.transactionHash] || null;
             }
 
             return null;
@@ -465,7 +468,7 @@ export default defineComponent({
             // instead. Only the related tx holds the proxy identifying extra data.
             return isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
                 || swapTransaction.value.relatedTransactionHash
-                || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
+                || !useAddressStore().$state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });
 
         // Data
@@ -525,7 +528,7 @@ export default defineComponent({
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
-        const { height: blockHeight, timestamp: blockTimestamp } = useBtcNetworkStore();
+        const { height: blockHeight, timestamp: blockTimestamp } = storeToRefs(useBtcNetworkStore());
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
@@ -534,7 +537,7 @@ export default defineComponent({
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= blockTimestamp.value
             && !swapInfo.value.out
             // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
-            && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
+            && useAccountStore().activeAccountInfo?.type === AccountType.LEDGER,
         );
 
         const blockExplorerLink = computed(() =>
@@ -553,7 +556,7 @@ export default defineComponent({
                 const fee = estimateFees(1, 1, feePerUnit, 102);
 
                 const request: Omit<RefundSwapRequest, 'appName'> = {
-                    accountId: useAccountStore().activeAccountId.value!,
+                    accountId: useAccountStore().activeAccountId!,
                     refund: {
                         type: SwapAsset.BTC,
                         input: {
@@ -564,7 +567,7 @@ export default defineComponent({
                             witnessScript: htlcDetails.script,
                         },
                         output: {
-                            address: useBtcAddressStore().availableExternalAddresses.value[0],
+                            address: useBtcAddressStore().availableExternalAddresses[0],
                             value: htlcOutput.value - fee,
                         },
                         refundAddress: htlcDetails.refundAddress, // My address, must be refund address of HTLC

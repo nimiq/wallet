@@ -152,6 +152,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -203,15 +204,14 @@ export default defineComponent({
     setup(props) {
         const { $t } = useI18n();
         const {
-            state: addresses$,
             accountUtxos,
             accountBalance,
-        } = useBtcAddressStore();
-        const {
-            setRecipientLabel,
-            getRecipientLabel,
-        } = useBtcLabelsStore();
-        const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
+        } = storeToRefs(useBtcAddressStore());
+        const { $state: addresses$ } = useBtcAddressStore();
+        const { getRecipientLabel } = storeToRefs(useBtcLabelsStore());
+        const { setRecipientLabel } = useBtcLabelsStore();
+        const { isFetchingTxHistory } = storeToRefs(useBtcNetworkStore());
+        const { $state: network$ } = useBtcNetworkStore();
 
         function reset() {
             gotRequestUriRecipient.value = false;
@@ -271,7 +271,7 @@ export default defineComponent({
             const ownedAddressInfo = addresses$.addressInfos[address];
             if (ownedAddressInfo) {
                 // Find account label
-                const { accountInfos } = useAccountStore();
+                const { accountInfos } = storeToRefs(useAccountStore());
                 label = Object.values(accountInfos.value)
                     .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
                     || Object.values(accountInfos.value)
@@ -361,7 +361,8 @@ export default defineComponent({
             activeCurrency.value = currency;
         }
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
@@ -530,7 +531,7 @@ export default defineComponent({
 
             let changeAddress: string;
             if (requiredInputs.value.changeAmount > 0) {
-                const { nextChangeAddress } = useBtcAddressStore();
+                const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
                 if (!nextChangeAddress.value) {
                     // FIXME: If no unused change address is found, need to request new ones from Hub!
                     throw new Error('No more unused change addresses)');
@@ -540,7 +541,7 @@ export default defineComponent({
 
             try {
                 const plainTx = await sendBtcTransaction({
-                    accountId: useAccountStore().state.activeAccountId!,
+                    accountId: useAccountStore().$state.activeAccountId!,
                     inputs: requiredInputs.value.utxos.map((utxo) => ({
                         address: utxo.address,
                         transactionHash: utxo.transactionHash,
@@ -615,7 +616,7 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit } = storeToRefs(useSettingsStore());
         const router = useRouter();
 
         function back() {

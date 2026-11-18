@@ -260,6 +260,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -361,18 +362,20 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 export default defineComponent({
     setup() {
         const router = useRouter();
-        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
-        const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { exchangeRates } = useFiatStore();
-        const { btcUnit } = useSettingsStore();
-        const { activeSwap: swap } = useSwapsStore();
+        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = storeToRefs(useAccountStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { exchangeRates } = storeToRefs(useFiatStore());
+        const { btcUnit } = storeToRefs(useSettingsStore());
+        const { activeSwap: swap } = storeToRefs(useSwapsStore());
         const {
             bank,
+            bankAccount,
+        } = storeToRefs(useBankStore());
+        const {
             setBank,
             setBankAccount,
-            bankAccount,
         } = useBankStore();
-        const { connectedUser: kycUser } = useKycStore();
+        const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
         const { config } = useConfig();
         const { isMobile } = useWindowSize();
@@ -487,7 +490,7 @@ export default defineComponent({
             if (cryptoAmountInput$.value) cryptoAmountInput$.value.focus();
         }
 
-        const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
+        const { accountBalance: accountBtcBalance, accountUtxos } = storeToRefs(useBtcAddressStore());
 
         async function updateEstimate() {
             clearTimeout(timeoutId);
@@ -516,7 +519,7 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion!: PreSwap;
 
-                const { availableExternalAddresses } = useBtcAddressStore();
+                const { availableExternalAddresses } = storeToRefs(useBtcAddressStore());
                 const nimAddress = activeAddress.value!;
                 const btcAddress = availableExternalAddresses.value[0];
 
@@ -557,13 +560,13 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
 
-                    if (useNetworkStore().state.consensus !== 'established') {
+                    if (useNetworkStore().$state.consensus !== 'established') {
                         await nimiqClient.waitForConsensusEstablished();
                     }
 
                     const headHeight = await nimiqClient.getHeadHeight();
                     if (headHeight > 100) {
-                        useNetworkStore().state.height = headHeight;
+                        useNetworkStore().$state.height = headHeight;
                     } else {
                         throw new Error('Invalid network state, try please reloading the app');
                     }
@@ -573,7 +576,7 @@ export default defineComponent({
                     await electrumClient.waitForConsensusEstablished();
                 }
 
-                const validityStartHeight = useNetworkStore().height.value;
+                const validityStartHeight = useNetworkStore().height;
 
                 // Convert the swapSuggestion to the Hub request.
                 // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
@@ -601,7 +604,7 @@ export default defineComponent({
                         accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
                     let changeAddress: string | undefined;
                     if (requiredInputs.changeAmount > 0) {
-                        const { nextChangeAddress } = useBtcAddressStore();
+                        const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
                         if (!nextChangeAddress.value) {
                             // FIXME: If no unused change address is found, need to request new ones from Hub!
                             throw new Error('No more unused change addresses (not yet implemented)');

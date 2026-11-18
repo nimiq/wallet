@@ -51,7 +51,7 @@ export class GenericFormat extends Format {
             year,
         );
 
-        this.referenceAsset = useFiatStore().state.currency;
+        this.referenceAsset = useFiatStore().$state.currency;
         this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;
     }
 

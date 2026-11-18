@@ -58,11 +58,11 @@ export class BlockpitAppFormat extends Format {
             && this.usdtAddresses.length === 0
         ) {
             // We are exporting one NIM address only
-            this.depotLabel = useAddressStore().state.addressInfos[this.nimAddresses[0]].label;
+            this.depotLabel = useAddressStore().$state.addressInfos[this.nimAddresses[0]].label;
         } else {
             // We are exporting all addresses, or the BTC or USDC or USDT account. Find the label of the account that
             // contains the addresses.
-            this.depotLabel = Object.values(useAccountStore().state.accountInfos).find((accountInfo) => {
+            this.depotLabel = Object.values(useAccountStore().$state.accountInfos).find((accountInfo) => {
                 if (this.nimAddresses[0]) return accountInfo.addresses.includes(this.nimAddresses[0]);
                 if (this.btcAddresses.external.length) {
                     return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];

@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
 
 import type {
@@ -24,7 +25,7 @@ const intlDisplayNamesReadyPromise = !Intl.DisplayNames?.polyfilled && shouldPol
     ? import('@formatjs/intl-displaynames/polyfill')
     : Promise.resolve();
 
-const { language } = useSettingsStore();
+const { language } = storeToRefs(useSettingsStore());
 
 export default class I18nDisplayNames {
     private intlDisplayNames: IntlDisplayNames | null = null;

@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Tooltip } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useAddressStore } from '../../stores/Address';
@@ -62,8 +63,8 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const { config } = useConfig();
-        const { activeAddressInfo } = useAddressStore();
-        const { totalAccountStake, totalActiveStake } = useStakingStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
+        const { totalAccountStake, totalActiveStake } = storeToRefs(useStakingStore());
         const { isMobile } = useWindowSize();
 
         const $CTATooltip = ref<Tooltip | null>(null);

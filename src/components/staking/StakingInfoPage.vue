@@ -250,6 +250,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     ArrowRightSmallIcon,
     CircleSpinner,
@@ -297,7 +298,7 @@ type Reward = {
 export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { activeAddress, activeAddressInfo } = storeToRefs(useAddressStore());
         const {
             activeStake: stake,
             activeValidator: validator,
@@ -313,9 +314,9 @@ export default defineComponent({
             restakingRewards,
             monthlyRewards,
             stakingEvents,
-            clearSwitchOperation,
-        } = useStakingStore();
-        const { height, consensus } = useNetworkStore();
+        } = storeToRefs(useStakingStore());
+        const { clearSwitchOperation } = useStakingStore();
+        const { height, effectiveConsensus: consensus } = storeToRefs(useNetworkStore());
         const networkNotice = computed(nimiqNetworkNotice);
         const { isMobile } = useWindowSize();
 

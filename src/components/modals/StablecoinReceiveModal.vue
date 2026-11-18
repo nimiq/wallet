@@ -43,6 +43,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import { useRouter } from '@/router';
@@ -66,9 +67,10 @@ export default defineComponent({
 
         const router = useRouter();
 
-        const { state: addresses$, addressInfo } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { $state: addresses$ } = usePolygonAddressStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { $state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcTransactionsStore()
             : useUsdtTransactionsStore();
         // These are non-reactive because we're only interested in whether the user had ever received USDC/T when the

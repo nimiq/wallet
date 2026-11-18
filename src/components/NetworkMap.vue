@@ -89,7 +89,7 @@ export default defineComponent({
                         multiAddress: address,
                         nodeType: type,
                         connected: false,
-                        ...(networkStore.state.peers[peerId] as Peer | undefined),
+                        ...(networkStore.$state.peers[peerId] as Peer | undefined),
                     }));
                     if (networkMap.updateNodes(peers)) {
                         networkMap.draw();
@@ -97,7 +97,7 @@ export default defineComponent({
                 }, 500);
             }
 
-            watch(() => networkStore.state.peers, () => {
+            watch(() => networkStore.$state.peers, () => {
                 updateKnownAddresses();
             }, { immediate: true });
             updateKnownAddresses();

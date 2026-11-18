@@ -306,6 +306,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onActivated } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
@@ -350,19 +351,19 @@ export default defineComponent({
         const {
             activeAccountInfo,
             activeAccountId,
-            setActiveCurrency,
             activeCurrency,
             hasBitcoinAddresses,
             hasPolygonAddresses,
-        } = useAccountStore();
-        const { accountBalance: nimAccountBalance } = useAddressStore();
-        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        } = storeToRefs(useAccountStore());
+        const { setActiveCurrency } = useAccountStore();
+        const { accountBalance: nimAccountBalance } = storeToRefs(useAddressStore());
+        const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
             accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin, knowsAboutUsdt } = useAccountSettingsStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin, knowsAboutUsdt } = storeToRefs(useAccountSettingsStore());
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -422,10 +423,10 @@ export default defineComponent({
 
         watch(activeAccountInfo, determineModalToShow, { immediate: true });
 
-        const { consensus: btcConsensus } = useBtcNetworkStore();
-        const { consensus: polygonConsensus } = usePolygonNetworkStore();
+        const { consensus: btcConsensus } = storeToRefs(useBtcNetworkStore());
+        const { consensus: polygonConsensus } = storeToRefs(usePolygonNetworkStore());
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable } = storeToRefs(useSettingsStore());
 
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);

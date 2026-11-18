@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { bytesToHex, hexToBytes } from '@nimiq/electrum-client';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from './Swaps';
@@ -71,8 +71,7 @@ export enum TransactionState {
 
 const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
 
-export const useUsdtTransactionsStore = createStore({
-    id: 'usdtTransactions',
+export const useUsdtTransactionsStore = defineStore('usdtTransactions', {
     state: () => ({
         transactions: {} as {[hash: string]: Transaction},
     }),
@@ -97,7 +96,7 @@ export const useUsdtTransactionsStore = createStore({
 
             // re-apply original timestamp and known fiatValue
             for (const tx of txs) {
-                const knownTx = this.state.transactions[tx.transactionHash];
+                const knownTx = this.$state.transactions[tx.transactionHash];
                 if (!knownTx) continue;
                 if (knownTx.timestamp) {
                     // Keep original timestamp and blockHeight instead of values at confirmation after 10 blocks.
@@ -110,7 +109,8 @@ export const useUsdtTransactionsStore = createStore({
             }
 
             const newTxs: { [hash: string]: Transaction } = {};
-            const allKnownTransactions = [...Object.values(this.state.transactions), ...txs]; // overlaps are no problem
+            // Overlaps are no problem
+            const allKnownTransactions = [...Object.values(this.$state.transactions), ...txs];
             for (const tx of txs) {
                 // Async sub call to keep the main method synchronous to avoid race conditions with other places where
                 // transactions are being overwritten like in calculateFiatAmounts, and to avoid await in loop (slow
@@ -121,8 +121,8 @@ export const useUsdtTransactionsStore = createStore({
 
             // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.
-            this.state.transactions = {
-                ...this.state.transactions,
+            this.$state.transactions = {
+                ...this.$state.transactions,
                 ...newTxs,
             };
 
@@ -138,14 +138,14 @@ export const useUsdtTransactionsStore = createStore({
         async calculateFiatAmounts(transactions?: Transaction[], fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
-            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            fiatCurrency = fiatCurrency || fiatStore.currency;
             const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
                 ? fiatCurrency
                 : FiatCurrency.USD;
-            const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
-            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency]; // might be pending
-            const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.USDT]?.[FiatCurrency.USD];
-            const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
+            const lastExchangeRateUpdateTime = fiatStore.timestamp;
+            const currentRate = fiatStore.exchangeRates[CryptoCurrency.USDT]?.[fiatCurrency]; // might be pending
+            const currentUsdRate = fiatStore.exchangeRates[CryptoCurrency.USDT]?.[FiatCurrency.USD];
+            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter((tx) =>
                 // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
                 // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
                 // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
@@ -163,7 +163,7 @@ export const useUsdtTransactionsStore = createStore({
 
             scheduledHistoricFiatAmountUpdates[historyFiatCurrency] ||= new Set();
             const historicTransactions: typeof transactionsToUpdate = [];
-            const { swapByTransaction } = useSwapsStore().state;
+            const { swapByTransaction } = useSwapsStore().$state;
 
             for (const tx of transactionsToUpdate) {
                 tx.fiatValue ||= {};
@@ -200,7 +200,7 @@ export const useUsdtTransactionsStore = createStore({
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction object from the store in case it changed (which for the USDT
                     // transaction store it doesn't do, but doesn't hurt to make the code more resilient).
-                    tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
+                    tx = this.$state.transactions[tx.transactionHash] as typeof tx || tx;
                     Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
                         ? exchangeRate * (tx.value / 1e6)
                         : FIAT_PRICE_UNAVAILABLE,
@@ -212,16 +212,16 @@ export const useUsdtTransactionsStore = createStore({
 
             // Manually notify the store of the deep changes to trigger subscriptions.
             // TODO this hack is likely not necessary in newer pinia versions.
-            this.patch({});
+            this.$patch({});
         },
 
         removeTransactions(txs: Transaction[]) {
-            const transactions = { ...this.state.transactions };
+            const transactions = { ...this.$state.transactions };
             for (const tx of txs) {
                 delete transactions[tx.transactionHash];
             }
             // TODO cleanup swap store
-            this.state.transactions = transactions;
+            this.$state.transactions = transactions;
         },
     },
 });
@@ -229,7 +229,7 @@ export const useUsdtTransactionsStore = createStore({
 // Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
 // other methods that do so.
 async function detectSwap(transaction: Transaction, knownTransactions: Transaction[]) {
-    const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
+    const { $state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
     if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
     const asset = SwapAsset.USDT_MATIC;
 

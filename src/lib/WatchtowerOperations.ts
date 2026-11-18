@@ -251,7 +251,7 @@ export async function startWatchtowerSwitch(input: {
             // landed past the next election block moved the release instead: the watchtower then rejects the
             // request as invalid, which reports the manual step. A block not known yet (the confirmation wait
             // timed out) keeps the job, which the sync follows by id like any other.
-            const landedAt = useTransactionsStore().state.transactions[signedTxs[0].hash]?.blockHeight;
+            const landedAt = useTransactionsStore().$state.transactions[signedTxs[0].hash]?.blockHeight;
             const hasSameFollowUp = (block: number) => followUpHeightAfter(block, policy) === followUpHeight;
             if (replaced?.watchtowerJobId && replaced.targetValidatorAddress === target.address
                 && hasSameFollowUp(replaced.startedAtBlock)

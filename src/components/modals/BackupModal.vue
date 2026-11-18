@@ -63,6 +63,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, ArrowLeftIcon, Tooltip } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
@@ -88,7 +89,7 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const modal$ = ref<InstanceType<typeof Modal> | null>(null);
-        const { activeAccountId } = useAccountStore();
+        const { activeAccountId } = storeToRefs(useAccountStore());
         const hasStartedBackup = ref(false);
 
         function goBack() {

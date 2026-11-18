@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
@@ -69,7 +70,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props) {
-        const { activeAccountId, hasPolygonAddresses } = useAccountStore();
+        const { activeAccountId, hasPolygonAddresses } = storeToRefs(useAccountStore());
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal | null>(null);

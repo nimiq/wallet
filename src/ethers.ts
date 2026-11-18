@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -49,9 +50,9 @@ export interface PolygonClient {
 }
 
 function consensusEstablishedHandler(height: number) {
-    usePolygonNetworkStore().state.outdatedHeight = height;
+    usePolygonNetworkStore().$state.outdatedHeight = height;
     console.log('Polygon connection established');
-    usePolygonNetworkStore().state.consensus = 'established';
+    usePolygonNetworkStore().$state.consensus = 'established';
 }
 
 let isLaunched = false;
@@ -111,10 +112,10 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         });
         socket.addEventListener('down', () => {
             console.log('Polygon connection lost');
-            usePolygonNetworkStore().state.consensus = 'connecting';
+            usePolygonNetworkStore().$state.consensus = 'connecting';
         });
         socket.addEventListener('reopen', async () => {
-            usePolygonNetworkStore().state.consensus = 'syncing';
+            usePolygonNetworkStore().$state.consensus = 'syncing';
             const client = await getPolygonClient();
             client.provider.once('block', consensusEstablishedHandler);
         });
@@ -380,7 +381,7 @@ async function usdcTransactionListener(from: string, to: string, value: BigNumbe
     if (!usdcBridgedBalances.has(from) && !usdcBridgedBalances.has(to)) return;
     if (value.isZero()) return; // Ignore address poisoning scam transactions
 
-    const { state: usdcTransactions$, addTransactions } = useUsdcTransactionsStore();
+    const { $state: usdcTransactions$, addTransactions } = useUsdcTransactionsStore();
 
     const { config } = useConfig();
 
@@ -430,7 +431,7 @@ async function usdtTransactionListener(from: string, to: string, value: BigNumbe
     if (!usdtBridgedBalances.has(from) && !usdtBridgedBalances.has(to)) return;
     if (value.isZero()) return; // Ignore address poisoning scam transactions
 
-    const { state: usdtTransactions$, addTransactions } = useUsdtTransactionsStore();
+    const { $state: usdtTransactions$, addTransactions } = useUsdtTransactionsStore();
 
     const { config } = useConfig();
 
@@ -469,7 +470,7 @@ export async function launchPolygon() {
     if (isLaunched) return;
     isLaunched = true;
 
-    const { state: network$ } = usePolygonNetworkStore();
+    const { $state: network$ } = usePolygonNetworkStore();
     const usdcTransactionsStore = useUsdcTransactionsStore();
     const usdtTransactionsStore = useUsdtTransactionsStore();
     const { config } = useConfig();
@@ -477,11 +478,11 @@ export async function launchPolygon() {
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     const addressStore = usePolygonAddressStore();
-    watch(addressStore.addressInfo, () => {
+    watch(() => addressStore.addressInfo, () => {
         const newAddresses: string[] = [];
         const removedAddresses = new Set(subscribedAddresses);
 
-        for (const address of Object.keys(addressStore.state.addressInfos)) {
+        for (const address of Object.keys(addressStore.$state.addressInfos)) {
             if (subscribedAddresses.has(address)) {
                 removedAddresses.delete(address);
                 continue;
@@ -510,8 +511,9 @@ export async function launchPolygon() {
     }, { immediate: true });
 
     // Auto-detect stablecoin from balances and transactions
-    const { stablecoin, setStablecoin } = useAccountSettingsStore();
-    watch(addressStore.addressInfo, (ai) => {
+    const { stablecoin } = storeToRefs(useAccountSettingsStore());
+    const { setStablecoin } = useAccountSettingsStore();
+    watch(() => addressStore.addressInfo, (ai) => {
         if (!ai || stablecoin.value) {
             return;
         }
@@ -536,14 +538,14 @@ export async function launchPolygon() {
     }, { immediate: true });
 
     watch(() => [
-        usdcTransactionsStore.state.transactions,
-        usdtTransactionsStore.state.transactions,
+        usdcTransactionsStore.$state.transactions,
+        usdtTransactionsStore.$state.transactions,
     ], ([usdcTxs, usdtTxs]) => {
-        if (stablecoin.value || !addressStore.addressInfo.value) {
+        if (stablecoin.value || !addressStore.addressInfo) {
             return;
         }
 
-        const ai = addressStore.addressInfo.value;
+        const ai = addressStore.addressInfo;
 
         // Check transaction history
         const latestUsdcTx = Object.values(usdcTxs)
@@ -565,7 +567,7 @@ export async function launchPolygon() {
     // Fetch transactions for active address
     const usdcBridgedTxFetchTrigger = ref(0);
     watch([
-        addressStore.addressInfo,
+        () => addressStore.addressInfo,
         usdcBridgedTxFetchTrigger,
         () => config.polygon,
     ], async ([
@@ -580,7 +582,7 @@ export async function launchPolygon() {
 
         console.debug('Scheduling bridged USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(usdcTransactionsStore.state.transactions)
+        const knownTxs = Object.values(usdcTransactionsStore.$state.transactions)
             .filter((tx) => (!tx.token || tx.token === config.polygon.usdc_bridged.tokenContract)
                 && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
@@ -866,7 +868,7 @@ export async function launchPolygon() {
 
     const usdcTxFetchTrigger = ref(0);
     watch([
-        addressStore.addressInfo,
+        () => addressStore.addressInfo,
         usdcTxFetchTrigger,
         () => config.polygon,
     ], async ([
@@ -879,7 +881,7 @@ export async function launchPolygon() {
 
         console.debug('Scheduling native USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(usdcTransactionsStore.state.transactions)
+        const knownTxs = Object.values(usdcTransactionsStore.$state.transactions)
             .filter((tx) => tx.token === config.polygon.usdc.tokenContract
                 && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
@@ -1124,7 +1126,7 @@ export async function launchPolygon() {
     // Fetch transactions for active address
     const usdtBridgedTxFetchTrigger = ref(0);
     watch([
-        addressStore.addressInfo,
+        () => addressStore.addressInfo,
         usdtBridgedTxFetchTrigger,
         () => config.polygon,
     ], async ([
@@ -1137,7 +1139,7 @@ export async function launchPolygon() {
 
         console.debug('Scheduling bridged USDT transaction fetch for', address);
 
-        const knownTxs = Object.values(usdtTransactionsStore.state.transactions)
+        const knownTxs = Object.values(usdtTransactionsStore.$state.transactions)
             .filter((tx) => (!tx.token || tx.token === config.polygon.usdt_bridged.tokenContract)
                 && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
@@ -1587,7 +1589,7 @@ export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2;
 export async function getPolygonBlockNumber() {
     const client = await getPolygonClient();
     const blockNumber = await client.provider.getBlockNumber();
-    usePolygonNetworkStore().state.outdatedHeight = blockNumber;
+    usePolygonNetworkStore().$state.outdatedHeight = blockNumber;
     return blockNumber;
 }
 

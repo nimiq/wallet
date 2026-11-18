@@ -44,6 +44,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, onMounted, Ref, getCurrentInstance } from 'vue';
+import { storeToRefs } from 'pinia';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import { provideI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -72,11 +73,11 @@ export default defineComponent({
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        const { accountInfos } = useAccountStore();
+        const { accountInfos } = storeToRefs(useAccountStore());
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
-        const { amountsHidden, swipingEnabled } = useSettingsStore();
+        const { amountsHidden, swipingEnabled } = storeToRefs(useSettingsStore());
 
         watch(amountsHidden, (hidden) => {
             if (hidden) document.body.classList.add('value-masked');
@@ -169,7 +170,7 @@ export default defineComponent({
             if (isMobile.value && swipingEnabled.value === 1) attachSwipe();
         });
 
-        const { consensus } = useNetworkStore();
+        const { effectiveConsensus: consensus } = storeToRefs(useNetworkStore());
 
         return {
             isMainnet,

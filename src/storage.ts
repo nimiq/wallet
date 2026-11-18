@@ -3,6 +3,7 @@
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import idbReady from 'safari-14-idb-fix';
 import { set } from 'vue';
+import type { WatchOptionsBase } from 'vue';
 import type { Store, StateTree } from 'pinia';
 import { useTransactionsStore } from './stores/Transactions';
 import { useAddressStore } from './stores/Address';
@@ -184,7 +185,7 @@ export async function initStorage() {
             // iframe, such that we can expect the geo ip check to resolve before that.
             useGeoIp().locate().then((location) => {
                 if (!location.country) return;
-                useFiatStore().state.currency = guessUserCurrency(location.country);
+                useFiatStore().$state.currency = guessUserCurrency(location.country);
             }).catch((error) => {
                 // eslint-disable-next-line no-console
                 console.debug(`Failed to locate user for fiat currency: ${error.message || error}`);
@@ -323,7 +324,7 @@ export async function initStorage() {
     if (isTestnet && storedTestnetVersion !== currentTestnetVersion) {
         // Outdated data is data later than the new genesis block's height, which is the height to which the testnet was
         // reset via the new genesis block.
-        const hasOutdatedTransaction = Object.values(transactionsStore.state.transactions).some((transaction) =>
+        const hasOutdatedTransaction = Object.values(transactionsStore.$state.transactions).some((transaction) =>
             (transaction.blockHeight || transaction.validityStartHeight) > currentGenesis.height);
 
         if (hasOutdatedTransaction) {
@@ -353,21 +354,26 @@ export async function initStorage() {
 }
 
 async function initStoreStore<State extends StateTree, StoredState>(
-    store: Store<string, State, any, any>,
+    store: Store<string, State>,
     storageKey: string,
     writeTransform: (state: State) => StoredState = (state: State) => state,
     readTransform: (storedState: StoredState) => Partial<State> = (storedState: StoredState) => storedState,
 ): Promise<StoredState | undefined> {
     const storedState = await Storage.get<StoredState>(storageKey);
     if (storedState) {
-        // Not store.patch, which adds keys that are new to the state, like the entries of stored dictionaries such as
+        // Not store.$patch, which adds keys that are new to the state, like the entries of stored dictionaries such as
         // addressInfos, by plain assignment. In Vue 2, that leaves them non-reactive, such that changes to them, like
         // balance updates, neither updated the UI nor triggered the subscription below.
-        mergeReactively(store.state, readTransform(storedState));
+        mergeReactively(store.$state, readTransform(storedState));
     }
     unsubscriptions.push(
-        // Write state back to storage on changes.
-        store.subscribe(() => Storage.set(storageKey, writeTransform(store.state))),
+        // Write state back to storage on changes. Sync flush, to persist every change immediately, and because pinia
+        // pauses subscriptions with the default flush after $patch calls, until the next tick. The cast is necessary
+        // because pinia's types pick up Vue 2.7's options API WatchOptions, which do not include flush.
+        store.$subscribe(
+            () => Storage.set(storageKey, writeTransform(store.$state as State)),
+            { flush: 'sync' } as WatchOptionsBase & { detached?: boolean },
+        ),
     );
     return storedState;
 }

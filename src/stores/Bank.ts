@@ -1,5 +1,5 @@
 import { Bank } from '@nimiq/oasis-bank-list';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
 export type BankAccount = {
     accountName: string,
@@ -11,25 +11,20 @@ export type BankState = {
     bankAccount: BankAccount | null,
 }
 
-export const useBankStore = createStore({
-    id: 'bank',
+export const useBankStore = defineStore('bank', {
     state: (): BankState => ({
         bank: null,
         bankAccount: null,
     }),
-    getters: {
-        bank: (state): Readonly<Bank | null> => state.bank,
-        bankAccount: (state): Readonly<BankAccount | null> => state.bankAccount,
-    },
     actions: {
         setBank(bank: Bank) {
-            if (bank.BIC !== this.state.bank?.BIC) {
-                this.state.bankAccount = null;
+            if (bank.BIC !== this.$state.bank?.BIC) {
+                this.$state.bankAccount = null;
             }
-            this.state.bank = bank;
+            this.$state.bank = bank;
         },
         setBankAccount(bankAccount: BankAccount) {
-            this.state.bankAccount = bankAccount;
+            this.$state.bankAccount = bankAccount;
         },
     },
 });

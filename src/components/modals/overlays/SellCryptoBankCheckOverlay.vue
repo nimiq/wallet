@@ -75,6 +75,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';
@@ -92,7 +93,7 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { bank, bankAccount } = useBankStore();
+        const { bank, bankAccount } = storeToRefs(useBankStore());
 
         const bankCheckInput$ = ref<BankCheckInput | null>(null);
         const accountNameInput$ = ref<LabelInput | null>(null);

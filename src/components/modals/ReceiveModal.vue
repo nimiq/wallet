@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -62,7 +63,7 @@ export default defineComponent({
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
 
-        const { activeAddressInfo } = useAddressStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
 
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;

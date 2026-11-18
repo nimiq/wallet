@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import type { TransferRequest, TransferVersion } from '@nimiq/gasless-sdk/core';
 
 /**
@@ -42,8 +42,7 @@ export function gaslessPaymentKey(request: Pick<TransferRequest, 'from' | 'nonce
     return `${request.from.toLowerCase()}-${request.nonce}`;
 }
 
-export const useGaslessPaymentsStore = createStore({
-    id: 'gaslessPayments',
+export const useGaslessPaymentsStore = defineStore('gaslessPayments', {
     state: () => ({
         payments: {} as Record<string, GaslessPayment>,
         /**
@@ -52,15 +51,12 @@ export const useGaslessPaymentsStore = createStore({
          */
         minNonces: {} as Record<string, string>,
     }),
-    getters: {
-        payments: (state): Readonly<Record<string, GaslessPayment>> => state.payments,
-    },
     actions: {
         /** Records a newly signed version of a payment as its latest, keeping its earlier versions. */
         recordSigned(version: TransferVersion, id: string) {
             const key = gaslessPaymentKey(version.request);
-            const earlier = this.state.payments[key]?.versions || [];
-            Vue.set(this.state.payments, key, {
+            const earlier = this.$state.payments[key]?.versions || [];
+            Vue.set(this.$state.payments, key, {
                 latest: version,
                 versions: [...earlier, version],
                 id,
@@ -69,19 +65,19 @@ export const useGaslessPaymentsStore = createStore({
             });
         },
         setStatus(request: Pick<TransferRequest, 'from' | 'nonce'>, status: GaslessPaymentStatus) {
-            const payment = this.state.payments[gaslessPaymentKey(request)];
+            const payment = this.$state.payments[gaslessPaymentKey(request)];
             if (!payment) return;
-            Vue.set(this.state.payments, gaslessPaymentKey(request), { ...payment, status });
+            Vue.set(this.$state.payments, gaslessPaymentKey(request), { ...payment, status });
         },
         /**
          * Removes a payment once its outcome is final. `nextNonce` is the lowest nonce a new payment of the sender may
          * take afterwards.
          */
         settle(request: Pick<TransferRequest, 'from' | 'nonce'>, nextNonce: bigint) {
-            Vue.delete(this.state.payments, gaslessPaymentKey(request));
+            Vue.delete(this.$state.payments, gaslessPaymentKey(request));
             const sender = request.from.toLowerCase();
-            if (BigInt(this.state.minNonces[sender] || '0') < nextNonce) {
-                Vue.set(this.state.minNonces, sender, nextNonce.toString());
+            if (BigInt(this.$state.minNonces[sender] || '0') < nextNonce) {
+                Vue.set(this.$state.minNonces, sender, nextNonce.toString());
             }
         },
     },

@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useAccountStore } from '../../stores/Account';
@@ -19,8 +20,9 @@ import AddressList from '../AddressList.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const { addressInfos, activeAddress, selectAddress } = useAddressStore();
-        const { activeCurrency } = useAccountStore();
+        const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());
+        const { selectAddress } = useAddressStore();
+        const { activeCurrency } = storeToRefs(useAccountStore());
 
         const selectNIMAddress = (address: string) => {
             selectAddress(address);

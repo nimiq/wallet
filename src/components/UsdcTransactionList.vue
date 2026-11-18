@@ -66,6 +66,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
@@ -126,10 +127,10 @@ export default defineComponent({
     },
     setup(props, context) {
         const { $t, locale } = useI18n();
-        const { addressInfo } = usePolygonAddressStore();
-        const { state: transactions$ } = useUsdcTransactionsStore();
-        const { isFetchingUsdcTxHistory } = usePolygonNetworkStore();
-        const { getLabel: getContactLabel } = useUsdcContactsStore();
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { $state: transactions$ } = useUsdcTransactionsStore();
+        const { isFetchingUsdcTxHistory } = storeToRefs(usePolygonNetworkStore());
+        const { getLabel: getContactLabel } = storeToRefs(useUsdcContactsStore());
         const { config } = useConfig();
 
         const activeAddress = computed(() => addressInfo.value?.address);

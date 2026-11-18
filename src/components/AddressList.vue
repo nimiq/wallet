@@ -45,6 +45,7 @@
 import Vue, {
     defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted, getCurrentInstance,
 } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -86,19 +87,21 @@ export default defineComponent({
     },
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
-        const { addressInfos, activeAddress, selectAddress } = useAddressStore();
-        const { availableExternalAddresses, accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());
+        const { selectAddress } = useAddressStore();
+        const { availableExternalAddresses, accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             addressInfo: polygonAddressInfo,
             accountUsdcBalance,
             accountUsdcBridgedBalance,
             accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { activeCurrency, setActiveCurrency } = useAccountStore();
-        const { height } = useNetworkStore();
-        const { amountsHidden } = useSettingsStore();
-        const { totalAccountStake } = useStakingStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { activeCurrency } = storeToRefs(useAccountStore());
+        const { setActiveCurrency } = useAccountStore();
+        const { height } = storeToRefs(useNetworkStore());
+        const { amountsHidden } = storeToRefs(useSettingsStore());
+        const { totalAccountStake } = storeToRefs(useStakingStore());
         const { $t } = useI18n();
 
         function hasLockedBalance(addressInfo: AddressInfo): boolean {

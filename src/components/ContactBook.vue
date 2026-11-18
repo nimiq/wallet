@@ -55,6 +55,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Identicon, LabelInput } from '@nimiq/vue-components';
 import AddressListItem from './AddressListItem.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
@@ -65,9 +66,10 @@ import { useAddressStore, AddressType } from '../stores/Address';
 
 export default defineComponent({
     setup() {
-        const { contactsArray: contacts, setContact } = useContactsStore();
+        const { contactsArray: contacts } = storeToRefs(useContactsStore());
+        const { setContact } = useContactsStore();
 
-        const { addressInfos, activeAddress } = useAddressStore();
+        const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());
 
         const list$ = ref<HTMLDivElement | null>(null);
 

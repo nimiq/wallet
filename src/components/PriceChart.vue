@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
 import { Provider, getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_PRICE_CHART } from '../lib/Constants';
@@ -81,7 +82,11 @@ export default defineComponent({
 
         const strokeWidth = 2.5;
 
-        const { exchangeRates, currency: fiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
+        const {
+            exchangeRates,
+            currency: fiatCurrency,
+            timestamp: lastExchangeRateUpdateTime,
+        } = storeToRefs(useFiatStore());
         const historyFiatCurrency = computed(() => isHistorySupportedFiatCurrency(
             fiatCurrency.value,
             FIAT_API_PROVIDER_PRICE_CHART,

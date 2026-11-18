@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { LabelInput } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import Avatar from './Avatar.vue';
@@ -76,18 +77,22 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     setup() {
-        const { stablecoin } = useAccountSettingsStore();
-        const { contactsArray: contacts, setContact } = stablecoin.value === CryptoCurrency.USDC
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { contactsArray: contacts } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore());
+        const { setContact } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcContactsStore()
             : useUsdtContactsStore();
 
-        const { state: $polygonAddresses, addressInfo: activeAddressInfo } = usePolygonAddressStore();
+        const { addressInfo: activeAddressInfo } = storeToRefs(usePolygonAddressStore());
+        const { $state: $polygonAddresses } = usePolygonAddressStore();
 
         type LabeledPolygonAddressInfo = PolygonAddressInfo & {
             label: string,
         };
 
-        const { accountInfos } = useAccountStore();
+        const { accountInfos } = storeToRefs(useAccountStore());
 
         const list$ = ref<HTMLDivElement | null>(null);
 

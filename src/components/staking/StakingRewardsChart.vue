@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
@@ -99,7 +100,7 @@ const verticalLinesBelowLine = {
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
-        const { stakingEvents } = useStakingStore();
+        const { stakingEvents } = storeToRefs(useStakingStore());
         const selectedRange = ref<TimeRange>('ALL');
         const isLoading = ref(true);
         const loadError = ref(false);

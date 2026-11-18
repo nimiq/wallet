@@ -75,6 +75,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -110,8 +111,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { validators: validatorList, monthlyRewards, stakingEvents } = useStakingStore();
-        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { validators: validatorList, monthlyRewards, stakingEvents } = storeToRefs(useStakingStore());
+        const { activeAddress, activeAddressInfo } = storeToRefs(useAddressStore());
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));

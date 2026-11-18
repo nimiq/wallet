@@ -61,12 +61,12 @@ function isProxyTransaction(tx: Transaction): boolean {
 
 // Get the proxy address of a proxy transaction. The tx must have been checked before to be an actual proxy transaction.
 function getProxyAddress(tx: Transaction): string {
-    const { state: addresses$ } = useAddressStore();
+    const { $state: addresses$ } = useAddressStore();
     // Note: cashlink transactions always hold the proxy extra data. Also swap proxy transactions from or to our address
     // hold the proxy extra data. Only the htlc creation transactions from a proxy hold the htlc data instead.
     const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
         || !!addresses$.addressInfos[tx.sender] // sent from one of our addresses
-        || useProxyStore().allProxies.value.some((proxy) => tx.recipient === proxy); // sent to proxy
+        || useProxyStore().allProxies.some((proxy) => tx.recipient === proxy); // sent to proxy
     return isFunding ? tx.recipient : tx.sender;
 }
 
@@ -86,8 +86,8 @@ export function detectProxyTransactions(
     knownTransactions: {[transactionHash: string]: Transaction},
 ) {
     const { addFundedProxy, addClaimedProxy, removeProxy, triggerNetwork } = useProxyStore();
-    const { state: addresses$ } = useAddressStore();
-    const { setRelatedTransaction, state: transactions$ } = useTransactionsStore();
+    const { $state: addresses$ } = useAddressStore();
+    const { setRelatedTransaction, $state: transactions$ } = useTransactionsStore();
 
     // Update known proxies. Note that at least either the funding or redeeming proxy tx hold the proxy extra data and
     // that this transaction is known to us before the related tx because it's from or to one of our addresses. Thus, it
@@ -180,8 +180,8 @@ function isHtlcTransaction(tx: Transaction): boolean {
 }
 
 function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions: Transaction[]) {
-    const { state: addresses$ } = useAddressStore();
-    const { setRelatedTransaction, state: transactions$ } = useTransactionsStore();
+    const { $state: addresses$ } = useAddressStore();
+    const { setRelatedTransaction, $state: transactions$ } = useTransactionsStore();
 
     // We expect transactions to be sorted from most recent to oldest which is generally the case for fetched histories.
     // However, new transactions we get via subscriptions, are added later to knownProxyTransactions and therefore at

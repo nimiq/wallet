@@ -295,6 +295,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
 import { RouteName } from '@/router';
@@ -320,10 +321,29 @@ import KycIcon from '../icons/KycIcon.vue';
 export default defineComponent({
     setup() {
         const { $t } = useI18n();
-        const settings = useSettingsStore();
-        const { connectedUser: kycUser } = useKycStore();
+        const settingsStore = useSettingsStore();
+        const {
+            btcDecimals,
+            btcUnit,
+            colorMode,
+            decimals,
+            hubBehavior,
+            language,
+            swipingEnabled,
+            updateAvailable,
+        } = storeToRefs(settingsStore);
+        const {
+            setBtcDecimals,
+            setBtcUnit,
+            setDecimals,
+            setHubBehavior,
+            setLanguage,
+            setSwipingEnabled,
+        } = settingsStore;
+        const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
-        const { currency: fiatCurrency, setCurrency: setFiatCurrency } = useFiatStore();
+        const { currency: fiatCurrency } = storeToRefs(useFiatStore());
+        const { setCurrency: setFiatCurrency } = useFiatStore();
 
         const { canInstallPwa, callAndConsumePwaInstallPrompt, pwaInstallationChoice } = usePwaInstallPrompt();
 
@@ -354,7 +374,7 @@ export default defineComponent({
                 return;
             }
 
-            const { state: contacts$, setContact } = useContactsStore();
+            const { $state: contacts$, setContact } = useContactsStore();
 
             for (const contact of importedContacts) {
                 if (!contact
@@ -444,7 +464,20 @@ export default defineComponent({
             fiatCurrency,
             setFiatCurrency,
             getFiatCurrencyCountry,
-            ...settings,
+            btcDecimals,
+            btcUnit,
+            colorMode,
+            decimals,
+            hubBehavior,
+            language,
+            swipingEnabled,
+            updateAvailable,
+            setBtcDecimals,
+            setBtcUnit,
+            setDecimals,
+            setHubBehavior,
+            setLanguage,
+            setSwipingEnabled,
             fileInput$,
             loadFile,
             showVestingSetting,

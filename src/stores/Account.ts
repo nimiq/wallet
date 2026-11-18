@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
 import { useAccountSettingsStore } from './AccountSettings';
@@ -26,59 +26,58 @@ export type AccountInfo = Omit<
     polygonAddresses?: string[],
 }
 
-export const useAccountStore = createStore({
-    id: 'accounts',
+export const useAccountStore = defineStore('accounts', {
     state: () => ({
         accountInfos: {},
         activeAccountId: null,
         activeCurrency: CryptoCurrency.NIM,
     } as AccountState),
     getters: {
-        accountInfos: (state) => state.accountInfos,
-        activeAccountId: (state) => state.activeAccountId,
         activeAccountInfo: (state) => state.activeAccountId
             ? state.accountInfos[state.activeAccountId]
             : null,
-        accountNimAddresses: (state, { activeAccountInfo }) =>
-            (activeAccountInfo.value as AccountInfo | null)?.addresses || [],
-        activeCurrency: (state) => state.activeCurrency,
-        hasBitcoinAddresses: (state, { activeAccountInfo }) =>
-            Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
-        hasPolygonAddresses: (state, { activeAccountInfo }) =>
-            Boolean((activeAccountInfo.value as AccountInfo | null)?.polygonAddresses?.length),
+        accountNimAddresses(): string[] {
+            return this.activeAccountInfo?.addresses || [];
+        },
+        hasBitcoinAddresses(): boolean {
+            return Boolean(this.activeAccountInfo?.btcAddresses?.external.length);
+        },
+        hasPolygonAddresses(): boolean {
+            return Boolean(this.activeAccountInfo?.polygonAddresses?.length);
+        },
     },
     actions: {
         selectAccount(accountId: string) {
-            this.state.activeAccountId = accountId;
+            this.$state.activeAccountId = accountId;
 
             // If the selected account does not support Bitcoin or USDC (or has them not enabled),
             // switch active currency to NIM
             if (
-                (this.activeCurrency.value === CryptoCurrency.BTC && !this.hasBitcoinAddresses.value)
-                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasPolygonAddresses.value)
-                || (this.activeCurrency.value === CryptoCurrency.USDT && !this.hasPolygonAddresses.value)
+                (this.activeCurrency === CryptoCurrency.BTC && !this.hasBitcoinAddresses)
+                || (this.activeCurrency === CryptoCurrency.USDC && !this.hasPolygonAddresses)
+                || (this.activeCurrency === CryptoCurrency.USDT && !this.hasPolygonAddresses)
             ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }
 
-            if ([CryptoCurrency.USDC, CryptoCurrency.USDT].includes(this.activeCurrency.value)) {
-                const stablecoin = useAccountSettingsStore().state.settings[accountId]?.stablecoin;
+            if ([CryptoCurrency.USDC, CryptoCurrency.USDT].includes(this.activeCurrency)) {
+                const stablecoin = useAccountSettingsStore().$state.settings[accountId]?.stablecoin;
                 if (!stablecoin) {
                     this.setActiveCurrency(CryptoCurrency.NIM);
-                } else if (stablecoin !== this.activeCurrency.value) {
+                } else if (stablecoin !== this.activeCurrency) {
                     this.setActiveCurrency(stablecoin);
                 }
             }
 
             const { selectAddress } = useAddressStore();
             // FIXME: Instead of always selecting the first address, store which address was selected per account.
-            selectAddress(this.activeAccountInfo.value!.addresses[0]);
+            selectAddress(this.activeAccountInfo!.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to assign whole object for change detection of new accounts.
             // TODO: Simply set new accountInfo in Vue 3.
-            this.state.accountInfos = {
-                ...this.state.accountInfos,
+            this.$state.accountInfos = {
+                ...this.$state.accountInfos,
                 [accountInfo.id]: accountInfo,
             };
 
@@ -91,14 +90,14 @@ export const useAccountStore = createStore({
                 newAccountInfos[accountInfo.id] = accountInfo;
             }
 
-            this.state.accountInfos = newAccountInfos;
+            this.$state.accountInfos = newAccountInfos;
 
             // If no account selected yet, or selected account does not exist anymore, select the first available.
-            if (!this.state.activeAccountId || !this.state.accountInfos[this.state.activeAccountId]) {
+            if (!this.$state.activeAccountId || !this.$state.accountInfos[this.$state.activeAccountId]) {
                 if (accountInfos[0]) {
                     this.selectAccount(accountInfos[0].id);
                 } else {
-                    this.state.activeAccountId = null;
+                    this.$state.activeAccountId = null;
                 }
             }
 
@@ -107,32 +106,32 @@ export const useAccountStore = createStore({
             // example have changed to a different account's address in a second tab.
             useAddressStore().ensureActiveAddressInActiveAccount();
         },
-        patchAccount(accountId, patch: Partial<AccountInfo>) {
-            this.state.accountInfos[accountId] = {
-                ...this.state.accountInfos[accountId],
+        patchAccount(accountId: string, patch: Partial<AccountInfo>) {
+            this.$state.accountInfos[accountId] = {
+                ...this.$state.accountInfos[accountId],
                 ...patch,
             };
         },
         addAddressToAccount(accountId: string, address: string) {
-            if (this.state.accountInfos[accountId].addresses.includes(address)) return;
-            this.state.accountInfos[accountId].addresses.push(address);
+            if (this.$state.accountInfos[accountId].addresses.includes(address)) return;
+            this.$state.accountInfos[accountId].addresses.push(address);
         },
         removeAccount(accountId: string) {
-            const accountInfos = { ...this.state.accountInfos };
+            const accountInfos = { ...this.$state.accountInfos };
             delete accountInfos[accountId];
-            this.state.accountInfos = accountInfos;
+            this.$state.accountInfos = accountInfos;
 
-            if (this.state.activeAccountId === accountId) {
+            if (this.$state.activeAccountId === accountId) {
                 const accountInfosArray = Object.values(accountInfos);
                 if (accountInfosArray[0]) {
                     this.selectAccount(accountInfosArray[0].id);
                 } else {
-                    this.state.activeAccountId = null;
+                    this.$state.activeAccountId = null;
                 }
             }
         },
         setActiveCurrency(currency: CryptoCurrency) {
-            this.state.activeCurrency = currency;
+            this.$state.activeCurrency = currency;
         },
     },
 });

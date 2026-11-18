@@ -315,6 +315,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     Identicon,
     GearIcon,
@@ -364,17 +365,18 @@ export default defineComponent({
     name: 'address-overview',
     props: {},
     setup() {
-        const { activeAccountId, activeCurrency, activeAccountInfo } = useAccountStore();
-        const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { activeAccountId, activeCurrency, activeAccountInfo } = storeToRefs(useAccountStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
             accountUsdtBridgedBalance,
             addressInfo: usdcAddressInfo,
-        } = usePolygonAddressStore();
-        const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-        const { totalActiveStake, totalAccountStake } = useStakingStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { promoBoxVisible } = storeToRefs(useSwapsStore());
+        const { setPromoBoxVisible } = useSwapsStore();
+        const { totalActiveStake, totalAccountStake } = storeToRefs(useStakingStore());
 
         const searchString = ref('');
 
@@ -427,7 +429,7 @@ export default defineComponent({
         }, { immediate: true });
 
         function rescan() {
-            const { addressSet } = useBtcAddressStore();
+            const { addressSet } = storeToRefs(useBtcAddressStore());
             checkHistory(
                 addressSet.value.external,
                 [],

@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import Modal from '../modals/Modal.vue';
 import { useStakingStore } from '../../stores/Staking';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
@@ -17,7 +18,7 @@ import { useRouter, RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '../../route
 
 export default defineComponent({
     setup() {
-        const { activeValidator } = useStakingStore();
+        const { activeValidator } = storeToRefs(useStakingStore());
         const router = useRouter();
         const isRedirecting = ref(false);
 

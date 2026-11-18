@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
@@ -25,7 +26,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 
 export default defineComponent({
     setup() {
-        const { accountInfos } = useAccountStore();
+        const { accountInfos } = storeToRefs(useAccountStore());
 
         const hasMultiAddressAccount = computed(() =>
             Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY));

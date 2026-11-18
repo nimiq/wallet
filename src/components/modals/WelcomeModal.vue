@@ -94,6 +94,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -109,8 +110,8 @@ import { useRouter, RouteName } from '../../router';
 export default defineComponent({
     setup() {
         const router = useRouter();
-        const { activeAccountInfo } = useAccountStore();
-        const { state: settings$, setLanguage } = useSettingsStore();
+        const { activeAccountInfo } = storeToRefs(useAccountStore());
+        const { $state: settings$, setLanguage } = useSettingsStore();
         const { isMobile } = useWindowSize();
 
         const currencies = [

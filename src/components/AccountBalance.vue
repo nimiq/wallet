@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -42,16 +43,16 @@ import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     setup() {
-        const { accountBalance } = useAddressStore();
-        const { totalAccountStake } = useStakingStore();
-        const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { accountBalance } = storeToRefs(useAddressStore());
+        const { totalAccountStake } = storeToRefs(useStakingStore());
+        const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
         const {
             accountUsdcBalance,
             accountUsdcBridgedBalance,
             accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { currency: fiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
         const { config } = useConfig();
 
         const fiatAmount = computed(() => {
@@ -95,7 +96,8 @@ export default defineComponent({
         const fiatAmountContainer$ = ref<HTMLDivElement | null>(null);
         const fiatAmount$ = ref<FiatAmount | null>(null);
 
-        const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
+        const { amountsHidden } = storeToRefs(useSettingsStore());
+        const { toggleAmountsHidden } = useSettingsStore();
         const { isFullDesktop } = useWindowSize();
         const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
         // Minimum size to ensure that the amount always keeps a measurable width, by which it can be scaled up again.

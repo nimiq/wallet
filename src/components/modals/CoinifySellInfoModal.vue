@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -63,7 +64,7 @@ import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         return {
             FiatCurrency,

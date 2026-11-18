@@ -349,6 +349,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -428,10 +429,12 @@ export default defineComponent({
             CASHLINK_ADDRESS,
             STAKING_CONTRACT_ADDRESS,
         };
-        const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
+        const transaction = computed(() => useTransactionsStore().$state.transactions[props.hash]);
 
-        const { activeAddressInfo, state: addresses$ } = useAddressStore();
-        const { getLabel, setContact } = useContactsStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
+        const { $state: addresses$ } = useAddressStore();
+        const { getLabel } = storeToRefs(useContactsStore());
+        const { setContact } = useContactsStore();
 
         const state = computed(() => transaction.value.state);
 
@@ -466,7 +469,7 @@ export default defineComponent({
         const hubCashlink = computed(() => {
             if (!isCashlink.value) return null;
 
-            const { state: proxies$ } = useProxyStore();
+            const { $state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming.value ? transaction.value.sender : transaction.value.recipient;
             const cashlink = proxies$.hubCashlinks[cashlinkAddress];
 
@@ -509,7 +512,7 @@ export default defineComponent({
             if (!swapData.value) return null;
 
             if (swapData.value.asset === SwapAsset.BTC) {
-                const btcTx = useBtcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                const btcTx = useBtcTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (!btcTx) return null;
                 return {
                     ...btcTx,
@@ -518,13 +521,13 @@ export default defineComponent({
             }
 
             if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
-                const usdcTx = useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                const usdcTx = useUsdcTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (!usdcTx) return null;
                 return usdcTx;
             }
 
             if (swapData.value.asset === SwapAsset.USDT_MATIC) {
-                const usdtTx = useUsdtTransactionsStore().state.transactions[swapData.value.transactionHash];
+                const usdtTx = useUsdtTransactionsStore().$state.transactions[swapData.value.transactionHash];
                 if (!usdtTx) return null;
                 return usdtTx;
             }
@@ -630,7 +633,7 @@ export default defineComponent({
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
-        const { height: blockHeight } = useNetworkStore();
+        const { height: blockHeight } = storeToRefs(useNetworkStore());
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
@@ -671,7 +674,7 @@ export default defineComponent({
                 const fee = feePerUnit * 167; // 167 = NIM HTLC refunding tx size
 
                 const request: Omit<RefundSwapRequest, 'appName'> = {
-                    accountId: useAccountStore().activeAccountId.value!,
+                    accountId: useAccountStore().activeAccountId!,
                     refund: {
                         type: SwapAsset.NIM,
                         sender: relatedTx.value?.recipient || transaction.value.recipient, // HTLC or proxy address

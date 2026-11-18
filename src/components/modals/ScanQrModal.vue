@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -36,8 +37,8 @@ export default defineComponent({
     setup() {
         const { config } = useConfig();
         const router = useRouter();
-        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const checkResult = (result: string) => {
             console.debug('Scanned QR code:', result); // eslint-disable-line no-console

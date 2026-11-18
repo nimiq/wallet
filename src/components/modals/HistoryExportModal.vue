@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';
@@ -63,7 +64,7 @@ export default defineComponent({
         async function download() {
             if (isExporting.value) return;
             exportError.value = '';
-            const { activeAccountInfo } = useAccountStore();
+            const { activeAccountInfo } = storeToRefs(useAccountStore());
             if (!activeAccountInfo.value) return;
 
             let nimAddresses = [] as string[];
@@ -76,9 +77,9 @@ export default defineComponent({
             let filename = '';
 
             if (props.type === 'address') {
-                const { activeCurrency } = useAccountStore();
+                const { activeCurrency } = storeToRefs(useAccountStore());
                 if (activeCurrency.value === CryptoCurrency.NIM) {
-                    const addressInfo = useAddressStore().activeAddressInfo.value;
+                    const addressInfo = useAddressStore().activeAddressInfo;
                     if (!addressInfo) return;
                     nimAddresses = [addressInfo.address];
                     filename = `Nimiq-Wallet-Address-Export-${addressInfo.label.replace(/\s/g, '-')}`;

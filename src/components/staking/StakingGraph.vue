@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import { formatNumber } from '../../lib/NumberFormatting';
 import { calculateStakingReward } from '../../lib/AlbatrossMath';
@@ -33,7 +34,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { validatorsList, activeValidator } = useStakingStore();
+        const { validatorsList, activeValidator } = storeToRefs(useStakingStore());
 
         const totalStake = computed(() => validatorsList.value.reduce((sum, validator) => sum + validator.balance, 0));
         // assume loading if no validators or total stake is 0

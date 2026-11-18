@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
@@ -98,7 +99,7 @@ export default defineComponent({
     },
     setup(props) {
         const router = useRouter();
-        const { validators: validatorList, stakingEvents } = useStakingStore();
+        const { validators: validatorList, stakingEvents } = storeToRefs(useStakingStore());
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const validators = computed(() => props.validatorsAddresses.map(

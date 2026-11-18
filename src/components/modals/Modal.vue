@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import { nextTick } from '@/lib/nextTick';
@@ -144,7 +145,7 @@ const Modal = defineComponent({
 
         if (props.swipeToClose) {
             const { isMobile, height } = useWindowSize();
-            const { swipingEnabled } = useSettingsStore();
+            const { swipingEnabled } = storeToRefs(useSettingsStore());
 
             const { attachSwipe, detachSwipe } = useSwipes(main$ as Ref<HTMLDivElement>, {
                 onSwipeEnded: updateSwipeRestPosition,

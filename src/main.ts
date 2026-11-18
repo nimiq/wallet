@@ -1,4 +1,5 @@
 import Vue, { watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -7,6 +8,8 @@ import { init as initOasisApi } from '@nimiq/oasis-api';
 // @ts-expect-error missing types for this package
 import VuePortal from '@linusborg/vue-simple-portal';
 
+// Must be imported before any modules that use stores, see pinia.ts
+import { pinia } from './pinia';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
@@ -56,13 +59,14 @@ async function start() {
     await initHubApi();
     syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
-    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
+    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().$state.updateAvailable = hasUpdate);
 
     // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
     // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
     // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
     // remaining time first.
-    const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
+    const { timestamp: lastSuccessfulExchangeRateUpdate } = storeToRefs(useFiatStore());
+    const { updateExchangeRates } = useFiatStore();
     const { isUserInactive } = useInactivityDetection();
     let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
     const TWO_MINUTES = 2 * 60 * 1000;
@@ -93,7 +97,7 @@ async function start() {
     watch(isUserInactive, queueExchangeRateUpdate, { immediate: true });
 
     // Fetch language file
-    const { language } = useSettingsStore();
+    const { language } = storeToRefs(useSettingsStore());
     loadLanguage(language.value);
 
     const { config } = useConfig();
@@ -128,12 +132,13 @@ async function start() {
     new Vue({
         router,
         i18n,
+        pinia,
         render: (h) => h(App),
     }).$mount('#app');
 
     launchNetwork();
 
-    const { state: { activeCurrency } } = useAccountStore();
+    const { $state: { activeCurrency } } = useAccountStore();
 
     watchEffect(() => {
         if (!config.enableBitcoin) return;
@@ -156,12 +161,12 @@ async function start() {
     const addressStore = useAddressStore();
 
     // Recalculate staking fiat values when currency changes
-    watch(fiatStoreInstance.currency, (newCurrency) => {
+    watch(() => fiatStoreInstance.currency, (newCurrency) => {
         stakingStore.calculateMonthlyFiatValues(newCurrency);
     }, { immediate: true });
 
     // Recalculate staking fiat values when active address changes (loads different rewards)
-    watch(addressStore.activeAddress, () => {
+    watch(() => addressStore.activeAddress, () => {
         stakingStore.calculateMonthlyFiatValues();
     }, { immediate: true });
 

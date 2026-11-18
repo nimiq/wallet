@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal from './Modal.vue';
@@ -104,30 +105,30 @@ declare global {
 
 export default defineComponent({
     setup() {
-        const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
-        const fiatCurrencyCode = useFiatStore().state.currency;
-        const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
-        const { stablecoin } = useAccountSettingsStore();
+        const language = useSettingsStore().$state.language; // eslint-disable-line prefer-destructuring
+        const fiatCurrencyCode = useFiatStore().$state.currency;
+        const cryptoCurrencyCode = ref(useAccountStore().$state.activeCurrency);
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
-        const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses.value[0];
+        const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses[0];
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdcAddress = stablecoin.value === CryptoCurrency.USDC
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
         const usdtAddress = stablecoin.value === CryptoCurrency.USDT
-            ? usePolygonAddressStore().activeAddress.value
+            ? usePolygonAddressStore().activeAddress
             : undefined;
 
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
-            nim: useAddressStore().state.activeAddress || undefined,
+            nim: useAddressStore().$state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
             ...(usdcAddress ? { usdc: usdcAddress } : {}),
             ...(usdtAddress ? { usdt: usdtAddress } : {}),

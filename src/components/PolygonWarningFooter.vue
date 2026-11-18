@@ -33,6 +33,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
@@ -52,7 +53,7 @@ export default defineComponent({
     },
     setup() {
         const { width: windowWidth } = useWindowSize();
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const ticker = computed(() => (stablecoin.value || 'usdc').toUpperCase());
 

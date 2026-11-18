@@ -262,6 +262,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -367,7 +368,7 @@ export default defineComponent({
         const estimate = ref<Estimate | null>(null);
         const estimateError = ref<string | null>(null);
 
-        const { activeAccountInfo } = useAccountStore();
+        const { activeAccountInfo } = storeToRefs(useAccountStore());
 
         const leftAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
@@ -398,23 +399,26 @@ export default defineComponent({
             return i18n.t('{disabledAsset} swaps are currently under maintenance.', { disabledAsset }) as string;
         });
 
-        const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
+        const { activeSwap: swap } = storeToRefs(useSwapsStore());
+        const { setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string | null>(null);
 
         const currentlySigning = ref(false);
 
         const assets = ref<AssetList | null>(null);
 
-        const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
-        const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
+        const { accountBalance: accountBtcBalance, accountUtxos } = storeToRefs(useBtcAddressStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { selectAddress } = useAddressStore();
         const {
             activeAddress: activePolygonAddress,
             accountUsdcBalance,
             accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { exchangeRates, currency, state: fiat$ } = useFiatStore();
-        const { connectedUser: kycUser } = useKycStore();
+        } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { exchangeRates, currency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
+        const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
         onMounted(() => {
             if (!swap.value) {
@@ -1447,7 +1451,7 @@ export default defineComponent({
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
 
-                const { availableExternalAddresses } = useBtcAddressStore();
+                const { availableExternalAddresses } = storeToRefs(useBtcAddressStore());
                 const nimAddress = activeAddressInfo.value!.address;
                 const btcAddress = availableExternalAddresses.value[0];
 
@@ -1456,7 +1460,7 @@ export default defineComponent({
                     await nimiqClient.waitForConsensusEstablished();
                     const headHeight = await nimiqClient.getHeadHeight();
                     if (headHeight > 100) {
-                        useNetworkStore().state.height = headHeight;
+                        useNetworkStore().$state.height = headHeight;
                     } else {
                         throw new Error('Invalid network state, try please reloading the app');
                     }
@@ -1466,7 +1470,7 @@ export default defineComponent({
                         sender: nimAddress,
                         value: swapSuggestion.from.amount,
                         fee: swapSuggestion.from.fee,
-                        validityStartHeight: useNetworkStore().state.height,
+                        validityStartHeight: useNetworkStore().$state.height,
                     };
                 }
 
@@ -1480,7 +1484,7 @@ export default defineComponent({
                         accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
                     let changeAddress: string;
                     if (requiredInputs.changeAmount > 0) {
-                        const { nextChangeAddress } = useBtcAddressStore();
+                        const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
                         if (!nextChangeAddress.value) {
                             // FIXME: If no unused change address is found, need to request new ones from Hub!
                             throw new Error('No more unused change addresses (not yet implemented)');
@@ -1522,7 +1526,7 @@ export default defineComponent({
                     await nimiqClient.waitForConsensusEstablished();
                     const headHeight = await nimiqClient.getHeadHeight();
                     if (headHeight > 100) {
-                        useNetworkStore().state.height = headHeight;
+                        useNetworkStore().$state.height = headHeight;
                     } else {
                         throw new Error('Invalid network state, try please reloading the app');
                     }
@@ -1532,7 +1536,7 @@ export default defineComponent({
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
-                        validityStartHeight: useNetworkStore().state.height,
+                        validityStartHeight: useNetworkStore().$state.height,
                     };
                 }
 
@@ -1572,7 +1576,7 @@ export default defineComponent({
                     * swapSuggestion.serviceFeePercentage,
                 );
 
-                const { addressInfos } = useAddressStore();
+                const { accountAddressInfos: addressInfos } = storeToRefs(useAddressStore());
 
                 const request: Omit<SetupSwapRequest, 'appName'> = {
                     accountId: activeAccountInfo.value!.id,
@@ -1786,7 +1790,7 @@ export default defineComponent({
             onInput(asset, cappedAmount || amount, amount);
         }
 
-        const { btcUnit } = useSettingsStore();
+        const { btcUnit } = storeToRefs(useSettingsStore());
 
         const addressListOverlayOpened = ref(false);
 
@@ -1807,7 +1811,7 @@ export default defineComponent({
                 && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC);
         }
 
-        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SupportedSwapAsset) {

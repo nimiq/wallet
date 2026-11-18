@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import router from '@/router';
@@ -46,12 +47,12 @@ export default defineComponent({
     },
     setup(props) {
         const { config } = useConfig();
-        const { currency } = useFiatStore();
-        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { activeAddress } = useAddressStore();
-        const { availableExternalAddresses } = useBtcAddressStore();
-        const { activeAddress: polygonActiveAddress } = usePolygonAddressStore();
+        const { currency } = storeToRefs(useFiatStore());
+        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { activeAddress } = storeToRefs(useAddressStore());
+        const { availableExternalAddresses } = storeToRefs(useBtcAddressStore());
+        const { activeAddress: polygonActiveAddress } = storeToRefs(usePolygonAddressStore());
 
         // Construct widget iframe URL
         const widgetAddresses = new Map<string, string>();

@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
 import { Node, NodeType } from '../lib/NetworkMap';
@@ -45,7 +46,7 @@ export default defineComponent({
     },
     setup(props) {
         const i18nCountryName = new I18nDisplayNames('region');
-        const { language } = useSettingsStore();
+        const { language } = storeToRefs(useSettingsStore());
 
         function getPeerCity(peer: Node) {
             const fallbackCityName = peer.locationData.city;

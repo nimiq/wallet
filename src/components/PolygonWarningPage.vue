@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import StopSignIcon from './icons/StopSignIcon.vue';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
@@ -47,7 +48,7 @@ export default defineComponent({
         },
     },
     setup() {
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const ticker = computed(() => (stablecoin.value || 'usdc').toUpperCase());
 

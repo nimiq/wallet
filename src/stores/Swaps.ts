@@ -1,5 +1,5 @@
 import type { PlainTransactionDetails } from '@nimiq/core';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
@@ -124,8 +124,7 @@ export type SwapsState = {
     promoBoxVisible: boolean,
 };
 
-export const useSwapsStore = createStore({
-    id: 'swaps',
+export const useSwapsStore = defineStore('swaps', {
     state: (): SwapsState => ({
         swaps: {},
         swapByTransaction: {},
@@ -141,23 +140,21 @@ export const useSwapsStore = createStore({
                 if (!swapHash) return null;
                 return state.swaps[swapHash] || null;
             },
-        activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
-        promoBoxVisible: (state): Readonly<boolean> => state.promoBoxVisible,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
-            this.state.swaps = {
-                ...this.state.swaps,
+            this.$state.swaps = {
+                ...this.$state.swaps,
                 [hash]: swap,
             };
-            this.state.swapByTransaction = {
-                ...this.state.swapByTransaction,
+            this.$state.swapByTransaction = {
+                ...this.$state.swapByTransaction,
                 ...(swap.in && 'transactionHash' in swap.in ? { [swap.in.transactionHash]: hash } : {}),
                 ...(swap.out && 'transactionHash' in swap.out ? { [swap.out.transactionHash]: hash } : {}),
             };
         },
         addFundingData(hash: string, data: SwapData, newSwapData: Swap = {}) {
-            const swap: Swap = this.state.swaps[hash] || {};
+            const swap: Swap = this.$state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
                 in: data,
@@ -165,7 +162,7 @@ export const useSwapsStore = createStore({
             });
         },
         addSettlementData(hash: string, data: SwapData, newSwapData: Swap = {}) {
-            const swap: Swap = this.state.swaps[hash] || {};
+            const swap: Swap = this.$state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
                 out: data,
@@ -173,10 +170,10 @@ export const useSwapsStore = createStore({
             });
         },
         setActiveSwap(swap: ActiveSwap | null) {
-            this.state.activeSwap = swap;
+            this.$state.activeSwap = swap;
         },
         setPromoBoxVisible(visible: boolean) {
-            this.state.promoBoxVisible = visible;
+            this.$state.promoBoxVisible = visible;
         },
 
         async detectSwapFiatCounterpart(
@@ -190,7 +187,7 @@ export const useSwapsStore = createStore({
                 ? [this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const
                 : [this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const;
             const otherCurrency = assetToCurrency(otherAsset);
-            const swap = this.state.swaps[hashRoot];
+            const swap = this.$state.swaps[hashRoot];
             if (!swap || !!swap[swapProp]) return; // not a swap, or counterpart already known
             const contractWithEstimate = await getContract(otherAsset, contractAddress).catch(() => undefined);
             if (contractWithEstimate?.[contractProp].asset !== SwapAsset.EUR) return; // No contract or no EUR

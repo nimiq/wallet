@@ -82,6 +82,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, watchEffect, onMounted, onUnmounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -108,8 +109,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddress, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
-        const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
+        const { activeAddress, activeAddressInfo, transactionsForActiveAddress } = storeToRefs(useAddressStore());
+        const { isFetchingTxHistory, fetchedAddresses } = storeToRefs(useNetworkStore());
         const { config } = useConfig();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away

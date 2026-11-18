@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CryptoCurrency } from '@nimiq/utils';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';
@@ -66,9 +67,12 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { addressInfo } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore());
+        const { setContact } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcContactsStore()
             : useUsdtContactsStore();
 

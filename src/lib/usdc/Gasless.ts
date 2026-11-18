@@ -279,7 +279,7 @@ async function decidePayment(payment: GaslessPayment, timeoutMs?: number): Promi
         if (tx) tokenTransactionsStore(tx.token!).addTransactions([tx]);
     } else if (outcome.status === 'expired') {
         // Only this version expired. If a later version of the payment was signed meanwhile, its own check decides.
-        const stored = store.state.payments[gaslessPaymentKey(latest.request)];
+        const stored = store.$state.payments[gaslessPaymentKey(latest.request)];
         if (stored && stored.id !== payment.id) return null;
         // No version can execute anymore, and the nonce is still unused: the next payment takes it again.
         store.settle(latest.request, nonce);
@@ -292,7 +292,7 @@ async function decidePayment(payment: GaslessPayment, timeoutMs?: number): Promi
 
 const settling = new Set<string>();
 function settleInBackground(request: Pick<TransferRequest, 'from' | 'nonce'>) {
-    const payment = useGaslessPaymentsStore().state.payments[gaslessPaymentKey(request)];
+    const payment = useGaslessPaymentsStore().$state.payments[gaslessPaymentKey(request)];
     if (!payment || settling.has(payment.id)) return;
     settling.add(payment.id);
     decidePayment(payment).catch((error) => {
@@ -306,7 +306,7 @@ let resumed = false;
 export function resumePendingGaslessPayments() {
     if (resumed || !isGaslessTransferConfigured()) return;
     resumed = true;
-    for (const payment of Object.values(useGaslessPaymentsStore().state.payments)) {
+    for (const payment of Object.values(useGaslessPaymentsStore().$state.payments)) {
         settleInBackground(payment.latest.request);
     }
 }
@@ -345,7 +345,7 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     sign: (request: Omit<SignPolygonGaslessTransferRequest, 'appName'>)
         => Promise<SignedPolygonGaslessTransfer | null | void>,
 }): Promise<Transaction | null> {
-    const addressInfo = usePolygonAddressStore().addressInfo.value;
+    const { addressInfo } = usePolygonAddressStore();
     if (!addressInfo) throw new Error('No active Polygon address');
     const from = addressInfo.address;
 
@@ -367,7 +367,7 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
 
     // The sender's open payment. A new payment takes the sender's `nonces(from)`, which stays at the open payment's
     // nonce until that one is decided, so there is at most one.
-    const open: GaslessPayment | undefined = Object.values(store.state.payments)
+    const open: GaslessPayment | undefined = Object.values(store.$state.payments)
         .filter(({ latest }) => core.sameAddress(latest.request.from, from))
         .sort((a, b) => b.signedAt - a.signedAt)[0];
     // A payment of the same token to the same recipient that failed as far as the user was told (`corrects`, or as
@@ -425,7 +425,7 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
             null,
         );
     }
-    if (!corrects && nonce < BigInt(store.state.minNonces[from.toLowerCase()] || '0')) {
+    if (!corrects && nonce < BigInt(store.$state.minNonces[from.toLowerCase()] || '0')) {
         // An RPC node behind the chain could hand out a nonce that an earlier payment used
         throw new GaslessTransferError('The Polygon network is not up to date. Please try again shortly.', null);
     }

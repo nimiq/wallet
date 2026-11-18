@@ -1,5 +1,5 @@
 import { UserLimits } from '@nimiq/fastspot-api';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useConfig } from '../composables/useConfig';
 
@@ -24,8 +24,7 @@ export type KycState = {
     kycLimits: UserLimits | null,
 };
 
-export const useKycStore = createStore({
-    id: 'kyc',
+export const useKycStore = defineStore('kyc', {
     state: (): KycState => ({
         connectedUsers: {},
         kycLimits: null,
@@ -35,26 +34,25 @@ export const useKycStore = createStore({
             if (!useConfig().config.ten31Pass.enabled) return null;
 
             const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return null;
+            if (!activeAccountId) return null;
 
-            return state.connectedUsers[activeAccountId.value] || null;
+            return state.connectedUsers[activeAccountId] || null;
         },
-        kycLimits: (state): Readonly<UserLimits | null> => state.kycLimits,
     },
     actions: {
         connect(accountId: string, user: KycUser) {
-            this.state.connectedUsers = {
-                ...this.state.connectedUsers,
+            this.$state.connectedUsers = {
+                ...this.$state.connectedUsers,
                 [accountId]: user,
             };
         },
         disconnect(accountId: string) {
-            const connectedUsers = { ...this.state.connectedUsers };
+            const connectedUsers = { ...this.$state.connectedUsers };
             delete connectedUsers[accountId];
-            this.state.connectedUsers = connectedUsers;
+            this.$state.connectedUsers = connectedUsers;
         },
         setKycLimits(limits: UserLimits) {
-            this.state.kycLimits = limits;
+            this.$state.kycLimits = limits;
         },
     },
 });

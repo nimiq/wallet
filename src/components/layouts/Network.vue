@@ -87,6 +87,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { isGaslessTransferConfigured, quoteGaslessFee } from '@/lib/usdc/Gasless';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -111,7 +112,7 @@ const LOCALSTORAGE_KEY = 'network-info-dismissed';
 export default defineComponent({
     setup() {
         const { $t } = useI18n();
-        const { consensus, peerCount } = useNetworkStore();
+        const { effectiveConsensus: consensus, peerCount } = storeToRefs(useNetworkStore());
         const { config } = useConfig();
 
         const consensusStateString = computed(() => ({
@@ -137,7 +138,7 @@ export default defineComponent({
             map$.value!.scrollTo(scrollTarget, 0);
         }
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable } = storeToRefs(useSettingsStore());
 
         const btcFee = ref(0);
         const polygonFee = ref(0);
@@ -177,7 +178,7 @@ export default defineComponent({
             }
         }
 
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         return {
             CryptoCurrency,

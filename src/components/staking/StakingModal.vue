@@ -89,6 +89,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useI18n } from '@/lib/useI18n';
 import { RouteName, STAKING_QUERY_SHOW_VALIDATORS, useRouter } from '@/router';
 import { useStakingStore, Validator } from '../../stores/Staking';
@@ -136,8 +137,14 @@ export default defineComponent({
     },
     setup(props) {
         const { $t } = useI18n();
-        const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activeStake, totalAccountStake, totalActiveStake, monthlyRewards } = useStakingStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
+        const {
+            activeValidator,
+            activeStake,
+            totalAccountStake,
+            totalActiveStake,
+            monthlyRewards,
+        } = storeToRefs(useStakingStore());
 
         const router = useRouter();
 

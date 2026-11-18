@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { shouldUseRedirects } from '../hub';
 import { detectLanguage, loadLanguage } from '../i18n/i18n-setup';
 import { Trial } from '../lib/Trials';
@@ -48,8 +48,7 @@ export type SettingsState = {
     hubBehavior: HubBehavior,
 };
 
-export const useSettingsStore = createStore({
-    id: 'settings',
+export const useSettingsStore = defineStore('settings', {
     state: (): SettingsState => ({
         decimals: 0,
         language: detectLanguage(),
@@ -64,53 +63,42 @@ export const useSettingsStore = createStore({
         hubBehavior: 'auto',
     }),
     getters: {
-        decimals: (state): Readonly<NimDecimals> => state.decimals,
-        language: (state): Readonly<string> => state.language,
-        colorMode: (state): Readonly<ColorMode> => state.colorMode,
-        amountsHidden: (state): Readonly<boolean> => state.amountsHidden,
-        btcDecimals: (state): Readonly<BtcDecimals> => state.btcDecimals,
-        btcUnit: (state): Readonly<BtcUnit> => state.btcUnit,
-        usdcDecimals: (state): Readonly<UsdcDecimals> => state.usdcDecimals,
-        swipingEnabled: (state): Readonly<SwipingEnabled> => state.swipingEnabled,
-        trials: (state): Readonly<Trial[]> => state.trials,
-        updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
-        hubBehavior: (state): Readonly<HubBehavior> => state.hubBehavior,
         canUseSwaps: () => !shouldUseRedirects(), // depends on hubBehavior
     },
     actions: {
         setDecimals(num: NimDecimals = 0) {
-            this.state.decimals = num;
+            this.$state.decimals = num;
         },
         setLanguage(language: string) {
             loadLanguage(language);
-            this.state.language = language;
+            this.$state.language = language;
         },
         setColorMode(colorMode: ColorMode) {
             if (Object.values(ColorMode).includes(colorMode)) {
-                this.state.colorMode = colorMode;
+                this.$state.colorMode = colorMode;
             }
         },
         toggleAmountsHidden() {
-            this.state.amountsHidden = !this.state.amountsHidden;
+            this.$state.amountsHidden = !this.$state.amountsHidden;
         },
         setBtcDecimals(num: BtcDecimals = 0) {
-            this.state.btcDecimals = num;
+            this.$state.btcDecimals = num;
         },
         setBtcUnit(unit: 'btc' | 'mbtc') {
-            this.state.btcUnit = BtcUnits[unit];
+            this.$state.btcUnit = BtcUnits[unit];
         },
         setUsdcDecimals(num: UsdcDecimals = 2) {
-            this.state.usdcDecimals = num;
+            this.$state.usdcDecimals = num;
         },
         setSwipingEnabled(set: SwipingEnabled) {
-            this.state.swipingEnabled = set;
+            this.$state.swipingEnabled = set;
         },
         enableTrial(trial: Trial) {
-            if (this.state.trials.includes(trial)) return;
-            this.state.trials.push(trial);
+            if (this.$state.trials.includes(trial)) return;
+            this.$state.trials.push(trial);
         },
         setHubBehavior(behavior: HubBehavior) {
-            this.state.hubBehavior = behavior;
+            this.$state.hubBehavior = behavior;
         },
     },
 });

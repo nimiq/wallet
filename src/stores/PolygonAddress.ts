@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { useAccountStore } from './Account';
 // import { useUsdcTransactionsStore } from './UsdcTransactions';
 
@@ -14,15 +14,14 @@ export type PolygonAddressInfo = {
     pol: number | null, // For testing until OpenGSN contract is available
 };
 
-export const usePolygonAddressStore = createStore({
-    id: 'polygonAddresses',
+export const usePolygonAddressStore = defineStore('polygonAddresses', {
     state: (): PolygonAddressState => ({
         addressInfos: {},
     }),
     getters: {
         addressInfo: (state): PolygonAddressInfo | undefined => {
             const { activeAccountInfo } = useAccountStore();
-            if (!activeAccountInfo.value?.polygonAddresses?.length) return undefined;
+            if (!activeAccountInfo?.polygonAddresses?.length) return undefined;
 
             // TODO: Subtract pending outgoing balance from
             // addressInfo.balanceUsdcBridged / balanceUsdc / balanceUsdtBridged
@@ -30,22 +29,23 @@ export const usePolygonAddressStore = createStore({
             // const { pendingTransactionsBySender } = useUsdtTransactionsStore();
 
             // Only supports one USDC address per account for now
-            return state.addressInfos[activeAccountInfo.value.polygonAddresses[0]];
+            return state.addressInfos[activeAccountInfo.polygonAddresses[0]];
         },
-        activeAddress: (state, { addressInfo }): string | undefined =>
-            (addressInfo.value as PolygonAddressInfo | undefined)?.address,
-        accountUsdcBridgedBalance: (state, { addressInfo }) => {
-            const ai = addressInfo.value as PolygonAddressInfo | undefined;
+        activeAddress(): string | undefined {
+            return (this.addressInfo as PolygonAddressInfo | undefined)?.address;
+        },
+        accountUsdcBridgedBalance(): number {
+            const ai = this.addressInfo as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdcBridged === null) return 0;
             return ai.balanceUsdcBridged;
         },
-        accountUsdcBalance: (state, { addressInfo }) => {
-            const ai = addressInfo.value as PolygonAddressInfo | undefined;
+        accountUsdcBalance(): number {
+            const ai = this.addressInfo as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdc === null) return 0;
             return ai.balanceUsdc;
         },
-        accountUsdtBridgedBalance: (state, { addressInfo }) => {
-            const ai = addressInfo.value as PolygonAddressInfo | undefined;
+        accountUsdtBridgedBalance(): number {
+            const ai = this.addressInfo as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdtBridged === null) return 0;
             return ai.balanceUsdtBridged;
         },
@@ -54,8 +54,8 @@ export const usePolygonAddressStore = createStore({
         addAddressInfo(addressInfo: PolygonAddressInfo) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new addressInfo in Vue 3.
-            this.state.addressInfos = {
-                ...this.state.addressInfos,
+            this.$state.addressInfos = {
+                ...this.$state.addressInfos,
                 [addressInfo.address]: addressInfo,
             };
         },
@@ -66,24 +66,24 @@ export const usePolygonAddressStore = createStore({
                 newAddressInfos[addressInfo.address] = addressInfo;
             }
 
-            this.state.addressInfos = newAddressInfos;
+            this.$state.addressInfos = newAddressInfos;
 
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
         patchAddress(address: string, patch: Partial<PolygonAddressInfo>) {
-            if (!this.state.addressInfos[address]) return;
+            if (!this.$state.addressInfos[address]) return;
 
-            this.state.addressInfos[address] = {
-                ...this.state.addressInfos[address],
+            this.$state.addressInfos[address] = {
+                ...this.$state.addressInfos[address],
                 ...patch,
             };
         },
         removeAddresses(addresses: string[]) {
-            const addressInfos = { ...this.state.addressInfos };
+            const addressInfos = { ...this.$state.addressInfos };
             for (const address of addresses) {
                 delete addressInfos[address];
             }
-            this.state.addressInfos = addressInfos;
+            this.$state.addressInfos = addressInfos;
         },
     },
 });

@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import { CryptoCurrency } from '@nimiq/utils';
 
 import { nextTick } from '@/lib/nextTick';
@@ -134,7 +135,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddressInfo } = useAddressStore();
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
 
         const alreadyStakedAmount = computed(() => props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);

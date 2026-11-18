@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import Ten31PassApi from '@nimiq/ten31-pass-api';
 import { useAccountStore } from '../stores/Account';
 import { KycProvider, useKycStore } from '../stores/Kyc';
@@ -8,7 +9,7 @@ import { i18n } from '../i18n/i18n-setup';
 let ten31PassApi: Ten31PassApi;
 
 export function init() {
-    const { connectedUser } = useKycStore();
+    const { connectedUser } = storeToRefs(useKycStore());
     const { config } = useConfig();
 
     ten31PassApi = new Ten31PassApi(config.ten31Pass.apiEndpoint);
@@ -30,7 +31,7 @@ export function init() {
 export async function connectKyc(provider = KycProvider.TEN31PASS) {
     if (provider !== KycProvider.TEN31PASS) throw new Error('Unsupported KYC provider');
 
-    const accountId = useAccountStore().activeAccountId.value;
+    const accountId = useAccountStore().activeAccountId;
     if (!accountId) return;
 
     const { config } = useConfig();
@@ -55,7 +56,7 @@ export async function connectKyc(provider = KycProvider.TEN31PASS) {
 }
 
 export function disconnectKyc() {
-    const accountId = useAccountStore().activeAccountId.value;
+    const accountId = useAccountStore().activeAccountId;
     if (!accountId) return;
 
     useKycStore().disconnect(accountId);

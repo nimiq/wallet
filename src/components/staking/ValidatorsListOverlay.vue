@@ -54,6 +54,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
 import { useFiatStore } from '@/stores/Fiat';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
@@ -84,8 +85,8 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { stakingEvents } = useStakingStore();
-        const { currency: preferredFiatCurrency } = useFiatStore();
+        const { stakingEvents } = storeToRefs(useStakingStore());
+        const { currency: preferredFiatCurrency } = storeToRefs(useFiatStore());
         const { $t, locale } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 

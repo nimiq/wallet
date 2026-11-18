@@ -166,6 +166,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
@@ -191,10 +192,10 @@ type Country = {
 export default defineComponent({
     name: 'buy-options-modal',
     setup() {
-        const { activeCurrency: cryptoCurrency } = useAccountStore();
-        const { currency: fiatCurrency } = useFiatStore();
-        const { canUseSwaps/* , trials */ } = useSettingsStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { activeCurrency: cryptoCurrency } = storeToRefs(useAccountStore());
+        const { currency: fiatCurrency } = storeToRefs(useFiatStore());
+        const { canUseSwaps } = storeToRefs(useSettingsStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const { config } = useConfig();
 
         const country = ref<Country | null>(null);

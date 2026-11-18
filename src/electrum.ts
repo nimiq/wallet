@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { watch, computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import { useConfig } from './composables/useConfig';
@@ -104,7 +105,7 @@ export async function checkHistory(
     checkForReuse = false,
 ): Promise<number> {
     const client = await getElectrumClient();
-    const { state: btcNetwork$ } = useBtcNetworkStore();
+    const { $state: btcNetwork$ } = useBtcNetworkStore();
     const btcTransactionsStore = useBtcTransactionsStore();
 
     let counter = 0;
@@ -129,7 +130,7 @@ export async function checkHistory(
         counter += 1;
 
         const knownTxDetails = addressInfo.txoCount
-            ? Object.values(btcTransactionsStore.state.transactions)
+            ? Object.values(btcTransactionsStore.$state.transactions)
                 .filter((tx) => tx.addresses.includes(address))
             : [];
 
@@ -172,8 +173,8 @@ export async function launchElectrum() {
 
     const client = await getElectrumClient();
 
-    const { state: btcNetwork$ } = useBtcNetworkStore();
-    const { activeAccountInfo } = useAccountStore();
+    const { $state: btcNetwork$ } = useBtcNetworkStore();
+    const { activeAccountInfo } = storeToRefs(useAccountStore());
     const btcTransactionsStore = useBtcTransactionsStore();
     const btcAddressStore = useBtcAddressStore();
     const { config } = useConfig();
@@ -190,7 +191,7 @@ export async function launchElectrum() {
 
     client.addHeadChangedListener((header) => {
         console.debug('Bitcoin head is now at', header.blockHeight);
-        useBtcNetworkStore().patch({
+        useBtcNetworkStore().$patch({
             height: header.blockHeight,
             timestamp: header.timestamp,
         });
@@ -231,7 +232,7 @@ export async function launchElectrum() {
         const account = accountInfo as AccountInfo | null;
         if (!account) return;
 
-        const { addressSet, activeAddresses } = btcAddressStore;
+        const { addressSet, activeAddresses } = storeToRefs(btcAddressStore);
 
         // If this account doesn't have any Bitcoin addresses, there's nothing to check.
         if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
@@ -242,7 +243,7 @@ export async function launchElectrum() {
 
         // Check pending transactions
         // Get all transactions for the active addresses
-        const pendingTransactions = Object.values(btcTransactionsStore.state.transactions)
+        const pendingTransactions = Object.values(btcTransactionsStore.$state.transactions)
             .filter((tx) => !tx.timestamp
                 && tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress)));
 
@@ -297,8 +298,8 @@ export async function launchElectrum() {
         subscribeToAddresses(addressesToWatch);
     }, { immediate: true });
 
-    const { addressSet } = btcAddressStore;
-    const { isFetchingTxHistory } = useBtcNetworkStore();
+    const { addressSet } = storeToRefs(btcAddressStore);
+    const { isFetchingTxHistory } = storeToRefs(useBtcNetworkStore());
 
     // Subscribe to all unused external addresses until the gap limit
     const unusedExternalAddresses = computed(() => {
@@ -317,7 +318,7 @@ export async function launchElectrum() {
         }).map(({ address }) => address);
 
         if (gap < BTC_ADDRESS_GAP) {
-            addBtcAddresses(useAccountStore().activeAccountId.value!, 'external', BTC_ADDRESS_GAP - gap);
+            addBtcAddresses(useAccountStore().activeAccountId!, 'external', BTC_ADDRESS_GAP - gap);
         }
 
         return addresses;
@@ -369,7 +370,7 @@ export async function launchElectrum() {
 
         // When only 2 unused change addresses are left, get new ones from Hub
         if (unusedAddresses.length <= 2) {
-            addBtcAddresses(useAccountStore().activeAccountId.value!, 'internal');
+            addBtcAddresses(useAccountStore().activeAccountId!, 'internal');
         }
 
         return unusedAddresses[0];

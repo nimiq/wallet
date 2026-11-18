@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { RouteName } from '@/router';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
@@ -32,8 +33,8 @@ import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     setup() {
-        const { activeStake: stake, restakingRewards } = useStakingStore();
-        const { activeAddressInfo } = useAddressStore();
+        const { activeStake: stake, restakingRewards } = storeToRefs(useStakingStore());
+        const { activeAddressInfo } = storeToRefs(useAddressStore());
 
         const currentPercentage = computed(() => {
             const alreadyStakedAmount = stake.value?.activeBalance || 0;

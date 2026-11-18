@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
@@ -24,8 +24,7 @@ const VALID_TRANSACTION_STATES = [
 
 const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
 
-export const useBtcTransactionsStore = createStore({
-    id: 'btcTransactions',
+export const useBtcTransactionsStore = defineStore('btcTransactions', {
     state: () => ({
         transactions: {} as {[hash: string]: Transaction},
     }),
@@ -45,7 +44,7 @@ export const useBtcTransactionsStore = createStore({
             if (!txs.length) return;
 
             const txDetails = txs.map((tx) => {
-                const knownTx = this.state.transactions[tx.transactionHash];
+                const knownTx = this.$state.transactions[tx.transactionHash];
 
                 // Collect all addresses used in this transaction (for convenience)
                 const inputAddresses = tx.inputs
@@ -87,8 +86,8 @@ export const useBtcTransactionsStore = createStore({
 
             // Need to re-assign the whole object in Vue 2 for change detection.
             // TODO: Simply assign transactions in Vue 3.
-            this.state.transactions = {
-                ...this.state.transactions,
+            this.$state.transactions = {
+                ...this.$state.transactions,
                 ...newTxs,
             };
 
@@ -108,22 +107,22 @@ export const useBtcTransactionsStore = createStore({
                 }
             }
 
-            const { applyTransactionsToUtxos/* , revertTransactionsFromUtxos */ } = useBtcAddressStore();
-            applyTransactionsToUtxos(appliedTransactions, this.spentInputs.value);
+            const { applyTransactionsToUtxos } = useBtcAddressStore();
+            applyTransactionsToUtxos(appliedTransactions, this.spentInputs);
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
         async calculateFiatAmounts(transactions?: Transaction[], fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
-            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            fiatCurrency = fiatCurrency || fiatStore.currency;
             const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
                 ? fiatCurrency
                 : FiatCurrency.USD;
-            const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
-            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
-            const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[FiatCurrency.USD];
-            const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
+            const lastExchangeRateUpdateTime = fiatStore.timestamp;
+            const currentRate = fiatStore.exchangeRates[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
+            const currentUsdRate = fiatStore.exchangeRates[CryptoCurrency.BTC]?.[FiatCurrency.USD];
+            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter((tx) =>
                 // Only update fiat amount if neither completely set for actual fiatCurrency nor historyFiatCurrency.
                 // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
                 // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
@@ -141,7 +140,7 @@ export const useBtcTransactionsStore = createStore({
 
             scheduledHistoricFiatAmountUpdates[historyFiatCurrency] ||= new Set();
             const historicTransactions: typeof transactionsToUpdate = [];
-            const { swapByTransaction } = useSwapsStore().state;
+            const { swapByTransaction } = useSwapsStore().$state;
 
             for (const tx of transactionsToUpdate) {
                 for (const output of tx.outputs) {
@@ -184,7 +183,7 @@ export const useBtcTransactionsStore = createStore({
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction from the store in case the object changed in the meantime due to
                     // calculation of txDetails in addTransactions.
-                    tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
+                    tx = this.$state.transactions[tx.transactionHash] as typeof tx || tx;
                     for (const output of tx.outputs) {
                         Vue.set(output.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
                             ? exchangeRate * (output.value / 1e8)
@@ -198,15 +197,15 @@ export const useBtcTransactionsStore = createStore({
 
             // Manually notify the store of the deep changes to trigger subscriptions.
             // TODO this hack is likely not necessary in newer pinia versions.
-            this.patch({});
+            this.$patch({});
         },
 
         removeTransactions(txs: Transaction[]) {
-            const transactions = { ...this.state.transactions };
+            const transactions = { ...this.$state.transactions };
             for (const tx of txs) {
                 delete transactions[tx.transactionHash];
             }
-            this.state.transactions = transactions;
+            this.$state.transactions = transactions;
         },
     },
 });
@@ -214,7 +213,7 @@ export const useBtcTransactionsStore = createStore({
 // Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
 // other methods that do so.
 async function detectSwap(transaction: Transaction) {
-    const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
+    const { $state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
     if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
 
     const [fundingData, refundingData, settlementData] = await Promise.all([

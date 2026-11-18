@@ -81,6 +81,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { InfoCircleSmallIcon, Amount, CircleSpinner, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
@@ -105,8 +106,8 @@ import { reportToSentry } from '../../lib/Sentry';
 export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator } = useStakingStore();
+        const { activeAddress } = storeToRefs(useAddressStore());
+        const { activeStake, activeValidator } = storeToRefs(useStakingStore());
 
         const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
         const stakeDelta = ref(0);

@@ -1,6 +1,7 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
 import { computed, onUnmounted, ref, getCurrentInstance, Ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';
@@ -14,11 +15,11 @@ import { estimateFees, selectOutputs } from '../../BitcoinTransactionUtils';
 import { btcMaxSendableAmount } from './SellUtils';
 import { FundingFees, getEurPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
 
-const { exchangeRates } = useFiatStore();
-const { activeCurrency } = useAccountStore();
-const { btcUnit } = useSettingsStore();
-const { accountUtxos } = useBtcAddressStore();
-const { connectedUser: kycUser } = useKycStore();
+const { exchangeRates } = storeToRefs(useFiatStore());
+const { activeCurrency } = storeToRefs(useAccountStore());
+const { btcUnit } = storeToRefs(useSettingsStore());
+const { accountUtxos } = storeToRefs(useBtcAddressStore());
+const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
 /**
  * Common - everything common to Buy and Sell crypto

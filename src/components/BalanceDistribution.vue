@@ -35,6 +35,7 @@
 
 <script lang="ts">
 import Vue, { defineComponent, computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
@@ -58,22 +59,22 @@ interface CurrencyArc {
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
-        const { currency: fiatCurrency, exchangeRates } = useFiatStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { currency: fiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const cryptoBalances = computed(() => ({
             [CryptoCurrency.NIM]: (
-                useAddressStore().accountBalance.value
-                + useStakingStore().totalAccountStake.value
+                useAddressStore().accountBalance
+                + useStakingStore().totalAccountStake
             ) / 1e5,
-            [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
+            [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance / 1e8,
             ...(stablecoin.value === CryptoCurrency.USDC ? {
                 [CryptoCurrency.USDC]: (
-                    usePolygonAddressStore().accountUsdcBalance.value
-                    + usePolygonAddressStore().accountUsdcBridgedBalance.value
+                    usePolygonAddressStore().accountUsdcBalance
+                    + usePolygonAddressStore().accountUsdcBridgedBalance
                 ) / 1e6,
             } : {}),
             ...(stablecoin.value === CryptoCurrency.USDT ? {
-                [CryptoCurrency.USDT]: usePolygonAddressStore().accountUsdtBridgedBalance.value / 1e6,
+                [CryptoCurrency.USDT]: usePolygonAddressStore().accountUsdtBridgedBalance / 1e6,
             } : {}),
         }));
 

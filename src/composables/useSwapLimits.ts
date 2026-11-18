@@ -1,4 +1,5 @@
 import { ref, watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
 import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { SwapEurData, useSwapsStore } from '../stores/Swaps';
@@ -14,10 +15,10 @@ import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../sto
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../stores/UsdtTransactions';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
-const { activeCurrency } = useAccountStore();
-const { activeAddress } = useAddressStore();
-const { exchangeRates } = useFiatStore();
-const { connectedUser: kycUser } = useKycStore();
+const { activeCurrency } = storeToRefs(useAccountStore());
+const { activeAddress } = storeToRefs(useAddressStore());
+const { exchangeRates } = storeToRefs(useFiatStore());
+const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
 export type SwapLimits = {
     current: { usd: number, luna: number, sat: number, cent: number, eur: number },
@@ -45,7 +46,7 @@ watchEffect(async () => {
         // If user is KYC-connected, there is no need to query limits by UID,
         // because the KYC UID limits are included in the asset limit requests.
         ? undefined
-        : useAccountStore().activeAccountInfo.value?.uid;
+        : useAccountStore().activeAccountInfo?.uid;
 
     if (debouncing) return;
     debouncing = true;
@@ -74,14 +75,14 @@ watchEffect(async () => {
         kycUser.value?.id,
     );
 
-    const { accountNimAddresses } = useAccountStore();
-    const { activeAddresses } = useBtcAddressStore();
-    const { addressInfo: polygonAddressInfo } = usePolygonAddressStore();
+    const { accountNimAddresses } = storeToRefs(useAccountStore());
+    const { activeAddresses } = storeToRefs(useBtcAddressStore());
+    const { addressInfo: polygonAddressInfo } = storeToRefs(usePolygonAddressStore());
 
     let newUserLimitEur = Infinity;
 
     if (!kycUser.value && isFiatToCrypto.value) {
-        const { getSwapByTransactionHash } = useSwapsStore();
+        const { getSwapByTransactionHash } = storeToRefs(useSwapsStore());
 
         // For fiat-to-crypto swaps, there is a limit of 100€ in the first three days after first use (of the IBAN).
         // So if we find a swap from before three days ago, the regular limits apply.
@@ -90,7 +91,7 @@ watchEffect(async () => {
         type TimedSwap = SwapEurData & { timestamp?: number };
 
         // Find swaps from EUR
-        const nimSwaps = Object.values(useTransactionsStore().state.transactions)
+        const nimSwaps = Object.values(useTransactionsStore().$state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
                 if (!accountNimAddresses.value.includes(tx.recipient)) return false;
@@ -105,7 +106,7 @@ watchEffect(async () => {
                 } as TimedSwap;
             })
             .filter(Boolean) as TimedSwap[];
-        const btcSwaps = Object.values(useBtcTransactionsStore().state.transactions)
+        const btcSwaps = Object.values(useBtcTransactionsStore().$state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
                 if (!tx.outputs.some((output) => activeAddresses.value.includes(output.address!))) return null;
@@ -120,7 +121,7 @@ watchEffect(async () => {
                 } as TimedSwap;
             })
             .filter(Boolean) as TimedSwap[];
-        const usdcSwaps = Object.values(useUsdcTransactionsStore().state.transactions)
+        const usdcSwaps = Object.values(useUsdcTransactionsStore().$state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
                 if (polygonAddressInfo.value?.address !== tx.recipient) return false;
@@ -135,7 +136,7 @@ watchEffect(async () => {
                 } as TimedSwap;
             })
             .filter(Boolean) as TimedSwap[];
-        const usdtSwaps = Object.values(useUsdtTransactionsStore().state.transactions)
+        const usdtSwaps = Object.values(useUsdtTransactionsStore().$state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
                 if (polygonAddressInfo.value?.address !== tx.recipient) return false;
@@ -172,14 +173,14 @@ watchEffect(async () => {
     const cutOffTimestamp = daysAgo30.setHours(daysAgo30.getHours() - 3) / 1000;
 
     // Find NIM tx that were involved in a swap
-    const swapNimTxs = Object.values(useTransactionsStore().state.transactions).map((tx) => {
+    const swapNimTxs = Object.values(useTransactionsStore().$state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
         if ((tx.timestamp ? toSecs(tx.timestamp) : Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
         if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;
 
-        const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap
         if (!swapHash) return null;
 
@@ -195,14 +196,14 @@ watchEffect(async () => {
     const nimSwapHashes = swapNimTxs.map((obj) => obj.swapHash);
 
     // Find BTC tx that were involved in a swap, but not in a swap with NIM
-    const swapBtcTxs = Object.values(useBtcTransactionsStore().state.transactions).map((tx) => {
+    const swapBtcTxs = Object.values(useBtcTransactionsStore().$state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
         if (!tx.addresses.some((address) => activeAddresses.value.includes(address))) return null;
 
-        const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap or whose swap is already part of the NIM transactions
         if (!swapHash || nimSwapHashes.includes(swapHash)) return null;
 
@@ -218,14 +219,14 @@ watchEffect(async () => {
     const btcSwapHashes = swapBtcTxs.map((obj) => obj.swapHash);
 
     // Find USDC tx that were involved in a swap, but not in a swap with NIM or BTC
-    const swapUsdcTxs = Object.values(useUsdcTransactionsStore().state.transactions).map((tx) => {
+    const swapUsdcTxs = Object.values(useUsdcTransactionsStore().$state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
         if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
 
-        const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap or whose swap is already
         // part of the NIM or BTC transactions
         if (
@@ -246,14 +247,14 @@ watchEffect(async () => {
     const usdcSwapHashes = swapUsdcTxs.map((obj) => obj.swapHash);
 
     // Find USDT tx that were involved in a swap, but not in a swap with NIM or BTC
-    const swapUsdtTxs = Object.values(useUsdtTransactionsStore().state.transactions).map((tx) => {
+    const swapUsdtTxs = Object.values(useUsdtTransactionsStore().$state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
         if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
 
-        const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap or whose swap is already
         // part of the NIM or BTC transactions
         if (
@@ -281,7 +282,7 @@ watchEffect(async () => {
     const swappedAmount = swapNimTxs.reduce((sum, obj) => {
         const usdValue = obj.tx.timestamp
             ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().state.exchangeRates[CryptoCurrency.NIM][FiatCurrency.USD] || 0)
+            : (useFiatStore().$state.exchangeRates[CryptoCurrency.NIM][FiatCurrency.USD] || 0)
                 * (obj.tx.value / 1e5);
         return sum + usdValue;
     }, 0)
@@ -292,21 +293,21 @@ watchEffect(async () => {
 
         const usdValue = obj.tx.timestamp
             ? output.fiatValue ? output.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().state.exchangeRates[CryptoCurrency.BTC][FiatCurrency.USD] || 0)
+            : (useFiatStore().$state.exchangeRates[CryptoCurrency.BTC][FiatCurrency.USD] || 0)
                 * (output.value / 1e8);
         return sum + usdValue;
     }, 0)
     + swapUsdcTxs.reduce((sum, obj) => {
         const usdValue = obj.tx.timestamp
             ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().state.exchangeRates[CryptoCurrency.USDC][FiatCurrency.USD] || 0)
+            : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDC][FiatCurrency.USD] || 0)
                 * (obj.tx.value / 1e6);
         return sum + usdValue;
     }, 0)
     + swapUsdtTxs.reduce((sum, obj) => {
         const usdValue = obj.tx.timestamp
             ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().state.exchangeRates[CryptoCurrency.USDT][FiatCurrency.USD] || 0)
+            : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDT][FiatCurrency.USD] || 0)
                 * (obj.tx.value / 1e6);
         return sum + usdValue;
     }, 0);

@@ -25,6 +25,7 @@
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
@@ -33,8 +34,8 @@ import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     setup() {
-        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
 
         const router = useRouter();
         const { name } = router.currentRoute;

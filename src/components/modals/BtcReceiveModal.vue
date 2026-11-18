@@ -122,6 +122,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageBody,
     PageHeader,
@@ -148,14 +149,12 @@ export default defineComponent({
         const { $t, $tc } = useI18n();
         const {
             availableExternalAddresses,
-            copiedExternalAddresses,
-            setCopiedAddress,
-        } = useBtcAddressStore();
+            accountCopiedExternalAddresses: copiedExternalAddresses,
+        } = storeToRefs(useBtcAddressStore());
+        const { setCopiedAddress } = useBtcAddressStore();
 
-        const {
-            senderLabels,
-            setSenderLabel,
-        } = useBtcLabelsStore();
+        const { senderLabels } = storeToRefs(useBtcLabelsStore());
+        const { setSenderLabel } = useBtcLabelsStore();
 
         const second = 1000;
         const minute = 60 * second;

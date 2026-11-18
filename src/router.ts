@@ -786,7 +786,7 @@ function createActivationNavigationGuard(
         const requiresCurrencyActivation = routesRequiringActivation.has(to.name as RouteName)
             || (to.name === getContextRouteName(RouteName.Swap, to)
                 && !!to.params.pair?.includes(currency.toUpperCase()));
-        const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
+        const { activeAccountInfo: activeAccount } = useAccountStore();
         const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
         const isUnsupportedActivation = to.name === activationRoute && isUnsupportedAccount;
         if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated() || !activeAccount) {
@@ -818,7 +818,7 @@ router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.BTC,
     new Set([RouteName.SendBtc, RouteName.SendViaBtcUri, RouteName.ReceiveBtc]),
     (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
-    () => useAccountStore().hasBitcoinAddresses.value,
+    () => useAccountStore().hasBitcoinAddresses,
 ));
 const usdcRoutesRequiringActivation = Config.polygon.maintenance.transfers
     ? []
@@ -830,13 +830,13 @@ router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
     new Set(usdcRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses.value,
+    () => useAccountStore().hasPolygonAddresses,
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDT,
     new Set(usdtRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses.value,
+    () => useAccountStore().hasPolygonAddresses,
 ));
 
 function parseActivationRedirect(route: Route) {

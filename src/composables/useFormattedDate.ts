@@ -1,4 +1,5 @@
 import { computed, Ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '../stores/Settings';
 import { twoDigit } from '../lib/NumberFormatting';
 
@@ -9,7 +10,7 @@ let monthFormatter: Readonly<Ref<Readonly<Intl.DateTimeFormat>>> | null = null;
  */
 export function useFormattedDate(timestamp: Ref<number | undefined>) {
     if (!monthFormatter) {
-        const { language } = useSettingsStore();
+        const { language } = storeToRefs(useSettingsStore());
         monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
     }
 

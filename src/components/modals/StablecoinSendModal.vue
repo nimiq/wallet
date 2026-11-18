@@ -281,6 +281,7 @@ import {
     CircleSpinner,
 } from '@nimiq/vue-components';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
@@ -349,15 +350,19 @@ export default defineComponent({
 
         const modal$ = ref<Modal | null>(null);
 
-        const { state: addresses$, addressInfo } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
-        const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
+        const { addressInfo } = storeToRefs(usePolygonAddressStore());
+        const { $state: addresses$ } = usePolygonAddressStore();
+        const { stablecoin } = storeToRefs(useAccountSettingsStore());
+        const { $state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcTransactionsStore()
             : useUsdtTransactionsStore();
-        const { contactsArray: contacts, setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+        const { contactsArray: contacts, getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore());
+        const { setContact } = stablecoin.value === CryptoCurrency.USDC
             ? useUsdcContactsStore()
             : useUsdtContactsStore();
-        const { state: network$ } = usePolygonNetworkStore();
+        const { $state: network$ } = usePolygonNetworkStore();
         const { config } = useConfig();
 
         // These are non-reactive because we're only interested in whether the user had ever sent USDC/T when the modal
@@ -465,7 +470,7 @@ export default defineComponent({
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
-            const ownAccountLabel = Object.values(useAccountStore().accountInfos.value).find(
+            const ownAccountLabel = Object.values(useAccountStore().accountInfos).find(
                 (ai) => ai.polygonAddresses?.includes(address),
             )?.label || '';
 
@@ -565,7 +570,8 @@ export default defineComponent({
         const activeCurrency = ref<CryptoCurrency.USDC | CryptoCurrency.USDT | FiatCurrency>(stablecoin.value!);
         const fiatAmount = ref(0);
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {

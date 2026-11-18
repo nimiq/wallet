@@ -12,10 +12,10 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
     const { decimals, btcDecimals, usdcDecimals, btcUnit } = useSettingsStore();
 
     if (currency === CryptoCurrency.BTC) {
-        const maxDecimals = Math.min(btcDecimals.value, btcUnit.value.decimals);
+        const maxDecimals = Math.min(btcDecimals, btcUnit.decimals);
         if (amount === 0) return maxDecimals;
 
-        if (btcUnit.value.ticker === 'mBTC') {
+        if (btcUnit.ticker === 'mBTC') {
             // For mBTC, make sure that 2 significant digits are always displayed
             if (amount < 0.001 * 1e5) return 5;
             if (amount < 0.01 * 1e5) return Math.max(maxDecimals, 4);
@@ -38,24 +38,24 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
 
     if (currency === CryptoCurrency.USDC || currency === 'usdc.e' || currency === CryptoCurrency.USDT) {
         // For USDC, make sure that 2 significant digits are always displayed
-        if (amount === 0) return usdcDecimals.value;
+        if (amount === 0) return usdcDecimals;
         if (amount < 0.0001 * 1e6) return 6;
-        if (amount < 0.001 * 1e6) return Math.max(usdcDecimals.value, 5);
-        if (amount < 0.01 * 1e6) return Math.max(usdcDecimals.value, 4);
-        if (amount < 0.1 * 1e6) return Math.max(usdcDecimals.value, 3);
-        if (amount < 1 * 1e6) return Math.max(usdcDecimals.value, 2);
-        if (amount < 10 * 1e6) return Math.max(usdcDecimals.value, 1);
-        return usdcDecimals.value;
+        if (amount < 0.001 * 1e6) return Math.max(usdcDecimals, 5);
+        if (amount < 0.01 * 1e6) return Math.max(usdcDecimals, 4);
+        if (amount < 0.1 * 1e6) return Math.max(usdcDecimals, 3);
+        if (amount < 1 * 1e6) return Math.max(usdcDecimals, 2);
+        if (amount < 10 * 1e6) return Math.max(usdcDecimals, 1);
+        return usdcDecimals;
     }
 
     // For NIM, make sure that 2 significant digits are always displayed
-    if (amount === 0) return decimals.value;
+    if (amount === 0) return decimals;
     if (amount < 0.001 * 1e5) return 5;
-    if (amount < 0.01 * 1e5) return Math.max(decimals.value, 4);
-    if (amount < 0.1 * 1e5) return Math.max(decimals.value, 3);
-    if (amount < 1 * 1e5) return Math.max(decimals.value, 2);
-    if (amount < 10 * 1e5) return Math.max(decimals.value, 1);
-    return decimals.value;
+    if (amount < 0.01 * 1e5) return Math.max(decimals, 4);
+    if (amount < 0.1 * 1e5) return Math.max(decimals, 3);
+    if (amount < 1 * 1e5) return Math.max(decimals, 2);
+    if (amount < 10 * 1e5) return Math.max(decimals, 1);
+    return decimals;
 }
 
 /**

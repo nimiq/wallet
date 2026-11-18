@@ -296,6 +296,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -392,13 +393,14 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup() {
-        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
-        const { activeAddressInfo, activeAddress } = useAddressStore();
-        const { exchangeRates } = useFiatStore();
-        const { btcUnit } = useSettingsStore();
-        const { activeSwap: swap } = useSwapsStore();
-        const { bank, setBank } = useBankStore();
-        const { connectedUser: kycUser } = useKycStore();
+        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = storeToRefs(useAccountStore());
+        const { activeAddressInfo, activeAddress } = storeToRefs(useAddressStore());
+        const { exchangeRates } = storeToRefs(useFiatStore());
+        const { btcUnit } = storeToRefs(useSettingsStore());
+        const { activeSwap: swap } = storeToRefs(useSwapsStore());
+        const { bank } = storeToRefs(useBankStore());
+        const { setBank } = useBankStore();
+        const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
         const { config } = useConfig();
         const { isMobile } = useWindowSize();
@@ -526,7 +528,7 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion!: PreSwap;
 
-                const { availableExternalAddresses } = useBtcAddressStore();
+                const { availableExternalAddresses } = storeToRefs(useBtcAddressStore());
                 const nimAddress = activeAddress.value!;
                 const btcAddress = availableExternalAddresses.value[0];
 
@@ -571,13 +573,13 @@ export default defineComponent({
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
 
-                    if (useNetworkStore().state.consensus !== 'established') {
+                    if (useNetworkStore().$state.consensus !== 'established') {
                         await nimiqClient.waitForConsensusEstablished();
                     }
 
                     const headHeight = await nimiqClient.getHeadHeight();
                     if (headHeight > 100) {
-                        useNetworkStore().state.height = headHeight;
+                        useNetworkStore().$state.height = headHeight;
                     } else {
                         throw new Error('Invalid network state, try please reloading the app');
                     }
@@ -611,7 +613,7 @@ export default defineComponent({
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
-                        validityStartHeight: useNetworkStore().state.height,
+                        validityStartHeight: useNetworkStore().$state.height,
                     };
                 } else if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     redeem = {

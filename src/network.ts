@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
@@ -45,7 +46,7 @@ export async function getNetworkClient() {
 
 // The raw consensus, not the store getter: its 'stalled' also fires for a device clock running ahead.
 export function nimiqNetworkNotice(): string | null {
-    const { consensus, height } = useNetworkStore().state;
+    const { consensus, height } = useNetworkStore().$state;
     if (consensus !== 'established') return i18n.t('Connecting to Nimiq network') as string;
     if (!height) return i18n.t('Waiting for Nimiq network information') as string;
     return null;
@@ -56,7 +57,7 @@ export function getValidityStartHeight(): number {
         throw new Error(i18n.t('Not connected to the Nimiq network yet. '
             + 'Wait until it is connected and try again.') as string);
     }
-    return useNetworkStore().state.height;
+    return useNetworkStore().$state.height;
 }
 
 async function reconnectNetwork() {
@@ -102,7 +103,7 @@ export async function updateValidators(client: Client) {
 
 function reportFor(method: string) {
     return (error: Error) => {
-        const accountId = useAccountStore().state.activeAccountId ?? undefined;
+        const accountId = useAccountStore().$state.activeAccountId ?? undefined;
         reportToSentry(error, { extra: { method }, accountId });
     };
 }
@@ -111,12 +112,12 @@ export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
 
+    const { fetchedAddresses } = storeToRefs(useNetworkStore());
     const {
-        state: network$,
+        $state: network$,
         addPeer,
         removePeer,
-        patch: patchNetworkStore,
-        fetchedAddresses,
+        $patch: patchNetworkStore,
         addFetchedAddress,
         removeFetchedAddress,
         clearFetchedAddresses,
@@ -192,7 +193,7 @@ export async function launchNetwork() {
     }
 
     let currentFetchAddress: string | null = null;
-    watch([addressStore.activeAddress], ([activeAddress]) => {
+    watch([() => addressStore.activeAddress], ([activeAddress]) => {
         if (!activeAddress) return;
         currentFetchAddress = activeAddress;
         const fetchAddress = activeAddress; // Capture for closure
@@ -307,7 +308,7 @@ export async function launchNetwork() {
         }
 
         // If network is disconnected when going back to app, trigger reconnect
-        if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
+        if (useNetworkStore().$state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
             disconnectNetwork().then(reconnectNetwork);
             networkWasReconnectedSinceLastConsensus = true;
         }
@@ -427,11 +428,11 @@ export async function launchNetwork() {
 
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
-    watch(addressStore.addressInfos, () => {
+    watch(() => addressStore.accountAddressInfos, () => {
         const newAddresses: string[] = [];
         const removedAddresses = new Set(subscribedAddresses);
 
-        for (const address of Object.keys(addressStore.state.addressInfos)) {
+        for (const address of Object.keys(addressStore.$state.addressInfos)) {
             if (subscribedAddresses.has(address)) {
                 removedAddresses.delete(address);
                 continue;
@@ -457,14 +458,14 @@ export async function launchNetwork() {
         subscribe(newAddresses, /* isProxy */ false);
     }, { immediate: true });
 
-    watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
+    watch([() => addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.value.includes(address)) return;
         addFetchedAddress(address);
 
         console.debug('Scheduling transaction fetch for', address);
 
-        const knownTxDetails = addressStore.transactionsForActiveAddress.value;
+        const knownTxDetails = addressStore.transactionsForActiveAddress;
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
         // const lastConfirmedHeight = knownTxDetails
@@ -535,10 +536,10 @@ export async function launchNetwork() {
 
     // Fetch transactions for proxies
     const proxyStore = useProxyStore();
-    watch(proxyStore.networkTrigger, () => {
+    watch(() => proxyStore.networkTrigger, () => {
         const newProxies: string[] = [];
         const addressesToSubscribe: string[] = [];
-        for (const proxyAddress of proxyStore.allProxies.value) {
+        for (const proxyAddress of proxyStore.allProxies) {
             if (!seenProxies.has(proxyAddress)) {
                 // For new addresses the tx history and if required subscribing is handled below
                 seenProxies.add(proxyAddress);
@@ -549,8 +550,8 @@ export async function launchNetwork() {
             // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
             if (
                 !subscribedProxies.has(proxyAddress)
-                && proxyStore.state.funded.includes(proxyAddress)
-                && proxyStore.state.claimed.includes(proxyAddress)
+                && proxyStore.$state.funded.includes(proxyAddress)
+                && proxyStore.$state.claimed.includes(proxyAddress)
             ) {
                 subscribedProxies.add(proxyAddress);
                 addressesToSubscribe.push(proxyAddress);
@@ -562,7 +563,7 @@ export async function launchNetwork() {
         console.debug(`Fetching history for ${newProxies.length} proxies`);
 
         for (const proxyAddress of newProxies) {
-            const knownTxDetails = Object.values(transactionsStore.state.transactions)
+            const knownTxDetails = Object.values(transactionsStore.$state.transactions)
                 .filter((tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress);
 
             network$.fetchingTxHistory++;
@@ -583,7 +584,7 @@ export async function launchNetwork() {
                 })
                 .then((txDetails) => {
                     if (
-                        proxyStore.state.funded.includes(proxyAddress)
+                        proxyStore.$state.funded.includes(proxyAddress)
                         && !subscribedProxies.has(proxyAddress)
                         && !txDetails.find((tx) => tx.sender === proxyAddress
                             && tx.state === TransactionState.CONFIRMED)
@@ -640,16 +641,16 @@ export async function waitForTransactionConfirmation(
     );
 
     if (!requireConfirmed) {
-        if (isIncluded(transactionsStore.state.transactions[txHash])) return;
+        if (isIncluded(transactionsStore.$state.transactions[txHash])) return;
         await new Promise<void>((resolve, reject) => {
             const timeoutId = setTimeout(() => {
                 stop();
                 reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
             }, timeout);
             const stop = watch(
-                () => transactionsStore.state.transactions[txHash]?.state,
+                () => transactionsStore.$state.transactions[txHash]?.state,
                 () => {
-                    if (isIncluded(transactionsStore.state.transactions[txHash])) {
+                    if (isIncluded(transactionsStore.$state.transactions[txHash])) {
                         clearTimeout(timeoutId);
                         stop();
                         resolve();
@@ -669,7 +670,7 @@ export async function waitForTransactionConfirmation(
     const startTime = Date.now();
     const remaining = () => Math.max(0, timeout - (Date.now() - startTime));
 
-    let tx = transactionsStore.state.transactions[txHash];
+    let tx = transactionsStore.$state.transactions[txHash];
     if (!tx || !tx.blockHeight) {
         await new Promise<void>((resolve, reject) => {
             const timeoutId = setTimeout(() => {
@@ -677,7 +678,7 @@ export async function waitForTransactionConfirmation(
                 reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
             }, remaining());
             const stop = watch(
-                () => transactionsStore.state.transactions[txHash]?.blockHeight,
+                () => transactionsStore.$state.transactions[txHash]?.blockHeight,
                 (blockHeight) => {
                     if (blockHeight) {
                         clearTimeout(timeoutId);
@@ -687,22 +688,22 @@ export async function waitForTransactionConfirmation(
                 },
             );
         });
-        tx = transactionsStore.state.transactions[txHash];
+        tx = transactionsStore.$state.transactions[txHash];
     }
 
     const macroTarget = policy.macroBlockAfter(tx.blockHeight!);
-    if (networkStore.state.height >= macroTarget) return;
+    if (networkStore.$state.height >= macroTarget) return;
 
     await new Promise<void>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
             console.warn('waitForTransactionConfirmation: timeout', {
-                txHash, blockHeight: tx.blockHeight, macroTarget, height: networkStore.state.height,
+                txHash, blockHeight: tx.blockHeight, macroTarget, height: networkStore.$state.height,
             });
             stop();
             reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
         }, remaining());
         const stop = watch(
-            () => networkStore.state.height,
+            () => networkStore.$state.height,
             (h) => {
                 if (h >= macroTarget) {
                     clearTimeout(timeoutId);

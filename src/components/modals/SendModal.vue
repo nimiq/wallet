@@ -248,6 +248,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -314,9 +315,11 @@ export default defineComponent({
 
         const modal$ = ref<Modal | null>(null);
 
-        const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
-        const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
-        const { consensus, height } = useNetworkStore();
+        const { activeAddressInfo, accountAddressInfos: addressInfos } = storeToRefs(useAddressStore());
+        const { $state: addresses$ } = useAddressStore();
+        const { contactsArray: contacts, getLabel } = storeToRefs(useContactsStore());
+        const { setContact } = useContactsStore();
+        const { effectiveConsensus: consensus, height } = storeToRefs(useNetworkStore());
 
         function reset() {
             gotRequestUriRecipient.value = false;
@@ -525,7 +528,8 @@ export default defineComponent({
         const activeCurrency = ref<CryptoCurrency.NIM | FiatCurrency>(CryptoCurrency.NIM);
         const fiatAmount = ref(0);
 
-        const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
+        const { exchangeRates, currency: referenceCurrency } = storeToRefs(useFiatStore());
+        const { $state: fiat$ } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {

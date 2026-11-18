@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
 import { updateServiceWorker } from '../registerServiceWorker';
@@ -27,7 +28,7 @@ export default defineComponent({
     setup() {
         const isShown = ref(false);
 
-        const { updateAvailable } = useSettingsStore();
+        const { updateAvailable } = storeToRefs(useSettingsStore());
         watch(updateAvailable, (isAvailable) => {
             if (isAvailable) isShown.value = true;
         }, { immediate: true });

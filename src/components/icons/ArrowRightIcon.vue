@@ -1,0 +1,33 @@
+<template functional>
+    <svg
+        class="nq-icon"
+        :class="[data.class, data.staticClass]"
+        :style="[data.style, data.staticStyle]"
+        width="23"
+        height="18"
+        viewBox="0 0 23 18"
+        xmlns="http://www.w3.org/2000/svg"
+        v-bind="data.attrs"
+        v-on="listeners"
+    >
+        <path
+            d="M13.9995 1.99902L20.999 9.00049L13.9995 16"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+        <line
+            x1="18.999"
+            y1="9"
+            x2="0.999023"
+            y2="9"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </svg>
+</template>

@@ -572,6 +572,7 @@ export default defineComponent({
     }
 
     .fadeY-leave,
+    .fadeY-leave-from,
     .fadeY-enter-to {
         transition-duration: 500ms;
         transition-delay: 700ms;
@@ -579,6 +580,7 @@ export default defineComponent({
     }
 
     .fadeY-enter,
+    .fadeY-enter-from,
     .fadeY-leave-to {
         opacity: 0;
         transform: translateY(70%);

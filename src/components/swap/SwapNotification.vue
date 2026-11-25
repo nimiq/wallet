@@ -808,12 +808,14 @@ export default defineComponent({
 }
 
 .minimize-enter,
+.minimize-enter-from,
 .minimize-leave-to {
     transform: translate(-10rem, -15rem) scale(1.2);
     opacity: 0;
 }
 
 .slide-enter,
+.slide-enter-from,
 .slide-leave-to {
     transform: translateX(45rem);
 }

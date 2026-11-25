@@ -119,6 +119,7 @@ export default defineComponent({
     transition: width var(--transition-time) ease-out;
 
     &.transition-indicator-enter,
+    &.transition-indicator-enter-from,
     &.transition-indicator-leave-to {
         width: 0;
     }

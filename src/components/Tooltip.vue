@@ -604,6 +604,7 @@ export default Tooltip;
     z-index: 999;
 
     &.transition-fade-enter,
+    &.transition-fade-enter-from,
     &.transition-fade-leave-to {
         opacity: 0;
     }

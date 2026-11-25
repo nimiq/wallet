@@ -1162,11 +1162,13 @@ export default defineComponent({
     }
 
     &.fadeY-leave,
+    &.fadeY-leave-from,
     &.fadeY-enter-to {
         transform: translateY(0) translateX(-50%);
     }
 
     &.fadeY-enter,
+    &.fadeY-enter-from,
     &.fadeY-leave-to {
         opacity: 0;
         transform: translateY(1rem) translateX(-50%);

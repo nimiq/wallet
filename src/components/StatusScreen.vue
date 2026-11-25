@@ -420,8 +420,10 @@ export default defineComponent({
 }
 
 .fade-loading-enter,
+.fade-loading-enter-from,
 .fade-loading-leave-to,
 .fade-result-enter,
+.fade-result-enter-from,
 .fade-result-leave-to {
     opacity: 0;
 }

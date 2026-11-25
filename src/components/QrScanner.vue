@@ -219,12 +219,14 @@ export default QrScanner;
 }
 
 .fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0;
     transition: 0.7s;
 }
 
 .fade-leave,
+.fade-leave-from,
 .fade-enter-to {
     opacity: 1;
     transition: 0.7s;

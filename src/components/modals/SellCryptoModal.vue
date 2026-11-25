@@ -1549,6 +1549,7 @@ export default defineComponent({
         }
 
         & :deep(.fadeY-enter),
+        & :deep(.fadeY-enter-from),
         & :deep(.fadeY-leave-to) {
             transform: translateY(-25%) !important;
         }

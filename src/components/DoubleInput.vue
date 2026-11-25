@@ -91,12 +91,14 @@ $inputHeight: 6rem;
         }
 
         &.slide-n-fade-enter-to,
-        &.slide-n-fade-leave {
+        &.slide-n-fade-leave,
+        &.slide-n-fade-leave-from {
             height: #{$inputHeight};
             opacity: 1;
         }
 
         &.slide-n-fade-enter,
+        &.slide-n-fade-enter-from,
         &.slide-n-fade-leave-to {
             height: 0.25rem;
             opacity: 0;
@@ -215,11 +217,13 @@ $inputHeight: 6rem;
 
     &,
     &.slide-enter-to,
-    &.slide-leave {
+    &.slide-leave,
+    &.slide-leave-from {
         top: calc(var(--inputHeight) - #{$inputBoxShadowSize});
     }
 
     &.slide-enter,
+    &.slide-enter-from,
     &.slide-leave-to {
         top: 0;
     }

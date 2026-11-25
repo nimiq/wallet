@@ -529,11 +529,13 @@ export default defineComponent({
             }
 
             &.translateY-enter-to,
-            &.translateY-leave {
+            &.translateY-leave,
+            &.translateY-leave-from {
                 transform: translateX(-50%);
             }
 
-            &.translateY-enter {
+            &.translateY-enter,
+            &.translateY-enter-from {
                 transform: translateX(-50%) translateY(calc((var(--body-size) + 4px + (var(--padding) * 2)) * -1));
             }
 
@@ -722,12 +724,14 @@ footer {
 }
 
 .translateY-fade-list-enter-to,
-.translateY-fade-list-leave {
+.translateY-fade-list-leave,
+.translateY-fade-list-leave-from {
     opacity: 1;
     transform: translateY(0);
 }
 
-.translateY-fade-list-enter {
+.translateY-fade-list-enter,
+.translateY-fade-list-enter-from {
     opacity: 0;
     transform: translateY(-4rem);
 }

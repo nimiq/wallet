@@ -132,11 +132,13 @@ export default defineComponent({
 }
 
 .fadeY-leave,
+.fadeY-leave-from,
 .fadeY-enter-to {
     transform: translateY(0);
 }
 
-.fadeY-enter {
+.fadeY-enter,
+.fadeY-enter-from {
     opacity: 0;
     transform: translateY(0.5rem);
 }
@@ -147,7 +149,8 @@ export default defineComponent({
 }
 
 .reverse {
-    &.fadeY-enter {
+    &.fadeY-enter,
+    &.fadeY-enter-from {
         transform: translateY(-0.5rem);
     }
     &.fadeY-leave-to {

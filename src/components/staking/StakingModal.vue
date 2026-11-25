@@ -428,6 +428,7 @@ export default defineComponent({
 }
 
 .fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0;
 }
@@ -439,6 +440,7 @@ export default defineComponent({
 }
 
 :deep(.fade-enter),
+:deep(.fade-enter-from),
 :deep(.fade-leave-to) {
     opacity: 0;
 }

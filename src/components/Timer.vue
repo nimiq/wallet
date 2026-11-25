@@ -481,6 +481,7 @@ circle {
 }
 
 .transition-fade-enter,
+.transition-fade-enter-from,
 .transition-fade-leave-to {
     opacity: 0 !important;
 }

@@ -320,11 +320,13 @@ export default defineComponent({
 }
 
 .fade-leave,
+.fade-leave-from,
 .fade-enter-to {
     opacity: 1;
 }
 
 .fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0;
 }

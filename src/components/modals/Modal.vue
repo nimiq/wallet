@@ -372,6 +372,7 @@ export default Modal;
 }
 
 .modal-enter,
+.modal-enter-from,
 .modal-leave-to {
     background-color: nimiq-blue(0) !important;
 
@@ -390,6 +391,7 @@ export default Modal;
 }
 
 .overlay-enter,
+.overlay-enter-from,
 .overlay-leave-to {
     /**
      * 100% is the height of the overlay
@@ -408,6 +410,7 @@ export default Modal;
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
     .modal-enter,
+    .modal-enter-from,
     .modal-leave-to {
         .wrapper {
             opacity: 1 !important;
@@ -416,6 +419,7 @@ export default Modal;
     }
 
     .overlay-enter,
+    .overlay-enter-from,
     .overlay-leave-to {
         /**
          * 100% is the height of the overlay
@@ -426,6 +430,7 @@ export default Modal;
 
 @media (prefers-reduced-motion: reduce) {
     .modal-enter,
+    .modal-enter-from,
     .modal-leave-to {
         .wrapper {
             opacity: 0 !important;
@@ -440,6 +445,7 @@ export default Modal;
     }
 
     .overlay-enter,
+    .overlay-enter-from,
     .overlay-leave-to {
         opacity: 0;
     }

@@ -506,6 +506,7 @@ body {
 }
 
 .fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0 !important;
 }
@@ -525,6 +526,7 @@ body {
 
 .groundfloor {
     &.slide-right-enter,
+    &.slide-right-enter-from,
     &.slide-right-leave-to {
         transform: translate3d(calc(100vw - var(--sidebar-width)), 0, 0);
     }
@@ -532,11 +534,13 @@ body {
 
 .address-overview {
     &.slide-right-enter,
+    &.slide-right-enter-from,
     &.slide-right-leave-to {
         transform: translate3d(calc(100vw - var(--account-column-width) - var(--sidebar-width)), 0, 0);
     }
 
     .slide-right-enter &,
+    .slide-right-enter-from &,
     .slide-right-leave-to & {
         transform: translate3d(calc(-1 * var(--account-column-width)), 0, 0);
     }
@@ -546,6 +550,7 @@ body {
     // Half mobile breakpoint
     .groundfloor {
         &.slide-right-enter,
+        &.slide-right-enter-from,
         &.slide-right-leave-to {
             transform: translate3d(100vw, 0, 0);
         }
@@ -553,6 +558,7 @@ body {
 
     .address-overview {
         &.slide-right-enter,
+        &.slide-right-enter-from,
         &.slide-right-leave-to {
             transform: translate3d(calc(100vw - var(--account-column-width)), 0, 0);
         }
@@ -564,6 +570,7 @@ body {
 
     .address-overview {
         &.slide-right-enter,
+        &.slide-right-enter-from,
         &.slide-right-leave-to {
             transform: translate3d(0, 0, 0);
         }

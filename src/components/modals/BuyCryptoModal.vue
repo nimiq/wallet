@@ -1430,7 +1430,8 @@ export default defineComponent({
             cursor: pointer;
         }
 
-        & :deep(.fadeY-enter) {
+        & :deep(.fadeY-enter),
+        & :deep(.fadeY-enter-from) {
             transform: translateY(calc(21px / 4)) !important;
         }
 

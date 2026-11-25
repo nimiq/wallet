@@ -75,6 +75,7 @@
     "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools"
   },
   "devDependencies": {
+    "@intlify/message-compiler": "^11",
     "@types/iban": "^0.0.35",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^22",

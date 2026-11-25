@@ -1427,6 +1427,19 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
+"@intlify/message-compiler@^11":
+  version "11.4.23"
+  resolved "https://registry.yarnpkg.com/@intlify/message-compiler/-/message-compiler-11.4.23.tgz#7e041e6ff283da4369408ac5871ec1dcba22cc15"
+  integrity sha512-HgmnQV/lBBX8KgxoNwngzzq8DLw/jECJgz9eBfQGdkEYte7Bw1RSqhIskcWp0DEWrSg2wijUi6dJjpq1WUD+zg==
+  dependencies:
+    "@intlify/shared" "11.4.23"
+    source-map-js "^1.0.2"
+
+"@intlify/shared@11.4.23":
+  version "11.4.23"
+  resolved "https://registry.yarnpkg.com/@intlify/shared/-/shared-11.4.23.tgz#85b87dfb11b3ab43b78d71b270c89767a73f075c"
+  integrity sha512-1iqGalDCOlHZ8y7LOC3yisSm52K5AmkTmaNO23XGFYWU6Z1oIX8VeAGRq9rn2KrDFb8nMtQaxNyMa1n8EeDm5g==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@isaacs/cliui/-/cliui-8.0.2.tgz#b37667b7bc181c168782259bab42474fbf52b550"
@@ -6137,7 +6150,7 @@ smob@^1.0.0:
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.2.2.tgz#79fb88d97535a21cb27162cb05d211b67acea4ab"
   integrity sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==
 
-source-map-js@^1.2.3:
+source-map-js@^1.0.2, source-map-js@^1.2.3:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.2.4.tgz#b9303bf27115446da5e6ca3a4a2ee3e9f7b69633"
   integrity sha512-J7ZjMvHd9O1fcT/5V09QWaaSl2BbWx3F6O08spde82Namf9UB0GxRVIPiNbVsdKkoizHiSpTodo3vp2bAy91MA==

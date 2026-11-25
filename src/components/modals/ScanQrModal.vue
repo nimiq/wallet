@@ -200,7 +200,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../scss/variables.scss' as *;
 
-.modal ::v-deep .close-button {
+.modal :deep(.close-button) {
     display: none;
 }
 
@@ -218,16 +218,16 @@ export default defineComponent({
 
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
-    .modal ::v-deep {
-        .wrapper,
-        .small-page {
+    .modal {
+        :deep(.wrapper),
+        :deep(.small-page) {
             height: 100%;
             max-height: 100%;
             border-radius: 0;
             min-width: 100vw;
         }
 
-        .swipe-bar {
+        :deep(.swipe-bar) {
             background: var(--text-20);
             backdrop-filter: invert(1);
         }
@@ -240,11 +240,11 @@ export default defineComponent({
     .qr-scanner {
         border-radius: 0;
 
-        ::v-deep .cancel-button {
+        :deep(.cancel-button) {
             bottom: 6rem;
         }
 
-        ::v-deep .access-denied-instructions {
+        :deep(.access-denied-instructions) {
             bottom: 13rem;
         }
     }

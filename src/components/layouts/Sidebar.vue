@@ -501,11 +501,11 @@ $balance-distribution-display-breakpoint: 450px;
     }
 
     .tooltip {
-        ::v-deep .trigger {
+        :deep(.trigger) {
             display: block;
         }
 
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             width: 20.5rem;
             padding: 1.25rem 1.5rem;
         }
@@ -552,7 +552,7 @@ $balance-distribution-display-breakpoint: 450px;
         margin-bottom: 0.75rem;
     }
 
-    ::v-deep .timespan {
+    :deep(.timespan) {
         left: 1.5rem;
         top: 1.5rem;
     }
@@ -562,8 +562,8 @@ $balance-distribution-display-breakpoint: 450px;
 .swap-tooltip {
     align-self: stretch; // wider than in the designs to better accommodate long translations
 
-    ::v-deep .trigger,
-    ::v-deep .trigger .nq-button-s {
+    :deep(.trigger),
+    :deep(.trigger .nq-button-s) {
         width: 100%;
     }
 

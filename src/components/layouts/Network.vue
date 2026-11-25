@@ -231,7 +231,7 @@ export default defineComponent({
         grid-template-rows: 1fr auto;
     }
 
-    & ::v-deep .page-body {
+    & :deep(.page-body) {
         overflow: hidden;
     }
 
@@ -320,7 +320,7 @@ section {
         @media screen and (max-width: $mobileBreakpoint) {
             padding-left: 0;
 
-            & ::v-deep .network-stats {
+            & :deep(.network-stats) {
                 position: sticky;
                 left: 0;
                 top: 2rem;
@@ -369,7 +369,7 @@ section {
         margin-right: -0.75rem;
     }
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         path:first-child {
             stroke: white;
         }

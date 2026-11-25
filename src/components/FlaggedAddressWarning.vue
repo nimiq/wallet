@@ -175,24 +175,24 @@ label {
         color: rgba(255, 255, 255, 0.8) !important;
     }
 
-    ::v-deep .copyable {
+    :deep(.copyable) {
         color: inherit !important;
     }
 
-    ::v-deep .background {
+    :deep(.background) {
         border-radius: 0.625rem;
         background: white;
     }
 
-    ::v-deep .chunk {
+    :deep(.chunk) {
         margin: 0.75rem 0;
     }
 
-    ::v-deep .short-address {
+    :deep(.short-address) {
         font-size: 2.5rem;
     }
 
-    ::v-deep .tooltip {
+    :deep(.tooltip) {
         color: var(--nimiq-orange);
 
         &,

@@ -100,7 +100,7 @@ export default defineComponent({
 .three-leaf-staking-icon {
     margin: -0.25rem 0.5rem -0.25rem 0;
 
-    ::v-deep path {
+    :deep(path) {
         stroke-width: 1px;
     }
 }

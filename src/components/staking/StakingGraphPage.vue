@@ -337,7 +337,7 @@ export default defineComponent({
         top: 2.4rem;
         left: 2.4rem;
 
-        ::v-deep .trigger {
+        :deep(.trigger) {
             line-height: 1.2;
             font-size: var(--small-size);
             font-weight: 600;
@@ -383,7 +383,7 @@ export default defineComponent({
         align-items: center;
         color: var(--nimiq-light-blue);
 
-        ::v-deep .circle-spinner {
+        :deep(.circle-spinner) {
             margin-right: 1rem;
         }
     }

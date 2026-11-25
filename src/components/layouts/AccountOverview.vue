@@ -765,7 +765,7 @@ export default defineComponent({
         margin-top: -1.5rem;
         margin-bottom: -1.5rem;
 
-        & ::v-deep .tooltip-box {
+        & :deep(.tooltip-box) {
             padding: 0.75rem 1.25rem;
             font-size: var(--body-size);
         }
@@ -774,7 +774,7 @@ export default defineComponent({
             margin-top: -2.5rem;
         }
 
-        &.stablecoin-tooltip ::v-deep .tooltip-box {
+        &.stablecoin-tooltip :deep(.tooltip-box) {
             // text-align: left;
             width: 30rem;
             white-space: normal;
@@ -1034,7 +1034,7 @@ export default defineComponent({
 .nim-usdc-swap-button,
 .nim-btc-swap-button,
 .btc-usdc-swap-button {
-    ::v-deep .trigger {
+    :deep(.trigger) {
         pointer-events: none;
     }
     button {
@@ -1197,7 +1197,7 @@ export default defineComponent({
                 color: var(--text-30);
             }
 
-            ::v-deep svg {
+            :deep(svg) {
                 width: 3.25rem;
                 height: 3rem;
             }

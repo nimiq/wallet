@@ -305,7 +305,7 @@ export default defineComponent({
 .page-header {
     padding: 4rem 2rem;
 
-    ::v-deep h1 {
+    :deep(h1) {
         font-size: 3rem;
     }
 }
@@ -395,7 +395,7 @@ export default defineComponent({
                 content: '+ ';
             }
 
-            ::v-deep .currency {
+            :deep(.currency) {
                 font-weight: bold;
                 margin-left: 0.25em;
             }

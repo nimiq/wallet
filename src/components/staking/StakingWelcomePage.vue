@@ -135,7 +135,7 @@ export default defineComponent({
 
     clip-path: ellipse(170% 100% at 50% 0%);
 
-    ::v-deep .nq-h1 {
+    :deep(.nq-h1) {
         font-size: var(--h1-size);
     }
 
@@ -143,7 +143,7 @@ export default defineComponent({
         margin-top: 0.75rem;
         margin-bottom: 2.375rem;
 
-        & ::v-deep svg {
+        & :deep(svg) {
             font-size: 19rem;
             margin: 0 auto;
         }

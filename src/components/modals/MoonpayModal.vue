@@ -392,7 +392,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
@@ -401,12 +401,12 @@ header {
     align-items: center;
     padding: 2rem 3rem;
 
-    .tooltip ::v-deep {
-        .trigger {
+    .tooltip {
+        :deep(.trigger) {
             color: var(--text-30);
         }
 
-        .tooltip-box {
+        :deep(.tooltip-box) {
             font-size: var(--small-size);
             width: 23.5rem;
 
@@ -441,7 +441,7 @@ header {
         opacity: 0.5;
     }
 
-    ::v-deep iframe {
+    :deep(iframe) {
         border: none;
         border-bottom-left-radius: 1.25rem;
         border-bottom-right-radius: 1.25rem;

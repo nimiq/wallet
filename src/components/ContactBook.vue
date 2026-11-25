@@ -212,11 +212,11 @@ export default defineComponent({
     .label-input {
         margin-left: 1.25rem;
 
-        ::v-deep .width-finder {
+        :deep(.width-finder) {
             padding: 0 0.75rem;
         }
 
-        ::v-deep input {
+        :deep(input) {
             padding: 0.625rem 0.75rem;
             padding-right: 0;
         }
@@ -225,14 +225,12 @@ export default defineComponent({
     .interactive-short-address {
         flex-shrink: 0;
 
-        ::v-deep {
-            .trigger {
-                padding: 0;
-            }
+        :deep(.trigger) {
+            padding: 0;
+        }
 
-            .tooltip-box {
-                margin-left: -1rem;
-            }
+        :deep(.tooltip-box) {
+            margin-left: -1rem;
         }
     }
 

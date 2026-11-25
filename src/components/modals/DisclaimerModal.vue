@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     height: auto;
     overflow-y: auto;
 }

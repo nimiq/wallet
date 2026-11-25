@@ -146,7 +146,7 @@ export default defineComponent({
         --sidebar-width: 24rem;
         display: block;
 
-        ::v-deep .wrapper {
+        :deep(.wrapper) {
             position: absolute;
             left: calc(var(--sidebar-width) - 1rem);
             bottom: 2rem;
@@ -158,7 +158,7 @@ export default defineComponent({
             }
         }
 
-        ::v-deep .close-button {
+        :deep(.close-button) {
             display: none;
         }
     }
@@ -168,7 +168,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: var(--body-size);
 
-    ::v-deep .wrapper {
+    :deep(.wrapper) {
         .small-page {
             padding: 1rem;
             min-height: unset;
@@ -185,7 +185,7 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.current-account .account-menu-item ::v-deep .nq-icon {
+.current-account .account-menu-item :deep(.nq-icon) {
     display: none;
 }
 
@@ -259,7 +259,7 @@ export default defineComponent({
         color var(--attr-duration) var(--nimiq-ease),
         background var(--attr-duration) var(--nimiq-ease);
 
-    ::v-deep .icon {
+    :deep(.icon) {
         opacity: 0.8;
 
         transition: opacity var(--attr-duration) var(--nimiq-ease);
@@ -271,7 +271,7 @@ export default defineComponent({
     background: var(--nimiq-highlight-bg);
     color: var(--text-100);
 
-    ::v-deep .icon {
+    :deep(.icon) {
         opacity: 1;
     }
 }
@@ -284,7 +284,7 @@ export default defineComponent({
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
     .menu {
-        ::v-deep .wrapper {
+        :deep(.wrapper) {
             .small-page {
                 padding: 2rem;
                 font-size: 2.25rem;

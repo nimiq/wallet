@@ -116,7 +116,7 @@ export default defineComponent({
     align-self: center;
     margin-top: 2rem;
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         left: 50% !important;
         transform: translate(-50%, -2rem);
     }

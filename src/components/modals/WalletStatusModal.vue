@@ -64,7 +64,7 @@ export default defineComponent({
 @use '../../scss/variables.scss' as *;
 
 .modal {
-    ::v-deep .small-page {
+    :deep(.small-page) {
         min-height: unset;
     }
 }

@@ -134,12 +134,12 @@ export default defineComponent({
         justify-content: center;
         text-align: center;
 
-        ::v-deep .nq-link {
+        :deep(.nq-link) {
             color: inherit;
             text-decoration: underline;
         }
 
-        ::v-deep .circle-spinner {
+        :deep(.circle-spinner) {
             margin-right: 1rem;
         }
     }

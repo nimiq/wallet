@@ -559,7 +559,7 @@ export default defineComponent({
 @use '../../scss/functions.scss' as *;
 
 .page-header {
-    ::v-deep .nq-h1 {
+    :deep(.nq-h1) {
         margin-left: 2rem;
         margin-right: 2rem;
         max-width: calc(100% - 4rem);
@@ -579,7 +579,7 @@ export default defineComponent({
             display: block;
         }
 
-        ::v-deep .circle-spinner,
+        :deep(.circle-spinner),
         &.failed svg {
             margin-right: 1rem;
         }
@@ -589,7 +589,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
 
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             align-self: center;
         }
     }
@@ -700,7 +700,7 @@ export default defineComponent({
         line-height: 1;
         margin-bottom: 0.5rem;
 
-        ::v-deep .currency {
+        :deep(.currency) {
             font-size: 0.5em;
             font-weight: bold;
             margin-right: -1.9em;
@@ -736,7 +736,7 @@ export default defineComponent({
         line-height: 1;
 
         .tooltip {
-            ::v-deep .trigger {
+            :deep(.trigger) {
                 .fiat-amount {
                     transition: color 0.2s var(--nimiq-ease);
                 }
@@ -752,12 +752,12 @@ export default defineComponent({
                 }
             }
 
-            ::v-deep .tooltip-box {
+            :deep(.tooltip-box) {
                 width: 28rem;
                 transform: translate(-10rem, -1.5rem);
             }
 
-            ::v-deep [value-mask]::after {
+            :deep([value-mask]::after) {
                 margin-right: 0;
             }
         }
@@ -809,7 +809,7 @@ export default defineComponent({
     top: 2rem;
     z-index: 3; // To be above .swipe-handle
 
-    ::v-deep .trigger {
+    :deep(.trigger) {
         color: nimiq-blue(0.25);
         font-size: 2.25rem;
 
@@ -832,7 +832,7 @@ export default defineComponent({
         }
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         font-size: var(--small-size);
         white-space: nowrap;
         line-height: 1.3;
@@ -868,16 +868,16 @@ export default defineComponent({
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
     .page-header {
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
 
-        &.inline-header ::v-deep .nq-h1 {
+        &.inline-header :deep(.nq-h1) {
             align-self: unset;
         }
 
         &:not(.inline-header) {
-            ::v-deep .nq-h1 {
+            :deep(.nq-h1) {
                 white-space: normal;
             }
 
@@ -888,7 +888,7 @@ export default defineComponent({
     }
 
     .tooltip {
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             transform: translate(1rem, 2rem);
         }
     }
@@ -897,7 +897,7 @@ export default defineComponent({
 @media (max-width: 450px) {
     // Nimiq Style breakpoint for smaller .nq-card-header padding
     .page-header {
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             margin-left: 3rem;
             margin-right: 3rem;
             // max-width: calc(100% - 6rem);

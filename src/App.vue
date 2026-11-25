@@ -267,13 +267,13 @@ export default defineComponent({
             position: relative;
         }
 
-        ::v-deep .account-overview {
+        :deep(.account-overview) {
             width: var(--account-column-width);
             flex-shrink: 0;
             z-index: 2;
         }
 
-        ::v-deep .address-overview {
+        :deep(.address-overview) {
             width: clamp(
                 0px,
                 calc(100vw - var(--sidebar-width) - var(--account-column-width)),
@@ -283,7 +283,7 @@ export default defineComponent({
             z-index: 3;
         }
 
-        ::v-deep .mobile-tap-area {
+        :deep(.mobile-tap-area) {
             z-index: 100;
         }
 
@@ -321,7 +321,7 @@ export default defineComponent({
             }
 
             &.column-sidebar {
-                ::v-deep .mobile-tap-area {
+                :deep(.mobile-tap-area) {
                     opacity: 1;
                     pointer-events: all;
                 }
@@ -333,7 +333,7 @@ export default defineComponent({
                 transform: translateX(calc(-1 * var(--sidebar-width)));
             }
 
-            ::v-deep .address-overview {
+            :deep(.address-overview) {
                 width: clamp(0px, calc(100vw - var(--account-column-width)), var(--address-column-width));
             }
         }
@@ -348,7 +348,7 @@ export default defineComponent({
                 width: 100%;
             }
 
-            ::v-deep .address-overview {
+            :deep(.address-overview) {
                 min-width: unset;
                 width: 100vw;
             }
@@ -361,7 +361,7 @@ export default defineComponent({
     }
 
     @media (min-width: ($ultraLargeDesktopBreakpoint + 70)) {
-        ::v-deep .groundfloor {
+        :deep(.groundfloor) {
             display: flex;
             justify-content: center;
 

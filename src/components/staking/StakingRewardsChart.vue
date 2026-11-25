@@ -352,7 +352,7 @@ export default defineComponent({
     padding: 0.4rem;
     z-index: 3;
 
-    ::v-deep .slider-toggle {
+    :deep(.slider-toggle) {
         font-size: 1.375rem;
         font-weight: 700;
 

@@ -119,7 +119,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    ::v-deep .small-page {
+    :deep(.small-page) {
         // height: auto;
         text-align: center;
         background-image: url('../../assets/activation-modal-background.png');
@@ -129,7 +129,7 @@ export default defineComponent({
         width: 91rem; // 728px
     }
 
-    ::v-deep .close-button {
+    :deep(.close-button) {
         display: none;
     }
 }
@@ -175,7 +175,7 @@ svg {
 
 @media (max-width: 730px) {
     .modal {
-        ::v-deep .small-page {
+        :deep(.small-page) {
             width: 52.5rem; // reset
             background-image: none;
         }

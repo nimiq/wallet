@@ -816,12 +816,12 @@ export default defineComponent({
         }
     }
 
-    .amount-menu ::v-deep .button {
+    .amount-menu :deep(.button) {
         margin-left: 1rem;
         margin-bottom: 1rem;
     }
 
-    .amount-menu ::v-deep .menu {
+    .amount-menu :deep(.menu) {
         position: absolute;
         right: 3rem;
         bottom: 3rem;
@@ -839,12 +839,12 @@ export default defineComponent({
     }
 
     &.insufficient-balance {
-        .amount-input ::v-deep,
-        .amount-input ::v-deep .ticker {
+        .amount-input,
+        .amount-input :deep(.ticker) {
             color: var(--nimiq-orange);
         }
 
-        .amount-input ::v-deep .nq-input {
+        .amount-input :deep(.nq-input) {
             color: var(--nimiq-orange);
             --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
         }
@@ -874,11 +874,11 @@ export default defineComponent({
         margin-right: 1rem;
     }
 
-    ::v-deep .trigger .nq-icon {
+    :deep(.trigger .nq-icon) {
         opacity: 0.4;
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         transform: translate(4rem, -2rem);
     }
 }
@@ -901,20 +901,20 @@ export default defineComponent({
     top: 2rem;
     left: 2rem;
 
-    ::v-deep .trigger svg {
+    :deep(.trigger svg) {
         height: 2rem;
         opacity: 0.3;
 
         transition: opacity var(--short-transition-duration) var(--nimiq-ease);
     }
 
-    & ::v-deep .trigger:hover svg,
-    & ::v-deep .trigger:focus svg,
-    &.shown ::v-deep .trigger svg {
+    & :deep(.trigger:hover svg),
+    & :deep(.trigger:focus svg),
+    &.shown :deep(.trigger svg) {
         opacity: 0.6;
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         width: 25.875rem;
         font-size: var(--small-size);
         font-weight: 600;
@@ -949,7 +949,7 @@ export default defineComponent({
         padding: 0 0 1rem;
     }
 
-    ::v-deep .footer-notice {
+    :deep(.footer-notice) {
         margin-bottom: -1rem;
     }
 }

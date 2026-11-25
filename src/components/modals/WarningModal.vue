@@ -167,13 +167,13 @@ export function createWarningModal(props: () => WarningModalProps) {
 </script>
 
 <style lang="scss" scoped>
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     height: auto;
     min-height: unset;
 }
 
 // The close button in the header is redundant with the close button in the footer.
-.modal ::v-deep .close-button {
+.modal :deep(.close-button) {
     display: none;
 }
 
@@ -202,7 +202,7 @@ export function createWarningModal(props: () => WarningModalProps) {
     margin-bottom: 4rem;
     color: var(--text-30);
 
-    ::v-deep svg {
+    :deep(svg) {
         display: block;
         width: 16rem;
         height: 16rem;
@@ -227,7 +227,7 @@ export function createWarningModal(props: () => WarningModalProps) {
 
 @each $color in ('orange', 'red', 'gold', 'green', 'light-blue') {
     .warning-modal.#{$color} {
-        ::v-deep .small-page,
+        :deep(.small-page),
         &.page {
             // if embedded
             background: var(--nimiq-#{$color});
@@ -235,7 +235,7 @@ export function createWarningModal(props: () => WarningModalProps) {
             color: white;
         }
 
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             color: inherit;
         }
 

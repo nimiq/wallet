@@ -210,7 +210,7 @@ export default defineComponent({
 }
 
 .page-header {
-    ::v-deep h1 {
+    :deep(h1) {
         margin-bottom: 1rem;
     }
 
@@ -220,7 +220,7 @@ export default defineComponent({
         margin: 1.25rem auto 0;
     }
 
-    ::v-deep .page-header-back-button {
+    :deep(.page-header-back-button) {
         z-index: 3;
     }
 }
@@ -263,7 +263,7 @@ export default defineComponent({
     .double-input {
         flex-grow: 1;
 
-        ::v-deep .message {
+        :deep(.message) {
             font-weight: 600;
             margin-top: 0.5rem;
             font-size: 1.75rem;
@@ -274,7 +274,7 @@ export default defineComponent({
         }
     }
 
-    .label-input ::v-deep input {
+    .label-input :deep(input) {
         width: 100% !important;
         line-height: 2rem;
         font-size: 2rem;

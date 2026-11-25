@@ -163,7 +163,7 @@ export default defineComponent({
         outline: 2px solid #e7e8ea;
         transition: outline 350ms var(--nimiq-ease);
 
-        ::v-deep path {
+        :deep(path) {
             stroke-width: 1.25px;
         }
     }
@@ -196,7 +196,7 @@ export default defineComponent({
     text-align: right;
     flex-shrink: 0;
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         display: block;
     }
 }

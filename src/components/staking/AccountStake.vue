@@ -41,7 +41,7 @@ export default defineComponent({
 .staking-icon {
     font-size: 2.75rem;
 
-    ::v-deep path {
+    :deep(path) {
         stroke-width: 1;
     }
 }

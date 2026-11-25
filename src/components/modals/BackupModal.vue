@@ -157,7 +157,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../scss/variables.scss' as *;
 
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     background: var(--nimiq-blue);
     background-image: var(--nimiq-blue-bg);
     color: white;
@@ -165,7 +165,7 @@ export default defineComponent({
     min-height: auto;
 }
 
-.modal.hide-close-button ::v-deep .close-button {
+.modal.hide-close-button :deep(.close-button) {
     display: none;
 }
 
@@ -327,7 +327,7 @@ export default defineComponent({
 }
 
 @media (max-width: $mobileBreakpoint) {
-    .modal ::v-deep .small-page {
+    .modal :deep(.small-page) {
         width: 52.5rem;
     }
 

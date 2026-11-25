@@ -375,7 +375,7 @@ export default Timer;
     display: block;
 }
 
-.tooltip ::v-deep .trigger,
+.tooltip :deep(.trigger),
 svg {
     display: block;
     position: absolute;

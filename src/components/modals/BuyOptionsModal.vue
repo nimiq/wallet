@@ -268,7 +268,7 @@ export default defineComponent({
 @use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     width: 70rem !important;
     min-height: 63.5rem !important;
     max-width: 100vw;
@@ -301,7 +301,7 @@ header {
         display: inline-block;
         margin-bottom: 3rem;
 
-        ::v-deep .trigger {
+        :deep(.trigger) {
             &:hover,
             &:focus {
                 .pill {
@@ -311,14 +311,14 @@ header {
             }
         }
 
-        ::v-deep .dropdown {
+        :deep(.dropdown) {
             left: 0;
             transform: translateX(0);
         }
     }
 
     .country-flag,
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         width: 2rem;
         height: 2rem;
         margin: 0.25rem 0.625rem 0.25rem -0.75rem;
@@ -544,7 +544,7 @@ header {
 
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
-    .modal ::v-deep .small-page {
+    .modal :deep(.small-page) {
         // Regular Modal size (iOS scrolling inside the BuyOptionsModal does not work without a fixed height)
         min-height: unset !important;
     }

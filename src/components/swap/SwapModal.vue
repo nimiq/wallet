@@ -2097,7 +2097,7 @@ export default defineComponent({
 @use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     width: 63.5rem;
     // height: 74.5rem;
     font-size: var(--body-size);
@@ -2165,12 +2165,12 @@ export default defineComponent({
         margin-left: 1.5rem;
         align-self: center;
 
-        ::v-deep .trigger svg {
+        :deep(.trigger svg) {
             height: 2rem;
             margin: 0;
         }
 
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             text-align: left;
             width: 30rem;
         }
@@ -2185,7 +2185,7 @@ export default defineComponent({
     color: var(--text-50);
     gap: 1rem;
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         width: 1.75rem;
         height: 1.75rem;
     }
@@ -2210,11 +2210,11 @@ export default defineComponent({
         justify-self: end;
     }
 
-    & ::v-deep * {
+    & :deep(*) {
         font-weight: 600;
     }
 
-    & ::v-deep .circle-spinner {
+    & :deep(.circle-spinner) {
         width: 14px;
         margin-bottom: -2px;
     }
@@ -2226,7 +2226,7 @@ export default defineComponent({
     .tooltip {
         text-align: left;
 
-        & ::v-deep .trigger {
+        & :deep(.trigger) {
             color: var(--text-50);
             transition: 150ms color var(--nimiq-ease) 300ms;
 
@@ -2263,7 +2263,7 @@ export default defineComponent({
             color: var(--nimiq-purple);
         }
 
-        ::v-deep .circle-spinner {
+        :deep(.circle-spinner) {
             margin-left: 0.75rem;
             height: 1.75rem;
             width: 1.75rem;
@@ -2291,11 +2291,11 @@ export default defineComponent({
 
 .limits-tooltip {
     &.kyc-connected {
-        ::v-deep .trigger::after {
+        :deep(.trigger::after) {
             background: #5f4b8b;
         }
 
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             background: var(--nimiq-purple-bg);
         }
     }
@@ -2332,17 +2332,17 @@ export default defineComponent({
     margin-top: 1.5rem;
 }
 
-.amount-input ::v-deep form input.nq-input {
+.amount-input :deep(form input.nq-input) {
     padding: 0.25rem;
 }
 
 .amount-input.has-value {
-    &.positive-value ::v-deep {
-        .ticker {
+    &.positive-value {
+        :deep(.ticker) {
             color: var(--nimiq-green);
         }
 
-        form {
+        :deep(form) {
             .nq-input {
                 color: var(--nimiq-green);
                 --border-color: rgba(33, 188, 165, 0.3); /* Based on Nimiq Green */
@@ -2355,7 +2355,7 @@ export default defineComponent({
         }
     }
 
-    &.negative-value ::v-deep form {
+    &.negative-value :deep(form) {
         .nq-input {
             color: var(--nimiq-blue);
         }
@@ -2368,25 +2368,25 @@ export default defineComponent({
     }
 
     &.focussed {
-        &.positive-value ::v-deep {
-            .nq-input:focus-within,
-            .nq-input:hover {
+        &.positive-value {
+            :deep(.nq-input:focus-within),
+            :deep(.nq-input:hover) {
                 --border-color: rgba(33, 188, 165, 0.5); /* Based on Nimiq Green */
             }
         }
 
-        &.negative-value ::v-deep {
-            // .ticker {
+        &.negative-value {
+            // :deep(.ticker) {
             //     color: var(--nimiq-light-blue);
             // }
 
-            .nq-input {
+            :deep(.nq-input) {
                 color: rgba(5, 130, 202, 0.7);
                 --border-color: rgba(5, 130, 202, 0.2);
             }
 
-            .nq-input:focus-within,
-            .nq-input:hover {
+            :deep(.nq-input:focus-within),
+            :deep(.nq-input:hover) {
                 color: var(--nimiq-light-blue);
                 --border-color: rgba(5, 130, 202, 0.3);
             }
@@ -2397,7 +2397,7 @@ export default defineComponent({
 .swap-modal {
     --size: var(--h2-size);
 
-    & ::v-deep .amount-input {
+    & :deep(.amount-input) {
         font-size: var(--size);
         font-weight: bold;
 
@@ -2408,7 +2408,7 @@ export default defineComponent({
         }
     }
 
-    .new-balances ::v-deep .amount {
+    .new-balances :deep(.amount) {
         font-size: var(--size);
         font-weight: bold;
 
@@ -2455,7 +2455,7 @@ export default defineComponent({
     .tooltip {
         text-align: left;
 
-        ::v-deep .trigger {
+        :deep(.trigger) {
             display: block;
             font-size: 1.75rem;
             margin-left: 0.5rem;
@@ -2466,7 +2466,7 @@ export default defineComponent({
         }
     }
 
-    &.disabled ::v-deep .amount-input {
+    &.disabled :deep(.amount-input) {
         pointer-events: none !important;
 
         & :v-deep input.nq-input {
@@ -2477,8 +2477,8 @@ export default defineComponent({
     }
 }
 
-.modal ::v-deep .overlay .animation-overlay + .close-button,
-.modal ::v-deep .overlay .warning-modal + .close-button {
+.modal :deep(.overlay .animation-overlay + .close-button),
+.modal :deep(.overlay .warning-modal + .close-button) {
     display: none;
 }
 
@@ -2531,7 +2531,7 @@ export default defineComponent({
 
 @media (max-width: $mobileBreakpoint) {
     // Full mobile breakpoint
-    .modal ::v-deep .small-page {
+    .modal :deep(.small-page) {
         overflow-y: auto;
     }
 

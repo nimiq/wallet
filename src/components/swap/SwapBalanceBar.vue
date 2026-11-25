@@ -728,7 +728,7 @@ export default defineComponent({
     .currency {
         color: nimiq-blue(0.4) !important;
 
-        & ::v-deep svg {
+        & :deep(svg) {
             color: nimiq-blue(0.4) !important;
         }
 
@@ -803,11 +803,11 @@ export default defineComponent({
     column-gap: var(--column-gap);
 
     & .identicon-stack,
-    & ::v-deep svg {
+    & :deep(svg) {
         grid-row: 1 / span 2;
     }
 
-    & ::v-deep .amount {
+    & :deep(.amount) {
         color: var(--text-50);
         font-size: var(--small-size);
         font-weight: 600;
@@ -826,7 +826,7 @@ export default defineComponent({
         }
 
         &.identicon-stack,
-        & ::v-deep svg {
+        & :deep(svg) {
             grid-column: 2;
         }
     }

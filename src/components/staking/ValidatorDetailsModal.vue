@@ -69,10 +69,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .modal {
     &.large-modal {
-        ::v-deep {
-            .small-page {
-                width: 63.5rem;
-            }
+        :deep(.small-page) {
+            width: 63.5rem;
         }
     }
 }

@@ -528,7 +528,7 @@ export default BankCheckInput;
     .label-input {
         font-size: 3rem !important;
 
-        ::v-deep input {
+        :deep(input) {
             width: 100% !important;
             padding: 1.75rem 2rem;
             padding-right: 6.5rem;
@@ -556,11 +556,11 @@ export default BankCheckInput;
     top: 50%;
     transform: translateY(-50%);
 
-    ::v-deep .trigger {
+    :deep(.trigger) {
         padding: 1.5rem 1rem;
     }
 
-    ::v-deep .dropdown {
+    :deep(.dropdown) {
         left: unset;
         right: 0.25rem;
         top: 0;
@@ -690,7 +690,7 @@ export default BankCheckInput;
             flex-shrink: 0;
             flex-grow: 0;
 
-            &.tooltip ::v-deep .tooltip-box {
+            &.tooltip :deep(.tooltip-box) {
                 width: 32rem;
                 box-shadow:
                     0px 18px 38px nimiq-blue(0.14),

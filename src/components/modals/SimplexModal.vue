@@ -373,7 +373,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../scss/functions.scss' as *;
 
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     height: 83.25rem; /* Height to fit Simplex confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
@@ -386,18 +386,16 @@ export default defineComponent({
     left: 3rem;
     top: 3rem;
 
-    ::v-deep {
-        .trigger {
-            color: var(--text-30);
-        }
+    :deep(.trigger) {
+        color: var(--text-30);
+    }
 
-        .tooltip-box {
-            font-size: var(--small-size);
-            width: 23.5rem;
+    :deep(.tooltip-box) {
+        font-size: var(--small-size);
+        width: 23.5rem;
 
-            a {
-                color: inherit;
-            }
+        a {
+            color: inherit;
         }
     }
 }
@@ -449,7 +447,7 @@ export default defineComponent({
     flex-grow: 1;
 
     #checkout-element,
-    ::v-deep iframe {
+    :deep(iframe) {
         height: 100%;
     }
 }

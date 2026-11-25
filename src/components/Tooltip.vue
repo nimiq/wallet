@@ -510,8 +510,8 @@ export default Tooltip;
     cursor: default;
     color: inherit;
 
-    ::v-deep svg:first-child:last-child,
-    ::v-deep img:first-child:last-child {
+    :deep(svg:first-child:last-child),
+    :deep(img:first-child:last-child) {
         display: block;
     }
 

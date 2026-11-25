@@ -17,7 +17,7 @@ export default defineComponent({});
     flex-shrink: 0;
     box-sizing: border-box;
 
-    ::v-deep .nq-button {
+    :deep(.nq-button) {
         margin: 2rem 4.75rem 3rem;
     }
 }

@@ -219,12 +219,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    ::v-deep .small-page {
+    :deep(.small-page) {
         width: 65rem;
         min-height: 63rem;
     }
 
-    ::v-deep .close-button {
+    :deep(.close-button) {
         display: none;
     }
 }
@@ -233,7 +233,7 @@ export default defineComponent({
     text-align: center;
     padding-bottom: 0;
 
-    ::v-deep h1 {
+    :deep(h1) {
         font-size: 3rem;
         font-weight: 700;
     }

@@ -138,7 +138,7 @@ export default defineComponent({
             color 0.3s var(--nimiq-ease),
             background 0.3s var(--nimiq-ease);
 
-        ::v-deep .background {
+        :deep(.background) {
             display: none;
         }
 

@@ -278,11 +278,11 @@ export default defineComponent({
     overflow: hidden;
 }
 
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     width: 60.5rem;
 }
 
-.modal ::v-deep .close-button {
+.modal :deep(.close-button) {
     display: none;
 }
 

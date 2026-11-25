@@ -164,7 +164,7 @@ export default defineComponent({
     height: 6.75rem;
     margin: -1.25rem 0;
 
-    & ::v-deep svg {
+    & :deep(svg) {
         font-size: 6.75rem;
     }
 
@@ -203,7 +203,7 @@ export default defineComponent({
 
 .tooltip.staking-feature-tip {
     &,
-    ::v-deep .trigger {
+    :deep(.trigger) {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -213,12 +213,12 @@ export default defineComponent({
         z-index: 3;
     }
 
-    ::v-deep .trigger::after {
+    :deep(.trigger::after) {
         background-color: var(--nimiq-green);
         transform: translateY(calc(-1rem + 1px));
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         background: var(--nimiq-green-bg);
         color: white;
         font-size: 1.75rem;
@@ -236,11 +236,11 @@ export default defineComponent({
 
     --tooltip-offset: 1.2rem;
 
-    ::v-deep .trigger::after {
+    :deep(.trigger::after) {
         transform: translateY(calc(2rem - var(--tooltip-offset) - 1px)) rotate(180deg);
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         white-space: nowrap;
         padding: 0.4375rem 1.125rem;
         transform: translateY(calc(var(--tooltip-offset) * -1));

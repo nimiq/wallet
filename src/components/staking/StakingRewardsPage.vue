@@ -201,7 +201,7 @@ export default defineComponent({
 }
 
 .page-header {
-    ::v-deep .nq-h1 {
+    :deep(.nq-h1) {
         margin-left: 2rem;
         margin-right: 2rem;
         max-width: calc(100% - 4rem);
@@ -317,7 +317,7 @@ export default defineComponent({
     padding: 0;
     font-size: var(--body-size);
 
-    ::v-deep .chunk {
+    :deep(.chunk) {
         margin: 0.5rem 0;
     }
 }
@@ -332,7 +332,7 @@ export default defineComponent({
         line-height: 1;
         margin-bottom: 0.5rem;
 
-        ::v-deep .currency {
+        :deep(.currency) {
             font-size: 0.5em;
             font-weight: bold;
             margin-right: -1.9em;
@@ -369,7 +369,7 @@ export default defineComponent({
         }
 
         .tooltip {
-            ::v-deep .trigger {
+            :deep(.trigger) {
                 .fiat-amount {
                     transition: color 0.2s var(--nimiq-ease);
                 }
@@ -385,12 +385,12 @@ export default defineComponent({
                 }
             }
 
-            ::v-deep .tooltip-box {
+            :deep(.tooltip-box) {
                 width: 28rem;
                 transform: translate(-10rem, -1.5rem);
             }
 
-            ::v-deep [value-mask]::after {
+            :deep([value-mask]::after) {
                 margin-right: 0;
             }
         }
@@ -411,7 +411,7 @@ export default defineComponent({
     top: 2rem;
     z-index: 3;
 
-    ::v-deep .trigger {
+    :deep(.trigger) {
         color: nimiq-blue(0.25);
         font-size: 2.25rem;
 
@@ -434,7 +434,7 @@ export default defineComponent({
         }
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         font-size: var(--small-size);
         white-space: nowrap;
         line-height: 1.3;
@@ -469,7 +469,7 @@ export default defineComponent({
 
 @media (max-width: $mobileBreakpoint) {
     .page-header {
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
     }
@@ -479,7 +479,7 @@ export default defineComponent({
     }
 
     .tooltip {
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             transform: translate(1rem, 2rem);
         }
     }
@@ -487,7 +487,7 @@ export default defineComponent({
 
 @media (max-width: 450px) {
     .page-header {
-        ::v-deep .nq-h1 {
+        :deep(.nq-h1) {
             margin-left: 3rem;
             margin-right: 3rem;
         }

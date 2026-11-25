@@ -579,7 +579,7 @@ section {
     }
 }
 
-.update-available ::v-deep .circle-spinner {
+.update-available :deep(.circle-spinner) {
     margin: 0.375rem;
 }
 

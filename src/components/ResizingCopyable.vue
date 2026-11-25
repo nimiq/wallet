@@ -85,7 +85,7 @@ export default defineComponent({
         background-color: transparent;
     }
 
-    &:hover ::v-deep .background {
+    &:hover :deep(.background) {
         opacity: 0.1;
     }
 

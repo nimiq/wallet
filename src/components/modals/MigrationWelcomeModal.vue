@@ -154,7 +154,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.modal >>> .close-button {
+.modal :deep(.close-button) {
     display: none;
 }
 

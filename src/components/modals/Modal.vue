@@ -299,7 +299,7 @@ export default Modal;
 
         overflow-y: auto;
 
-        ::v-deep .page-body {
+        :deep(.page-body) {
             overflow-y: unset;
         }
     }

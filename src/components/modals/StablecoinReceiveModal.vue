@@ -135,7 +135,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .receive-modal,
-.receive-modal ::v-deep .small-page {
+.receive-modal :deep(.small-page) {
     contain: size layout paint style; // also clips PolygonWarningPage overflowing small-page's round corners
 }
 
@@ -155,7 +155,7 @@ export default defineComponent({
     font-weight: 600;
     color: var(--text-60);
 
-    ::v-deep h1 {
+    :deep(h1) {
         margin-bottom: 1rem;
         color: var(--nimiq-blue);
     }
@@ -185,28 +185,26 @@ export default defineComponent({
     .interactive-short-address {
         margin-top: 1.25rem;
 
-        ::v-deep {
-            .copyable {
-                padding: 0.25rem 0.5rem 0.5rem;
+        :deep(.copyable) {
+            padding: 0.25rem 0.5rem 0.5rem;
 
-                .tooltip {
-                    top: -4.625rem;
+            .tooltip {
+                top: -4.625rem;
 
-                    &::after {
-                        transform: scale(-0.8) translateY(-0.625rem);
-                    }
+                &::after {
+                    transform: scale(-0.8) translateY(-0.625rem);
                 }
             }
+        }
 
-            .trigger::after {
-                transform: scale(-0.8) translateY(-0.625rem);
-            }
+        :deep(.trigger::after) {
+            transform: scale(-0.8) translateY(-0.625rem);
+        }
 
-            .tooltip-box {
-                left: 50% !important;
-                padding: 0.625rem 1rem 0.5rem;
-                transform: translate(-50%, -1.25rem);
-            }
+        :deep(.tooltip-box) {
+            left: 50% !important;
+            padding: 0.625rem 1rem 0.5rem;
+            transform: translate(-50%, -1.25rem);
         }
     }
 }

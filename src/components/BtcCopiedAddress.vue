@@ -130,22 +130,20 @@ export default BtcCopiedAddress;
 .label-input {
     margin-left: 0.375rem;
 
-    ::v-deep {
-        .nq-input,
-        .width-finder {
-            padding: 0.25rem 0.75rem;
-            font-size: var(--body-size);
-            font-weight: 600;
-        }
+    :deep(.nq-input),
+    :deep(.width-finder) {
+        padding: 0.25rem 0.75rem;
+        font-size: var(--body-size);
+        font-weight: 600;
+    }
 
-        .width-finder {
-            padding-right: 1.25rem;
-        }
+    :deep(.width-finder) {
+        padding-right: 1.25rem;
+    }
 
-        .nq-input {
-            border-radius: 0.375rem;
-            max-width: 17.5rem;
-        }
+    :deep(.nq-input) {
+        border-radius: 0.375rem;
+        max-width: 17.5rem;
     }
 }
 
@@ -184,8 +182,8 @@ export default BtcCopiedAddress;
     font-weight: 600;
 }
 
-.interactive-short-address ::v-deep {
-    .copyable {
+.interactive-short-address {
+    :deep(.copyable) {
         transition:
             transform var(--short-transition-duration) var(--nimiq-ease),
             color 0.3s var(--nimiq-ease); // preserve original transition
@@ -198,12 +196,12 @@ export default BtcCopiedAddress;
         }
     }
 
-    .short-address {
+    :deep(.short-address) {
         opacity: 0.7;
     }
-    .copyable:hover .short-address,
-    .copyable:focus .short-address,
-    .copyable.copied .short-address {
+    :deep(.copyable:hover .short-address),
+    :deep(.copyable:focus .short-address),
+    :deep(.copyable.copied .short-address) {
         font-weight: 500;
     }
 }
@@ -224,7 +222,7 @@ export default BtcCopiedAddress;
         background var(--short-transition-duration) var(--nimiq-ease),
         opacity var(--short-transition-duration) var(--nimiq-ease);
 
-    ::v-deep svg {
+    :deep(svg) {
         width: auto;
         height: 2rem;
 
@@ -238,7 +236,7 @@ export default BtcCopiedAddress;
     &:hover {
         background: rgba(#d94432 /*Nimiq red*/, 0.12);
 
-        ::v-deep svg g {
+        :deep(svg g) {
             stroke: var(--nimiq-red);
         }
     }

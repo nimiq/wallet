@@ -1051,7 +1051,7 @@ export default defineComponent({
 @use '../../scss/functions.scss' as *;
 
 .modal {
-    &.wider-overlay ::v-deep .overlay {
+    &.wider-overlay :deep(.overlay) {
         width: 63.5rem;
         margin-left: calc((63.5rem - 52.5rem) / -2);
 
@@ -1066,7 +1066,7 @@ export default defineComponent({
     }
 }
 
-.modal ::v-deep .overlay .animation-overlay + .close-button {
+.modal :deep(.overlay .animation-overlay + .close-button) {
     display: none;
 }
 
@@ -1173,7 +1173,7 @@ export default defineComponent({
         --padding-sides: 2rem;
         max-height: 100%;
 
-        ::v-deep .scroll-mask.bottom {
+        :deep(.scroll-mask.bottom) {
             bottom: -1px;
         }
     }
@@ -1236,7 +1236,7 @@ export default defineComponent({
                 box-shadow: inset 0 0 0 1.5px rgba(95, 75, 139, 0.7);
             }
 
-            ::v-deep .circle-spinner {
+            :deep(.circle-spinner) {
                 margin-left: 0.75rem;
                 height: 1.75rem;
                 width: 1.75rem;
@@ -1255,11 +1255,11 @@ export default defineComponent({
 
     .limits-tooltip {
         &.kyc-connected {
-            ::v-deep .trigger::after {
+            :deep(.trigger::after) {
                 background: #5f4b8b;
             }
 
-            ::v-deep .tooltip-box {
+            :deep(.tooltip-box) {
                 background: var(--nimiq-purple-bg);
             }
         }
@@ -1347,9 +1347,9 @@ export default defineComponent({
                     color: var(--nimiq-orange);
                     transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
-                    ::v-deep .nq-input,
-                    ::v-deep .label-input + span,
-                    ::v-deep .label-input:focus-within + span {
+                    :deep(.nq-input),
+                    :deep(.label-input + span),
+                    :deep(.label-input:focus-within + span) {
                         --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
                         color: var(--nimiq-orange);
 
@@ -1373,12 +1373,12 @@ export default defineComponent({
                 max-width: 100%;
                 font-weight: bold;
 
-                ::v-deep .ticker {
+                :deep(.ticker) {
                     font-size: 2.5rem;
                     margin-left: 1.25rem;
                 }
 
-                ::v-deep .label-input * {
+                :deep(.label-input *) {
                     font-weight: 600;
                     font-size: 4rem !important;
                     padding: 0.5rem 1rem;
@@ -1402,12 +1402,12 @@ export default defineComponent({
                     color: var(--text-60);
                 }
 
-                ::v-deep .ticker {
+                :deep(.ticker) {
                     font-weight: bold;
                     font-size: 2rem;
                 }
 
-                ::v-deep .label-input * {
+                :deep(.label-input *) {
                     font-weight: 600;
                     font-size: 2.5rem !important;
                     padding: 0.375rem 0.75rem;
@@ -1430,14 +1430,12 @@ export default defineComponent({
             cursor: pointer;
         }
 
-        & ::v-deep {
-            .fadeY-enter {
-                transform: translateY(calc(21px / 4)) !important;
-            }
+        & :deep(.fadeY-enter) {
+            transform: translateY(calc(21px / 4)) !important;
+        }
 
-            .fadeY-leave-to {
-                transform: translateY(calc(-21px / 4)) !important;
-            }
+        & :deep(.fadeY-leave-to) {
+            transform: translateY(calc(-21px / 4)) !important;
         }
     }
 
@@ -1480,7 +1478,7 @@ export default defineComponent({
         top: 2.5rem;
         right: 2.5rem;
 
-        ::v-deep .tooltip-box {
+        :deep(.tooltip-box) {
             font-size: var(--small-size);
             padding: 1.25rem 1.5rem;
         }
@@ -1489,7 +1487,7 @@ export default defineComponent({
 
 @media (max-width: 730px) {
     .modal {
-        ::v-deep .small-page {
+        :deep(.small-page) {
             width: 52.5rem; // reset
             background-image: none;
         }

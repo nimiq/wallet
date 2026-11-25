@@ -400,19 +400,19 @@ export default defineComponent({
             z-index: 5;
             text-align: left;
 
-            ::v-deep .trigger svg {
+            :deep(.trigger svg) {
                 height: 2rem;
                 color: var(--text-60);
                 transition: color var(--short-transition-duration) var(--nimiq-ease);
             }
 
-            & ::v-deep .trigger:hover svg,
-            & ::v-deep .trigger:focus svg,
-            &.shown ::v-deep .trigger svg {
+            & :deep(.trigger:hover svg),
+            & :deep(.trigger:focus svg),
+            &.shown :deep(.trigger svg) {
                 color: var(--text-80);
             }
 
-            ::v-deep .tooltip-box {
+            :deep(.tooltip-box) {
                 width: 26.25rem;
                 font-size: var(--small-size);
                 font-weight: 600;
@@ -504,11 +504,11 @@ export default defineComponent({
         background-color: transparent;
     }
 
-    &:hover ::v-deep .background {
+    &:hover :deep(.background) {
         opacity: 0.1;
     }
 
-    & ::v-deep > span {
+    & > :deep(span) {
         position: relative;
         overflow: hidden;
         display: flex;
@@ -597,7 +597,7 @@ export default defineComponent({
     .tooltip {
         z-index: 4;
 
-        ::v-deep .trigger .nq-icon {
+        :deep(.trigger .nq-icon) {
             margin-left: 0.75rem;
         }
 
@@ -656,7 +656,7 @@ export default defineComponent({
             transform: translateY(-#{$paddingTop});
         }
 
-        .btc-copied-address ::v-deep .interactive-short-address {
+        .btc-copied-address :deep(.interactive-short-address) {
             // When showing the Copyable tooltip (see below) or address tooltip avoid separate stacking contexts caused
             // by style containment for any parents of the Copyable or address tooltip-box to be able to elevate the
             // Copyable and tooltip-box without having to elevate any stacking context causing parents.

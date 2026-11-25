@@ -403,7 +403,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    ::v-deep .small-page {
+    :deep(.small-page) {
         overflow: hidden;
 
         transition:
@@ -416,7 +416,7 @@ export default defineComponent({
     }
 
     &.large-modal {
-        ::v-deep .small-page {
+        :deep(.small-page) {
             width: 63.5rem;
         }
     }
@@ -433,13 +433,13 @@ export default defineComponent({
 }
 
 // Fade transition for validator overlays
-::v-deep .fade-enter-active,
-::v-deep .fade-leave-active {
+:deep(.fade-enter-active),
+:deep(.fade-leave-active) {
     transition: opacity 300ms var(--nimiq-ease);
 }
 
-::v-deep .fade-enter,
-::v-deep .fade-leave-to {
+:deep(.fade-enter),
+:deep(.fade-leave-to) {
     opacity: 0;
 }
 

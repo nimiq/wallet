@@ -91,7 +91,7 @@ export default defineComponent({
     background: transparent;
     pointer-events: none;
 
-    ::v-deep .wrapper {
+    :deep(.wrapper) {
         .small-page {
             min-height: unset;
             color: white;
@@ -168,7 +168,7 @@ a {
     .modal {
         display: block;
 
-        ::v-deep .wrapper {
+        :deep(.wrapper) {
             position: absolute;
 
             .small-page {

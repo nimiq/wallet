@@ -227,7 +227,7 @@ export default BtcAddressInput;
 .label-input {
     font-family: 'Fira Mono', monospace;
 
-    ::v-deep input {
+    :deep(input) {
         width: 100% !important;
         padding: 1.75rem 2rem;
         line-height: 2.5rem;
@@ -246,7 +246,7 @@ export default BtcAddressInput;
         }
     }
 
-    ::v-deep .width-finder {
+    :deep(.width-finder) {
         padding: 0 2rem;
     }
 }

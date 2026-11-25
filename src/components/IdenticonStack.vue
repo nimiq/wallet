@@ -141,7 +141,7 @@ export default defineComponent({
         }
     }
 
-    ::v-deep svg.triangle-down-icon {
+    :deep(svg.triangle-down-icon) {
         position: absolute;
         right: 2.5rem;
         top: 8rem;
@@ -149,7 +149,7 @@ export default defineComponent({
         transition: opacity var(--attr-duration) var(--nimiq-ease);
     }
 
-    &.triangle-indented ::v-deep svg.triangle-down-icon {
+    &.triangle-indented :deep(svg.triangle-down-icon) {
         right: 3.75rem;
     }
 
@@ -168,7 +168,7 @@ export default defineComponent({
                 opacity: 0.5;
             }
 
-            ::v-deep svg.triangle-down-icon {
+            :deep(svg.triangle-down-icon) {
                 opacity: 0.4;
             }
         }

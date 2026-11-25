@@ -922,7 +922,7 @@ export default defineComponent({
 .page-header {
     padding-bottom: 3rem;
 
-    ::v-deep h1 {
+    :deep(h1) {
         display: flex;
         justify-content: center;
         gap: 0.25em;
@@ -932,7 +932,7 @@ export default defineComponent({
     .short-address {
         display: inline-flex;
 
-        ::v-deep .address {
+        :deep(.address) {
             line-height: inherit;
             font-family: inherit;
             font-weight: inherit;
@@ -1104,7 +1104,7 @@ export default defineComponent({
         align-items: center;
         color: var(--nimiq-light-blue);
 
-        ::v-deep .circle-spinner {
+        :deep(.circle-spinner) {
             margin-right: 0.5rem;
         }
     }
@@ -1112,7 +1112,7 @@ export default defineComponent({
     .manual-activate + .network-notice {
         margin-top: 2rem;
 
-        ::v-deep .circle-spinner {
+        :deep(.circle-spinner) {
             margin-right: 0.75rem;
         }
     }
@@ -1151,7 +1151,7 @@ export default defineComponent({
         font-size: 3.25rem;
         margin: -0.5rem 0.25rem 0 -0.75rem;
 
-        ::v-deep path {
+        :deep(path) {
             stroke-width: 1;
         }
     }
@@ -1167,7 +1167,7 @@ export default defineComponent({
 
 .adjust-stake {
     // margin-right: 2rem;
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         width: 25.75rem;
     }
 }

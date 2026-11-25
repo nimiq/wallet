@@ -77,7 +77,7 @@ h3 {
     line-height: 1.2;
 }
 
-::v-deep .circle-spinner {
+:deep(.circle-spinner) {
     display: block;
     margin: 2rem 0 3rem;
 
@@ -108,7 +108,7 @@ h3 {
         font-size: 2.25rem;
     }
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         margin: 1rem 0 -1px;
     }
 

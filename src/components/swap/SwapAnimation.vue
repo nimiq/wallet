@@ -1016,13 +1016,13 @@ export default defineComponent({
     padding: 2rem 2rem 1rem;
 
     .close-button {
-        ::v-deep svg {
+        :deep(svg) {
             opacity: 0.6;
         }
 
         &:hover,
         &:focus {
-            ::v-deep svg {
+            :deep(svg) {
                 opacity: 0.8;
             }
         }
@@ -1067,7 +1067,7 @@ export default defineComponent({
         text-align: center;
         margin: 0.5rem 0.5rem 0;
 
-        ::v-deep .background {
+        :deep(.background) {
             border-radius: inherit;
             background: white;
         }
@@ -1097,16 +1097,16 @@ export default defineComponent({
 }
 
 .tooltip {
-    ::v-deep .trigger::after {
+    :deep(.trigger::after) {
         background: white;
         left: 6.5rem;
     }
 
-    &.right ::v-deep .trigger::after {
+    &.right :deep(.trigger::after) {
         left: 13.5rem;
     }
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         background: white;
         color: var(--nimiq-blue);
         left: 0 !important;
@@ -1114,7 +1114,7 @@ export default defineComponent({
         transform-origin: 50% calc(100% + 7rem);
     }
 
-    &.right ::v-deep .tooltip-box {
+    &.right :deep(.tooltip-box) {
         left: auto !important;
         right: 0 !important;
     }
@@ -1135,7 +1135,7 @@ export default defineComponent({
         font-size: var(--small-size);
         margin-top: 1rem;
 
-        ::v-deep .nq-icon {
+        :deep(.nq-icon) {
             margin-left: 0.25rem;
         }
     }
@@ -1425,13 +1425,13 @@ export default defineComponent({
         //     transform-origin: 33.33% 50%;
         // }
 
-        // .tooltip ::v-deep .tooltip-box {
+        // .tooltip :deep(.tooltip-box) {
         //     // animation: tooltip-box-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: rotate(180deg);
         //     transition: opacity .3s var(--nimiq-ease), transform 1.2s ease 1s;
         // }
 
-        // .tooltip ::v-deep .trigger::after {
+        // .tooltip :deep(.trigger::after) {
         //     // animation: tooltip-arrow-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: scale(-1) /* rotate(-180deg) */ translateY(14rem);
         //     transition: opacity .3s var(--nimiq-ease) 16ms, visibility .3s, transform 1.2s ease 1s;
@@ -1619,9 +1619,9 @@ export default defineComponent({
     .animation {
         --upscale: 1.58;
 
-        .tooltip ::v-deep {
-            .trigger::after,
-            .tooltip-box {
+        .tooltip {
+            :deep(.trigger::after),
+            :deep(.tooltip-box) {
                 transform: scale(calc(1 / var(--upscale)));
             }
         }
@@ -1645,7 +1645,7 @@ export default defineComponent({
         &.left-to-right {
             transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 5rem 4.25rem;
             }
         }
@@ -1653,7 +1653,7 @@ export default defineComponent({
         &.right-to-left {
             transform: translate(-28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 13rem 4.25rem;
             }
         }
@@ -1677,7 +1677,7 @@ export default defineComponent({
         &.left-to-right {
             transform: translate(-28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 13rem 4.25rem;
             }
         }
@@ -1685,7 +1685,7 @@ export default defineComponent({
         &.right-to-left {
             transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 5rem 4.25rem;
             }
         }
@@ -1708,7 +1708,7 @@ export default defineComponent({
         &.right-to-left {
             transform: translate(-28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 13rem 4.25rem;
             }
         }
@@ -1716,7 +1716,7 @@ export default defineComponent({
         &.left-to-right {
             transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip ::v-deep .tooltip-box {
+            .tooltip :deep(.tooltip-box) {
                 transform-origin: 5rem 4.25rem;
             }
         }

@@ -88,7 +88,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal ::v-deep .small-page {
+.modal :deep(.small-page) {
     width: 500px;
 }
 
@@ -150,7 +150,7 @@ export default defineComponent({
         transition: transform 300ms var(--nimiq-ease);
         will-change: transform;
 
-        ::v-deep path {
+        :deep(path) {
             stroke-width: 1.25;
         }
     }

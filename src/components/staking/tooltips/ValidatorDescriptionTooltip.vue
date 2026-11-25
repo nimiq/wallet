@@ -58,7 +58,7 @@ export default defineComponent({
 .tooltip {
     margin-left: 0.625rem;
 
-    ::v-deep .tooltip-box {
+    :deep(.tooltip-box) {
         width: 31.5rem;
         line-height: 130%;
         cursor: default;
@@ -66,10 +66,10 @@ export default defineComponent({
         z-index: 2;
     }
 
-    &[class*='position-top'] ::v-deep .tooltip-box {
+    &[class*='position-top'] :deep(.tooltip-box) {
         transform: translateY(-1.9rem);
     }
-    &[class*='position-bottom'] ::v-deep .tooltip-box {
+    &[class*='position-bottom'] :deep(.tooltip-box) {
         transform: translateY(1.9rem);
     }
 }

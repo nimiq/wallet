@@ -57,19 +57,17 @@ export default defineComponent({
             background-color: nimiq-blue(0.25);
         }
     }
-    ::v-deep {
-        > * {
-            font-weight: 600;
-            font-size: 1.75rem;
-        }
+    > :deep(*) {
+        font-weight: 600;
+        font-size: 1.75rem;
+    }
 
-        .validator-label {
-            color: var(--text-60);
-        }
+    :deep(.validator-label) {
+        color: var(--text-60);
+    }
 
-        .validator-icon {
-            --size: 2.25rem;
-        }
+    :deep(.validator-icon) {
+        --size: 2.25rem;
     }
 }
 </style>

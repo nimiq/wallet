@@ -31,7 +31,7 @@ export default defineComponent({
     padding: 1rem;
     transition: background var(--attr-duration) var(--nimiq-ease);
 
-    ::v-deep svg.triangle-down-icon {
+    :deep(svg.triangle-down-icon) {
         position: absolute;
         right: 4rem;
         top: 8rem;
@@ -43,7 +43,7 @@ export default defineComponent({
     &:focus {
         background: var(--nimiq-highlight-bg);
 
-        ::v-deep svg.triangle-down-icon {
+        :deep(svg.triangle-down-icon) {
             opacity: 0.4;
         }
     }

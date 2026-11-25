@@ -352,7 +352,7 @@ export default defineComponent({
     padding-top: 6rem;
     padding-bottom: 4rem;
 
-    &::v-deep h1 {
+    &:deep(h1) {
         font-size: 3rem;
     }
     .short-address {
@@ -510,7 +510,7 @@ hr {
     font-weight: 600;
     color: var(--nimiq-light-blue);
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         margin-right: 1rem;
     }
 }

@@ -241,12 +241,12 @@ svg {
     .pending,
     .new,
     .invalid {
-        ::v-deep svg {
+        :deep(svg) {
             margin: 0 auto;
         }
     }
 
-    ::v-deep .circle-spinner {
+    :deep(.circle-spinner) {
         display: block;
     }
 

@@ -1081,7 +1081,7 @@ export default defineComponent({
             padding: 0.5rem;
             margin-bottom: 4rem;
 
-            ::v-deep .background {
+            :deep(.background) {
                 border-radius: 0.625rem;
             }
         }
@@ -1104,7 +1104,7 @@ export default defineComponent({
         .identicon-button {
             width: 14rem;
 
-            ::v-deep .identicon {
+            :deep(.identicon) {
                 width: 9rem;
                 height: 9rem;
             }
@@ -1179,7 +1179,7 @@ export default defineComponent({
             }
         }
 
-        ::v-deep svg.triangle-down-icon {
+        :deep(svg.triangle-down-icon) {
             position: absolute;
             right: 0.375rem;
             top: 8rem;
@@ -1187,7 +1187,7 @@ export default defineComponent({
             transition: opacity var(--attr-duration) var(--nimiq-ease);
         }
 
-        &.triangle-indented ::v-deep svg.triangle-down-icon {
+        &.triangle-indented :deep(svg.triangle-down-icon) {
             right: 2rem;
         }
 
@@ -1205,7 +1205,7 @@ export default defineComponent({
                 opacity: 0.5;
             }
 
-            ::v-deep svg.triangle-down-icon {
+            :deep(svg.triangle-down-icon) {
                 opacity: 0.4;
             }
         }
@@ -1256,12 +1256,12 @@ export default defineComponent({
             }
         }
 
-        .amount-menu ::v-deep .button {
+        .amount-menu :deep(.button) {
             margin-left: 1rem;
             margin-bottom: 1rem;
         }
 
-        .amount-menu ::v-deep .menu {
+        .amount-menu :deep(.menu) {
             position: absolute;
             right: 3rem;
             bottom: 3rem;
@@ -1290,12 +1290,12 @@ export default defineComponent({
         }
 
         &.insufficient-balance {
-            .amount-input ::v-deep,
-            .amount-input ::v-deep .ticker {
+            .amount-input,
+            .amount-input :deep(.ticker) {
                 color: var(--nimiq-orange);
             }
 
-            .amount-input ::v-deep .nq-input {
+            .amount-input :deep(.nq-input) {
                 color: var(--nimiq-orange);
                 --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
             }
@@ -1326,7 +1326,7 @@ export default defineComponent({
             padding: 0.75rem 1rem 2rem;
         }
 
-        ::v-deep .footer-notice {
+        :deep(.footer-notice) {
             margin-bottom: -1rem;
         }
     }

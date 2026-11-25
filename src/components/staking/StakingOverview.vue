@@ -262,7 +262,7 @@ export default defineComponent({
     .nq-icon {
         font-size: 3.25rem;
 
-        ::v-deep path {
+        :deep(path) {
             stroke-width: 1;
             stroke: white;
         }
@@ -388,7 +388,7 @@ export default defineComponent({
             gap: 0.5rem;
             align-items: center;
 
-            ::v-deep .validator-trust-score {
+            :deep(.validator-trust-score) {
                 font-size: var(--small-size);
                 height: auto;
             }
@@ -407,7 +407,7 @@ export default defineComponent({
     background-color: currentColor;
 }
 
-.staking-container ::v-deep .amount::after {
+.staking-container :deep(.amount::after) {
     color: white;
 }
 </style>

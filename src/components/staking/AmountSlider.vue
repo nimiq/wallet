@@ -724,7 +724,7 @@ export default defineComponent({
                         cursor: grab;
                     }
 
-                    & ::v-deep svg {
+                    & :deep(svg) {
                         font-size: 3.5rem;
                         margin-left: 0.5rem;
 

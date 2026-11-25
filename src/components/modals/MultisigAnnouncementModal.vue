@@ -59,14 +59,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    ::v-deep .small-page {
+    :deep(.small-page) {
         width: 91rem;
         max-height: 51.2rem;
         background: white;
         overflow: hidden;
     }
 
-    ::v-deep .close-button {
+    :deep(.close-button) {
         display: none;
     }
 }
@@ -156,7 +156,7 @@ export default defineComponent({
 
 @media (max-width: 768px) {
     .modal {
-        ::v-deep .small-page {
+        :deep(.small-page) {
             width: 52.5rem;
             max-height: none;
         }

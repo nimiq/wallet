@@ -153,15 +153,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.tooltip::v-deep {
+.tooltip {
     contain: layout style; // not paint because tooltip box overflows
 
-    .tooltip-box,
-    .trigger::after {
+    :deep(.tooltip-box),
+    :deep(.trigger::after) {
         pointer-events: none;
     }
 
-    .tooltip-box {
+    :deep(.tooltip-box) {
         contain: layout paint style;
         padding: 1rem;
         font-size: var(--small-size);
@@ -174,28 +174,28 @@ export default defineComponent({
     }
 
     &.offset-tooltip-position {
-        &.top.left .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
-        &.position-top-left .tooltip-box {
+        &.top.left :deep(.tooltip-box), // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-top-left :deep(.tooltip-box) {
             transform: translate(20%, -2rem);
         }
 
-        &.top.right .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
-        &.position-top-right .tooltip-box {
+        &.top.right :deep(.tooltip-box), // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-top-right :deep(.tooltip-box) {
             transform: translate(-20%, -2rem);
         }
 
-        &.bottom.left .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
-        &.position-bottom-left .tooltip-box {
+        &.bottom.left :deep(.tooltip-box), // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-bottom-left :deep(.tooltip-box) {
             transform: translate(20%, 2rem);
         }
 
-        &.bottom.right .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
-        &.position-bottom-right .tooltip-box {
+        &.bottom.right :deep(.tooltip-box), // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-bottom-right :deep(.tooltip-box) {
             transform: translate(-20%, 2rem);
         }
     }
 
-    &:not(.is-copyable) .trigger {
+    &:not(.is-copyable) :deep(.trigger) {
         padding: 0.5rem 0.75rem; // Have a similar size as with Copyable's padding.
         line-height: 1.25;
     }

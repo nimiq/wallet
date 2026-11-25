@@ -291,7 +291,7 @@ export default defineComponent({
         top: 1.5rem;
         right: 1.5rem;
 
-        ::v-deep svg {
+        :deep(svg) {
             opacity: 0.5;
         }
     }

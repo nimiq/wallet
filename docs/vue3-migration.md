@@ -1,6 +1,6 @@
 # Vue 3 migration plan
 
-- **Status:** proposal
+- **Status:** Phase 0 in progress on branch `claude/vue3-phase0` (see [Phase 0 progress](#phase-0-progress)).
 - **Baseline:** `claude/port-vue-components` at `8a50dc6f` (Vite+ build, `@nimiq/vue-components` ported into the
   wallet). All counts below were taken on that commit with `grep` over `src/` and are approximate.
 
@@ -38,16 +38,16 @@ The code base is in a good position: every component with script logic already u
 
 ### Dependencies to replace or upgrade
 
-| Dependency                                                                                                | Target                                    | Affected code                                                                                                                                                                                     |
-| --------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `vue` 2.7                                                                                                 | Vue 3.5+                                  | everything                                                                                                                                                                                        |
-| `@vitejs/plugin-vue2`                                                                                     | `@vitejs/plugin-vue`                      | `vite.config.ts`                                                                                                                                                                                  |
-| `vue-router` 3.5                                                                                          | 4+                                        | `src/router.ts` (`new VueRouter`, `Route`, `RouteConfig`, `NavigationGuardNext`); the provide/inject `useRouter()` in `router.ts`, used in 39 files; `<keep-alive>` + `<router-view>` in 4 places |
-| `vue-i18n` 8                                                                                              | latest major (v11 or newer)               | `src/i18n/i18n-setup.ts` (`new VueI18n`, `i18n.missing`); the wrapper in `src/lib/useI18n.ts` and its `provideI18n` call in `App.vue`; 11 `$tc` calls; 78 `<i18n path>` tags in 29 files          |
-| `@linusborg/vue-simple-portal`                                                                            | built-in `<Teleport>`                     | 5 files                                                                                                                                                                                           |
-| `vue-virtual-scroller` (fork `sisou/vue-virtual-scroller#nimiq/build`, commit `8e03a14`, based on 1.0.10) | v2 (Vue 3 line)                           | 5 files (transaction lists, address list); the fork's changes must be re-applied or made unnecessary                                                                                              |
-| `v-click-outside` (Vue 2 only)                                                                            | own directive, or VueUse `onClickOutside` | `CountrySelector.vue`                                                                                                                                                                             |
-| `@adapttive/vue-markdown` (Vue 2 only)                                                                    | markdown library + sanitized `v-html`     | `ReleaseNotesModal.vue`                                                                                                                                                                           |
+| Dependency                                                                                                | Target                                        | Affected code                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `vue` 2.7                                                                                                 | Vue 3.5 (3.5.46 on 2026-11-25)                | everything                                                                                                                                                                                                                           |
+| `@vitejs/plugin-vue2`                                                                                     | `@vitejs/plugin-vue`                          | `vite.config.ts`                                                                                                                                                                                                                     |
+| `vue-router` 3.6                                                                                          | 4 or 5 (5.5.1 on 2026-11-25)                  | `src/router.ts` (`new VueRouter`, `Route`, `RouteConfig`, `NavigationGuardNext`); `useRouter` from `vue-router/composables` in 38 files; `router.currentRoute` (20 uses) becomes a ref; `<keep-alive>` + `<router-view>` in 4 places |
+| `vue-i18n` 8                                                                                              | 11 (11.4.23 on 2026-11-25)                    | `src/i18n/i18n-setup.ts` (`new VueI18n`, `i18n.missing`); the wrapper in `src/lib/useI18n.ts` and its `provideI18n` call in `App.vue`; 11 `$tc` calls; 78 `<i18n path>` tags in 29 files                                             |
+| `@linusborg/vue-simple-portal`                                                                            | built-in `<Teleport>`                         | 5 files                                                                                                                                                                                                                              |
+| `vue-virtual-scroller` (fork `sisou/vue-virtual-scroller#nimiq/build`, commit `8e03a14`, based on 1.0.10) | upstream `^2.0.1` or 3.0.5, no fork           | `RecycleScroller` in 5 files; `scrollToPosition(0, true)` → `scrollToPosition(0, { smooth: true })` (see [findings](#phase-0-findings))                                                                                              |
+| `v-click-outside` (Vue 2 only)                                                                            | done in Phase 0: `directives/ClickOutside.ts` | `CountrySelector.vue`; hook names change in Phase 1                                                                                                                                                                                  |
+| `@adapttive/vue-markdown` (Vue 2 only)                                                                    | done in Phase 0: markdown-it + `v-html`       | `ReleaseNotesModal.vue`, `lib/Markdown.ts`                                                                                                                                                                                           |
 
 ### Code changes
 
@@ -55,23 +55,24 @@ The code base is in a good position: every component with script logic already u
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ----- |
 | `slot="x"` / `slot-scope` → `#x` / `v-slot`. Mostly on `<div>`/`<span>`/`<a>`, which need a `<template #x>` wrapper; many are inside `<i18n>`                                                                                      | 176 in 43 files                                                  | 0     |
 | `::v-deep` / `>>>` → `:deep()` (Vue 2.7's SFC compiler supports `:deep()`)                                                                                                                                                         | 403                                                              | 0     |
-| `<template functional>` → plain template (icons)                                                                                                                                                                                   | 84 files                                                         | 0     |
+| `<template functional>` → plain template (icons). Done for 79; CircleSpinner, ShieldIcon, TriangleDownIcon, AnimatedLeafIcon and WorldIcon need an audit first (see [findings](#phase-0-findings))                                 | 84 files                                                         | 0     |
 | Declare `emits` on every component that emits. Vue 3 adds undeclared listeners to `$attrs`, so an emitted `click`/`input`/`change` also binds as a native listener on the root element and fires twice. Vue 2.7 accepts the option | ~63 files                                                        | 0     |
 | Transition classes `-enter` / `-leave` → `-enter-from` / `-leave-from`. In Phase 0, write both selectors                                                                                                                           | ~45 rules in 18 files                                            | 0     |
 | Custom `v-model`: `value` prop + `input` event → `modelValue` + `update:modelValue`. In Phase 0 via the `model: { prop, event }` option                                                                                            | 10 components                                                    | 0     |
 | `filters` → plain function (`formatIntoGroups`)                                                                                                                                                                                    | 1 component, 2 uses                                              | 0     |
 | `() => import('…vue')` in `components:` → `defineAsyncComponent` (exported by Vue 2.7)                                                                                                                                             | 3 (`FlaggedAddressWarning`)                                      | 0     |
 | Tooltip: `$parent` passed as container (`Sidebar.vue`, `StakingButton.vue`), `$once('hook:mounted')` (removed in Vue 3), reliance on a component's `$el` (a text node for multi-root components in Vue 3)                          | 3 files                                                          | 0     |
-| `Vue.prototype.$config` → `useConfig()` in `App.vue` (its only use)                                                                                                                                                                | 1                                                                | 0     |
+| `Vue.prototype.$config` → `app.config.globalProperties.$config`, and its type augmentation → `ComponentCustomProperties` (`$config` is used in 17 templates)                                                                       | `main.ts`                                                        | 1     |
 | `Vue.set` / `Vue.delete` → plain assignment / `delete`. Still needed on 2.7 to add keys reactively                                                                                                                                 | 31 in 6 stores                                                   | 1     |
 | `.native` modifier → remove (requires `emits` from Phase 0)                                                                                                                                                                        | ~25 in 16 files                                                  | 1     |
-| `$listeners` → remove (merged into `$attrs` in Vue 3); `v-on="$listeners"` lines go away                                                                                                                                           | 21 in 20 files                                                   | 1     |
+| `$listeners` → remove (merged into `$attrs` in Vue 3); `v-on="$listeners"` lines go away                                                                                                                                           | 45 in 44 files (incl. 24 icons from Phase 0)                     | 1     |
+| Remove the `model: { prop: 'modelValue', event: 'update:modelValue' }` options added in Phase 0                                                                                                                                    | 10                                                               | 1     |
 | `$tc(key, n)` → `$t(key, n)` (vue-i18n 8's `$t` does not pluralize; `$tc` is removed in v11)                                                                                                                                       | 11                                                               | 1     |
 | `<i18n path>` → `<i18n-t keypath>` (slot syntax already converted in Phase 0)                                                                                                                                                      | 78 in 29 files                                                   | 1     |
 | `<transition><keep-alive><router-view/></keep-alive></transition>` → `<router-view v-slot="{ Component }">` form                                                                                                                   | 4                                                                | 1     |
 | App bootstrap: `new Vue`, `Vue.use` ×6, `Vue.config`, `Vue.prototype` → `createApp` / `app.use`                                                                                                                                    | `main.ts`, `pinia.ts`, `router.ts`, `i18n-setup.ts`, `matomo.ts` | 1     |
 | Render functions: `createElement(c, { props })` → `h(c, props)` (`createWarningModal`, `main.ts`)                                                                                                                                  | 2                                                                | 1     |
-| Directive hooks `bind`/`unbind` → `beforeMount`/`unmounted`; `DirectiveOptions` → `Directive`                                                                                                                                      | `directives/PointerEvents.ts`                                    | 1     |
+| Directive hooks `bind`/`unbind` → `beforeMount`/`unmounted`; `DirectiveOptions` → `Directive`                                                                                                                                      | `directives/PointerEvents.ts`, `directives/ClickOutside.ts`      | 1     |
 | `<template v-for>` key moves from the children to the `<template>`                                                                                                                                                                 | 4                                                                | 1     |
 | Types: default `import Vue from 'vue'` (18 files), `Vue` as a type (~98 uses) → `ComponentPublicInstance` etc.; `shims-vue.d.ts`; `declare module 'vue/types/vue'` → `ComponentCustomProperties`                                   | —                                                                | 1     |
 | `v-if`/`v-for` on the same element (precedence flips in Vue 3), `v-bind="$attrs"` merge order (11 files use `$attrs`), `$attrs` now includes `class`/`style` (relevant with `inheritAttrs: false`)                                 | audit                                                            | 1     |
@@ -90,9 +91,13 @@ These do not show up as compile errors and are the main risk of the migration:
    rendered as `"false"` instead of removing the attribute.
 4. **Teleport and tooltips.** Tooltip positioning relies on container components and their `$el`; Teleport changes the
    DOM position of modals.
-5. **Virtual scroller fork.** The fork's changes are not documented in this repo and must be identified first.
+5. **Virtual scroller.** Resolved: the fork's changes exist upstream (see [findings](#phase-0-findings)). The CSS
+   overrides on `.vue-recycle-scroller` and `scroller.$el` still need a runtime check against the v2/v3 DOM.
 6. **i18n message syntax.** vue-i18n 9+ compiles messages with a stricter syntax (`@`, `|`, `{`, `}` have meaning).
-   All 797 msgids and their translations must compile.
+   `tests/i18n-messages.test.ts` now compiles all messages of all languages; all pass.
+7. **i18n keys are sentences.** vue-i18n 9+ first resolves a key as a dot path, then falls back to the flat key, so
+   keys like `'Click on {icon} in the URL bar.'` work but take a detour on every lookup. To verify in Phase 1; a
+   `messageResolver` that looks up the flat key directly avoids it.
 
 ## Phase 0: preparation on Vue 2.7
 
@@ -115,24 +120,75 @@ mechanical ones can be done by script.
    `deep: true` where in-place mutation must trigger.
 9. **i18n message test:** a Vitest test that compiles every message of every `.po` file with vue-i18n's message
    compiler (`@intlify/message-compiler` as a dev dependency), and fixes for the messages it rejects.
-10. **`$config`:** replace the global with `useConfig()` in `App.vue`.
+10. ~~**`$config`:** replace the global with `useConfig()` in `App.vue`.~~ Dropped: `$config` is used in 17 templates,
+    and Vue 3 supports the same pattern via `app.config.globalProperties`, so this moves to Phase 1.
 11. **Virtual scroller fork:** diff `sisou/vue-virtual-scroller#nimiq/build` against upstream 1.0.10 and document
     which changes the wallet depends on, so they can be carried over to v2 (or upstreamed).
+
+### Phase 0 progress
+
+Branch `claude/vue3-phase0`, one commit per step (they can be split into separate PRs). Every commit passes
+`vp check`, `yarn typecheck` and `vp test`.
+
+| Step                                     | Status               | Verification                                                                                                                            |
+| ---------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 2. `:deep()`                             | done                 | Compiled CSS identical, except 4 selectors in InteractiveShortAddress where the scope attribute moves within the same compound selector |
+| 2. Transition class names                | done                 | CSS diff: only the added `-enter-from` / `-leave-from` selectors                                                                        |
+| 1. Functional templates                  | 79 of 84 done        | Runtime comparison (see below)                                                                                                          |
+| 1. `slot=` → `v-slot`                    | done (116 groups)    | Runtime comparison                                                                                                                      |
+| 1. `filters`, `defineAsyncComponent`     | done                 | Typecheck                                                                                                                               |
+| 3. `emits`                               | done (63 components) | Runtime no-op in 2.7 (the runtime has no `emits` handling); typecheck                                                                   |
+| 4. `v-model`                             | done (10 components) | Runtime comparison incl. interactions (typing an address, search, ButtonGroup, StablecoinSelector)                                      |
+| 5. Router composables                    | done                 | Runtime comparison                                                                                                                      |
+| 6. Vue-2-only libraries                  | done                 | ClickOutside tested in Chromium; markdown output compared with the old component on a sample using all plugins                          |
+| 9. i18n message test                     | done                 | Found and fixed 2 broken Russian placeholders                                                                                           |
+| 11. Virtual scroller fork                | analysed             | See findings                                                                                                                            |
+| 7. Tooltip                               | open                 |                                                                                                                                         |
+| 8. Reactivity hardening                  | open                 |                                                                                                                                         |
+| 1. The 5 remaining functional components | open                 | Needs the audit described in the findings                                                                                               |
+
+Runtime comparison: production builds of the baseline and the branch, compared with the Phase 2 harness on 42 routes
+(desktop and mobile). The only differences were random radio-group ids.
+
+### Phase 0 findings
+
+- **Functional components with own scoped styles.** As a functional component, CircleSpinner (28 users), ShieldIcon,
+  TriangleDownIcon, AnimatedLeafIcon and WorldIcon only get their own scope id. As regular components (and in Vue 3
+  anyway), their root also gets the parent's scope id, so parent rules such as `svg { … }` or `.shield-icon { … }`
+  start to match; there are about 70 such candidate rules. Each one needs a check whether it changes the look, and
+  where it does, the selector needs to exclude the component (or the change is accepted).
+- **BackupModal.** Vue 2 drops the class of functional components that do not forward it, so `class="option-icon"` on
+  MessagesIcon and WordsIcon never applied. The class and its rule were removed to keep the look.
+- **BtcTransactionModal.** The OASIS payout status (the `v-if` of the chain in PageHeader) has no `slot="more"` and
+  renders into PageHeader's default slot, while the other states render into `more`. The other transaction modals put
+  it into `more`, so this is probably a bug. The slot conversion keeps the current behavior.
+- **Russian translations.** `Cashlink from {address}` and `Cashlink to {address}` were translated with the placeholder
+  `{адрес}`, which renders as empty. Fixed in `ru.po`; the fix also needs to go to Transifex, or the next pull reverts
+  it (the new test would then fail).
+- **Virtual scroller fork.** `nimiq/build` is upstream v1.0.10 plus two changes, both of which the wallet uses:
+  `6489446` takes the `#before` slot height into account for the scroll offset (used by the pending Cashlinks list in
+  TransactionList), and `73dbd49` adds a `smooth` flag to `scrollToPosition`. Upstream has the first since v1.1.0 and
+  the second since v2.0.0 as `scrollToPosition(position, { smooth: true })`; a bare `true` is ignored there. So the
+  fork is not needed: use upstream `^2.0.1` (requires Vue ^3.5) or 3.0.5, and change the one `scrollToPosition(0, true)`
+  call. The old `next` tag (2.0.0-beta.8) has neither change. v2 ships its own types.
+- **Harness.** The comparison scripts live outside the repo so far. Worth committing as a script for Phase 2.
 
 ## Phase 1: the switch branch
 
 Done in one branch, in this order, until `vp check`, `yarn typecheck` and `vp test` pass:
 
-1. Dependencies: `vue` 3.5+, `@vitejs/plugin-vue`, `vue-router` 4+, `vue-i18n` (latest), `vue-virtual-scroller` v2
-   (plus the fork's changes), remove `@linusborg/vue-simple-portal` and `@vitejs/plugin-vue2`.
-2. Bootstrap: `createApp(App)` with `app.use(router / i18n / pinia / matomo)`; Sentry `init({ app })`.
+1. Dependencies: `vue` 3.5, `@vitejs/plugin-vue`, `vue-router` 4 or 5, `vue-i18n` 11, upstream `vue-virtual-scroller`
+   `^2.0.1` (no fork), remove `@linusborg/vue-simple-portal` and `@vitejs/plugin-vue2`.
+2. Bootstrap: `createApp(App)` with `app.use(router / i18n / pinia / matomo)`; Sentry `init({ app })`;
+   `app.config.globalProperties.$config`.
 3. Router: `createRouter` + `createWebHistory`, type renames, `vue-router/composables` → `vue-router`,
    `<router-view v-slot>` for the 4 `keep-alive` places, check guards that rely on `next()`.
 4. i18n: `createI18n` (Composition mode with `globalInjection` so templates keep `$t`); reimplement
    `src/lib/useI18n.ts` on top of vue-i18n's `useI18n` (keeping the `$t` name keeps the extractor's keyword list
    valid) and drop `provideI18n`; `$tc` → `$t`; `<i18n path>` → `<i18n-t keypath>`.
-5. Mechanical removals: `Vue.set`/`Vue.delete`, `.native`, `$listeners`.
-6. `<Portal>` → `<Teleport>`; virtual scroller v2 API.
+5. Mechanical removals: `Vue.set`/`Vue.delete`, `.native`, `$listeners`, the `model` options, the Vue 2 transition
+   class names.
+6. `<Portal>` → `<Teleport>`; virtual scroller v2 API (`scrollToPosition(0, { smooth: true })`).
 7. Render functions, directive hooks, `<template v-for>` keys, types (`shims-vue.d.ts`, module augmentation, `Vue`
    type uses).
 8. Audit items from the code changes table (`v-if`/`v-for`, `$attrs` order and `class`/`style`).
@@ -156,7 +212,7 @@ grep cannot find (`ATTR_FALSE_VALUE`, `WATCH_ARRAY`, `INSTANCE_LISTENERS`, `TRAN
 
 ## Follow-ups (after the switch)
 
-- Pinia 3.
+- Pinia 3 or 4 (4.1.0 on 2026-11-25).
 - vue-tsc 3.
 - Optionally convert components to `<script setup>`; not required for the migration.
 
@@ -173,7 +229,9 @@ into one hard-to-review diff, and a regression could not be attributed to a caus
 
 ## Open questions
 
-- Which markdown library to use for release notes, and how to sanitize its output.
-- What the `nimiq/build` branch of the virtual scroller fork changes, and whether those changes exist upstream in v2.
+- Whether to sanitize the release notes HTML. markdown-it runs with `html: true`, as the old component did; the notes
+  come from our own release notes site.
+- vue-router 4 or 5.
+- Whether the BtcTransactionModal payout status should move into the `more` slot (see findings).
 - Whether to keep `$t`/`$tc`-style names in `src/lib/useI18n.ts` or move to vue-i18n's `t`; the latter requires
   adding `t` to the extractor's keywords in `webpack-i18n-tools`.

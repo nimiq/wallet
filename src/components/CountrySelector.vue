@@ -38,11 +38,10 @@
 </template>
 
 <script lang="ts">
-// @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
-import vClickOutside from 'v-click-outside';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
+import { clickOutside } from '../directives/ClickOutside';
 import { ALL_COUNTRY_CODES } from '../lib/Countries';
 import I18nDisplayNames from '../lib/I18nDisplayNames';
 import CountryFlag from './CountryFlag.vue';
@@ -183,7 +182,7 @@ export default defineComponent({
         CountryFlag,
     },
     directives: {
-        ClickOutside: vClickOutside.directive,
+        ClickOutside: clickOutside,
     },
 });
 </script>

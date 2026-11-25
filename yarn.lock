@@ -6638,11 +6638,6 @@ util@^0.12.5:
     is-typed-array "^1.1.3"
     which-typed-array "^1.1.2"
 
-v-click-outside@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/v-click-outside/-/v-click-outside-3.2.0.tgz#850ac3f52d66d84b9f7e8002a1bcadcafec5534e"
-  integrity sha512-QD0bDy38SHJXQBjgnllmkI/rbdiwmq9RC+/+pvrFjYJKTn8dtp7Penf9q1lLBta280fYG2q53mgLhQ+3l3z74w==
-
 valibot@^1.2.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/valibot/-/valibot-1.5.0.tgz#c05adda6b2823807bb0248e2952c35e1a50046fd"

@@ -57,7 +57,6 @@
     "register-service-worker": "^1.7.0",
     "safari-14-idb-fix": "^3.0.0",
     "sturdy-websocket": "^0.2.1",
-    "v-click-outside": "^3.2.0",
     "viem": "^2.58.0",
     "vue": "^2.7.16",
     "vue-chartjs": "^5.3.4",

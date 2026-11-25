@@ -7,9 +7,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
-import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
     createNimiqRequestLink,
@@ -20,17 +17,20 @@ import {
     Currency,
     EthereumChain,
 } from '@nimiq/utils';
-import Modal from './Modal.vue';
-import { useAccountStore } from '../../stores/Account';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { PageBody, QrScanner } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent } from 'vue';
 import { useConfig } from '../../composables/useConfig';
-import { useRouter } from '../../router';
+import { loadEthersLibrary } from '../../ethers';
 import {
     normalizeAddress as normalizeBitcoinAddress,
     validateAddressSync as validateBitcoinAddress,
 } from '../../lib/BitcoinTransactionUtils';
 import { ENV_MAIN } from '../../lib/Constants';
-import { loadEthersLibrary } from '../../ethers';
+import { useRouter } from '../../router';
+import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'scan-qr-modal',
@@ -62,9 +62,11 @@ export default defineComponent({
 
             // NIM Address
             if (ValidationUtils.isValidAddress(result)) {
-                router.replace(`/${createNimiqRequestLink(result, {
-                    type: NimiqRequestLinkType.URI,
-                })}`);
+                router.replace(
+                    `/${createNimiqRequestLink(result, {
+                        type: NimiqRequestLinkType.URI,
+                    })}`,
+                );
                 return;
             }
 
@@ -73,10 +75,12 @@ export default defineComponent({
             const nimRequestLink = parseRequestLink(result, { currencies: [Currency.NIM] });
             if (nimRequestLink) {
                 // Reformat into the new Nimiq request link uri format, in case it's an old Safe url.
-                const nimRequestLinkUri = new URL(createNimiqRequestLink(nimRequestLink.recipient, {
-                    ...nimRequestLink,
-                    type: NimiqRequestLinkType.URI,
-                }));
+                const nimRequestLinkUri = new URL(
+                    createNimiqRequestLink(nimRequestLink.recipient, {
+                        ...nimRequestLink,
+                        type: NimiqRequestLinkType.URI,
+                    }),
+                );
                 // Redirect to request link as path which will be handled by the router.
                 router.replace(`/${nimRequestLinkUri}`);
                 return;
@@ -85,35 +89,32 @@ export default defineComponent({
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
                 // Run in parallel, without awaiting.
                 // oxlint-disable-next-line import/extensions, import/no-unresolved
-                import('bitcoinjs-lib/src/address').then(({
-                    fromBase58Check: addressFromBase58Check,
-                    fromBech32: addressFromBech32,
-                }) => {
-                    const validateAddress = (address: string) => validateBitcoinAddress(
-                        address,
-                        { addressFromBase58Check, addressFromBech32 },
-                    );
-                    // BTC Address
-                    if (validateAddress(result)) {
-                        router.replace(`/${createBitcoinRequestLink(result)}`);
-                        return;
-                    }
+                import('bitcoinjs-lib/src/address').then(
+                    ({ fromBase58Check: addressFromBase58Check, fromBech32: addressFromBech32 }) => {
+                        const validateAddress = (address: string) =>
+                            validateBitcoinAddress(address, { addressFromBase58Check, addressFromBech32 });
+                        // BTC Address
+                        if (validateAddress(result)) {
+                            router.replace(`/${createBitcoinRequestLink(result)}`);
+                            return;
+                        }
 
-                    // BTC Request Link
-                    const requestLink = parseRequestLink(result, {
-                        currencies: [Currency.BTC],
-                        normalizeAddress: {
-                            [Currency.BTC]: normalizeBitcoinAddress,
-                        },
-                        isValidAddress: {
-                            [Currency.BTC]: validateAddress,
-                        },
-                    });
-                    if (requestLink) {
-                        // Redirect to the valid Bitcoin request link as path which will be handled by the router.
-                        router.replace(`/${result}`);
-                    }
-                });
+                        // BTC Request Link
+                        const requestLink = parseRequestLink(result, {
+                            currencies: [Currency.BTC],
+                            normalizeAddress: {
+                                [Currency.BTC]: normalizeBitcoinAddress,
+                            },
+                            isValidAddress: {
+                                [Currency.BTC]: validateAddress,
+                            },
+                        });
+                        if (requestLink) {
+                            // Redirect to the valid Bitcoin request link as path which will be handled by the router.
+                            router.replace(`/${result}`);
+                        }
+                    },
+                );
             }
 
             // TODO: Promt user to select a stablecoin when not yet selected.
@@ -124,15 +125,14 @@ export default defineComponent({
                     // that users must make sure this is a Polygon USDC address.
                     if (result.startsWith('0x') && ethers.utils.isAddress(result)) {
                         const normalizedAddress = ethers.utils.getAddress(result);
-                        router.replace(`/${createEthereumRequestLink(
-                            normalizedAddress,
-                            stablecoin.value!,
-                            {
-                                chainId: config.environment === ENV_MAIN
-                                    ? EthereumChain.POLYGON_MAINNET
-                                    : EthereumChain.POLYGON_AMOY_TESTNET,
-                            },
-                        )}`);
+                        router.replace(
+                            `/${createEthereumRequestLink(normalizedAddress, stablecoin.value!, {
+                                chainId:
+                                    config.environment === ENV_MAIN
+                                        ? EthereumChain.POLYGON_MAINNET
+                                        : EthereumChain.POLYGON_AMOY_TESTNET,
+                            })}`,
+                        );
                     }
 
                     // USDC/T Request Link
@@ -151,10 +151,7 @@ export default defineComponent({
                         ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_AMOY_TESTNET] : []),
                     ];
                     const requestLink = parseRequestLink(result, {
-                        currencies: [
-                            stablecoin.value! as unknown as Currency.USDC | Currency.USDT,
-                            Currency.MATIC,
-                        ],
+                        currencies: [stablecoin.value! as unknown as Currency.USDC | Currency.USDT, Currency.MATIC],
                         // The address normalization and validation are shared between ETH, MATIC and USDC.
                         normalizeAddress: {
                             [Currency.ETH]: (address: string) => {
@@ -172,17 +169,16 @@ export default defineComponent({
                     });
                     if (
                         requestLink
-                        && (requestLink.chainId && allowedChains.includes(requestLink.chainId))
+                        && requestLink.chainId
+                        && allowedChains.includes(requestLink.chainId)
                         && requestLink.currency.toString() === stablecoin.value!.toString()
                     ) {
                         // Reformat into a request link with polygon: protocol, in case it has the ethereum: protocol
                         // because we only define a route for polygon: in router.ts, and redirect to the request link as
                         // path which will be handled by the router.
-                        router.replace(`/${createEthereumRequestLink(
-                            requestLink.recipient,
-                            requestLink.currency,
-                            requestLink,
-                        )}`);
+                        router.replace(
+                            `/${createEthereumRequestLink(requestLink.recipient, requestLink.currency, requestLink)}`,
+                        );
                     }
                 });
             }
@@ -201,7 +197,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .modal ::v-deep .close-button {
     display: none;
@@ -219,7 +215,8 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .modal ::v-deep {
         .wrapper,
         .small-page {

@@ -3,16 +3,16 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import vue from '@vitejs/plugin-vue2';
+import { VitePWA } from 'vite-plugin-pwa';
+import wasm from 'vite-plugin-wasm';
 import type { Plugin } from 'vite-plus';
 import { defineConfig, loadEnv } from 'vite-plus';
 import type { OxfmtConfig } from 'vite-plus/fmt';
 import type { OxlintConfig } from 'vite-plus/lint';
-import vue from '@vitejs/plugin-vue2';
-import wasm from 'vite-plugin-wasm';
-import { VitePWA } from 'vite-plugin-pwa';
-import type { ManifestTransform } from 'workbox-build';
 import poLoader from 'webpack-i18n-tools/loader/rollup';
 import poOptimizer from 'webpack-i18n-tools/optimizer/rollup';
+import type { ManifestTransform } from 'workbox-build';
 import {
     airbnbBaseRules,
     typescriptRecommendedRules,
@@ -54,11 +54,14 @@ export default defineConfig(async ({ command, mode }) => {
         console.log('Building for:', buildName, ', release:', `"wallet-${release}"`); // eslint-disable-line no-console
     }
 
-    const appName = ({
-        mainnet: 'Nimiq Wallet',
-        testnet: 'Nimiq Testnet Wallet',
-        local: 'Nimiq Local Wallet',
-    } as Record<string, string>)[buildName] || 'Nimiq Wallet';
+    const appName =
+        (
+            {
+                mainnet: 'Nimiq Wallet',
+                testnet: 'Nimiq Testnet Wallet',
+                local: 'Nimiq Local Wallet',
+            } as Record<string, string>
+        )[buildName] || 'Nimiq Wallet';
 
     // For iOS debugging in BrowserStack, BrowserStack's localhost tunnel bs-local.com needs to be used, see
     // https://www.browserstack.com/docs/live/local-testing/ios-troubleshooting-guide. However, on bs-local.com features
@@ -81,16 +84,20 @@ export default defineConfig(async ({ command, mode }) => {
         },
         hashCharacters: 'hex' as const,
         entryFileNames: 'js/[name].[hash].js',
-        chunkFileNames: (chunk: { facadeModuleId: string | null }) => chunk.facadeModuleId?.endsWith('.po')
-            ? 'js/lang-[name]-po.[hash].js'
-            : 'js/[name].[hash].js',
+        chunkFileNames: (chunk: { facadeModuleId: string | null }) =>
+            chunk.facadeModuleId?.endsWith('.po') ? 'js/lang-[name]-po.[hash].js' : 'js/[name].[hash].js',
         assetFileNames: (asset: { names: string[] }) => {
             const extension = path.extname(asset.names[0] || '').substring(1);
-            const directory = extension === 'css' ? 'css'
-                : /^(png|jpe?g|gif|svg|webp|avif|ico)$/.test(extension) ? 'img'
-                    : /^(woff2?|eot|ttf|otf)$/.test(extension) ? 'fonts'
-                        : /^(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(extension) ? 'media'
-                            : 'assets';
+            const directory =
+                extension === 'css'
+                    ? 'css'
+                    : /^(png|jpe?g|gif|svg|webp|avif|ico)$/.test(extension)
+                      ? 'img'
+                      : /^(woff2?|eot|ttf|otf)$/.test(extension)
+                        ? 'fonts'
+                        : /^(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(extension)
+                          ? 'media'
+                          : 'assets';
             return `${directory}/[name].[hash][extname]`;
         },
     };
@@ -110,16 +117,20 @@ export default defineConfig(async ({ command, mode }) => {
             credentialsPlugin(env),
             staticCopyPlugin({
                 'img/nimiq-style.icons.svg': 'node_modules/@nimiq/style/nimiq-style.icons.svg',
-                ...Object.fromEntries(fs.globSync(
-                    'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
-                    { cwd: rootDir },
-                ).map((file) => [`img/${path.basename(file)}`, file])),
+                ...Object.fromEntries(
+                    fs
+                        .globSync('node_modules/@nimiq/vue-components/dist/iqons.min.*.svg', { cwd: rootDir })
+                        .map((file) => [`img/${path.basename(file)}`, file]),
+                ),
                 // The bundled NimiqVueComponents.umd.js loads the language files from the asset path set in main.ts and
                 // tries to load the non-minified files.
-                ...Object.fromEntries(fs.globSync(
-                    'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
-                    { cwd: rootDir },
-                ).map((file) => [`js/${path.basename(file).replace('.min', '')}`, file])),
+                ...Object.fromEntries(
+                    fs
+                        .globSync('node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js', {
+                            cwd: rootDir,
+                        })
+                        .map((file) => [`js/${path.basename(file).replace('.min', '')}`, file]),
+                ),
             }),
             pwaManifestPlugin(appName),
             VitePWA({
@@ -189,15 +200,17 @@ export default defineConfig(async ({ command, mode }) => {
                 output: {
                     ...outputOptions,
                     codeSplitting: {
-                        groups: [{
-                            // Like Vue CLI's chunk-vendors, put the dependencies of the entry points into a separate
-                            // chunk, which can be cached long-term, and which webpack-i18n-tools' optimizer skips, such
-                            // that it doesn't rewrite translation usages in dependencies, like @nimiq/vue-components,
-                            // which come with their own translations.
-                            name: 'vendor',
-                            test: /[\\/]node_modules[\\/]/,
-                            tags: ['$initial'],
-                        }],
+                        groups: [
+                            {
+                                // Like Vue CLI's chunk-vendors, put the dependencies of the entry points into a separate
+                                // chunk, which can be cached long-term, and which webpack-i18n-tools' optimizer skips, such
+                                // that it doesn't rewrite translation usages in dependencies, like @nimiq/vue-components,
+                                // which come with their own translations.
+                                name: 'vendor',
+                                test: /[\\/]node_modules[\\/]/,
+                                tags: ['$initial'],
+                            },
+                        ],
                     },
                 },
             },
@@ -223,14 +236,19 @@ export default defineConfig(async ({ command, mode }) => {
             hmr: {
                 overlay: false,
             },
-            ...(useHttps ? {
-                https: httpsKey && httpsCert ? {
-                    key: fs.readFileSync(httpsKey),
-                    cert: fs.readFileSync(httpsCert),
-                } : {},
-                // Allow to serve locally on wallet.nimiq.com via custom cert, or on bs-local.com.
-                allowedHosts: true,
-            } : {}),
+            ...(useHttps
+                ? {
+                      https:
+                          httpsKey && httpsCert
+                              ? {
+                                    key: fs.readFileSync(httpsKey),
+                                    cert: fs.readFileSync(httpsCert),
+                                }
+                              : {},
+                      // Allow to serve locally on wallet.nimiq.com via custom cert, or on bs-local.com.
+                      allowedHosts: true,
+                  }
+                : {}),
         },
         // Note: the service worker is only set up in production builds, thus to test it, a production build has to be
         // built and served via `vp preview`.
@@ -257,11 +275,13 @@ const fmtConfig: OxfmtConfig = {
     sortImports: { partitionByNewline: true, newlinesBetween: false },
     // deployment-wallet/ is the checkout of the deployment repository, made by scripts/deploy.sh.
     ignorePatterns: ['dist/**', 'deployment-wallet/**', 'public/**'],
-    overrides: [{
-        // Keep the common indentation of configuration and documentation files.
-        files: ['**/*.json', '**/*.md', '**/*.toml', '**/*.yml', '**/*.yaml'],
-        options: { tabWidth: 2 },
-    }],
+    overrides: [
+        {
+            // Keep the common indentation of configuration and documentation files.
+            files: ['**/*.json', '**/*.md', '**/*.toml', '**/*.yml', '**/*.yaml'],
+            options: { tabWidth: 2 },
+        },
+    ],
 };
 
 /**
@@ -302,13 +322,17 @@ const lintConfig: OxlintConfig = {
         ...vue2EssentialScriptRules,
         ...typescriptRecommendedRules,
 
-        'import/extensions': ['error', 'always', {
-            js: 'never',
-            mjs: 'never',
-            jsx: 'never',
-            ts: 'never',
-            tsx: 'never',
-        }],
+        'import/extensions': [
+            'error',
+            'always',
+            {
+                js: 'never',
+                mjs: 'never',
+                jsx: 'never',
+                ts: 'never',
+                tsx: 'never',
+            },
+        ],
         // Errors in production builds, see the verify script in package.json.
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
@@ -386,8 +410,9 @@ const lintConfig: OxlintConfig = {
  * keys that actually need to remain secret.
  */
 function credentialsPlugin(env: Record<string, string>): Plugin {
-    const credentialNames = ['ALBATROSS_WATCHTOWER_PASSWORD', 'ALCHEMY_API_KEY', 'ALCHEMY_ETH_API_KEY']
-        .flatMap((baseName) => [`${baseName}_LOCAL`, `${baseName}_TESTNET`, `${baseName}_MAINNET`]);
+    const credentialNames = ['ALBATROSS_WATCHTOWER_PASSWORD', 'ALCHEMY_API_KEY', 'ALCHEMY_ETH_API_KEY'].flatMap(
+        (baseName) => [`${baseName}_LOCAL`, `${baseName}_TESTNET`, `${baseName}_MAINNET`],
+    );
     const getWarning = (credentialName: string) =>
         `process.env.${credentialName} is unset. Please set it, for example via an .env.local file.`;
     const missingCredentialNames = credentialNames.filter((credentialName) => env[credentialName] === undefined);
@@ -395,13 +420,15 @@ function credentialsPlugin(env: Record<string, string>): Plugin {
     return {
         name: 'wallet:credentials',
         config: () => ({
-            define: Object.fromEntries(credentialNames.map((credentialName) => [
-                credentialName,
-                credentialName in env
-                    ? JSON.stringify(env[credentialName]) // Empty values are allowed.
-                    // Only for CI, allow to build, but at least generate a build that throws at runtime.
-                    : `(() => { throw new Error(${JSON.stringify(getWarning(credentialName))}); })()`,
-            ])),
+            define: Object.fromEntries(
+                credentialNames.map((credentialName) => [
+                    credentialName,
+                    credentialName in env
+                        ? JSON.stringify(env[credentialName]) // Empty values are allowed.
+                        : // Only for CI, allow to build, but at least generate a build that throws at runtime.
+                          `(() => { throw new Error(${JSON.stringify(getWarning(credentialName))}); })()`,
+                ]),
+            ),
         }),
         transform: {
             filter: { id: { exclude: /\/node_modules\// } },
@@ -487,7 +514,8 @@ function pwaManifestPlugin(appName: string): Plugin {
         start_url: '/',
         display: 'standalone',
         background_color: '#F8F8F8',
-        description: 'Securely manage your Nimiq and Bitcoin accounts. Send and receive NIM and BTC, view balances, '
+        description:
+            'Securely manage your Nimiq and Bitcoin accounts. Send and receive NIM and BTC, view balances, '
             + 'swap between NIM and BTC, and buy and sell with Nimiq OASIS.',
         screenshots: [
             '01-Send-and-receive',
@@ -516,28 +544,29 @@ function pwaManifestPlugin(appName: string): Plugin {
         // Append the tags to the head, as @vue/cli-plugin-pwa did, instead of prepending them, which is Vite's
         // default. The theme-color metas for light and dark mode in the html pages then take precedence over the
         // generic theme-color, as browsers use the first matching one.
-        transformIndexHtml: () => [
-            ...[32, 16].map((size) => ({
-                tag: 'link',
-                attrs: {
-                    rel: 'icon',
-                    type: 'image/png',
-                    sizes: `${size}x${size}`,
-                    href: `/img/icons/favicon-${size}x${size}.png`,
+        transformIndexHtml: () =>
+            [
+                ...[32, 16].map((size) => ({
+                    tag: 'link',
+                    attrs: {
+                        rel: 'icon',
+                        type: 'image/png',
+                        sizes: `${size}x${size}`,
+                        href: `/img/icons/favicon-${size}x${size}.png`,
+                    },
+                })),
+                { tag: 'link', attrs: { rel: 'manifest', href: '/manifest.json' } },
+                { tag: 'meta', attrs: { name: 'theme-color', content: themeColor } },
+                { tag: 'meta', attrs: { name: 'apple-mobile-web-app-capable', content: 'no' } },
+                { tag: 'meta', attrs: { name: 'apple-mobile-web-app-status-bar-style', content: 'default' } },
+                { tag: 'meta', attrs: { name: 'apple-mobile-web-app-title', content: appName } },
+                { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/img/icons/apple-touch-icon-152x152.png' } },
+                {
+                    tag: 'link',
+                    attrs: { rel: 'mask-icon', href: '/img/icons/safari-pinned-tab.svg', color: themeColor },
                 },
-            })),
-            { tag: 'link', attrs: { rel: 'manifest', href: '/manifest.json' } },
-            { tag: 'meta', attrs: { name: 'theme-color', content: themeColor } },
-            { tag: 'meta', attrs: { name: 'apple-mobile-web-app-capable', content: 'no' } },
-            { tag: 'meta', attrs: { name: 'apple-mobile-web-app-status-bar-style', content: 'default' } },
-            { tag: 'meta', attrs: { name: 'apple-mobile-web-app-title', content: appName } },
-            { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/img/icons/apple-touch-icon-152x152.png' } },
-            {
-                tag: 'link',
-                attrs: { rel: 'mask-icon', href: '/img/icons/safari-pinned-tab.svg', color: themeColor },
-            },
-            { tag: 'meta', attrs: { name: 'msapplication-TileColor', content: '#1F2348' } },
-        ].map((tag) => ({ ...tag, injectTo: 'head' as const })),
+                { tag: 'meta', attrs: { name: 'msapplication-TileColor', content: '#1F2348' } },
+            ].map((tag) => ({ ...tag, injectTo: 'head' as const })),
     };
 }
 

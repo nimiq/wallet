@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import Modal from '../modals/Modal.vue';
-import { useStakingStore } from '../../stores/Staking';
-import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
+import { defineComponent, watch, onMounted, ref } from 'vue';
 import { useRouter, RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '../../router';
+import { useStakingStore } from '../../stores/Staking';
+import Modal from '../modals/Modal.vue';
+import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
 
 export default defineComponent({
     setup() {
@@ -38,15 +38,20 @@ export default defineComponent({
         });
 
         // Also watch for changes during the modal lifetime
-        watch(activeValidator, (validator) => {
-            if (validator === null) {
-                redirectToRoot();
-            }
-        }, { immediate: true });
+        watch(
+            activeValidator,
+            (validator) => {
+                if (validator === null) {
+                    redirectToRoot();
+                }
+            },
+            { immediate: true },
+        );
 
         function onSwitchValidator() {
-            router.push({ name: RouteName.Staking, query: STAKING_QUERY_SHOW_VALIDATORS })
-                .catch(() => { /* already at target */ });
+            router.push({ name: RouteName.Staking, query: STAKING_QUERY_SHOW_VALIDATORS }).catch(() => {
+                /* already at target */
+            });
         }
 
         return {
@@ -62,13 +67,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .modal {
-        &.large-modal {
-            ::v-deep {
-                .small-page {
-                    width: 63.5rem;
-                }
+.modal {
+    &.large-modal {
+        ::v-deep {
+            .small-page {
+                width: 63.5rem;
             }
         }
     }
+}
 </style>

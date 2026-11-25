@@ -1,19 +1,19 @@
-import { ref, watch, watchEffect } from 'vue';
-import { storeToRefs } from 'pinia';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
-import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
-import { SwapEurData, useSwapsStore } from '../stores/Swaps';
-import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
-import { useFiatStore } from '../stores/Fiat';
-import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
+import { storeToRefs } from 'pinia';
+import { ref, watch, watchEffect } from 'vue';
 import { HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
+import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
+import { useFiatStore } from '../stores/Fiat';
 import { useKycStore } from '../stores/Kyc';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import { SwapEurData, useSwapsStore } from '../stores/Swaps';
+import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../stores/UsdcTransactions';
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../stores/UsdtTransactions';
-import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
 const { activeCurrency } = storeToRefs(useAccountStore());
 const { activeAddress } = storeToRefs(useAddressStore());
@@ -21,9 +21,9 @@ const { exchangeRates } = storeToRefs(useFiatStore());
 const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
 export type SwapLimits = {
-    current: { usd: number, luna: number, sat: number, cent: number, eur: number },
-    monthly: { usd: number, luna: number, sat: number, cent: number },
-    remaining: { usd: number, luna: number, sat: number, cent: number },
+    current: { usd: number; luna: number; sat: number; cent: number; eur: number };
+    monthly: { usd: number; luna: number; sat: number; cent: number };
+    remaining: { usd: number; luna: number; sat: number; cent: number };
 };
 
 const limits = ref<SwapLimits | undefined>(undefined);
@@ -43,14 +43,14 @@ watchEffect(async () => {
     trigger.value; // eslint-disable-line @typescript-eslint/no-unused-expressions
 
     const uid = kycUser.value
-        // If user is KYC-connected, there is no need to query limits by UID,
-        // because the KYC UID limits are included in the asset limit requests.
-        ? undefined
+        ? // If user is KYC-connected, there is no need to query limits by UID,
+          // because the KYC UID limits are included in the asset limit requests.
+          undefined
         : useAccountStore().activeAccountInfo?.uid;
 
     if (debouncing) return;
     debouncing = true;
-    window.setTimeout(() => debouncing = false, 100);
+    window.setTimeout(() => (debouncing = false), 100);
 
     const userLimitsPromise = uid ? getUserLimits(uid) : Promise.resolve(undefined);
 
@@ -153,18 +153,19 @@ watchEffect(async () => {
             .filter(Boolean) as TimedSwap[];
 
         // Sort them chronologically
-        const swaps = [...nimSwaps, ...btcSwaps, ...usdcSwaps, ...usdtSwaps]
-            .sort((a, b) => (a.timestamp || Infinity) - (b.timestamp || Infinity));
+        const swaps = [...nimSwaps, ...btcSwaps, ...usdcSwaps, ...usdtSwaps].sort(
+            (a, b) => (a.timestamp || Infinity) - (b.timestamp || Infinity),
+        );
 
         // Check if the first swap happened more than three days ago, otherwise calculate available limit
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-        if (swaps.length && swaps[0].timestamp && swaps[0].timestamp < (threeDaysAgo.getTime() / 1e3)) {
+        if (swaps.length && swaps[0].timestamp && swaps[0].timestamp < threeDaysAgo.getTime() / 1e3) {
             // The user is not new, because we found a swap from EUR from more than 3 days ago.
         } else {
             // Sum up swap volume, see how much is left from 100€
             const swapVolume = swaps.reduce((sum, swap) => sum + swap.amount, 0);
-            newUserLimitEur = Math.max(0, 100 - (swapVolume / 100));
+            newUserLimitEur = Math.max(0, 100 - swapVolume / 100);
         }
     }
 
@@ -173,144 +174,172 @@ watchEffect(async () => {
     const cutOffTimestamp = daysAgo30.setHours(daysAgo30.getHours() - 3) / 1000;
 
     // Find NIM tx that were involved in a swap
-    const swapNimTxs = Object.values(useTransactionsStore().$state.transactions).map((tx) => {
-        // Ignore all transactions before the cut-off
-        if ((tx.timestamp ? toSecs(tx.timestamp) : Infinity) < cutOffTimestamp) return null;
+    const swapNimTxs = Object.values(useTransactionsStore().$state.transactions)
+        .map((tx) => {
+            // Ignore all transactions before the cut-off
+            if ((tx.timestamp ? toSecs(tx.timestamp) : Infinity) < cutOffTimestamp) return null;
 
-        // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;
+            // Ignore all transactions that are not on the current account
+            if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;
 
-        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
-        // Ignore all transactions that are not part of a swap
-        if (!swapHash) return null;
+            const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
+            // Ignore all transactions that are not part of a swap
+            if (!swapHash) return null;
 
-        return {
-            tx,
-            swapHash,
-        };
-    }).filter(Boolean) as ({
-        tx: NimTransaction,
-        swapHash: string,
-    })[];
+            return {
+                tx,
+                swapHash,
+            };
+        })
+        .filter(Boolean) as {
+        tx: NimTransaction;
+        swapHash: string;
+    }[];
 
     const nimSwapHashes = swapNimTxs.map((obj) => obj.swapHash);
 
     // Find BTC tx that were involved in a swap, but not in a swap with NIM
-    const swapBtcTxs = Object.values(useBtcTransactionsStore().$state.transactions).map((tx) => {
-        // Ignore all transactions before the cut-off
-        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+    const swapBtcTxs = Object.values(useBtcTransactionsStore().$state.transactions)
+        .map((tx) => {
+            // Ignore all transactions before the cut-off
+            if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
-        // Ignore all transactions that are not on the current account
-        if (!tx.addresses.some((address) => activeAddresses.value.includes(address))) return null;
+            // Ignore all transactions that are not on the current account
+            if (!tx.addresses.some((address) => activeAddresses.value.includes(address))) return null;
 
-        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
-        // Ignore all transactions that are not part of a swap or whose swap is already part of the NIM transactions
-        if (!swapHash || nimSwapHashes.includes(swapHash)) return null;
+            const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
+            // Ignore all transactions that are not part of a swap or whose swap is already part of the NIM transactions
+            if (!swapHash || nimSwapHashes.includes(swapHash)) return null;
 
-        return {
-            tx,
-            swapHash,
-        };
-    }).filter(Boolean) as ({
-        tx: BtcTransaction,
-        swapHash: string,
-    })[];
+            return {
+                tx,
+                swapHash,
+            };
+        })
+        .filter(Boolean) as {
+        tx: BtcTransaction;
+        swapHash: string;
+    }[];
 
     const btcSwapHashes = swapBtcTxs.map((obj) => obj.swapHash);
 
     // Find USDC tx that were involved in a swap, but not in a swap with NIM or BTC
-    const swapUsdcTxs = Object.values(useUsdcTransactionsStore().$state.transactions).map((tx) => {
-        // Ignore all transactions before the cut-off
-        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+    const swapUsdcTxs = Object.values(useUsdcTransactionsStore().$state.transactions)
+        .map((tx) => {
+            // Ignore all transactions before the cut-off
+            if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
-        // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
+            // Ignore all transactions that are not on the current account
+            if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
 
-        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
-        // Ignore all transactions that are not part of a swap or whose swap is already
-        // part of the NIM or BTC transactions
-        if (
-            !swapHash
-            || nimSwapHashes.includes(swapHash)
-            || btcSwapHashes.includes(swapHash)
-        ) return null;
+            const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
+            // Ignore all transactions that are not part of a swap or whose swap is already
+            // part of the NIM or BTC transactions
+            if (!swapHash || nimSwapHashes.includes(swapHash) || btcSwapHashes.includes(swapHash)) return null;
 
-        return {
-            tx,
-            swapHash,
-        };
-    }).filter(Boolean) as ({
-        tx: UsdcTransaction,
-        swapHash: string,
-    })[];
+            return {
+                tx,
+                swapHash,
+            };
+        })
+        .filter(Boolean) as {
+        tx: UsdcTransaction;
+        swapHash: string;
+    }[];
 
     const usdcSwapHashes = swapUsdcTxs.map((obj) => obj.swapHash);
 
     // Find USDT tx that were involved in a swap, but not in a swap with NIM or BTC
-    const swapUsdtTxs = Object.values(useUsdtTransactionsStore().$state.transactions).map((tx) => {
-        // Ignore all transactions before the cut-off
-        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+    const swapUsdtTxs = Object.values(useUsdtTransactionsStore().$state.transactions)
+        .map((tx) => {
+            // Ignore all transactions before the cut-off
+            if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
-        // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
+            // Ignore all transactions that are not on the current account
+            if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
 
-        const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
-        // Ignore all transactions that are not part of a swap or whose swap is already
-        // part of the NIM or BTC transactions
-        if (
-            !swapHash
-            || nimSwapHashes.includes(swapHash)
-            || btcSwapHashes.includes(swapHash)
-            || usdcSwapHashes.includes(swapHash)
-        ) return null;
+            const swapHash = useSwapsStore().$state.swapByTransaction[tx.transactionHash];
+            // Ignore all transactions that are not part of a swap or whose swap is already
+            // part of the NIM or BTC transactions
+            if (
+                !swapHash
+                || nimSwapHashes.includes(swapHash)
+                || btcSwapHashes.includes(swapHash)
+                || usdcSwapHashes.includes(swapHash)
+            ) {
+                return null;
+            }
 
-        return {
-            tx,
-            swapHash,
-        };
-    }).filter(Boolean) as ({
-        tx: UsdtTransaction,
-        swapHash: string,
-    })[];
+            return {
+                tx,
+                swapHash,
+            };
+        })
+        .filter(Boolean) as {
+        tx: UsdtTransaction;
+        swapHash: string;
+    }[];
 
     // Find historic tx values in USD
-    await useTransactionsStore().calculateFiatAmounts(swapNimTxs.map(({ tx }) => tx), FiatCurrency.USD);
-    await useBtcTransactionsStore().calculateFiatAmounts(swapBtcTxs.map(({ tx }) => tx), FiatCurrency.USD);
-    await useUsdcTransactionsStore().calculateFiatAmounts(swapUsdcTxs.map(({ tx }) => tx), FiatCurrency.USD);
-    await useUsdtTransactionsStore().calculateFiatAmounts(swapUsdtTxs.map(({ tx }) => tx), FiatCurrency.USD);
+    await useTransactionsStore().calculateFiatAmounts(
+        swapNimTxs.map(({ tx }) => tx),
+        FiatCurrency.USD,
+    );
+    await useBtcTransactionsStore().calculateFiatAmounts(
+        swapBtcTxs.map(({ tx }) => tx),
+        FiatCurrency.USD,
+    );
+    await useUsdcTransactionsStore().calculateFiatAmounts(
+        swapUsdcTxs.map(({ tx }) => tx),
+        FiatCurrency.USD,
+    );
+    await useUsdtTransactionsStore().calculateFiatAmounts(
+        swapUsdtTxs.map(({ tx }) => tx),
+        FiatCurrency.USD,
+    );
 
-    const swappedAmount = swapNimTxs.reduce((sum, obj) => {
-        const usdValue = obj.tx.timestamp
-            ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().$state.exchangeRates[CryptoCurrency.NIM][FiatCurrency.USD] || 0)
-                * (obj.tx.value / 1e5);
-        return sum + usdValue;
-    }, 0)
-    + swapBtcTxs.reduce((sum, obj) => {
-        const output = obj.tx.outputs.length === 1
-            ? obj.tx.outputs[0]
-            : obj.tx.outputs.find((out) => out.address?.length === HTLC_ADDRESS_LENGTH)!;
+    const swappedAmount =
+        swapNimTxs.reduce((sum, obj) => {
+            const usdValue = obj.tx.timestamp
+                ? obj.tx.fiatValue
+                    ? obj.tx.fiatValue[FiatCurrency.USD] || 0
+                    : 0
+                : (useFiatStore().$state.exchangeRates[CryptoCurrency.NIM][FiatCurrency.USD] || 0)
+                  * (obj.tx.value / 1e5);
+            return sum + usdValue;
+        }, 0)
+        + swapBtcTxs.reduce((sum, obj) => {
+            const output =
+                obj.tx.outputs.length === 1
+                    ? obj.tx.outputs[0]
+                    : obj.tx.outputs.find((out) => out.address?.length === HTLC_ADDRESS_LENGTH)!;
 
-        const usdValue = obj.tx.timestamp
-            ? output.fiatValue ? output.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().$state.exchangeRates[CryptoCurrency.BTC][FiatCurrency.USD] || 0)
-                * (output.value / 1e8);
-        return sum + usdValue;
-    }, 0)
-    + swapUsdcTxs.reduce((sum, obj) => {
-        const usdValue = obj.tx.timestamp
-            ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDC][FiatCurrency.USD] || 0)
-                * (obj.tx.value / 1e6);
-        return sum + usdValue;
-    }, 0)
-    + swapUsdtTxs.reduce((sum, obj) => {
-        const usdValue = obj.tx.timestamp
-            ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
-            : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDT][FiatCurrency.USD] || 0)
-                * (obj.tx.value / 1e6);
-        return sum + usdValue;
-    }, 0);
+            const usdValue = obj.tx.timestamp
+                ? output.fiatValue
+                    ? output.fiatValue[FiatCurrency.USD] || 0
+                    : 0
+                : (useFiatStore().$state.exchangeRates[CryptoCurrency.BTC][FiatCurrency.USD] || 0)
+                  * (output.value / 1e8);
+            return sum + usdValue;
+        }, 0)
+        + swapUsdcTxs.reduce((sum, obj) => {
+            const usdValue = obj.tx.timestamp
+                ? obj.tx.fiatValue
+                    ? obj.tx.fiatValue[FiatCurrency.USD] || 0
+                    : 0
+                : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDC][FiatCurrency.USD] || 0)
+                  * (obj.tx.value / 1e6);
+            return sum + usdValue;
+        }, 0)
+        + swapUsdtTxs.reduce((sum, obj) => {
+            const usdValue = obj.tx.timestamp
+                ? obj.tx.fiatValue
+                    ? obj.tx.fiatValue[FiatCurrency.USD] || 0
+                    : 0
+                : (useFiatStore().$state.exchangeRates[CryptoCurrency.USDT][FiatCurrency.USD] || 0)
+                  * (obj.tx.value / 1e6);
+            return sum + usdValue;
+        }, 0);
 
     const userLimits = await userLimitsPromise;
     const nimAddressLimits = await nimAddressLimitsPromise;
@@ -318,30 +347,36 @@ watchEffect(async () => {
     const usdcAddressLimits = await usdcAddressLimitsPromise;
     const usdtAddressLimits = await usdtAddressLimitsPromise;
 
-    const lunaRate = (nimAddressLimits.reference.monthly / 100) / nimAddressLimits.monthly;
-    const satRate = (btcAddressLimits.reference.monthly / 100) / btcAddressLimits.monthly;
-    const centRate = (usdcAddressLimits.reference.monthly / 100) / usdcAddressLimits.monthly;
+    const lunaRate = nimAddressLimits.reference.monthly / 100 / nimAddressLimits.monthly;
+    const satRate = btcAddressLimits.reference.monthly / 100 / btcAddressLimits.monthly;
+    const centRate = usdcAddressLimits.reference.monthly / 100 / usdcAddressLimits.monthly;
     // const centRate = (usdtAddressLimits.reference.monthly / 100) / usdtAddressLimits.monthly;
 
     const monthlyUsdLimit = (userLimits || nimAddressLimits.reference).monthly / 100;
 
-    const currentUsdLimit = Math.max(0, Math.min(
-        userLimits ? (userLimits.current / 100) : Infinity,
-        nimAddressLimits.reference.monthly / 100 - swappedAmount,
-        nimAddress.value ? (nimAddressLimits.reference.current / 100) : Infinity,
-        btcAddress.value ? (btcAddressLimits.reference.current / 100) : Infinity,
-        usdcAddress.value ? (usdcAddressLimits.reference.current / 100) : Infinity,
-        usdtAddress.value ? (usdtAddressLimits.reference.current / 100) : Infinity,
-    ));
+    const currentUsdLimit = Math.max(
+        0,
+        Math.min(
+            userLimits ? userLimits.current / 100 : Infinity,
+            nimAddressLimits.reference.monthly / 100 - swappedAmount,
+            nimAddress.value ? nimAddressLimits.reference.current / 100 : Infinity,
+            btcAddress.value ? btcAddressLimits.reference.current / 100 : Infinity,
+            usdcAddress.value ? usdcAddressLimits.reference.current / 100 : Infinity,
+            usdtAddress.value ? usdtAddressLimits.reference.current / 100 : Infinity,
+        ),
+    );
 
-    const remainingUsdLimits = Math.max(0, Math.min(
-        userLimits ? (userLimits.monthlyRemaining / 100) : Infinity,
-        nimAddressLimits.reference.monthly / 100 - swappedAmount,
-        nimAddress.value ? (nimAddressLimits.reference.monthlyRemaining / 100) : Infinity,
-        btcAddress.value ? (btcAddressLimits.reference.monthlyRemaining / 100) : Infinity,
-        usdcAddress.value ? (usdcAddressLimits.reference.monthlyRemaining / 100) : Infinity,
-        usdtAddress.value ? (usdtAddressLimits.reference.monthlyRemaining / 100) : Infinity,
-    ));
+    const remainingUsdLimits = Math.max(
+        0,
+        Math.min(
+            userLimits ? userLimits.monthlyRemaining / 100 : Infinity,
+            nimAddressLimits.reference.monthly / 100 - swappedAmount,
+            nimAddress.value ? nimAddressLimits.reference.monthlyRemaining / 100 : Infinity,
+            btcAddress.value ? btcAddressLimits.reference.monthlyRemaining / 100 : Infinity,
+            usdcAddress.value ? usdcAddressLimits.reference.monthlyRemaining / 100 : Infinity,
+            usdtAddress.value ? usdtAddressLimits.reference.monthlyRemaining / 100 : Infinity,
+        ),
+    );
 
     limits.value = {
         current: {
@@ -382,16 +417,20 @@ watch([activeCurrency, activeAddress], ([currency, address]) => {
 });
 
 // Re-run limit calculation when exchange rates change
-watch(exchangeRates, () => {
-    if (limits.value) recalculate();
-}, { deep: true });
+watch(
+    exchangeRates,
+    () => {
+        if (limits.value) recalculate();
+    },
+    { deep: true },
+);
 
 export function useSwapLimits(options: {
-    nimAddress?: string,
-    btcAddress?: string,
-    usdcAddress?: string,
-    usdtAddress?: string,
-    isFiatToCrypto?: boolean,
+    nimAddress?: string;
+    btcAddress?: string;
+    usdcAddress?: string;
+    usdtAddress?: string;
+    isFiatToCrypto?: boolean;
 }) {
     nimAddress.value = options.nimAddress;
     btcAddress.value = options.btcAddress;

@@ -1,24 +1,24 @@
-import { watch, onUnmounted, Ref } from 'vue';
 import { CryptoCurrency, ValidationUtils } from '@nimiq/utils';
+import { watch, onUnmounted, Ref } from 'vue';
 // Import the type only, because we want to load the database lazily on demand.
 import type { FlaggedAddressType, FlaggedAddressChain } from '../config/flagged-addresses';
 import { i18n } from '../i18n/i18n-setup';
 
 export type FlaggedAddressInfo = {
-    address: string,
-    type: FlaggedAddressType,
-    dataset: string,
-    chain: FlaggedAddressChain,
+    address: string;
+    type: FlaggedAddressType;
+    dataset: string;
+    chain: FlaggedAddressChain;
 };
 
 type NumericalEnumWithReverseLookup = Record<string | number, number | string>;
 
 export function useFlaggedAddressCheck<RTE extends { FLAGGED: number } & NumericalEnumWithReverseLookup>(
     recipientInfo: Ref<{
-        address: string,
-        label: string,
-        type: RTE[keyof RTE],
-        flaggedInfo: FlaggedAddressInfo | null,
+        address: string;
+        label: string;
+        type: RTE[keyof RTE];
+        flaggedInfo: FlaggedAddressInfo | null;
     } | null>,
     RecipientTypeEnum: RTE,
     chain: FlaggedAddressChain,
@@ -26,11 +26,14 @@ export function useFlaggedAddressCheck<RTE extends { FLAGGED: number } & Numeric
     const unwatch = watch(
         // Watch both, the address and the parent object, because even if the address did not change, the recipientInfo
         // object might have changed, and require type, label and flaggedInfo to be applied again.
-        [() => recipientInfo.value?.address, recipientInfo] as [() => (string | undefined), typeof recipientInfo],
+        [() => recipientInfo.value?.address, recipientInfo] as [() => string | undefined, typeof recipientInfo],
         async ([recipientAddress]) => {
-            if (!recipientAddress // recipientInfo is not set yet
+            if (
+                !recipientAddress // recipientInfo is not set yet
                 || recipientInfo.value?.flaggedInfo // we already flagged the recipient info
-            ) return;
+            ) {
+                return;
+            }
 
             const info = await getFlaggedAddressInfo(recipientAddress, chain);
             if (recipientInfo.value?.address !== recipientAddress) return; // recipient changed in the meantime

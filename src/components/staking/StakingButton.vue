@@ -1,9 +1,12 @@
 <template>
-    <div class="staking-button"
+    <div
+        class="staking-button"
         @click.capture="!totalAccountStake && customClickHandler($event)"
         :class="{ 'show-text': showText }"
     >
-        <Tooltip class="staking-feature-tip" ref="CTATooltip$"
+        <Tooltip
+            class="staking-feature-tip"
+            ref="CTATooltip$"
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
@@ -14,22 +17,22 @@
                 {{ $t('Earn NIM every month by staking your NIM') }}
             </template>
         </Tooltip>
-        <Tooltip class="staking-button-tooltip" ref="tooltip$"
+        <Tooltip
+            class="staking-button-tooltip"
+            ref="tooltip$"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="$config.disableNetworkInteraction || isMobile || !isCTATooltipDisabled"
         >
             <template #trigger>
-                <button class="stake"
+                <button
+                    class="stake"
                     :class="{ 'nq-button-pill green': showText }"
                     :disabled="!canStake"
                     @click="$router.push({ name: RouteName.Staking })"
                     @mousedown.prevent
                 >
-                    <StakingIcon
-                        :disabled="$config.disableNetworkInteraction"
-                        :gradients="!showText"
-                    />
+                    <StakingIcon :disabled="$config.disableNetworkInteraction" :gradients="!showText" />
                     <span v-if="showText" class="stake-text">{{ $t('Stake') }}</span>
                 </button>
             </template>
@@ -41,15 +44,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Tooltip } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter, RouteName } from '@/router';
-import { useAddressStore } from '../../stores/Address';
-import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { MIN_STAKE } from '../../lib/Constants';
+import { useAddressStore } from '../../stores/Address';
+import { useStakingStore } from '../../stores/Staking';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
@@ -73,12 +76,15 @@ export default defineComponent({
         /**
          * The user can stake if they have a balance of at least MIN_STAKE.
          */
-        const canStake = computed(() => !!(
-            !config.disableNetworkInteraction
-            && activeAddressInfo.value
-            && activeAddressInfo.value.balance
-            && activeAddressInfo.value.balance >= MIN_STAKE
-        ));
+        const canStake = computed(
+            () =>
+                !!(
+                    !config.disableNetworkInteraction
+                    && activeAddressInfo.value
+                    && activeAddressInfo.value.balance
+                    && activeAddressInfo.value.balance >= MIN_STAKE
+                ),
+        );
 
         /**
          * This function is implemented to prevent any user interaction on the button from closing the tooltip.
@@ -107,17 +113,19 @@ export default defineComponent({
             }
         }
 
-        watch([CTATooltip$, activeAddressInfo, totalActiveStake], async () => {
-            if (!isMobile.value) {
-                updateTooltipVisibility();
-            } else if (isMobile.value && CTATooltip$.value?.isShown) {
-                CTATooltip$.value.hide();
-            }
-        }, { immediate: true, flush: 'post' });
-
-        const isCTATooltipDisabled = computed(() =>
-            !!(totalAccountStake.value || isMobile.value || !canStake.value),
+        watch(
+            [CTATooltip$, activeAddressInfo, totalActiveStake],
+            async () => {
+                if (!isMobile.value) {
+                    updateTooltipVisibility();
+                } else if (isMobile.value && CTATooltip$.value?.isShown) {
+                    CTATooltip$.value.hide();
+                }
+            },
+            { immediate: true, flush: 'post' },
         );
+
+        const isCTATooltipDisabled = computed(() => !!(totalAccountStake.value || isMobile.value || !canStake.value));
 
         /**
          * TODO:
@@ -156,7 +164,9 @@ export default defineComponent({
     height: 6.75rem;
     margin: -1.25rem 0;
 
-    & ::v-deep svg { font-size: 6.75rem }
+    & ::v-deep svg {
+        font-size: 6.75rem;
+    }
 
     &.show-text {
         display: flex;
@@ -172,7 +182,9 @@ export default defineComponent({
     padding: 0;
     transition: opacity 1s ease-in-out;
 
-    &[disabled] { cursor: not-allowed }
+    &[disabled] {
+        cursor: not-allowed;
+    }
 
     .show-text & {
         display: flex;
@@ -184,13 +196,14 @@ export default defineComponent({
 
         .staking-icon {
             margin-right: -1rem;
-            margin-left: -.5rem;
+            margin-left: -0.5rem;
         }
     }
 }
 
 .tooltip.staking-feature-tip {
-    &, ::v-deep .trigger {
+    &,
+    ::v-deep .trigger {
         position: absolute;
         top: 50%;
         left: 50%;

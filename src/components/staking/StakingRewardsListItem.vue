@@ -2,13 +2,28 @@
     <div class="reset staking-reward-item" @click="openRewardsHistory">
         <div class="info">
             <div class="title flex-row">
-                <svg v-if="!hideIcon" class="staking-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
+                <svg
+                    v-if="!hideIcon"
+                    class="staking-icon"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
                         d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10ZM5.125 4.75a.833.833 0 0 0-.834.833c0 1.568.16 3.175.979 4.395.757 1.129 1.975 1.789 3.715 1.948v3.472a.833.833 0 1 0 1.667 0v-1.759c1.59-.129 2.925-.646 3.899-1.62 1.138-1.138 1.652-2.77 1.652-4.728a.833.833 0 0 0-.833-.833c-.987 0-1.888.023-2.667.153-.787.13-1.516.38-2.118.879a3.288 3.288 0 0 0-.238.218 4.111 4.111 0 0 0-.54-1.202C8.94 5.222 7.391 4.75 5.125 4.75Zm3.751 4.072c.059.417.087.89.1 1.428-1.27-.146-1.933-.621-2.323-1.201-.417-.621-.613-1.49-.673-2.604 1.493.108 2.12.51 2.446.994.213.316.362.755.45 1.383Zm4.496 2.019c-.595.596-1.472.998-2.698 1.123.087-1.938.472-2.774.976-3.192.292-.242.702-.413 1.326-.517.431-.072.932-.106 1.52-.121-.124 1.23-.527 2.11-1.124 2.707Z"
-                        fill="url(#a)" />
+                        fill="url(#a)"
+                    />
                     <defs>
-                        <radialGradient id="a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
-                            gradientTransform="matrix(-20 0 0 -20 20 20)">
+                        <radialGradient
+                            id="a"
+                            cx="0"
+                            cy="0"
+                            r="1"
+                            gradientUnits="userSpaceOnUse"
+                            gradientTransform="matrix(-20 0 0 -20 20 20)"
+                        >
                             <stop stop-color="#41A38E" />
                             <stop offset="1" stop-color="#21BCA5" />
                         </radialGradient>
@@ -20,7 +35,9 @@
             <div class="details flex-row">
                 <template v-if="showOngoingIndicator">
                     <TextShimmer>{{ $t('Ongoing') }}</TextShimmer>
-                    &nbsp;<div class="dot"></div>&nbsp;
+                    &nbsp;
+                    <div class="dot"></div>
+                    &nbsp;
                 </template>
                 <i18n path="Paid out by {validator}" tag="span" class="flex-row">
                     <template v-slot:validator>
@@ -43,7 +60,7 @@
             </div>
         </div>
         <div class="amounts isIncoming">
-            <Amount :amount="monthlyReward" class="amount"/>
+            <Amount :amount="monthlyReward" class="amount" />
             <div v-if="fiatValue === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
             <FiatAmount
                 v-else-if="fiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
@@ -57,17 +74,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
+import { useMonthlyRewardFiatValue } from '../../composables/useMonthlyRewardFiatValue';
 import * as Constants from '../../lib/Constants';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../../lib/StakingUtils';
-import { useMonthlyRewardFiatValue } from '../../composables/useMonthlyRewardFiatValue';
-import ValidatorIcon from './ValidatorIcon.vue';
 import Amount from '../Amount.vue';
 import TextShimmer from './TextShimmer.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 export default defineComponent({
     name: 'StakingRewardsListItem',
@@ -100,8 +117,8 @@ export default defineComponent({
         const { validators: validatorList, stakingEvents } = storeToRefs(useStakingStore());
 
         const monthLabel = computed(() => getMonthLabel(props.month));
-        const validators = computed(() => props.validatorsAddresses.map(
-            (validator) => validatorList.value[validator] || { address: validator }),
+        const validators = computed(() =>
+            props.validatorsAddresses.map((validator) => validatorList.value[validator] || { address: validator }),
         );
 
         // Check if we should show the "Ongoing" indicator
@@ -143,8 +160,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use "../../scss/variables.scss" as *;
-@use "../../scss/mixins.scss" as *;
+@use '../../scss/variables.scss' as *;
+@use '../../scss/mixins.scss' as *;
 
 .staking-reward-item {
     display: flex;
@@ -155,7 +172,7 @@ export default defineComponent({
     padding: 1.5rem 1rem;
     border: 0;
     background: transparent;
-    border-radius: .75rem;
+    border-radius: 0.75rem;
     font-size: var(--body-size);
     cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
@@ -220,7 +237,7 @@ export default defineComponent({
                     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
                     flex-shrink: 0;
                     position: absolute;
-                    top: .5px;
+                    top: 0.5px;
                     left: -1.5px;
                     height: calc(100% - 1px);
 
@@ -244,12 +261,18 @@ export default defineComponent({
                     position: relative;
                 }
 
-                img.validator-icon { transform: translateY(.4px) }
+                img.validator-icon {
+                    transform: translateY(0.4px);
+                }
 
-                &:not(:last-child) { margin-right: -.75rem }
+                &:not(:last-child) {
+                    margin-right: -0.75rem;
+                }
             }
 
-            & > span > span:first-child { margin-left: 0.8rem }
+            & > span > span:first-child {
+                margin-left: 0.8rem;
+            }
             & > span > span:last-child {
                 margin-left: 1.2rem;
                 text-overflow: ellipsis;

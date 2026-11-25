@@ -3,13 +3,13 @@
         <PageBody class="flex-column">
             <header>
                 <h1 class="nq-h1" v-if="stablecoin">
-                    {{ $t('Buy NIM, BTC & {ticker}', { ticker: stablecoin.toUpperCase()}) }}
+                    {{ $t('Buy NIM, BTC & {ticker}', { ticker: stablecoin.toUpperCase() }) }}
                 </h1>
                 <h1 class="nq-h1" v-else>{{ $t('Buy NIM & BTC') }}</h1>
                 <p class="nq-text">
                     {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
                 </p>
-                <CountrySelector @select="c => country = c">
+                <CountrySelector @select="(c) => (country = c)">
                     <div slot="trigger" class="pill flex-row">
                         <CountryFlag v-if="country" :code="country.code" />
                         <CircleSpinner v-else />
@@ -18,40 +18,48 @@
                 </CountrySelector>
             </header>
             <div class="featured-options flex-row">
-                <Component :is="isSimplexAvailable ? 'router-link' : 'span'"
-                    :to="{ name: 'simplex', query: $route.query }" replace
+                <Component
+                    :is="isSimplexAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'simplex', query: $route.query }"
+                    replace
                     class="option simplex flex-column"
-                    :class="{disabled: !isSimplexAvailable}"
+                    :class="{ disabled: !isSimplexAvailable }"
                 >
-                    <img src="../../assets/exchanges/simplex-full.png" class="logo" alt="Simplex">
+                    <img src="../../assets/exchanges/simplex-full.png" class="logo" alt="Simplex" />
 
                     <div class="fees">
                         <div>{{ $t('Bank Transfer') }}</div>
                         <div>
-                            1%<br>
+                            1%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount"
-                                    :amount="3.00"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                        ? fiatCurrency
-                                        : FiatCurrency.USD"
+                                <FiatAmount
+                                    slot="amount"
+                                    :amount="3.0"
+                                    :currency="
+                                        [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                            ? fiatCurrency
+                                            : FiatCurrency.USD
+                                    "
                                 />
                             </i18n>
                         </div>
 
                         <div>
-                            {{ $t('Credit Card') }}<br>
+                            {{ $t('Credit Card') }}<br />
                             {{ $t('Apple/Google Pay') }}
                             <!-- <span class="low">Visa, Mastercard</span> -->
                         </div>
                         <div>
-                            4%<br>
+                            4%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount"
-                                    :amount="3.50"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                        ? fiatCurrency
-                                        : FiatCurrency.USD"
+                                <FiatAmount
+                                    slot="amount"
+                                    :amount="3.5"
+                                    :currency="
+                                        [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                            ? fiatCurrency
+                                            : FiatCurrency.USD
+                                    "
                                 />
                             </i18n>
                         </div>
@@ -64,13 +72,16 @@
                         <template v-if="country && country.code === 'US'">
                             <div>ACH</div>
                             <div>
-                                1.5%<br>
+                                1.5%<br />
                                 <i18n path="min {amount}" tag="span" class="low">
-                                    <FiatAmount slot="amount"
-                                        :amount="3.00"
-                                        :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                            ? fiatCurrency
-                                            : FiatCurrency.USD"
+                                    <FiatAmount
+                                        slot="amount"
+                                        :amount="3.0"
+                                        :currency="
+                                            [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                                ? fiatCurrency
+                                                : FiatCurrency.USD
+                                        "
                                     />
                                 </i18n>
                             </div>
@@ -80,45 +91,41 @@
                     <footer v-if="isSimplexAvailable" class="flex-row">
                         {{ $t('+ network fees, registration required above $700') }}
                         <div class="flex-grow"></div>
-                        <CaretRightIcon/>
+                        <CaretRightIcon />
                     </footer>
                     <footer v-else class="flex-row">
-                        <ForbiddenIcon/>
+                        <ForbiddenIcon />
                         {{ $t('Not available in your country') }}
                     </footer>
                 </Component>
 
-                <Component :is="isCoinifyAvailable ? 'router-link' : 'span'"
-                    :to="{ name: 'coinify', query: $route.query }" replace
+                <Component
+                    :is="isCoinifyAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'coinify', query: $route.query }"
+                    replace
                     class="option coinify flex-column"
-                    :class="{disabled: !isCoinifyAvailable}"
+                    :class="{ disabled: !isCoinifyAvailable }"
                 >
-                    <img src="../../assets/exchanges/coinify-mono.png" class="logo" alt="Coinify">
+                    <img src="../../assets/exchanges/coinify-mono.png" class="logo" alt="Coinify" />
 
                     <div class="fees">
                         <div>{{ $t('Bank Transfer') }}</div>
                         <div>
-                            1%<br>
+                            1%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount"
-                                    :amount="4.99"
-                                    :currency="FiatCurrency.USD"
-                                />
+                                <FiatAmount slot="amount" :amount="4.99" :currency="FiatCurrency.USD" />
                             </i18n>
                         </div>
 
                         <div>
-                            {{ $t('Credit Card') }}<br>
+                            {{ $t('Credit Card') }}<br />
                             {{ $t('Apple/Google Pay') }}
                             <!-- <span class="low">Visa, Mastercard</span> -->
                         </div>
                         <div>
-                            4.5%<br>
+                            4.5%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount"
-                                    :amount="4.99"
-                                    :currency="FiatCurrency.USD"
-                                />
+                                <FiatAmount slot="amount" :amount="4.99" :currency="FiatCurrency.USD" />
                             </i18n>
                         </div>
                     </div>
@@ -126,36 +133,41 @@
                     <footer v-if="isCoinifyAvailable" class="flex-row">
                         {{ $t('+ network fees, registration required') }}
                         <div class="flex-grow"></div>
-                        <CaretRightIcon/>
+                        <CaretRightIcon />
                     </footer>
                     <footer v-else class="flex-row">
-                        <ForbiddenIcon/>
+                        <ForbiddenIcon />
                         {{ $t('Not available in your country') }}
                     </footer>
                 </Component>
             </div>
 
-            <p class="nq-text exchanges-note" :class="{'only-option': !isCreditCardAvailable}">
+            <p class="nq-text exchanges-note" :class="{ 'only-option': !isCreditCardAvailable }">
                 {{ $t('Buy NIM on a crypto exchange:') }}
             </p>
-            <div class="exchange-logos flex-row" :class="{'only-option': !isCreditCardAvailable}">
-                <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
+            <div class="exchange-logos flex-row" :class="{ 'only-option': !isCreditCardAvailable }">
+                <a
+                    href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N"
+                    title="KuCoin"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin" />
                 </a>
                 <a href="https://www.gate.io/de/trade/NIM_USDT" title="Gate.io" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/gateio.svg" alt="Gate.io">
+                    <img src="../../assets/exchanges/gateio.svg" alt="Gate.io" />
                 </a>
                 <a href="https://www.bitpanda.com/en/prices/nimiq-nim" title="Bitpanda" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/bitpanda.png" alt="Bitpanda">
+                    <img src="../../assets/exchanges/bitpanda.png" alt="Bitpanda" />
                 </a>
                 <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone">
+                    <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone" />
                 </a>
                 <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/swapspace.svg" alt="SwapSpace">
+                    <img src="../../assets/exchanges/swapspace.svg" alt="SwapSpace" />
                 </a>
                 <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coinspot.svg" alt="CoinSpot">
+                    <img src="../../assets/exchanges/coinspot.svg" alt="CoinSpot" />
                 </a>
             </div>
         </PageBody>
@@ -163,29 +175,29 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
-import CountrySelector from '../CountrySelector.vue';
-import CountryFlag from '../CountryFlag.vue';
-import CaretRightIcon from '../icons/CaretRightIcon.vue';
-import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
-import { useAccountStore } from '../../stores/Account';
-import { useFiatStore } from '../../stores/Fiat';
-import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
-import I18nDisplayNames from '../../lib/I18nDisplayNames';
+import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 import { COINIFY_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
-import { useSettingsStore } from '../../stores/Settings';
+import I18nDisplayNames from '../../lib/I18nDisplayNames';
+import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useFiatStore } from '../../stores/Fiat';
+import { useSettingsStore } from '../../stores/Settings';
+import CountryFlag from '../CountryFlag.vue';
+import CountrySelector from '../CountrySelector.vue';
+import CaretRightIcon from '../icons/CaretRightIcon.vue';
+import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
+import Modal from './Modal.vue';
 // import { Trial } from '../../lib/Trials';
 
 type Country = {
-    code: string,
-    name: string,
-}
+    code: string;
+    name: string;
+};
 
 export default defineComponent({
     name: 'buy-options-modal',
@@ -198,14 +210,14 @@ export default defineComponent({
 
         const country = ref<Country | null>(null);
 
-        const isCoinifyAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            return config.coinify.enabled
-                && (!country.value || COINIFY_COUNTRY_CODES.includes(country.value.code));
+        // eslint-disable-next-line arrow-body-style
+        const isCoinifyAvailable = computed(() => {
+            return config.coinify.enabled && (!country.value || COINIFY_COUNTRY_CODES.includes(country.value.code));
         });
 
-        const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            return config.simplex.enabled
-                && (!country.value || SIMPLEX_COUNTRY_CODES.includes(country.value.code));
+        // eslint-disable-next-line arrow-body-style
+        const isSimplexAvailable = computed(() => {
+            return config.simplex.enabled && (!country.value || SIMPLEX_COUNTRY_CODES.includes(country.value.code));
         });
 
         const isCreditCardAvailable = computed(() => isCoinifyAvailable.value || isSimplexAvailable.value);
@@ -251,7 +263,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
 .modal ::v-deep .small-page {
@@ -370,7 +382,7 @@ header {
     }
 
     &.simplex {
-        background-color: #081F2C;
+        background-color: #081f2c;
 
         .logo {
             width: 9.5rem;
@@ -436,7 +448,9 @@ header {
             color: rgba(255, 255, 255, 0.6);
             flex-shrink: 0;
             margin-left: 0.5rem;
-            transition: color 0.3s var(--nimiq-ease), transform 0.3s var(--nimiq-ease);
+            transition:
+                color 0.3s var(--nimiq-ease),
+                transform 0.3s var(--nimiq-ease);
             will-change: transform, color;
         }
     }
@@ -526,7 +540,8 @@ header {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .modal ::v-deep .small-page {
         // Regular Modal size (iOS scrolling inside the BuyOptionsModal does not work without a fixed height)
         min-height: unset !important;
@@ -535,7 +550,7 @@ header {
     .page-body {
         padding: 1.5rem;
         flex-direction: column;
-        mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));
+        mask: linear-gradient(0deg, white, white calc(100% - 3.75rem), rgba(255, 255, 255, 0) calc(100% - 0.75rem));
         padding: 1rem 1.25rem 2.25rem;
     }
 

@@ -1,18 +1,18 @@
 <template>
     <div v-if="!wasDismissed && text()" class="announcement-box nq-green-bg">
-        <CrossCloseButton @click="close"/>
+        <CrossCloseButton @click="close" />
         <p>{{ text() }}</p>
         <BlueLink v-if="typeof action === 'string'" :href="action" target="_blank" rel="noopener">{{ cta() }}</BlueLink>
-        <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon/></button>
+        <button v-else class="reset action flex-row" @click="action">{{ cta() }}<ArrowRightSmallIcon /></button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { ArrowRightSmallIcon } from '@nimiq/vue-components';
+import { defineComponent, ref } from 'vue';
 import { LocaleMessage } from 'vue-i18n';
-import { RouteName, useRouter } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { RouteName, useRouter } from '@/router';
 import BlueLink from './BlueLink.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 

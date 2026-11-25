@@ -1,18 +1,21 @@
 <template>
-    <div class="btc-label-input"
+    <div
+        class="btc-label-input"
         :class="{ disabled, autocomplete: matchingLabels && matchingLabels.length > 0 }"
         @keydown="onKeyDown"
     >
-        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="input$"/>
-        <Avatar :label="localValue"/>
+        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="input$" />
+        <Avatar :label="localValue" />
         <ul class="label-autocomplete" v-if="matchingLabels && matchingLabels.length > 0" ref="btcLabelAutocomplete$">
-            <li v-for="(label, index) in matchingLabels" :key="index"
-                :class="{selected: selectedLabelIndex === index}"
+            <li
+                v-for="(label, index) in matchingLabels"
+                :key="index"
+                :class="{ selected: selectedLabelIndex === index }"
                 @mouseenter="selectedLabelIndex = index"
                 @focusin="selectedLabelIndex = index"
                 @click="localValue = label"
             >
-                <Avatar :label="label"/>
+                <Avatar :label="label" />
                 {{ label }}
             </li>
         </ul>
@@ -24,9 +27,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { LabelInput } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, Ref, ref, watch } from 'vue';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';
 
@@ -47,7 +50,9 @@ const BtcLabelInput = defineComponent({
         // https://vue-composition-api-rfc.netlify.app/api.html#computed
         const localValue = computed({
             get: () => props.value,
-            set(value) { context.emit('input', value); },
+            set(value) {
+                context.emit('input', value);
+            },
         });
 
         const { recipientLabels } = storeToRefs(useBtcLabelsStore());
@@ -61,16 +66,19 @@ const BtcLabelInput = defineComponent({
         }
 
         /* Filtering Labels */
-        const matchingLabels = computed(() =>
-            localValue.value && Object.values(recipientLabels.value).filter((label) =>
-                label
-                && label.toLowerCase().startsWith(localValue.value.toLowerCase())
-                && label.toLowerCase() !== localValue.value.toLowerCase(),
-            ),
+        const matchingLabels = computed(
+            () =>
+                localValue.value
+                && Object.values(recipientLabels.value).filter(
+                    (label) =>
+                        label
+                        && label.toLowerCase().startsWith(localValue.value.toLowerCase())
+                        && label.toLowerCase() !== localValue.value.toLowerCase(),
+                ),
         );
 
         /* Reset the currently selected label to 0 on text input */
-        watch(localValue, () => selectedLabelIndex.value = 0, { immediate: true });
+        watch(localValue, () => (selectedLabelIndex.value = 0), { immediate: true });
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
@@ -79,15 +87,17 @@ const BtcLabelInput = defineComponent({
 
             switch (event.keyCode) {
                 case 40: // down arrow key
-                    selectedLabelIndex.value = Math.max(0, Math.min(
-                        matchingLabels.value.length - 1, selectedLabelIndex.value + 1),
+                    selectedLabelIndex.value = Math.max(
+                        0,
+                        Math.min(matchingLabels.value.length - 1, selectedLabelIndex.value + 1),
                     );
 
                     break;
 
                 case 38: // up arrow key
-                    selectedLabelIndex.value = Math.max(0, Math.min(
-                        matchingLabels.value.length - 1, selectedLabelIndex.value - 1),
+                    selectedLabelIndex.value = Math.max(
+                        0,
+                        Math.min(matchingLabels.value.length - 1, selectedLabelIndex.value - 1),
                     );
                     break;
 
@@ -132,129 +142,129 @@ export default BtcLabelInput;
 </script>
 
 <style lang="scss" scoped>
-    @use '../scss/mixins.scss' as *;
+@use '../scss/mixins.scss' as *;
 
-    .btc-label-input {
-        position: relative;
-        font-weight: 600;
+.btc-label-input {
+    position: relative;
+    font-weight: 600;
 
-        & >.avatar {
-            position: absolute;
-            left: 1.5rem;
-            top: 1.5rem;
-            width: 3rem;
-            height: 3rem;
-            font-size: 1.625rem;
-            letter-spacing: -0.05em;
+    & > .avatar {
+        position: absolute;
+        left: 1.5rem;
+        top: 1.5rem;
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.625rem;
+        letter-spacing: -0.05em;
+    }
+
+    & > .avatar ::v-deep svg path {
+        transition: fill 200ms var(--nimiq-ease);
+    }
+
+    &:hover > .avatar ::v-deep svg path,
+    &:focus-within > .avatar ::v-deep svg path {
+        fill: var(--nimiq-light-blue);
+    }
+
+    ::v-deep input {
+        width: 100% !important;
+        padding: 1.75rem 2rem 1.75rem 5.75rem;
+
+        &::placeholder {
+            transition: color 200ms var(--nimiq-ease);
         }
+    }
 
-        & >.avatar ::v-deep svg path {
-            transition: fill 200ms var(--nimiq-ease);
-        }
-
-        &:hover > .avatar ::v-deep svg path,
-        &:focus-within > .avatar ::v-deep svg path {
-            fill: var(--nimiq-light-blue);
+    &.disabled {
+        & > .avatar {
+            filter: saturate(0);
+            opacity: 0.5;
         }
 
         ::v-deep input {
-            width: 100% !important;
-            padding: 1.75rem 2rem 1.75rem 5.75rem;
-
-            &::placeholder {
-                transition: color 200ms var(--nimiq-ease);
-            }
-        }
-
-        &.disabled {
-            & > .avatar {
-                filter: saturate(0);
-                opacity: 0.5;
-            }
-
-            ::v-deep input {
-                color: var(--text-50);
-            }
+            color: var(--text-50);
         }
     }
+}
 
-    .blue-tooltip {
-        @media (min-width: ($tabletBreakpoint + 1px)) {
-            @include blue-tooltip(left);
-        }
-
-        @media (max-width: $tabletBreakpoint) {
-            @include blue-tooltip(bottom);
-        }
-
-        p:first-child {
-            margin-top: 0;
-        }
-        p:last-child {
-            margin-bottom: 0;
-        }
+.blue-tooltip {
+    @media (min-width: ($tabletBreakpoint + 1px)) {
+        @include blue-tooltip(left);
     }
 
-    .label-input:focus-within ~ .blue-tooltip {
-        @media (min-width: ($tabletBreakpoint + 1px)) {
-            @include blue-tooltip_open(left);
-        }
-
-        @media (max-width: $tabletBreakpoint) {
-            @include blue-tooltip_open(bottom);
-        }
+    @media (max-width: $tabletBreakpoint) {
+        @include blue-tooltip(bottom);
     }
 
-    .label-autocomplete {
-        display: none;
+    p:first-child {
+        margin-top: 0;
+    }
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.label-input:focus-within ~ .blue-tooltip {
+    @media (min-width: ($tabletBreakpoint + 1px)) {
+        @include blue-tooltip_open(left);
     }
 
-    .label-input:focus-within ~ .label-autocomplete {
-        @extend %custom-scrollbar-inverse;
+    @media (max-width: $tabletBreakpoint) {
+        @include blue-tooltip_open(bottom);
+    }
+}
 
+.label-autocomplete {
+    display: none;
+}
+
+.label-input:focus-within ~ .label-autocomplete {
+    @extend %custom-scrollbar-inverse;
+
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    z-index: 4;
+    background: var(--nimiq-blue-bg);
+    color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
+    margin: 0;
+    margin-top: -0.25rem;
+    padding: 0.5rem;
+    max-height: 40rem;
+    list-style-type: none;
+    overflow: auto;
+    cursor: pointer;
+
+    li {
         display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        z-index: 4;
-        background: var(--nimiq-blue-bg);
-        color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0px 1.125rem 2.25rem rgba(0, 0, 0, 0.1);
-        margin: 0;
-        margin-top: -.25rem;
-        padding: .5rem;
-        max-height: 40rem;
-        list-style-type: none;
-        overflow: auto;
-        cursor: pointer;
+        flex-direction: row;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        background-color: rgba(#ffffff, 0);
 
-        li {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 1rem;
-            border-radius: 0.25rem;
-            background-color: rgba(#FFFFFF, 0);
+        transition: background-color 200ms var(--nimiq-ease);
 
-            transition: background-color 200ms var(--nimiq-ease);
-
-            &:not(:last-child) {
-                margin-bottom: .5rem;
-            }
-
-            &:hover,
-            &.selected {
-                background-color: rgba(#FFFFFF, .12);
-            }
+        &:not(:last-child) {
+            margin-bottom: 0.5rem;
         }
 
-        .avatar {
-            margin-right: 1rem;
-            height: 3rem;
-            width: 3rem;
-            font-size: 1.625rem;
-            letter-spacing: -0.05em;
+        &:hover,
+        &.selected {
+            background-color: rgba(#ffffff, 0.12);
         }
     }
+
+    .avatar {
+        margin-right: 1rem;
+        height: 3rem;
+        width: 3rem;
+        font-size: 1.625rem;
+        letter-spacing: -0.05em;
+    }
+}
 </style>

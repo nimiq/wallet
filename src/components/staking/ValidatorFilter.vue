@@ -1,7 +1,11 @@
 <template>
     <div class="stake-validator-filter">
-        <SliderToggle class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH"
-            name="validator-filter" v-model="state">
+        <SliderToggle
+            class="validator-filter-wrapper"
+            v-if="state !== FilterState.SEARCH"
+            name="validator-filter"
+            v-model="state"
+        >
             <template #[FilterState.TRUST]>
                 <button class="validator-switch">
                     {{ $t('TrustScore') }}
@@ -22,8 +26,13 @@
             <span class="validator-search-icon">
                 <FatSearchIcon />
             </span>
-            <input type="text" ref="search$" class="validator-search-box"
-                :placeholder="$t('Type to search...')" v-model="searchValue" />
+            <input
+                type="text"
+                ref="search$"
+                class="validator-search-box"
+                :placeholder="$t('Type to search...')"
+                v-model="searchValue"
+            />
             <button class="validator-search-close-icon" @click="state = FilterState.TRUST">
                 <XCloseIcon />
             </button>
@@ -32,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from 'vue';
 import { SliderToggle } from '@nimiq/vue-components';
+import { defineComponent, watch, ref } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
@@ -45,17 +54,25 @@ export default defineComponent({
         const search$ = ref<HTMLInputElement>();
         const searchValue = ref('');
 
-        watch(state, () => {
-            context.emit('changed', state.value);
+        watch(
+            state,
+            () => {
+                context.emit('changed', state.value);
 
-            if (state.value === FilterState.SEARCH) {
-                nextTick(() => search$.value?.focus());
-            }
-        }, { immediate: true });
+                if (state.value === FilterState.SEARCH) {
+                    nextTick(() => search$.value?.focus());
+                }
+            },
+            { immediate: true },
+        );
 
-        watch(searchValue, () => {
-            context.emit('search', searchValue.value);
-        }, { immediate: true });
+        watch(
+            searchValue,
+            () => {
+                context.emit('search', searchValue.value);
+            },
+            { immediate: true },
+        );
 
         return {
             state,
@@ -106,7 +123,9 @@ export default defineComponent({
 
             color: var(--nimiq-blue);
 
-            * { select: none }
+            * {
+                select: none;
+            }
         }
 
         .validator-search-icon {
@@ -122,9 +141,10 @@ export default defineComponent({
                     stroke: currentColor;
                 }
 
-                line, circle {
+                line,
+                circle {
                     stroke: rgb(31, 35, 72);
-                    stroke-width: 2.0;
+                    stroke-width: 2;
                 }
             }
         }
@@ -149,14 +169,15 @@ export default defineComponent({
             height: 3.5rem;
             align-items: center;
             margin-left: 1rem;
-            margin-right: .25rem;
+            margin-right: 0.25rem;
 
             svg {
                 width: 1.75rem;
                 height: 1.75rem;
-                opacity:  .7;
+                opacity: 0.7;
 
-                line, circle {
+                line,
+                circle {
                     stroke: rgb(5, 130, 202);
                 }
             }
@@ -166,15 +187,17 @@ export default defineComponent({
             width: 15.125rem;
             font-size: 2rem;
             line-height: 1.75rem;
-            color: #0582CA;
+            color: #0582ca;
             opacity: 0.4;
             border: 0;
 
-            &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-                color: #0582CA;
+            &::placeholder {
+                /* Chrome, Firefox, Opera, Safari 10.1+ */
+                color: #0582ca;
             }
-            &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-                color: #0582CA;
+            &:-ms-input-placeholder {
+                /* Internet Explorer 10-11 */
+                color: #0582ca;
             }
         }
 
@@ -185,7 +208,7 @@ export default defineComponent({
             cursor: pointer;
             border: 0;
             background: transparent;
-            color: #0582CA;
+            color: #0582ca;
         }
     }
 }

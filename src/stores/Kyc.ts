@@ -1,27 +1,27 @@
 import { UserLimits } from '@nimiq/fastspot-api';
 import { defineStore } from 'pinia';
-import { useAccountStore } from './Account';
 import { useConfig } from '../composables/useConfig';
+import { useAccountStore } from './Account';
 
 export enum KycProvider {
     TEN31PASS = 'TEN31 Pass',
 }
 
 export type TEN31PassUser = {
-    provider: KycProvider.TEN31PASS,
-    appGrant: string,
-    id: string,
-    name: string,
+    provider: KycProvider.TEN31PASS;
+    appGrant: string;
+    id: string;
+    name: string;
 };
 
 // Union of provider user types
 export type KycUser = TEN31PassUser;
 
 export type KycState = {
-    connectedUsers: Record<string, KycUser | null>,
+    connectedUsers: Record<string, KycUser | null>;
     // kycLimits stores the general KYC limits of Fastspot.
     // It has nothing to do with any currently connected user.
-    kycLimits: UserLimits | null,
+    kycLimits: UserLimits | null;
 };
 
 export const useKycStore = defineStore('kyc', {

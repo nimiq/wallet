@@ -3,17 +3,17 @@
         <div class="validator-label-trigger flex-row" @click="$emit('click')">
             <ValidatorIcon :validator="validator" />
             <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
-            <ShortAddress v-else :address="validator.address"/>
+            <ShortAddress v-else :address="validator.address" />
         </div>
     </ValidatorDescriptionTooltip>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import ShortAddress from '../../ShortAddress.vue';
 import { Validator } from '../../../stores/Staking';
-import ValidatorDescriptionTooltip from './ValidatorDescriptionTooltip.vue';
+import ShortAddress from '../../ShortAddress.vue';
 import ValidatorIcon from '../ValidatorIcon.vue';
+import ValidatorDescriptionTooltip from './ValidatorDescriptionTooltip.vue';
 
 export default defineComponent({
     props: {

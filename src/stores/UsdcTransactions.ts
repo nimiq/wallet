@@ -1,33 +1,33 @@
-import Vue from 'vue';
-import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
 import { bytesToHex, hexToBytes } from '@nimiq/electrum-client';
-import { defineStore } from 'pinia';
+import { SwapAsset } from '@nimiq/fastspot-api';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import config from 'config';
-import { useFiatStore } from './Fiat';
+import { defineStore } from 'pinia';
+import Vue from 'vue';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { useFiatStore } from './Fiat';
 import { useSwapsStore } from './Swaps';
 // import { getPolygonClient } from '../ethers';
 
 type HtlcOpenEvent = {
-    name: 'Open',
-    id: string,
-    token: string,
-    amount: number,
-    recipient: string,
-    hash: string,
-    timeout: number,
+    name: 'Open';
+    id: string;
+    token: string;
+    amount: number;
+    recipient: string;
+    hash: string;
+    timeout: number;
 };
 
 type HtlcRedeemEvent = {
-    name: 'Redeem',
-    id: string,
-    secret: string,
+    name: 'Redeem';
+    id: string;
+    secret: string;
 };
 
 type HtlcRefundEvent = {
-    name: 'Refund',
-    id: string,
+    name: 'Refund';
+    id: string;
 };
 
 export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
@@ -37,28 +37,28 @@ export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
  * (bridged USDC) fee in the resulting Transaction object.
  */
 export type UniswapEvent = {
-    name: 'Swap',
-    amountIn: number,
-    amountOut: number,
-}
+    name: 'Swap';
+    amountIn: number;
+    amountOut: number;
+};
 
 // This is a simplified transaction, only storing the token transfer.
 // It is NOT a full Ethereum/Polygon transaction.
 // Might be better named `UsdcTokenTransfer`...
 export type Transaction = {
-    token?: string,
-    transactionHash: string,
-    logIndex: number,
-    sender: string,
-    recipient: string,
-    value: number,
-    fee?: number,
-    event?: HtlcEvent | UniswapEvent,
-    state: TransactionState,
-    blockHeight?: number,
-    timestamp?: number,
+    token?: string;
+    transactionHash: string;
+    logIndex: number;
+    sender: string;
+    recipient: string;
+    value: number;
+    fee?: number;
+    event?: HtlcEvent | UniswapEvent;
+    state: TransactionState;
+    blockHeight?: number;
+    timestamp?: number;
 } & {
-    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
+    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>;
 };
 
 export enum TransactionState {
@@ -74,13 +74,13 @@ const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<strin
 
 export const useUsdcTransactionsStore = defineStore('usdcTransactions', {
     state: () => ({
-        transactions: {} as {[hash: string]: Transaction},
+        transactions: {} as { [hash: string]: Transaction },
     }),
     getters: {
         // activeAccount: state => state.accounts[state.activeAccountId],
         pendingTransactionsBySender: (state) => {
             const pendingTxs = Object.values(state.transactions).filter((tx) => tx.state === 'pending');
-            const txsBySender: {[address: string]: Transaction[] | undefined} = {};
+            const txsBySender: { [address: string]: Transaction[] | undefined } = {};
             for (const tx of pendingTxs) {
                 const array = txsBySender[tx.sender] || [];
                 array.push(tx);
@@ -146,18 +146,20 @@ export const useUsdcTransactionsStore = defineStore('usdcTransactions', {
             const lastExchangeRateUpdateTime = fiatStore.timestamp;
             const currentRate = fiatStore.exchangeRates[CryptoCurrency.USDC]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates[CryptoCurrency.USDC]?.[FiatCurrency.USD];
-            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter((tx) =>
-                // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
-                // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
-                // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
-                // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
-                // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
-                typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
+            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter(
+                (tx) =>
+                    // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
+                    // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
+                    // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
+                    // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
+                    // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
+                    typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
                     && typeof tx.fiatValue?.[historyFiatCurrency] !== 'number'
                     && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
                     // USDC price is only available starting 2018-10-05T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.
-                    && tx.timestamp && tx.timestamp >= 1538697600,
+                    && tx.timestamp
+                    && tx.timestamp >= 1538697600,
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
@@ -201,10 +203,11 @@ export const useUsdcTransactionsStore = defineStore('usdcTransactions', {
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction object from the store in case it changed (which for the USDC
                     // transaction store it doesn't do, but doesn't hurt to make the code more resilient).
-                    tx = this.$state.transactions[tx.transactionHash] as typeof tx || tx;
-                    Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
-                        ? exchangeRate * (tx.value / 1e6)
-                        : FIAT_PRICE_UNAVAILABLE,
+                    tx = (this.$state.transactions[tx.transactionHash] as typeof tx) || tx;
+                    Vue.set(
+                        tx.fiatValue!,
+                        historyFiatCurrency,
+                        exchangeRate !== undefined ? exchangeRate * (tx.value / 1e6) : FIAT_PRICE_UNAVAILABLE,
                     );
 
                     scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.delete(tx.transactionHash);
@@ -255,8 +258,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
     if (transaction.event?.name === 'Refund') {
         const swapId = transaction.event.id;
         // Find funding transaction
-        const selector = (testedTx: Transaction) =>
-            testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
+        const selector = (testedTx: Transaction) => testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
 
         // First search known transactions
         const fundingTx = knownTransactions.find(selector);

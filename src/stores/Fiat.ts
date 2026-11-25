@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia';
 import {
     Provider,
     RateType,
@@ -8,6 +7,7 @@ import {
     isHistorySupportedFiatCurrency,
     setCoinGeckoApiUrl,
 } from '@nimiq/utils';
+import { defineStore } from 'pinia';
 import {
     CryptoCurrency,
     FiatCurrency,
@@ -16,22 +16,17 @@ import {
     FIAT_API_PROVIDER_CURRENT_PRICES,
     FIAT_API_PROVIDER_TX_HISTORY,
 } from '../lib/Constants';
-import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
+import { useTransactionsStore } from './Transactions';
 import { useUsdcTransactionsStore } from './UsdcTransactions';
 
 export type FiatState = {
-    currency: FiatCurrencyOffered,
-    timestamp: number,
-    exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
+    currency: FiatCurrencyOffered;
+    timestamp: number;
+    exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } };
 };
 
-const CRYPTO_CURRENCIES = new Set([
-    CryptoCurrency.NIM,
-    CryptoCurrency.BTC,
-    CryptoCurrency.USDC,
-    CryptoCurrency.USDT,
-]);
+const CRYPTO_CURRENCIES = new Set([CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC, CryptoCurrency.USDT]);
 
 const FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES = {
     // CryptoCompare allows up to 50 instruments per request. As our requested instruments are the possible crypto-fiat
@@ -55,9 +50,9 @@ export function guessUserCurrency(regionOverwrite?: string) {
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1
     const languageRegex = new RegExp(
         '^'
-        + '(\\w+)' // obligatory language
-        + '(?:-\\w{3,4})*' // non-capturing group for optional extlang or script subtags which are 3 to 4 chars long
-        + '(?:-(\\w{2})\\b)?', // region tag which is exactly 2 chars long
+            + '(\\w+)' // obligatory language
+            + '(?:-\\w{3,4})*' // non-capturing group for optional extlang or script subtags which are 3 to 4 chars long
+            + '(?:-(\\w{2})\\b)?', // region tag which is exactly 2 chars long
         'i',
     );
     const match = navigator.language.match(languageRegex);
@@ -106,7 +101,7 @@ class ExchangeRateRequest {
     }
 
     async execute(): Promise<Record<CryptoCurrency, Record<FiatCurrencyOffered, number | undefined>> | undefined> {
-        if (this.result) return this.result.catch((e) => this.failGracefully ? undefined : Promise.reject(e));
+        if (this.result) return this.result.catch((e) => (this.failGracefully ? undefined : Promise.reject(e)));
         try {
             this.result = getExchangeRates(
                 [...this.cryptoCurrencies],
@@ -126,11 +121,17 @@ class ExchangeRateRequest {
     }
 
     canSkip(previousRequest: ExchangeRateRequest): boolean {
-        if (!areSetsEqual(this.cryptoCurrencies, previousRequest.cryptoCurrencies)
-            || !areSetsEqual(this.vsCurrencies, previousRequest.vsCurrencies)) return false; // different currencies
+        if (
+            !areSetsEqual(this.cryptoCurrencies, previousRequest.cryptoCurrencies)
+            || !areSetsEqual(this.vsCurrencies, previousRequest.vsCurrencies)
+        ) {
+            return false; // different currencies
+        }
         if (!previousRequest.finished) return true; // let previous request finish instead of issuing a new one
-        return !previousRequest.failed
-            && Date.now() - previousRequest.finishTime < ExchangeRateRequest.TIME_THRESHOLD_SKIPPABLE_REQUEST;
+        return (
+            !previousRequest.failed
+            && Date.now() - previousRequest.finishTime < ExchangeRateRequest.TIME_THRESHOLD_SKIPPABLE_REQUEST
+        );
     }
 }
 
@@ -153,40 +154,50 @@ export const useFiatStore = defineStore('fiat', {
         async updateExchangeRates(failGracefully = true) {
             const currentCurrency = this.$state.currency;
             // If a currency is bridged, but not by a bridge that supports historic rates, it's bridged via CPL Api.
-            const isCplBridgedFiatCurrency = (currency: FiatCurrency) => isBridgedFiatCurrency(
-                currency,
-                FIAT_API_PROVIDER_CURRENT_PRICES,
-                RateType.CURRENT,
-            ) && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES);
+            const isCplBridgedFiatCurrency = (currency: FiatCurrency) =>
+                isBridgedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES, RateType.CURRENT)
+                && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES);
             const isCurrentCurrencyCplBridged = isCplBridgedFiatCurrency(currentCurrency);
-            const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [...new Set<FiatCurrencyOffered>([
-                // As we limit the number of currencies we fetch for CryptoCompare, prioritize a few currencies, we'd
-                // prefer to be included, roughly the highest market cap currencies according to fiatmarketcap.com, plus
-                // some smaller currencies for which Nimiq has strong communities.
-                currentCurrency,
-                ...([
-                    // Currencies of smaller market cap, where Nimiq has strong communities, though. Placed first, that
-                    // they should be included even with FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES for
-                    // the most restrictive provider.
-                    'CRC', 'GMD', 'XOF',
-                    // Currencies of high market cap
-                    'USD', 'CNY', 'EUR', 'JPY', 'GBP', 'KRW', 'INR', 'CAD', 'HKD', 'BRL', 'AUD',
-                ] as const).map((ticker) => FiatCurrency[ticker]),
-                // After that, prefer to include currencies which also support historic rates.
-                ...FIAT_CURRENCIES_OFFERED.filter((currency) => isProviderSupportedFiatCurrency(
-                    currency,
-                    FIAT_API_PROVIDER_TX_HISTORY,
-                    RateType.HISTORIC,
-                )),
-                // Then currencies, which potentially only support current rates.
-                ...FIAT_CURRENCIES_OFFERED.filter((currency) => isProviderSupportedFiatCurrency(
-                    currency,
-                    FIAT_API_PROVIDER_CURRENT_PRICES,
-                    RateType.CURRENT,
-                )),
-                // Finally, all the remaining currencies, including bridged currencies.
-                ...FIAT_CURRENCIES_OFFERED,
-            ])];
+            const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [
+                ...new Set<FiatCurrencyOffered>([
+                    // As we limit the number of currencies we fetch for CryptoCompare, prioritize a few currencies, we'd
+                    // prefer to be included, roughly the highest market cap currencies according to fiatmarketcap.com, plus
+                    // some smaller currencies for which Nimiq has strong communities.
+                    currentCurrency,
+                    ...(
+                        [
+                            // Currencies of smaller market cap, where Nimiq has strong communities, though. Placed first, that
+                            // they should be included even with FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES for
+                            // the most restrictive provider.
+                            'CRC',
+                            'GMD',
+                            'XOF',
+                            // Currencies of high market cap
+                            'USD',
+                            'CNY',
+                            'EUR',
+                            'JPY',
+                            'GBP',
+                            'KRW',
+                            'INR',
+                            'CAD',
+                            'HKD',
+                            'BRL',
+                            'AUD',
+                        ] as const
+                    ).map((ticker) => FiatCurrency[ticker]),
+                    // After that, prefer to include currencies which also support historic rates.
+                    ...FIAT_CURRENCIES_OFFERED.filter((currency) =>
+                        isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_TX_HISTORY, RateType.HISTORIC),
+                    ),
+                    // Then currencies, which potentially only support current rates.
+                    ...FIAT_CURRENCIES_OFFERED.filter((currency) =>
+                        isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES, RateType.CURRENT),
+                    ),
+                    // Finally, all the remaining currencies, including bridged currencies.
+                    ...FIAT_CURRENCIES_OFFERED,
+                ]),
+            ];
             const currenciesToUpdate = new Set<FiatCurrencyOffered>();
             let providerCurrenciesToUpdateCount = 0;
             for (const currency of prioritizedFiatCurrenciesOffered) {
@@ -195,7 +206,8 @@ export const useFiatStore = defineStore('fiat', {
                     FIAT_API_PROVIDER_CURRENT_PRICES,
                     RateType.CURRENT,
                 );
-                if (// Omit currency if:
+                if (
+                    // Omit currency if:
                     // - it's not the currency currently active in the Wallet
                     currency !== currentCurrency
                     // - and not a provider currency which still fits a single api request
@@ -211,17 +223,15 @@ export const useFiatStore = defineStore('fiat', {
                     // for currencies which are not even active. On the other hand, if the current currency is a CPL
                     // bridged currency, we can include other CPL bridged currencies without additional API requests.)
                     && !(isCurrentCurrencyCplBridged && isCplBridgedFiatCurrency(currency))
-                ) continue; // omit currency
+                ) {
+                    continue; // omit currency
+                }
                 currenciesToUpdate.add(currency);
                 if (isProviderCurrency) {
                     providerCurrenciesToUpdateCount++;
                 }
             }
-            const exchangeRateRequest = new ExchangeRateRequest(
-                CRYPTO_CURRENCIES,
-                currenciesToUpdate,
-                failGracefully,
-            );
+            const exchangeRateRequest = new ExchangeRateRequest(CRYPTO_CURRENCIES, currenciesToUpdate, failGracefully);
             if (!!lastExchangeRateRequest && exchangeRateRequest.canSkip(lastExchangeRateRequest)) {
                 // Skip duplicate requests within ExchangeRateRequest.TIME_THRESHOLD_SKIPPABLE_REQUEST. Such can happen
                 // for example on currency changes via setCurrency that result in the same currenciesToUpdate, or if an
@@ -230,8 +240,10 @@ export const useFiatStore = defineStore('fiat', {
             }
             lastExchangeRateRequest = exchangeRateRequest;
             const exchangeRates = await exchangeRateRequest.execute();
-            if (!exchangeRates
-                || (lastExchangeRateRequest !== exchangeRateRequest && lastExchangeRateRequest.finished)) {
+            if (
+                !exchangeRates
+                || (lastExchangeRateRequest !== exchangeRateRequest && lastExchangeRateRequest.finished)
+            ) {
                 // Failed to retrieve exchange rates, and we failed gracefully, or a different request was issued in the
                 // meantime, which already finished, such that we don't want to override its result.
                 return;

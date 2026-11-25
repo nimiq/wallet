@@ -5,34 +5,36 @@
             <div v-if="!releases" class="nq-label flex-column">{{ $t('Loading...') }}</div>
 
             <details
-                v-else v-for="(release, index) of releases" :key="`${release.app}-${release.version}`"
+                v-else
+                v-for="(release, index) of releases"
+                :key="`${release.app}-${release.version}`"
                 :open="index === 0"
             >
                 <summary>
                     {{ new Date(release.date).toLocaleDateString() }} - {{ release.app }} {{ release.version }}
                 </summary>
                 <!-- <p class="nq-text">{{ release.message }}</p> -->
-                <VueMarkdown class="nq-text" :source="release.message" :breaks="false"/>
+                <VueMarkdown class="nq-text" :source="release.message" :breaks="false" />
             </details>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
 import VueMarkdown from '@adapttive/vue-markdown';
-import Modal from './Modal.vue';
-import { ENV_MAIN } from '../../lib/Constants';
+import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
+import { ENV_MAIN } from '../../lib/Constants';
+import Modal from './Modal.vue';
 
 type Release = {
-    app: 'Wallet' | 'Hub' | 'Keyguard',
-    version: string,
-    date: string,
-    message: string,
-    env: 'main' | 'test',
-}
+    app: 'Wallet' | 'Hub' | 'Keyguard';
+    version: string;
+    date: string;
+    message: string;
+    env: 'main' | 'test';
+};
 
 export default defineComponent({
     setup() {
@@ -43,7 +45,7 @@ export default defineComponent({
             const network = config.environment === ENV_MAIN ? 'mainnet' : 'testnet';
             fetch(`https://nimiq-frontend-release-notes.netlify.app/${network}_releases.json`)
                 .then((response) => response.json())
-                .then((content) => releases.value = content);
+                .then((content) => (releases.value = content));
         });
 
         return {

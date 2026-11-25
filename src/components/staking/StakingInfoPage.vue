@@ -2,7 +2,7 @@
     <div class="staking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template v-if="validator">
-                {{  $t('Staking overview') }}
+                {{ $t('Staking overview') }}
             </template>
             <template v-else>
                 {{ $t('Staking') }}
@@ -18,27 +18,35 @@
                 <RoundStakingIcon color="green" />
                 <div class="flex-column flex-grow" v-if="stakedBalance">
                     <div class="amount-staked">
-                        <Amount :amount="stakedBalance" value-mask/>
+                        <Amount :amount="stakedBalance" value-mask />
                         <span class="sm-hidden">&nbsp;{{ $t('staked') }}</span>
                     </div>
                     <div class="amount-staked-fiat flex-row">
-                        <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                        <FiatConvertedAmount :amount="stakedBalance" value-mask />
                         <span class="dot"></span>
                         <span>{{ percentage }}%</span>
                     </div>
                 </div>
                 <div class="flex-column">
-                    <Tooltip :disabled="!isStakeDeactivating && !pendingOperation" preferredPosition="bottom left"
-                        :container="_self" class="adjust-stake">
-                        <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
-                            :disabled="isStakeDeactivating || !!pendingOperation">
+                    <Tooltip
+                        :disabled="!isStakeDeactivating && !pendingOperation"
+                        preferredPosition="bottom left"
+                        :container="_self"
+                        class="adjust-stake"
+                    >
+                        <button
+                            slot="trigger"
+                            class="nq-button-s"
+                            @click="$emit('adjust-stake')"
+                            :disabled="isStakeDeactivating || !!pendingOperation"
+                        >
                             <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
                             <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
                         </button>
                         <span v-if="isSwitchingValidator">
-                            {{ $t('You can\'t adjust your stake during a validator switch') }}
+                            {{ $t("You can't adjust your stake during a validator switch") }}
                         </span>
-                        <span v-else>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                        <span v-else>{{ $t("You can't adjust your stake while you're unstaking") }}</span>
                     </Tooltip>
                 </div>
             </div>
@@ -47,13 +55,15 @@
                     <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
                     <div class="amount-row flex-row row">
                         <template v-if="restakingRewards !== null && restakingRewards !== undefined">
-                            +<Amount :amount="restakingRewards" value-mask/>
+                            +<Amount :amount="restakingRewards" value-mask />
                         </template>
                         <div v-else class="amount-loading-placeholder"></div>
                     </div>
                     <div class="details-row flex-row row">
-                        <div v-if="totalRewardsFiatValue === null || totalRewardsFiatValue === undefined"
-                            class="amount-loading-placeholder"></div>
+                        <div
+                            v-if="totalRewardsFiatValue === null || totalRewardsFiatValue === undefined"
+                            class="amount-loading-placeholder"
+                        ></div>
                         <FiatAmount
                             v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
@@ -62,10 +72,9 @@
                         />
                         <span v-else class="fiat-unavailable">{{ $t('Fiat value unavailable') }}</span>
                     </div>
-
                 </div>
                 <div class="flex-column flex-grow chart">
-                    <h2 class="nq-label title">{{  $t('Reward History') }}</h2>
+                    <h2 class="nq-label title">{{ $t('Reward History') }}</h2>
                     <StakingRewardsChart class="flex-grow" />
                 </div>
             </div>
@@ -103,19 +112,31 @@
                         {{ $t('Choose a validator to re-activate staking.') }}
                     </template>
                     <template v-else-if="switchTargetStatus === 'inactive'">
-                        {{ $t('{validator} is no longer an active validator. '
-                            + 'Choose another one to re-activate staking.', { validator: switchTargetLabel }) }}
+                        {{
+                            $t(
+                                '{validator} is no longer an active validator. '
+                                    + 'Choose another one to re-activate staking.',
+                                { validator: switchTargetLabel },
+                            )
+                        }}
                     </template>
                     <template v-else>
                         {{ $t('Manually activate the validator to re-activate staking.') }}
                     </template>
                 </span>
-                <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
-                    :disabled="!!networkNotice" @click="manualActivateSwitch">
+                <button
+                    v-if="switchTargetStatus === 'active'"
+                    class="nq-button-pill light-blue"
+                    :disabled="!!networkNotice"
+                    @click="manualActivateSwitch"
+                >
                     {{ $t('Activate validator') }}
                 </button>
-                <button v-else-if="choosesValidator" class="nq-button-pill light-blue"
-                    @click="$emit('switch-validator')">
+                <button
+                    v-else-if="choosesValidator"
+                    class="nq-button-pill light-blue"
+                    @click="$emit('switch-validator')"
+                >
                     {{ $t('Choose validator') }}
                 </button>
             </div>
@@ -129,12 +150,19 @@
                 <div class="flex-row unstaking nq-light-blue">
                     <CircleExclamationMarkIcon />
                     <span class="flex-grow">{{ $t('Validator switch interrupted') }}</span>
-                    <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
-                        :disabled="!!networkNotice" @click="resumeSwitch">
+                    <button
+                        v-if="switchTargetStatus === 'active'"
+                        class="nq-button-pill light-blue"
+                        :disabled="!!networkNotice"
+                        @click="resumeSwitch"
+                    >
                         {{ $t('Restart switch') }} <ArrowRightSmallIcon />
                     </button>
-                    <button v-else-if="choosesValidator && canReplaceStalledSwitch" class="nq-button-pill light-blue"
-                        @click="$emit('switch-validator')">
+                    <button
+                        v-else-if="choosesValidator && canReplaceStalledSwitch"
+                        class="nq-button-pill light-blue"
+                        @click="$emit('switch-validator')"
+                    >
                         {{ $t('Choose validator') }} <ArrowRightSmallIcon />
                     </button>
                 </div>
@@ -144,12 +172,20 @@
                         {{ $t('New staking rewards arrived before the validator switch could complete.') }}
                     </template>
                     <template v-else-if="switchTargetStatus === 'inactive'">
-                        {{ $t('New staking rewards arrived before the switch to {validator} could complete, '
-                            + 'and it is no longer an active validator.', { validator: switchTargetLabel }) }}
+                        {{
+                            $t(
+                                'New staking rewards arrived before the switch to {validator} could complete, '
+                                    + 'and it is no longer an active validator.',
+                                { validator: switchTargetLabel },
+                            )
+                        }}
                     </template>
                     <template v-else>
-                        {{ $t('New staking rewards arrived before the switch to {validator} could complete.',
-                            { validator: switchTargetLabel }) }}
+                        {{
+                            $t('New staking rewards arrived before the switch to {validator} could complete.', {
+                                validator: switchTargetLabel,
+                            })
+                        }}
                     </template>
                     <!-- Before the stake's election block (see `canReplaceStalledSwitch`) a restart keeps the release
                          and the watchtower job, while choosing another validator would race them -->
@@ -167,8 +203,10 @@
                         {{ $t('You can choose another validator in {time}.', { time: replaceableTime }) }}
                     </template>
                 </div>
-                <div v-if="networkNotice && switchTargetStatus === 'active'"
-                    class="footer-notice network-notice flex-row">
+                <div
+                    v-if="networkNotice && switchTargetStatus === 'active'"
+                    class="footer-notice network-notice flex-row"
+                >
                     <CircleSpinner />
                     {{ networkNotice }}
                 </div>
@@ -182,18 +220,22 @@
                     <span class="flex-grow">{{ $t('ready for pay out') }}</span>
 
                     <!-- Show "Unstake rest" if there's blocking sub-minimum stake -->
-                    <button v-if="hasSubMinimumStakeBlockingPayout"
+                    <button
+                        v-if="hasSubMinimumStakeBlockingPayout"
                         class="nq-button-pill light-blue"
                         :disabled="!!networkNotice"
-                        @click="unstakeRest">
+                        @click="unstakeRest"
+                    >
                         {{ $t('Unstake rest') }} <ArrowRightSmallIcon />
                     </button>
 
                     <!-- Otherwise show normal "Pay out" button -->
-                    <button v-else
+                    <button
+                        v-else
                         class="nq-button-pill light-blue"
                         :disabled="!!networkNotice"
-                        @click="() => unstakeAll(!!stake.retiredBalance)">
+                        @click="() => unstakeAll(!!stake.retiredBalance)"
+                    >
                         {{ $t('Pay out') }} <ArrowRightSmallIcon />
                     </button>
                 </div>
@@ -221,10 +263,11 @@
                     <span v-else-if="isSwitchingValidator" class="flex-grow">{{ $t('Switching validator') }}</span>
                     <template v-else>
                         {{ $t('Unstaking') }}
-                        <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                        <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow" />
                     </template>
                     <button class="nq-button-s unstaking-progress">
-                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                        {{ inactiveReleaseTime }}
+                        <!-- <span>Cancel</span> -->
                         <!-- TODO: Add cancel function -->
                     </button>
                 </div>
@@ -235,12 +278,20 @@
                         {{ $t('Automatic payout is not scheduled. Pay out manually once the countdown has ended.') }}
                     </template>
                     <template v-else-if="choosesValidator">
-                        {{ $t('Automatic activation is not scheduled. '
-                            + 'Choose a validator once the countdown has ended.') }}
+                        {{
+                            $t(
+                                'Automatic activation is not scheduled. '
+                                    + 'Choose a validator once the countdown has ended.',
+                            )
+                        }}
                     </template>
                     <template v-else>
-                        {{ $t('Automatic activation is not scheduled. '
-                            + 'Activate the validator manually once the countdown has ended.') }}
+                        {{
+                            $t(
+                                'Automatic activation is not scheduled. '
+                                    + 'Activate the validator manually once the countdown has ended.',
+                            )
+                        }}
                     </template>
                 </div>
             </div>
@@ -249,8 +300,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import {
     ArrowRightSmallIcon,
     CircleSpinner,
@@ -260,40 +309,42 @@ import {
     PageHeader,
     Tooltip,
 } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref } from 'vue';
 
-import { useI18n } from '@/lib/useI18n';
 import { useWindowSize } from '@/composables/useWindowSize';
-import { useStakingStore } from '../../stores/Staking';
-import { useAddressStore } from '../../stores/Address';
+import { useI18n } from '@/lib/useI18n';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
 import * as Constants from '../../lib/Constants';
 import { MIN_STAKE } from '../../lib/Constants';
+import { useAddressStore } from '../../stores/Address';
+import { useStakingStore } from '../../stores/Staking';
 
-import Amount from '../Amount.vue';
-import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
-import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
-import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StakingOperationType, stakingErrorMessage, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
+import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
+import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { sendStaking } from '../../hub';
-import { useNetworkStore } from '../../stores/Network';
-import { getNetworkClient, getValidityStartHeight, nimiqNetworkNotice, updateValidators } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import { startWatchtowerSwitch, startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
+import { getNetworkClient, getValidityStartHeight, nimiqNetworkNotice, updateValidators } from '../../network';
+import { useNetworkStore } from '../../stores/Network';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
-import StakingRewardsListItem from './StakingRewardsListItem.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
+import StakingRewardsListItem from './StakingRewardsListItem.vue';
 
 type Reward = {
-    total: number,
-    month: string,
-    validators: string[],
-    loading: boolean,
-}
+    total: number;
+    month: string;
+    validators: string[];
+    loading: boolean;
+};
 
 export default defineComponent({
     setup(props, context) {
@@ -321,20 +372,17 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
 
         // Height of items in pixel
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const itemSize = computed(() => (isMobile.value ? 68 : 72)); // mobile: 64px + 4px margin between items
         const scrollerBuffer = 300;
 
         // Calculate total rewards fiat value using month-based logic via composable
-        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(
-            monthlyRewards,
-            stakingEvents,
-        );
+        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(monthlyRewards, stakingEvents);
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value
-            ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
-            : 0);
+        const stakedBalance = computed(() =>
+            stake.value ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance : 0,
+        );
 
         const percentage = computed(() => {
             const total = availableBalance.value + stakedBalance.value;
@@ -349,11 +397,7 @@ export default defineComponent({
             const hours = date.getUTCHours().toString().padStart(2, '0');
             const minutes = date.getUTCMinutes().toString().padStart(2, '0');
             const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-            return [
-                ...(hours !== '' ? [hours] : []),
-                minutes,
-                seconds,
-            ].join(':');
+            return [...(hours !== '' ? [hours] : []), minutes, seconds].join(':');
         }
 
         // TODO: Take validator jail release into account
@@ -391,27 +435,28 @@ export default defineComponent({
             if (!stake.value) return false;
 
             // Check if there are funds ready for payout (either retired or inactive that's ready)
-            const hasReadyFunds = stake.value.retiredBalance > 0
-                || (stake.value.inactiveBalance > 0 && hasUnstakableStake.value);
+            const hasReadyFunds =
+                stake.value.retiredBalance > 0 || (stake.value.inactiveBalance > 0 && hasUnstakableStake.value);
 
             // Check if active balance is blocking the final payout (> 0 but < MIN_STAKE)
-            const hasBlockingStake = stake.value.activeBalance > 0
-                && stake.value.activeBalance < MIN_STAKE;
+            const hasBlockingStake = stake.value.activeBalance > 0 && stake.value.activeBalance < MIN_STAKE;
 
             return hasReadyFunds && hasBlockingStake;
         });
 
         // A stalled switch the user finishes by choosing a validator (see `switchTargetStatus`).
-        const choosesValidator = computed(() => switchTargetStatus.value === 'unknown'
-            || switchTargetStatus.value === 'inactive');
-
-        const isStakeDeactivating = computed(() =>
-            !!(stake.value?.inactiveBalance && stake.value.inactiveBalance > 0),
+        const choosesValidator = computed(
+            () => switchTargetStatus.value === 'unknown' || switchTargetStatus.value === 'inactive',
         );
 
-        const canSwitchValidator = computed(() => stake.value?.activeBalance === 0
-            && stake.value.inactiveBalance > 0
-            && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
+        const isStakeDeactivating = computed(() => !!(stake.value?.inactiveBalance && stake.value.inactiveBalance > 0));
+
+        const canSwitchValidator = computed(
+            () =>
+                stake.value?.activeBalance === 0
+                && stake.value.inactiveBalance > 0
+                && stake.value.inactiveRelease
+                && stake.value.inactiveRelease < height.value,
         );
 
         const showDeactivateAll = computed(() => {
@@ -424,7 +469,9 @@ export default defineComponent({
                 stake.value?.inactiveBalance
                 && stake.value.inactiveRelease
                 && stake.value.inactiveRelease > height.value
-            ) return false;
+            ) {
+                return false;
+            }
 
             return true;
         });
@@ -513,21 +560,25 @@ export default defineComponent({
                 const validityStartHeight = getValidityStartHeight();
 
                 const transactions = [
-                    ...(removeOnly ? [] : [
-                        TransactionBuilder.newRetireStake(
-                            Address.fromUserFriendlyAddress(activeAddress.value!),
-                            BigInt(stake.value!.inactiveBalance),
-                            BigInt(0),
-                            validityStartHeight,
-                            await client.getNetworkId(),
-                        ),
-                    ]),
+                    ...(removeOnly
+                        ? []
+                        : [
+                              TransactionBuilder.newRetireStake(
+                                  Address.fromUserFriendlyAddress(activeAddress.value!),
+                                  BigInt(stake.value!.inactiveBalance),
+                                  BigInt(0),
+                                  validityStartHeight,
+                                  await client.getNetworkId(),
+                              ),
+                          ]),
                     // It is only allowed to remove the complete retired balance, not only parts of it.
                     TransactionBuilder.newRemoveStake(
                         Address.fromUserFriendlyAddress(activeAddress.value!),
-                        BigInt(removeOnly
-                            ? stake.value!.retiredBalance
-                            : stake.value!.retiredBalance + stake.value!.inactiveBalance),
+                        BigInt(
+                            removeOnly
+                                ? stake.value!.retiredBalance
+                                : stake.value!.retiredBalance + stake.value!.inactiveBalance,
+                        ),
                         BigInt(0),
                         validityStartHeight,
                         await client.getNetworkId(),
@@ -589,7 +640,7 @@ export default defineComponent({
                 state: State.LOADING,
                 title: $t('Activating validator') as string,
             });
-            if (!await ensureTargetActive(address)) return;
+            if (!(await ensureTargetActive(address))) return;
 
             try {
                 const txs = await sendImmediateValidatorSwitch({
@@ -612,10 +663,7 @@ export default defineComponent({
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
-                    title: $t(
-                        'Successfully changed validator to {validator}',
-                        { validator: validatorLabel(target) },
-                    ),
+                    title: $t('Successfully changed validator to {validator}', { validator: validatorLabel(target) }),
                 });
 
                 context.emit('statusChange', {
@@ -708,8 +756,10 @@ export default defineComponent({
                     context.emit('statusChange', {
                         state: State.WARNING,
                         title: $t('Automatic payout could not be scheduled') as string,
-                        message: $t('The unstaking has started, but the automatic payout could not be scheduled. '
-                            + 'Come back once the countdown has ended and pay out manually.') as string,
+                        message: $t(
+                            'The unstaking has started, but the automatic payout could not be scheduled. '
+                                + 'Come back once the countdown has ended and pay out manually.',
+                        ) as string,
                     });
                     return;
                 }
@@ -753,7 +803,7 @@ export default defineComponent({
                 state: State.LOADING,
                 title: $t('Switching validator') as string,
             });
-            if (!await ensureTargetActive(address)) return;
+            if (!(await ensureTargetActive(address))) return;
 
             try {
                 const result = await startWatchtowerSwitch({
@@ -771,8 +821,10 @@ export default defineComponent({
                     context.emit('statusChange', {
                         state: State.WARNING,
                         title: $t('Validator switch needs a manual step') as string,
-                        message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
-                            + 'Come back once the countdown has ended and activate the validator manually.') as string,
+                        message: $t(
+                            'Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                                + 'Come back once the countdown has ended and activate the validator manually.',
+                        ) as string,
                     });
                     return;
                 }
@@ -860,328 +912,332 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @use '../../scss/mixins.scss' as *;
-    @use '../../scss/variables.scss' as *;
+@use '../../scss/mixins.scss' as *;
+@use '../../scss/variables.scss' as *;
 
-    @include scroll-mask(false, true, true);
+@include scroll-mask(false, true, true);
 
-    .staking-info-page {
-        flex-grow: 1;
+.staking-info-page {
+    flex-grow: 1;
+}
+
+.page-header {
+    padding-bottom: 3rem;
+
+    ::v-deep h1 {
+        display: flex;
+        justify-content: center;
+        gap: 0.25em;
+        flex-wrap: wrap;
     }
 
-    .page-header {
-        padding-bottom: 3rem;
+    .short-address {
+        display: inline-flex;
 
-        ::v-deep h1 {
-            display: flex;
-            justify-content: center;
-            gap: 0.25em;
-            flex-wrap: wrap;
-        }
-
-        .short-address {
-            display: inline-flex;
-
-            ::v-deep .address {
-                line-height: inherit;
-                font-family: inherit;
-                font-weight: inherit;
-            }
-        }
-
-        .validator-info-bar {
-            justify-content: center;
-            margin-top: 1rem;
+        ::v-deep .address {
+            line-height: inherit;
+            font-family: inherit;
+            font-weight: inherit;
         }
     }
 
-    .page-body {
+    .validator-info-bar {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+}
+
+.page-body {
+    padding: 0 2rem;
+    position: relative;
+    justify-content: space-between;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.amounts {
+    margin-bottom: 2rem;
+
+    .round-staking-icon {
+        width: 6rem;
+        height: 6rem;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    > * {
+        justify-content: center;
+    }
+}
+
+.rewards-and-chart {
+    gap: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+
+    @extend %custom-scrollbar;
+
+    @media (max-width: $tabletBreakpoint) {
         padding: 0 2rem;
-        position: relative;
-        justify-content: space-between;
-        flex-grow: 1;
-        overflow: hidden;
+        margin: 0 -2rem;
     }
 
-    .amounts {
-        margin-bottom: 2rem;
-
-        .round-staking-icon {
-            width: 6rem;
-            height: 6rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-
-        > * {
-            justify-content: center;
-        }
+    h2 {
+        margin: 2rem;
+        font-size: 1.5rem;
     }
 
-    .rewards-and-chart {
-        gap: 1rem;
-        overflow-x: auto;
-        margin-bottom: 1rem;
-
-        @extend %custom-scrollbar;
-
-        @media (max-width: $tabletBreakpoint) {
-            padding: 0 2rem;
-            margin: 0 -2rem;
-        }
+    .rewards {
+        border-radius: 0.75rem;
+        justify-items: left;
+        padding-bottom: 2rem;
+        flex-shrink: 0;
 
         h2 {
-            margin: 2rem;
-            font-size: 1.5rem;
+            color: white;
+            opacity: 70%;
         }
 
-        .rewards {
-            border-radius: 0.75rem;
-            justify-items: left;
-            padding-bottom: 2rem;
-            flex-shrink: 0;
-
-            h2 {
-                color: white;
-                opacity: 70%;
-            }
-
-            .amount-row {
-                font-size: var(--body-size);
-                font-weight: bold;
-                line-height: 2.5rem;
-                align-items: center;
-                gap: 0.5rem;
-
-                .amount-loading-placeholder {
-                    @include amount-loading-placeholder(12rem, 2.5rem, rgba(255, 255, 255, 0.3));
-                }
-            }
-
-            .details-row {
-                font-size: var(--small-size);
-                font-weight: 600;
-                line-height: 2.5rem;
-                opacity: 0.7;
-                align-items: center;
-                gap: 0.75rem;
-
-                .amount-loading-placeholder {
-                    @include amount-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
-                    margin-top: 0.25rem;
-                    margin-bottom: 0.25rem;
-                }
-
-                .fiat-unavailable {
-                    opacity: 0.5;
-                }
-            }
-        }
-
-        .chart {
-            position: relative;
-            min-width: 200px;
-
-            h2 {
-                position: absolute;
-                z-index: 2;
-            }
-        }
-    }
-
-    .history {
-        position: relative;
-        overflow: hidden;
-        margin: 0 -2rem;
-
-        .scroll-mask {
-            position: absolute;
-            width: calc(100% - 1rem);
-            left: 0;
-        }
-
-        .vue-recycle-scroller {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            padding-right: calc(2rem - 6px);
-            padding-left: 2rem;
-            padding-top: 2rem;
-
-            touch-action: pan-y;
-
-            @extend %custom-scrollbar;
-        }
-    }
-
-    .page-footer {
-        padding: 3rem;
-        box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
-
-        .footer-content {
-            gap: 1rem;
-        }
-
-        .unstaking {
+        .amount-row {
+            font-size: var(--body-size);
+            font-weight: bold;
+            line-height: 2.5rem;
             align-items: center;
-            color: var(--nimiq-light-blue);
-            font-size: 2rem;
-            font-weight: 600;
-            gap: 0.75rem;
+            gap: 0.5rem;
 
-            svg {
-                flex-shrink: 0;
-            }
-
-            .amount {
-                text-overflow: ellipsis;
-                overflow: hidden;
+            .amount-loading-placeholder {
+                @include amount-loading-placeholder(12rem, 2.5rem, rgba(255, 255, 255, 0.3));
             }
         }
 
-        .footer-notice {
+        .details-row {
             font-size: var(--small-size);
             font-weight: 600;
-            color: var(--text-50);
-            text-align: left;
-            line-height: 1.4;
-        }
-
-        .network-notice {
-            margin-top: 1rem;
+            line-height: 2.5rem;
+            opacity: 0.7;
             align-items: center;
-            color: var(--nimiq-light-blue);
-
-            ::v-deep .circle-spinner { margin-right: 0.5rem }
-        }
-
-        .manual-activate + .network-notice {
-            margin-top: 2rem;
-
-            ::v-deep .circle-spinner { margin-right: 0.75rem }
-        }
-
-        .manual-activate {
-            align-items: flex-start;
             gap: 0.75rem;
-            color: var(--nimiq-orange);
-            font-size: 2rem;
-            font-weight: 600;
-            line-height: 1.2;
 
-            svg {
-                flex-shrink: 0;
-                width: 2.25rem;
-                height: 2.25rem;
-                margin-top: 0.125rem;
+            .amount-loading-placeholder {
+                @include amount-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
+                margin-top: 0.25rem;
+                margin-bottom: 0.25rem;
             }
 
-            .message {
-                margin-top: 0.125rem;
-            }
-
-            .nq-button-pill {
-                flex-shrink: 0;
-                align-self: flex-start;
+            .fiat-unavailable {
+                opacity: 0.5;
             }
         }
     }
 
-    .section-title {
-        padding-left: 2rem;
-        align-items: center;
+    .chart {
+        position: relative;
+        min-width: 200px;
 
-        .nq-icon {
-            font-size: 3.25rem;
-            margin: -0.5rem 0.25rem 0 -0.75rem;
-
-            ::v-deep path {
-                stroke-width: 1;
-            }
+        h2 {
+            position: absolute;
+            z-index: 2;
         }
     }
+}
 
-    .amount-staked {
-        --size: var(--h2-size);
-        font-size: var(--size);
-        font-weight: bold;
-        line-height: 1;
-        margin-bottom: .5rem;
+.history {
+    position: relative;
+    overflow: hidden;
+    margin: 0 -2rem;
+
+    .scroll-mask {
+        position: absolute;
+        width: calc(100% - 1rem);
+        left: 0;
     }
 
-    .adjust-stake {
-        // margin-right: 2rem;
-        ::v-deep .tooltip-box {
-            width: 25.75rem;
-        }
-    }
-
-    .nq-button-pill:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        // pointer-events: none;
-    }
-
-    .amount-staked-fiat {
-        --size: var(--small-size);
-        font-size: var(--size);
-        font-weight: 600;
-        color: var(--text-50);
-        line-height: 1;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .horizontal-separator {
+    .vue-recycle-scroller {
+        position: absolute;
+        left: 0;
+        top: 0;
         width: 100%;
-        height: 0.1875rem;
-        border-top: 0.1875rem solid var(--nimiq-blue);
-        opacity: 0.2;
+        height: 100%;
+        padding-right: calc(2rem - 6px);
+        padding-left: 2rem;
+        padding-top: 2rem;
 
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+        touch-action: pan-y;
+
+        @extend %custom-scrollbar;
+    }
+}
+
+.page-footer {
+    padding: 3rem;
+    box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
+
+    .footer-content {
+        gap: 1rem;
     }
 
-    .rewards-history {
-        align-self: center;
-    }
+    .unstaking {
+        align-items: center;
+        color: var(--nimiq-light-blue);
+        font-size: 2rem;
+        font-weight: 600;
+        gap: 0.75rem;
 
-    .row {
-        padding: 0 2rem;
-
-        button + button {
-            margin-left: 2rem;
+        svg {
+            flex-shrink: 0;
         }
 
-        // @media (max-width: 700px) { // Full mobile breakpoint
-        //     &.flex-row {
-        //         flex-direction: column;
-        //         align-items: flex-start;
-        //         gap: 1.75rem;
-        //     }
-        // }
+        .amount {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     }
 
-    .switch-validator {
+    .footer-notice {
         font-size: var(--small-size);
         font-weight: 600;
-        color: var(--text-40);
-        align-self: center;
-        padding: 0 2rem;
+        color: var(--text-50);
+        text-align: left;
+        line-height: 1.4;
+    }
 
-        a {
-            color: inherit;
-            text-decoration: underline;
-            transition: color 200ms var(--nimiq-ease);
+    .network-notice {
+        margin-top: 1rem;
+        align-items: center;
+        color: var(--nimiq-light-blue);
 
-            &:hover {
-                color: var(--text-60);
-            }
+        ::v-deep .circle-spinner {
+            margin-right: 0.5rem;
         }
     }
+
+    .manual-activate + .network-notice {
+        margin-top: 2rem;
+
+        ::v-deep .circle-spinner {
+            margin-right: 0.75rem;
+        }
+    }
+
+    .manual-activate {
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: var(--nimiq-orange);
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1.2;
+
+        svg {
+            flex-shrink: 0;
+            width: 2.25rem;
+            height: 2.25rem;
+            margin-top: 0.125rem;
+        }
+
+        .message {
+            margin-top: 0.125rem;
+        }
+
+        .nq-button-pill {
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+    }
+}
+
+.section-title {
+    padding-left: 2rem;
+    align-items: center;
+
+    .nq-icon {
+        font-size: 3.25rem;
+        margin: -0.5rem 0.25rem 0 -0.75rem;
+
+        ::v-deep path {
+            stroke-width: 1;
+        }
+    }
+}
+
+.amount-staked {
+    --size: var(--h2-size);
+    font-size: var(--size);
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.adjust-stake {
+    // margin-right: 2rem;
+    ::v-deep .tooltip-box {
+        width: 25.75rem;
+    }
+}
+
+.nq-button-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    // pointer-events: none;
+}
+
+.amount-staked-fiat {
+    --size: var(--small-size);
+    font-size: var(--size);
+    font-weight: 600;
+    color: var(--text-50);
+    line-height: 1;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.horizontal-separator {
+    width: 100%;
+    height: 0.1875rem;
+    border-top: 0.1875rem solid var(--nimiq-blue);
+    opacity: 0.2;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rewards-history {
+    align-self: center;
+}
+
+.row {
+    padding: 0 2rem;
+
+    button + button {
+        margin-left: 2rem;
+    }
+
+    // @media (max-width: 700px) { // Full mobile breakpoint
+    //     &.flex-row {
+    //         flex-direction: column;
+    //         align-items: flex-start;
+    //         gap: 1.75rem;
+    //     }
+    // }
+}
+
+.switch-validator {
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--text-40);
+    align-self: center;
+    padding: 0 2rem;
+
+    a {
+        color: inherit;
+        text-decoration: underline;
+        transition: color 200ms var(--nimiq-ease);
+
+        &:hover {
+            color: var(--text-60);
+        }
+    }
+}
 
 .dot {
     width: 3px;

@@ -1,7 +1,8 @@
 <template>
     <Modal class="receive-modal">
         <transition name="fade">
-            <PolygonWarningPage v-if="page === Pages.WARNING"
+            <PolygonWarningPage
+                v-if="page === Pages.WARNING"
                 type="receiving"
                 :canGoBack="!!$route.params.canUserGoBack"
                 @back="back"
@@ -13,8 +14,9 @@
             {{ $t('Receive {ticker}', { ticker: stablecoin.toUpperCase() }) }}
             <template #more>{{
                 /* Split into multiple strings to share translation of the first sentence with ReceiveModal. */
-                $t('Share your address with the sender.') + ' '
-                    + $t('Make sure they are sending Polygon {ticker}.', { ticker: stablecoin.toUpperCase() })
+                $t('Share your address with the sender.')
+                + ' '
+                + $t('Make sure they are sending Polygon {ticker}.', { ticker: stablecoin.toUpperCase() })
             }}</template>
         </PageHeader>
         <PageBody class="flex-column">
@@ -22,7 +24,7 @@
                 :data="address"
                 :size="qrCodeCanvasSize"
                 :fill="'#1F2348' /* nimiq-blue */"
-                :style="{'--qr-code-canvas-size': `${qrCodeCanvasSize}px`}"
+                :style="{ '--qr-code-canvas-size': `${qrCodeCanvasSize}px` }"
             />
             <InteractiveShortAddress
                 :address="address"
@@ -35,27 +37,27 @@
             />
         </PageBody>
         <transition name="fade">
-            <PolygonWarningFooter v-if="!hasSeenAddress" type="receiving" level="info" key="info"/>
-            <PolygonWarningFooter v-else type="receiving" level="warning" key="warning"/>
+            <PolygonWarningFooter v-if="!hasSeenAddress" type="receiving" level="info" key="info" />
+            <PolygonWarningFooter v-else type="receiving" level="warning" key="warning" />
         </transition>
     </Modal>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
+import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
-import { useWindowSize } from '../../composables/useWindowSize';
-import Modal, { disableNextModalTransition } from './Modal.vue';
-import PolygonWarningPage from '../PolygonWarningPage.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import PolygonWarningPage from '../PolygonWarningPage.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export default defineComponent({
     name: 'stablecoin-receive-modal',
@@ -70,15 +72,16 @@ export default defineComponent({
         const { addressInfo } = storeToRefs(usePolygonAddressStore());
         const { $state: addresses$ } = usePolygonAddressStore();
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
-        const { $state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcTransactionsStore()
-            : useUsdtTransactionsStore();
+        const { $state: transactions$ } =
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcTransactionsStore() : useUsdtTransactionsStore();
         // These are non-reactive because we're only interested in whether the user had ever received USDC/T when the
         // modal was initially opened.
-        const normalizedUserAddresses = Object.values(addresses$.addressInfos)
-            .map(({ address }) => address.toLowerCase());
-        const hasEverReceived = Object.values(transactions$.transactions)
-            .some(({ recipient }) => normalizedUserAddresses.includes(recipient.toLowerCase()));
+        const normalizedUserAddresses = Object.values(addresses$.addressInfos).map(({ address }) =>
+            address.toLowerCase(),
+        );
+        const hasEverReceived = Object.values(transactions$.transactions).some(({ recipient }) =>
+            normalizedUserAddresses.includes(recipient.toLowerCase()),
+        );
 
         const page = ref(hasEverReceived ? Pages.RECEIVE : Pages.WARNING);
         const initialPage = page.value;
@@ -86,7 +89,9 @@ export default defineComponent({
         const hasSeenAddress = ref(false);
 
         const { height: windowHeight, isMobile } = useWindowSize();
-        const qrCodeCanvasSize = computed(() => windowHeight.value <= 520 ? Math.floor(windowHeight.value * .85) : 448);
+        const qrCodeCanvasSize = computed(() =>
+            windowHeight.value <= 520 ? Math.floor(windowHeight.value * 0.85) : 448,
+        );
         const displayedAddressCharacters = computed(() => {
             const maxChars = isMobile.value ? 22 : 20;
             return Math.max(8, Math.min(maxChars, Math.round(qrCodeCanvasSize.value / 20)));
@@ -159,7 +164,8 @@ export default defineComponent({
     padding-top: 2rem;
     align-items: center;
 
-    @media (max-height: 520px) { // small mobile
+    @media (max-height: 520px) {
+        // small mobile
         padding-top: 1rem;
     }
     @media (max-height: 480px) {
@@ -171,7 +177,7 @@ export default defineComponent({
         // we need to make it behave as half its size as well, that's why we use negative margins on all sides.
         height: var(--qr-code-canvas-size); // Must set fixed height for iOS 16 to display correctly.
         margin: calc(var(--qr-code-canvas-size) / -4);
-        transform: scale(.5);
+        transform: scale(0.5);
     }
 
     .interactive-short-address {
@@ -179,24 +185,24 @@ export default defineComponent({
 
         ::v-deep {
             .copyable {
-                padding: .25rem .5rem .5rem;
+                padding: 0.25rem 0.5rem 0.5rem;
 
                 .tooltip {
                     top: -4.625rem;
 
                     &::after {
-                        transform: scale(-.8) translateY(-.625rem);
+                        transform: scale(-0.8) translateY(-0.625rem);
                     }
                 }
             }
 
             .trigger::after {
-                transform: scale(-.8) translateY(-.625rem);
+                transform: scale(-0.8) translateY(-0.625rem);
             }
 
             .tooltip-box {
                 left: 50% !important;
-                padding: .625rem 1rem .5rem;
+                padding: 0.625rem 1rem 0.5rem;
                 transform: translate(-50%, -1.25rem);
             }
         }

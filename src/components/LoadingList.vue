@@ -12,7 +12,7 @@
                     <div class="placeholder"></div>
                     <div class="placeholder"></div>
                 </div>
-                <HexagonIcon class="identicon"/>
+                <HexagonIcon class="identicon" />
                 <div class="data flex-column">
                     <div class="placeholder"></div>
                     <div class="placeholder"></div>
@@ -31,7 +31,7 @@
                 :style="{ '--delay': delay ? `${delay}ms` : `${index * 100}ms` }"
                 :key="index"
             >
-                <HexagonIcon class="identicon"/>
+                <HexagonIcon class="identicon" />
                 <div class="data flex-column">
                     <div class="placeholder"></div>
                     <div class="placeholder"></div>
@@ -45,8 +45,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import { HexagonIcon } from '@nimiq/vue-components';
+import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 
 export enum LoadingListType {
     TRANSACTION,
@@ -95,7 +95,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .list-item {
     --delay: 0ms;
     --color: var(--text-6);
@@ -135,7 +134,7 @@ export default defineComponent({
 
     @keyframes breathing {
         50% {
-            opacity: .5;
+            opacity: 0.5;
             transform: translateY(2px);
         }
     }
@@ -209,5 +208,4 @@ export default defineComponent({
         }
     }
 }
-
 </style>

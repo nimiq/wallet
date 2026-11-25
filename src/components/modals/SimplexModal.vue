@@ -4,7 +4,7 @@
             {{ $t('Buy with Simplex') }}
         </PageHeader>
         <Tooltip preferredPosition="bottom right">
-            <InfoCircleSmallIcon slot="trigger"/>
+            <InfoCircleSmallIcon slot="trigger" />
             <i18n path="This service is operated by {link}" tag="span">
                 <a slot="link" href="https://simplex.com" target="_blank" rel="noopener">simplex.com</a>
             </i18n>
@@ -13,8 +13,12 @@
         <PageBody v-show="showAddressCopyUi" class="copy-address">
             <template v-if="$config.disableNetworkInteraction && cryptoCurrencyCode === CryptoCurrency.NIM">
                 <p class="nq-text nq-orange">
-                    {{ $t('The Simplex integration is currently disabled while the network is experiencing an '
-                    + 'outage.') }}
+                    {{
+                        $t(
+                            'The Simplex integration is currently disabled while the network is experiencing an '
+                                + 'outage.',
+                        )
+                    }}
                 </p>
             </template>
             <template v-else>
@@ -25,10 +29,12 @@
                     <ResizingCopyable :text="currentlyShownAddress">
                         <div
                             class="address flex-row"
-                            :class="{'show-identicon': cryptoCurrencyCode === CryptoCurrency.NIM}"
-                        >{{ currentlyShownAddress }}</div>
+                            :class="{ 'show-identicon': cryptoCurrencyCode === CryptoCurrency.NIM }"
+                        >
+                            {{ currentlyShownAddress }}
+                        </div>
                     </ResizingCopyable>
-                    <Identicon v-if="cryptoCurrencyCode === CryptoCurrency.NIM" :address="currentlyShownAddress"/>
+                    <Identicon v-if="cryptoCurrencyCode === CryptoCurrency.NIM" :address="currentlyShownAddress" />
                 </div>
             </template>
         </PageBody>
@@ -39,12 +45,20 @@
         <div v-if="mustReload" class="reload-notice flex-column">
             {{ $t('Refresh the page to continue.') }}
         </div>
-        <div v-if="showAddressCopyUi
-            && !($config.disableNetworkInteraction && cryptoCurrencyCode === CryptoCurrency.NIM)"
-            class="copy-over-arrow">
+        <div
+            v-if="
+                showAddressCopyUi && !($config.disableNetworkInteraction && cryptoCurrencyCode === CryptoCurrency.NIM)
+            "
+            class="copy-over-arrow"
+        >
             <svg width="162" height="285" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M55.4 24c64 35.8 68.3 151.1 13.3 191.8m12.6 4.2l-15.7-2 1.8-15.7"
-                    stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path
+                    d="M55.4 24c64 35.8 68.3 151.1 13.3 191.8m12.6 4.2l-15.7-2 1.8-15.7"
+                    stroke="#fff"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
             </svg>
             <div class="copy-over">{{ $t('Copy\nover') }}</div>
         </div>
@@ -52,49 +66,51 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
 import { useRouter } from '@/router';
-import Modal from './Modal.vue';
-import ResizingCopyable from '../ResizingCopyable.vue';
-import { useSettingsStore } from '../../stores/Settings';
-import { useFiatStore } from '../../stores/Fiat';
-import { useAccountStore } from '../../stores/Account';
-import { useAddressStore } from '../../stores/Address';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
+import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useFiatStore } from '../../stores/Fiat';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useSettingsStore } from '../../stores/Settings';
+import ResizingCopyable from '../ResizingCopyable.vue';
+import Modal from './Modal.vue';
 
 declare global {
     interface Window {
         simplex: {
-            createForm(options?: Partial<{
-                crypto: string,
-                fiat: string,
-                showFiatFirst: boolean,
-                useBitcoinCore: boolean,
-                paymentMethods: string[],
-                hosted: boolean,
-            }>): Promise<{
-                supportedCryptoCurrencies: string[],
-            }>,
-            updateCryptoCurrency: (currency: string) => void,
-            on(event: string, handler: (...args: any[]) => any): void,
+            createForm(
+                options?: Partial<{
+                    crypto: string;
+                    fiat: string;
+                    showFiatFirst: boolean;
+                    useBitcoinCore: boolean;
+                    paymentMethods: string[];
+                    hosted: boolean;
+                }>,
+            ): Promise<{
+                supportedCryptoCurrencies: string[];
+            }>;
+            updateCryptoCurrency: (currency: string) => void;
+            on(event: string, handler: (...args: any[]) => any): void;
         };
         Simplex: {
-            init: (options: { public_key: string}) => void,
+            init: (options: { public_key: string }) => void;
             subscribe: (
                 event: 'onlineFlowFinished',
                 handler: (event: {
                     payload: {
-                        result: 'success' | 'failure',
-                    },
+                        result: 'success' | 'failure';
+                    };
                 }) => void,
-            ) => void,
-            getSDKVersion: () => string,
+            ) => void;
+            getSDKVersion: () => string;
             // load: (...) => ...
             // unload: (...) => ...
             // unsubscribe: (...) => ...
@@ -116,17 +132,15 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = stablecoin.value === CryptoCurrency.USDC
-            ? usePolygonAddressStore().activeAddress
-            : undefined;
+        const usdcAddress =
+            stablecoin.value === CryptoCurrency.USDC ? usePolygonAddressStore().activeAddress : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdtAddress = stablecoin.value === CryptoCurrency.USDT
-            ? usePolygonAddressStore().activeAddress
-            : undefined;
+        const usdtAddress =
+            stablecoin.value === CryptoCurrency.USDT ? usePolygonAddressStore().activeAddress : undefined;
 
-        const walletAddresses: {[c: string]: string | undefined} = {
+        const walletAddresses: { [c: string]: string | undefined } = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().$state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
@@ -169,8 +183,7 @@ export default defineComponent({
                 loadScript(config.simplex.sdkScriptUrl, 'simplex-sdk-script'),
                 ...(config.simplex.splxScriptUrl
                     ? [loadScript(config.simplex.splxScriptUrl, 'simplex-splx-script')]
-                    : []
-                ),
+                    : []),
             ]);
         }
 
@@ -316,7 +329,7 @@ export default defineComponent({
             // to the checkout flow. This state is not recoverable once the modal has been closed.
             // The only workaround is to reload the page and start with a fresh Javascript context.
             const iframe$ = simplex$.value!.querySelector('iframe');
-            mustReload.value = window.simplex && (!!iframe$ && !iframe$.src);
+            mustReload.value = window.simplex && !!iframe$ && !iframe$.src;
         });
 
         onUnmounted(() => {
@@ -369,7 +382,7 @@ export default defineComponent({
     left: 3rem;
     top: 3rem;
 
-        ::v-deep {
+    ::v-deep {
         .trigger {
             color: var(--text-30);
         }

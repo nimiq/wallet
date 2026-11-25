@@ -1,14 +1,7 @@
 <template>
     <div class="step-progress-bar">
-        <div
-        v-for="step in 3"
-        :key="step"
-        class="step"
-        >
-            <div
-            class="step-fill"
-            :style="{ width: getFillWidth(step) }"
-            ></div>
+        <div v-for="step in 3" :key="step" class="step">
+            <div class="step-fill" :style="{ width: getFillWidth(step) }"></div>
         </div>
     </div>
 </template>
@@ -90,13 +83,17 @@ export default defineComponent({
             }
         };
 
-        watch(() => props.currentStep, (newStep, oldStep) => {
-            if ((oldStep !== undefined && newStep > oldStep) || (newStep === 1 && !isFirstStepAnimated.value)) {
-                startAnimation();
-            } else if (oldStep !== undefined && newStep < oldStep) {
-                animationProgress.value = 100;
-            }
-        }, { immediate: true });
+        watch(
+            () => props.currentStep,
+            (newStep, oldStep) => {
+                if ((oldStep !== undefined && newStep > oldStep) || (newStep === 1 && !isFirstStepAnimated.value)) {
+                    startAnimation();
+                } else if (oldStep !== undefined && newStep < oldStep) {
+                    animationProgress.value = 100;
+                }
+            },
+            { immediate: true },
+        );
 
         onMounted(() => {
             if (props.currentStep === 1) {

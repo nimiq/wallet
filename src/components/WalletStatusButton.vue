@@ -50,5 +50,4 @@ export default defineComponent({
         bottom: 11rem;
     }
 }
-
 </style>

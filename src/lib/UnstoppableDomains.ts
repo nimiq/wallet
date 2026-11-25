@@ -8,17 +8,7 @@ let cachedResolver: Resolution | undefined;
 // oxlint-disable-next-line eslint-js/max-len
 // https://docs.unstoppabledomains.com/send-and-receive-crypto-payments/resolution-libraries#supported-domains-for-resolution-libraries
 // without ENS (those require extra dependencies)
-const SUPPORTED_TLDS = [
-    'zil',
-    'crypto',
-    'nft',
-    'blockchain',
-    'bitcoin',
-    'wallet',
-    '888',
-    'dao',
-    'x',
-];
+const SUPPORTED_TLDS = ['zil', 'crypto', 'nft', 'blockchain', 'bitcoin', 'wallet', '888', 'dao', 'x'];
 
 async function getResolver() {
     if (cachedResolver) return cachedResolver;

@@ -1,14 +1,14 @@
-import { computed, ref, Ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { AddressBook } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { computed, ref, Ref } from 'vue';
 import { useI18n } from '@/lib/useI18n';
+import { STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
+import { parseData } from '../lib/DataFormatting';
 import { useAddressStore } from '../stores/Address';
-import { toMs, Transaction, TransactionState } from '../stores/Transactions';
-import { useStakingStore } from '../stores/Staking';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
-import { parseData } from '../lib/DataFormatting';
-import { STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
+import { useStakingStore } from '../stores/Staking';
+import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import { useTransactionInfo } from './useTransactionInfo';
 import { useWindowSize } from './useWindowSize';
 
@@ -60,8 +60,8 @@ function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
     options: {
-        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
-        year?: 'numeric' | '2-digit',
+        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow';
+        year?: 'numeric' | '2-digit';
     },
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
@@ -82,7 +82,7 @@ export function useTransactionList(options: UseTransactionListOptions) {
     const { isMobile } = useWindowSize();
 
     // Height of items in pixel
-    const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+    const itemSize = computed(() => (isMobile.value ? 68 : 72)); // mobile: 64px + 4px margin between items
 
     // Apply search filter
     const filteredTxs = computed(() => {
@@ -92,7 +92,10 @@ export function useTransactionList(options: UseTransactionListOptions) {
             );
         }
 
-        const searchStrings = options.searchString.value.toUpperCase().split(' ').filter((value) => value !== '');
+        const searchStrings = options.searchString.value
+            .toUpperCase()
+            .split(' ')
+            .filter((value) => value !== '');
 
         return transactionsForActiveAddress.value.filter((tx) => {
             // Skip staking and unstaking transactions
@@ -214,14 +217,10 @@ export function useTransactionList(options: UseTransactionListOptions) {
                 // Add month label for non-current months
                 const monthDate = new Date(yearNum, monthNum);
                 transactionsWithMonths.push({
-                    transactionHash: getLocaleMonthStringFromDate(
-                        monthDate,
-                        locale,
-                        {
-                            month: 'long',
-                            year: yearNum !== currentYear ? 'numeric' : undefined,
-                        },
-                    ),
+                    transactionHash: getLocaleMonthStringFromDate(monthDate, locale, {
+                        month: 'long',
+                        year: yearNum !== currentYear ? 'numeric' : undefined,
+                    }),
                     isLatestMonth,
                 });
                 isLatestMonth = false;

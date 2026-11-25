@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { loadEthersLibrary } from '../ethers';
 
 export type UsdcContactsState = {
-     contacts: {[address: string]: string},
+    contacts: { [address: string]: string };
 };
 
 export const useUsdcContactsStore = defineStore('usdcContacts', {
@@ -10,10 +10,12 @@ export const useUsdcContactsStore = defineStore('usdcContacts', {
         contacts: {},
     }),
     getters: {
-        contactsArray: (state): Readonly<Array<{address: string, label: string}>> =>
+        contactsArray: (state): Readonly<Array<{ address: string; label: string }>> =>
             Object.entries(state.contacts).map(([address, label]) => ({ address, label })),
-        getLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
-            state.contacts[address],
+        getLabel:
+            (state): ((address: string) => string | undefined) =>
+            (address: string): Readonly<string> =>
+                state.contacts[address],
     },
     actions: {
         async setContact(address: string, label: string) {

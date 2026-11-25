@@ -2,14 +2,14 @@ import { Bank } from '@nimiq/oasis-bank-list';
 import { defineStore } from 'pinia';
 
 export type BankAccount = {
-    accountName: string,
-    iban: string,
-}
+    accountName: string;
+    iban: string;
+};
 
 export type BankState = {
-    bank: Bank | null,
-    bankAccount: BankAccount | null,
-}
+    bank: Bank | null;
+    bankAccount: BankAccount | null;
+};
 
 export const useBankStore = defineStore('bank', {
     state: (): BankState => ({

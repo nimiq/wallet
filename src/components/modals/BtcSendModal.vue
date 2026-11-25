@@ -1,5 +1,6 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened || recipientFlaggedAddressWarningOpened"
+    <Modal
+        :showOverlay="statusScreenOpened || recipientFlaggedAddressWarningOpened"
         :closeButtonInverse="recipientFlaggedAddressWarningOpened"
         @close-overlay="onCloseOverlay"
         class="btc-send-modal"
@@ -16,7 +17,8 @@
                             v-model="recipientInfo.label"
                             :placeholder="$t('Name this recipient...')"
                             :disabled="recipientInfo.type !== RecipientType.NEW_CONTACT"
-                            ref="labelInput$"/>
+                            ref="labelInput$"
+                        />
                     </template>
 
                     <template #main>
@@ -29,17 +31,24 @@
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
                             @scan="$router.push({ name: RouteName.Scan })"
-                            ref="addressInput$"/>
+                            ref="addressInput$"
+                        />
                     </template>
                 </DoubleInput>
 
                 <div class="flex-grow"></div>
 
-                <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.BTC}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.BTC" v-model="amount"
-                            :decimals="btcUnit.decimals" :disabled="gotRequestUriAmount">
-                            <AmountMenu slot="suffix" class="ticker"
+                <section class="amount-section" :class="{ 'insufficient-balance': maxSendableAmount < amount }">
+                    <div class="flex-row amount-row" :class="{ estimate: activeCurrency !== CryptoCurrency.BTC }">
+                        <AmountInput
+                            v-if="activeCurrency === CryptoCurrency.BTC"
+                            v-model="amount"
+                            :decimals="btcUnit.decimals"
+                            :disabled="gotRequestUriAmount"
+                        >
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :currency="CryptoCurrency.BTC"
                                 :activeCurrency="btcUnit.ticker.toLowerCase()"
@@ -49,12 +58,19 @@
                                 :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="onCurrencySelected"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals"
-                            :disabled="gotRequestUriAmount">
+                        <AmountInput
+                            v-else
+                            v-model="fiatAmount"
+                            :decimals="fiatCurrencyInfo.decimals"
+                            :disabled="gotRequestUriAmount"
+                        >
                             <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="ticker"
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :currency="CryptoCurrency.BTC"
                                 :activeCurrency="activeCurrency"
@@ -64,20 +80,22 @@
                                 :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="onCurrencySelected"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === CryptoCurrency.BTC" key="fiat-amount">
-                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount
-                                :amount="amount" :currency="CryptoCurrency.BTC"/>
+                            {{ amount > 0 ? '~' : ''
+                            }}<FiatConvertedAmount :amount="amount" :currency="CryptoCurrency.BTC" />
                         </span>
                         <span v-else key="btc-amount">
-                            {{ $t(
-                                'You will send {amount}',
-                                { amount: `${amount / btcUnit.unitToCoins} ${btcUnit.ticker}` },
-                            ) }}
+                            {{
+                                $t('You will send {amount}', {
+                                    amount: `${amount / btcUnit.unitToCoins} ${btcUnit.ticker}`,
+                                })
+                            }}
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -91,17 +109,22 @@
                 <div class="flex-grow"></div>
 
                 <section class="fee-section flex-row">
-                    <FeeSelector :fees="feeOptions" @fee="updateFee"/>
-                    <span class="secondary-amount">~<FiatConvertedAmount
-                        :amount="fee" :currency="CryptoCurrency.BTC"/></span>
-                    <Tooltip preferredPosition="top left" :styles="{width: '222px'}">
-                        <InfoCircleSmallIcon slot="trigger"/>
+                    <FeeSelector :fees="feeOptions" @fee="updateFee" />
+                    <span class="secondary-amount"
+                        >~<FiatConvertedAmount :amount="fee" :currency="CryptoCurrency.BTC"
+                    /></span>
+                    <Tooltip preferredPosition="top left" :styles="{ width: '222px' }">
+                        <InfoCircleSmallIcon slot="trigger" />
                         <span class="header">
                             {{ $t('Network fee: {sats} sat/vByte', { sats: feePerByte }) }}
                         </span>
                         <p>
-                            {{ $t('Increase the speed of your transaction by paying a higher network fee. '
-                                + 'The fees go directly to the miners.') }}
+                            {{
+                                $t(
+                                    'Increase the speed of your transaction by paying a higher network fee. '
+                                        + 'The fees go directly to the miners.',
+                                )
+                            }}
                         </p>
                         <p>
                             {{ $t('Duration and fees are estimates.') }}
@@ -110,18 +133,22 @@
                 </section>
 
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
-                    <InfoCircleSmallIcon slot="trigger"/>
-                    <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
-                        + 'Use labels instead to find transactions in your history easily.') }}</p>
+                    <InfoCircleSmallIcon slot="trigger" />
+                    <p>
+                        {{
+                            $t(
+                                'Bitcoin addresses are used only once, so there are no contacts. '
+                                    + 'Use labels instead to find transactions in your history easily.',
+                            )
+                        }}
+                    </p>
                     <p>{{ $t('Nimiq wallet does not support transaction messages for Bitcoin.') }}</p>
                     <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
                 </Tooltip>
             </PageBody>
-            <SendModalFooter
-                :assets="[CryptoCurrency.BTC]"
-                :disabled="!canSend"
-                @click="sign"
-            ><template #cta>{{ $t('Send {currency}', { currency: 'BTC' }) }}</template></SendModalFooter>
+            <SendModalFooter :assets="[CryptoCurrency.BTC]" :disabled="!canSend" @click="sign"
+                ><template #cta>{{ $t('Send {currency}', { currency: 'BTC' }) }}</template></SendModalFooter
+            >
         </div>
 
         <transition name="fade" slot="overlay">
@@ -151,40 +178,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
-import { storeToRefs } from 'pinia';
-import {
-    PageHeader,
-    PageBody,
-    Tooltip,
-    InfoCircleSmallIcon,
-} from '@nimiq/vue-components';
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
-import { useRouter, RouteName } from '@/router';
-import { useI18n } from '@/lib/useI18n';
+import { PageHeader, PageBody, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import Modal, { disableNextModalTransition } from './Modal.vue';
-import BtcAddressInput from '../BtcAddressInput.vue';
-import BtcLabelInput from '../BtcLabelInput.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import FeeSelector from '../FeeSelector.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import SendModalFooter from '../SendModalFooter.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import { useI18n } from '@/lib/useI18n';
+import { useRouter, RouteName } from '@/router';
+import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { getElectrumClient } from '../../electrum';
+import { sendBtcTransaction } from '../../hub';
+import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
-import { sendBtcTransaction } from '../../hub';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
-import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
-import { getElectrumClient } from '../../electrum';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import BtcAddressInput from '../BtcAddressInput.vue';
+import BtcLabelInput from '../BtcLabelInput.vue';
 import DoubleInput from '../DoubleInput.vue';
+import FeeSelector from '../FeeSelector.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import SendModalFooter from '../SendModalFooter.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     NEW_CONTACT,
@@ -203,10 +225,7 @@ export default defineComponent({
     },
     setup(props) {
         const { $t } = useI18n();
-        const {
-            accountUtxos,
-            accountBalance,
-        } = storeToRefs(useBtcAddressStore());
+        const { accountUtxos, accountBalance } = storeToRefs(useBtcAddressStore());
         const { $state: addresses$ } = useBtcAddressStore();
         const { getRecipientLabel } = storeToRefs(useBtcLabelsStore());
         const { setRecipientLabel } = useBtcLabelsStore();
@@ -228,10 +247,10 @@ export default defineComponent({
         }
 
         const recipientInfo = ref<{
-            address: string,
-            label: string,
-            type: RecipientType,
-            flaggedInfo: FlaggedAddressInfo | null,
+            address: string;
+            label: string;
+            type: RecipientType;
+            flaggedInfo: FlaggedAddressInfo | null;
         } | null>(null);
         const recipientFlaggedAddressWarningOpened = ref(false);
 
@@ -272,10 +291,13 @@ export default defineComponent({
             if (ownedAddressInfo) {
                 // Find account label
                 const { accountInfos } = storeToRefs(useAccountStore());
-                label = Object.values(accountInfos.value)
-                    .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
-                    || Object.values(accountInfos.value)
-                        .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                label =
+                    Object.values(accountInfos.value).find((accountInfo) =>
+                        accountInfo.btcAddresses.external.includes(address),
+                    )?.label
+                    || Object.values(accountInfos.value).find((accountInfo) =>
+                        accountInfo.btcAddresses.internal.includes(address),
+                    )!.label;
                 type = RecipientType.NEW_CONTACT; // Allow overwriting suggested account label
             }
             // Search recipient labels
@@ -302,7 +324,7 @@ export default defineComponent({
 
         watch(
             () => recipientInfo.value?.flaggedInfo,
-            (flaggedInfo) => recipientFlaggedAddressWarningOpened.value = !!flaggedInfo,
+            (flaggedInfo) => (recipientFlaggedAddressWarningOpened.value = !!flaggedInfo),
         );
 
         const amount = ref(0);
@@ -310,11 +332,13 @@ export default defineComponent({
 
         const requiredInputs = computed(() => selectOutputs(accountUtxos.value, amount.value, feePerByte.value));
 
-        const fee = computed(() => estimateFees(
-            requiredInputs.value.utxos.length || 1,
-            requiredInputs.value.changeAmount > 0 ? 2 : 1,
-            feePerByte.value,
-        ));
+        const fee = computed(() =>
+            estimateFees(
+                requiredInputs.value.utxos.length || 1,
+                requiredInputs.value.changeAmount > 0 ? 2 : 1,
+                feePerByte.value,
+            ),
+        );
 
         const feeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, feePerByte.value));
 
@@ -374,29 +398,33 @@ export default defineComponent({
 
         const fiatToBtcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e8);
 
-        watch(activeCurrency, (currency) => {
-            if (currency === CryptoCurrency.BTC) {
-                fiatAmount.value = 0;
-                return;
-            }
+        watch(
+            activeCurrency,
+            (currency) => {
+                if (currency === CryptoCurrency.BTC) {
+                    fiatAmount.value = 0;
+                    return;
+                }
 
-            // Fiat store already has all exchange rates for all supported fiat currencies
-            // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value * fiat$.exchangeRates.btc[currency]! * fiatToBtcDecimalRatio.value;
-        }, { immediate: true });
+                // Fiat store already has all exchange rates for all supported fiat currencies
+                // TODO: What to do when exchange rates are not yet populated?
+                fiatAmount.value = amount.value * fiat$.exchangeRates.btc[currency]! * fiatToBtcDecimalRatio.value;
+            },
+            { immediate: true },
+        );
 
         watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.BTC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
-                fiatAmount.value
-                / exchangeRates.value.btc[activeCurrency.value]!
-                / fiatToBtcDecimalRatio.value);
+                fiatAmount.value / exchangeRates.value.btc[activeCurrency.value]! / fiatToBtcDecimalRatio.value,
+            );
         });
 
         async function sendMax() {
             if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.BTC) {
-                fiatAmount.value = maxSendableAmount.value
+                fiatAmount.value =
+                    maxSendableAmount.value
                     * fiat$.exchangeRates.btc[activeCurrency.value]!
                     * fiatToBtcDecimalRatio.value;
             }
@@ -412,14 +440,15 @@ export default defineComponent({
             if (isSendingMax) sendMax();
         }
 
-        const canSend = computed(() =>
-            network$.consensus === 'established'
-            && !!network$.height
-            && !!recipientInfo.value
-            && !!recipientInfo.value.address
-            && !isFetchingTxHistory.value
-            && !!amount.value
-            && amount.value <= maxSendableAmount.value,
+        const canSend = computed(
+            () =>
+                network$.consensus === 'established'
+                && !!network$.height
+                && !!recipientInfo.value
+                && !!recipientInfo.value.address
+                && !isFetchingTxHistory.value
+                && !!amount.value
+                && amount.value <= maxSendableAmount.value,
         );
 
         const addressInputValue = ref(''); // Used for setting the address from a request URI or unstoppable domain
@@ -554,12 +583,14 @@ export default defineComponent({
                         label: recipientInfo.value!.label,
                         value: amount.value,
                     },
-                    ...(requiredInputs.value.changeAmount > 0 ? {
-                        changeOutput: {
-                            address: changeAddress!,
-                            value: requiredInputs.value.changeAmount,
-                        },
-                    } : {}),
+                    ...(requiredInputs.value.changeAmount > 0
+                        ? {
+                              changeOutput: {
+                                  address: changeAddress!,
+                                  value: requiredInputs.value.changeAmount,
+                              },
+                          }
+                        : {}),
                 });
 
                 if (!plainTx) {
@@ -572,13 +603,13 @@ export default defineComponent({
                 // Show success screen
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientInfo.value!.label
-                    ? $t('Sent {btc} BTC to {name}', {
-                        btc: amount.value / 1e8,
-                        name: recipientInfo.value!.label,
-                    }) as string
-                    : $t('Sent {btc} BTC', {
-                        btc: amount.value / 1e8,
-                    }) as string;
+                    ? ($t('Sent {btc} BTC to {name}', {
+                          btc: amount.value / 1e8,
+                          name: recipientInfo.value!.label,
+                      }) as string)
+                    : ($t('Sent {btc} BTC', {
+                          btc: amount.value / 1e8,
+                      }) as string);
 
                 // Close modal
                 successCloseTimeout = window.setTimeout(() => {
@@ -701,241 +732,244 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
-    .page {
-        flex-grow: 1;
-        font-size: var(--body-size);
-        height: 100%;
+.page {
+    flex-grow: 1;
+    font-size: var(--body-size);
+    height: 100%;
+}
+
+.page-body {
+    --short-transition-duration: 300ms;
+
+    padding-bottom: 0;
+    justify-content: space-between;
+    flex-grow: 1;
+    overflow: inherit;
+}
+
+.reused-address {
+    align-items: center;
+    font-weight: 600;
+    margin-top: -2.5rem; // TODO: check others
+
+    > .nq-icon {
+        margin-right: 0.5rem;
     }
 
-    .page-body {
-        --short-transition-duration: 300ms;
+    .tooltip {
+        margin-left: 0.5rem;
+        font-size: var(--small-size);
+    }
+}
 
-        padding-bottom: 0;
-        justify-content: space-between;
-        flex-grow: 1;
-        overflow: inherit;
+.scan-qr-button {
+    position: absolute;
+    right: 3rem;
+    bottom: 3rem;
+    font-size: 4rem;
+    opacity: 0.4;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+
+    &:hover,
+    &:focus {
+        opacity: 0.6;
+    }
+}
+
+.amount-section {
+    text-align: center;
+    align-self: stretch;
+    margin: 4rem 0;
+
+    .amount-row {
+        align-self: stretch;
+        justify-content: center;
+        align-items: flex-end;
+        color: var(--nimiq-light-blue);
+        margin-bottom: 1rem;
     }
 
-    .reused-address {
-        align-items: center;
-        font-weight: 600;
-        margin-top: -2.5rem; // TODO: check others
+    .tilde {
+        font-size: 8rem;
+        font-weight: bold;
+        line-height: 10rem;
+        margin-right: 0.75rem;
+    }
 
-        > .nq-icon {
-            margin-right: 0.5rem;
+    .amount-input {
+        width: auto;
+        max-width: 100%;
+        min-height: 5rem;
+        z-index: 5;
+
+        .ticker {
+            &:hover,
+            &:focus-within {
+                color: var(--nimiq-light-blue);
+            }
         }
-
-        .tooltip {
-            margin-left: 0.5rem;
-            font-size: var(--small-size);
-        }
     }
 
-    .scan-qr-button {
+    .amount-menu ::v-deep .button {
+        margin-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .amount-menu ::v-deep .menu {
         position: absolute;
         right: 3rem;
         bottom: 3rem;
-        font-size: 4rem;
-        opacity: 0.4;
+        z-index: 1;
+        max-height: calc(100% - 6rem);
+    }
 
-        transition: opacity var(--attr-duration) var(--nimiq-ease);
+    .insufficient-balance-warning {
+        font-weight: 600;
 
-        &:hover,
-        &:focus {
-            opacity: 0.6;
+        .send-all {
+            text-decoration: underline;
+            cursor: pointer;
         }
     }
 
-    .amount-section {
-        text-align: center;
-        align-self: stretch;
-        margin: 4rem 0;
-
-        .amount-row {
-            align-self: stretch;
-            justify-content: center;
-            align-items: flex-end;
-            color: var(--nimiq-light-blue);
-            margin-bottom: 1rem;
+    &.insufficient-balance {
+        .amount-input ::v-deep,
+        .amount-input ::v-deep .ticker {
+            color: var(--nimiq-orange);
         }
 
-        .tilde {
-            font-size: 8rem;
-            font-weight: bold;
-            line-height: 10rem;
-            margin-right: 0.75rem;
+        .amount-input ::v-deep .nq-input {
+            color: var(--nimiq-orange);
+            --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
         }
+    }
+}
 
-        .amount-input {
-            width: auto;
-            max-width: 100%;
-            min-height: 5rem;
-            z-index: 5;
+.secondary-amount {
+    font-weight: 600;
+    opacity: 0.5;
 
-            .ticker {
-                &:hover,
-                &:focus-within {
-                    color: var(--nimiq-light-blue);
-                }
-            }
-        }
+    .fiat-amount,
+    .amount {
+        margin-left: -0.2em;
+    }
+}
 
-        .amount-menu ::v-deep .button {
-            margin-left: 1rem;
-            margin-bottom: 1rem;
-        }
+.fee-section {
+    padding: 0 1.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
 
-        .amount-menu ::v-deep .menu {
-            position: absolute;
-            right: 3rem;
-            bottom: 3rem;
-            z-index: 1;
-            max-height: calc(100% - 6rem);
-        }
-
-        .insufficient-balance-warning {
-            font-weight: 600;
-
-            .send-all {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-        }
-
-        &.insufficient-balance {
-            .amount-input ::v-deep,
-            .amount-input ::v-deep .ticker {
-                color: var(--nimiq-orange);
-            }
-
-            .amount-input ::v-deep .nq-input {
-                color: var(--nimiq-orange);
-                --border-color: rgba(252, 135, 2, 0.3); // Based on Nimiq Orange
-            }
-        }
+    .fee-selector {
+        flex-grow: 1;
     }
 
     .secondary-amount {
+        margin-right: 1rem;
+    }
+
+    ::v-deep .trigger .nq-icon {
+        opacity: 0.4;
+    }
+
+    ::v-deep .tooltip-box {
+        transform: translate(4rem, -2rem);
+    }
+}
+
+.tooltip:not(.info-tooltip) {
+    .header {
+        font-size: var(--small-size);
+    }
+
+    p {
+        margin-top: 0.75rem;
+        margin-bottom: 0;
+        opacity: 0.6;
+        font-size: 1.625rem;
+    }
+}
+
+.info-tooltip {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+
+    ::v-deep .trigger svg {
+        height: 2rem;
+        opacity: 0.3;
+
+        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
+    }
+
+    & ::v-deep .trigger:hover svg,
+    & ::v-deep .trigger:focus svg,
+    &.shown ::v-deep .trigger svg {
+        opacity: 0.6;
+    }
+
+    ::v-deep .tooltip-box {
+        width: 25.875rem;
+        font-size: var(--small-size);
         font-weight: 600;
-        opacity: 0.5;
+        line-height: 2.5rem;
+        color: white;
+        transform: translate(-2rem, 2rem);
 
-        .fiat-amount,
-        .amount {
-            margin-left: -0.2em;
-        }
-    }
-
-    .fee-section {
-        padding: 0 1.5rem;
-        align-items: center;
-        margin-bottom: 2rem;
-
-        .fee-selector {
-            flex-grow: 1;
-        }
-
-        .secondary-amount {
-            margin-right: 1rem;
-        }
-
-        ::v-deep .trigger .nq-icon {
-            opacity: 0.4;
-        }
-
-        ::v-deep .tooltip-box {
-            transform: translate(4rem, -2rem);
-        }
-    }
-
-    .tooltip:not(.info-tooltip) {
-        .header {
-            font-size: var(--small-size);
+        @media (max-width: $mobileBreakpoint) {
+            // Full mobile breakpoint
+            transform: translate(0.5rem, 2rem);
         }
 
         p {
-            margin-top: 0.75rem;
+            margin: 1rem auto;
+        }
+
+        p:first-child {
+            margin-top: 0;
+        }
+
+        p:last-child {
             margin-bottom: 0;
-            opacity: 0.6;
-            font-size: 1.625rem;
+        }
+    }
+}
+
+.send-modal-footer {
+    padding-bottom: 2rem;
+
+    @media (max-width: 450px) {
+        // Breakpoint of .page-body padding
+        padding: 0 0 1rem;
+    }
+
+    ::v-deep .footer-notice {
+        margin-bottom: -1rem;
+    }
+}
+
+.flagged-address-warning {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: $mobileBreakpoint) {
+    // Full Mobile Breakpoint
+    .address-section {
+        .btc-address-input {
+            font-size: 14px;
         }
     }
 
-    .info-tooltip {
-        position: absolute;
-        top: 2rem;
-        left: 2rem;
-
-        ::v-deep .trigger svg {
-            height: 2rem;
-            opacity: .3;
-
-            transition: opacity var(--short-transition-duration) var(--nimiq-ease);
-        }
-
-        & ::v-deep .trigger:hover svg,
-        & ::v-deep .trigger:focus svg,
-        &.shown ::v-deep .trigger svg {
-            opacity: .6;
-        }
-
-        ::v-deep .tooltip-box {
-            width: 25.875rem;
-            font-size: var(--small-size);
-            font-weight: 600;
-            line-height: 2.5rem;
-            color: white;
-            transform: translate(-2rem, 2rem);
-
-            @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
-                transform: translate(0.5rem, 2rem);
-            }
-
-            p {
-                margin: 1rem auto;
-            }
-
-            p:first-child {
-                margin-top: 0;
-            }
-
-            p:last-child {
-                margin-bottom: 0;
-            }
-        }
+    .status-screen {
+        border-top-left-radius: 1.75rem;
+        border-top-right-radius: 1.75rem;
     }
-
-    .send-modal-footer {
-        padding-bottom: 2rem;
-
-        @media (max-width: 450px) { // Breakpoint of .page-body padding
-            padding: 0 0 1rem;
-        }
-
-        ::v-deep .footer-notice {
-            margin-bottom: -1rem;
-        }
-    }
-
-    .flagged-address-warning {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
-        .address-section {
-            .btc-address-input {
-                font-size: 14px;
-            }
-        }
-
-        .status-screen {
-            border-top-left-radius: 1.75rem;
-            border-top-right-radius: 1.75rem;
-        }
-    }
+}
 </style>

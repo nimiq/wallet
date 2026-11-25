@@ -7,13 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
-    # Sets up Node.js and Vite+, and installs the dependencies with the package manager defined in package.json.
-    - uses: voidzero-dev/setup-vp@v1.21.2
-      with:
-        node-version: '24'
-        cache: true
-    - name: Check formatting and lint
-      run: vp check
-    - name: Build
-      run: yarn build:ci
+      - uses: actions/checkout@v7
+      # Sets up Node.js and Vite+, and installs the dependencies with the package manager defined in package.json.
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version: '24'
+          cache: true
+      - name: Check formatting and lint
+        run: vp check
+      - name: Build
+        run: yarn build:ci

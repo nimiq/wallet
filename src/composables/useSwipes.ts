@@ -4,7 +4,7 @@ import { Ref } from 'vue';
 
 /* global WebKitCSSMatrix */
 
-type Point = {x: number, y: number};
+type Point = { x: number; y: number };
 type UpdateSwipeRestPositionCallback = (
     velocityDistance: number,
     velocityTime: number,
@@ -13,16 +13,16 @@ type UpdateSwipeRestPositionCallback = (
 ) => void | Promise<void>;
 
 type UseSwipeOptions = {
-    onSwipeEnded: UpdateSwipeRestPositionCallback,
-    clampMovement: Ref<readonly [number, number]>,
-    motionTransitionTimingFunction?: string,
-    motionTransitionDuration?: number,
-    vertical?: boolean,
-    handle?: Ref<HTMLDivElement>,
-    onFrame?: (position: number) => void,
-    reset?: (inMotion: boolean) => void,
-    excludeSelector?: string,
-}
+    onSwipeEnded: UpdateSwipeRestPositionCallback;
+    clampMovement: Ref<readonly [number, number]>;
+    motionTransitionTimingFunction?: string;
+    motionTransitionDuration?: number;
+    vertical?: boolean;
+    handle?: Ref<HTMLDivElement>;
+    onFrame?: (position: number) => void;
+    reset?: (inMotion: boolean) => void;
+    excludeSelector?: string;
+};
 
 function getGesturePointFromEvent(evt: PointerEvent | TouchEvent): Point {
     if ('targetTouches' in evt) {
@@ -239,13 +239,13 @@ export function useSwipes(element: Ref<HTMLDivElement>, options: UseSwipeOptions
             const duration = options.motionTransitionDuration ?? 500;
 
             target.style.transitionTimingFunction = timingFunction;
-            setTimeout(() => target.style.transitionTimingFunction = '', duration);
+            setTimeout(() => (target.style.transitionTimingFunction = ''), duration);
         }
 
         if (typeof options.reset === 'function') options.reset(inMotion);
 
         // Queue after other CSS classes/styles where set, so no jump occurs
-        setTimeout(() => target.style.transform = '', 0);
+        setTimeout(() => (target.style.transform = ''), 0);
     }
 
     return {

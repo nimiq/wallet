@@ -17,19 +17,24 @@
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
                     <template v-for="(validator, index) in validators">
-                        <ValidatorIcon v-if="validator"
-                            :validator="validator" :key="index"
+                        <ValidatorIcon
+                            v-if="validator"
+                            :validator="validator"
+                            :key="index"
                             :style="{ top: getTopPosition(index) }"
                         />
-                        <HexagonIcon v-else :key="index"
-                            :style="{ top: getTopPosition(index), '--delay': `${index * 100}ms` }"/>
+                        <HexagonIcon
+                            v-else
+                            :key="index"
+                            :style="{ top: getTopPosition(index), '--delay': `${index * 100}ms` }"
+                        />
                     </template>
                 </div>
                 <div class="staking-under-icons-text">
                     {{ $t('For a small fee, validator pools do the staking for you.') }}
                 </div>
                 <button class="nq-button light-blue stake-button" @click="$emit('next')">
-                    {{ $t('Let\'s go') }}
+                    {{ $t("Let's go") }}
                 </button>
             </div>
         </PageBody>
@@ -37,15 +42,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, onMounted } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_DEV } from '../../lib/Constants';
+import { getNetworkClient, updateValidators } from '../../network';
+import { useStakingStore } from '../../stores/Staking';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
-import { getNetworkClient, updateValidators } from '../../network';
 
 // const progression = (i:number, n:number) => {
 //     if (n % 2 === 0) {
@@ -76,9 +81,7 @@ export default defineComponent({
             // In local dev, show all validators even if API is unavailable
             const filtered = validatorsList.value.filter((validator) => {
                 if (isLocalDev) {
-                    return 'payoutType' in validator
-                        ? validator.payoutType !== 'none'
-                        : true; // Show validators without API data in local dev
+                    return 'payoutType' in validator ? validator.payoutType !== 'none' : true; // Show validators without API data in local dev
                 }
                 return 'payoutType' in validator && validator.payoutType !== 'none';
             });
@@ -87,7 +90,7 @@ export default defineComponent({
         });
 
         function getTopPosition(index: number) {
-            return `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`;
+            return `${Math.sin((index + 1) * (Math.PI / 10)) * 25}px`;
         }
 
         onMounted(async () => {
@@ -115,133 +118,142 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .staking-welcome-page {
-        flex-grow: 1;
-        background-color: #F8F8F8;
-        border-radius: 1.25rem;
+.staking-welcome-page {
+    flex-grow: 1;
+    background-color: #f8f8f8;
+    border-radius: 1.25rem;
+}
+
+.page-header {
+    height: 36.625rem;
+    padding-top: 3rem;
+    line-height: 1;
+    background-color: white;
+    flex-grow: 1;
+
+    clip-path: ellipse(170% 100% at 50% 0%);
+
+    ::v-deep .nq-h1 {
+        font-size: var(--h1-size);
     }
 
+    .staking-icon {
+        margin-top: 0.75rem;
+        margin-bottom: 2.375rem;
+
+        & ::v-deep svg {
+            font-size: 19rem;
+            margin: 0 auto;
+        }
+    }
+}
+
+.page-body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+
+    .staking-rounded-background {
+        // background-image: url('/img/staking/background-collar.svg');
+        background-size: cover;
+        background-position: 0rem -1rem;
+        background-repeat: no-repeat;
+        padding-bottom: 2rem;
+        height: 100%;
+
+        .staking-icons-lace {
+            position: relative;
+            left: -2rem;
+            white-space: nowrap;
+            flex-grow: 1;
+            min-height: 9rem;
+
+            .nq-icon {
+                color: var(--text-10);
+
+                opacity: 1;
+                transform: translateY(0);
+
+                --delay: 0ms; // set in the vue template for each icon
+                animation: breathing 1s infinite var(--delay);
+
+                @keyframes breathing {
+                    50% {
+                        opacity: 0.5;
+                        transform: translateY(2px);
+                    }
+                }
+            }
+
+            img,
+            .identicon,
+            .nq-icon {
+                position: relative;
+                display: inline-block;
+                width: 5.375rem;
+                height: 5.375rem;
+                margin-left: 0.81rem;
+            }
+        }
+
+        .staking-under-icons-text {
+            font-size: 1.75rem;
+            font-weight: 600;
+            line-height: 2.45rem;
+            color: var(--text-60);
+
+            text-align: center;
+            max-width: 37.5rem;
+            margin: 0 auto;
+
+            padding: 0 4rem;
+            padding-bottom: 1.25rem;
+        }
+
+        .stake-button {
+            width: 31.5rem;
+        }
+    }
+}
+
+.nq-text {
+    margin: 1.25rem 0 0;
+    padding: 0rem 1rem;
+}
+
+@media (max-width: 700px) {
+    // Full mobile breakpoint
     .page-header {
-        height: 36.625rem;
-        padding-top: 3rem;
-        line-height: 1;
-        background-color: white;
-        flex-grow: 1;
-
-        clip-path: ellipse(170% 100% at 50% 0%);
-
-        ::v-deep .nq-h1 { font-size: var(--h1-size) }
-
         .staking-icon {
-            margin-top: .75rem;
-            margin-bottom: 2.375rem;
+            margin-top: 1.375rem;
+            margin-bottom: 1.25rem;
 
-            & ::v-deep svg {
-                font-size: 19rem;
-                margin: 0 auto;
+            svg {
+                height: 16rem;
             }
         }
     }
 
     .page-body {
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-
         .staking-rounded-background {
-            // background-image: url('/img/staking/background-collar.svg');
-            background-size: cover;
-            background-position: 0rem -1rem;
-            background-repeat: no-repeat;
-            padding-bottom: 2rem;
-            height: 100%;
-
             .staking-icons-lace {
-                position: relative;
-                left: -2rem;
-                white-space: nowrap;
-                flex-grow: 1;
-                min-height: 9rem;
+                margin-top: 2.5rem;
 
-                .nq-icon {
-                    color: var(--text-10);
-
-                    opacity: 1;
-                    transform: translateY(0);
-
-                    --delay: 0ms; // set in the vue template for each icon
-                    animation: breathing 1s infinite var(--delay);
-
-                    @keyframes breathing {
-                        50% {
-                            opacity: .5;
-                            transform: translateY(2px);
-                        }
-                    }
-                }
-
-                img, .identicon, .nq-icon {
-                    position: relative;
-                    display: inline-block;
-                    width: 5.375rem;
-                    height: 5.375rem;
-                    margin-left: .81rem;
+                img {
+                    margin-left: 0.65rem;
+                    width: 4.75rem;
+                    height: 4.75rem;
                 }
             }
 
             .staking-under-icons-text {
-                font-size: 1.75rem;
-                font-weight: 600;
-                line-height: 2.45rem;
-                color: var(--text-60);
-
-                text-align: center;
-                max-width: 37.5rem;
-                margin: 0 auto;
-
-                padding: 0 4rem;
-                padding-bottom: 1.25rem;
-            }
-
-            .stake-button {
-                width: 31.5rem;
+                padding-bottom: 0.25rem;
             }
         }
     }
 
     .nq-text {
-        margin: 1.25rem 0 0;
-        padding: 0rem 1rem;
+        margin: 1rem 0 0;
     }
-
-    @media (max-width: 700px) { // Full mobile breakpoint
-        .page-header {
-            .staking-icon {
-                margin-top: 1.375rem;
-                margin-bottom: 1.25rem;
-
-                svg {
-                    height: 16rem;
-                }
-            }
-        }
-
-        .page-body {
-            .staking-rounded-background {
-                .staking-icons-lace {
-                    margin-top: 2.5rem;
-
-                    img {
-                        margin-left: .65rem;
-                        width: 4.75rem;
-                        height: 4.75rem;
-                    }
-                }
-
-                .staking-under-icons-text { padding-bottom: .25rem }
-            }
-        }
-
-        .nq-text { margin: 1rem 0 0 }
-    }
+}
 </style>

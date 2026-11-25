@@ -3,15 +3,12 @@ import { getNetworkClient, getValidityStartHeight } from '../network';
 import { ValidatorRef, validatorLabel } from './StakingUtils';
 
 export async function sendImmediateValidatorSwitch(params: {
-    stakerAddress: string,
-    amount: number,
-    target: ValidatorRef,
-    from: ValidatorRef,
+    stakerAddress: string;
+    amount: number;
+    target: ValidatorRef;
+    from: ValidatorRef;
 }) {
-    const [{ Address, TransactionBuilder }, client] = await Promise.all([
-        import('@nimiq/core'),
-        getNetworkClient(),
-    ]);
+    const [{ Address, TransactionBuilder }, client] = await Promise.all([import('@nimiq/core'), getNetworkClient()]);
     const networkId = await client.getNetworkId();
 
     const reactivateAllStake = true;

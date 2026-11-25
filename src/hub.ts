@@ -1,5 +1,5 @@
-import { storeToRefs } from 'pinia';
-import { Route } from 'vue-router';
+import type { PlainTransactionDetails } from '@nimiq/core';
+import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import HubApi, {
     type Account,
     type SignTransactionRequest,
@@ -13,31 +13,28 @@ import HubApi, {
     type PopupRequestBehavior,
     type SignedTransaction,
 } from '@nimiq/hub-api';
-import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import Config from 'config';
-import type { TransferRequest } from '@nimiq/gasless-sdk/core';
+import { storeToRefs } from 'pinia';
+import { Route } from 'vue-router';
+import { useConfig } from './composables/useConfig';
+import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
+import { sendTransaction as sendBtcTx } from './electrum';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY, MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
+import { sendGaslessTransfer, GaslessFeeQuote } from './lib/usdc/Gasless';
+import { sendTransaction as sendTx } from './network';
+import router, { RouteName } from './router';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
-import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
-import { useProxyStore, Cashlink } from './stores/Proxy';
-import { useConfig } from './composables/useConfig';
-import { sendTransaction as sendTx } from './network';
-import { sendTransaction as sendBtcTx } from './electrum';
-import { sendGaslessTransfer, GaslessFeeQuote } from './lib/usdc/Gasless';
-import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
-import router, { RouteName } from './router';
-import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import {
-    WELCOME_MODAL_LOCALSTORAGE_KEY,
-    MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
-} from './lib/Constants';
-import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
+import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
+import { useProxyStore, Cashlink } from './stores/Proxy';
+import { useSettingsStore } from './stores/Settings';
+import { useTransactionsStore } from './stores/Transactions';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
@@ -66,8 +63,8 @@ function getBehavior({
     abortSignal, // Only for popups because Wallet can not abort a redirect request as it's not open after redirect.
     localState, // Only for redirects. For popups no state needs to be stored as the Wallet remains open.
 }: {
-    abortSignal?: AbortSignal,
-    localState?: any,
+    abortSignal?: AbortSignal;
+    localState?: any;
 } = {}): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
     if (shouldUseRedirects()) {
         return new HubApi.RedirectRequestBehavior(window.location.href, localState);
@@ -78,8 +75,9 @@ function getBehavior({
 
     if (abortSignal) {
         // Return a popup behavior that can be aborted.
-        return new class AbortablePopupRequestBehavior extends HubApi.PopupRequestBehavior {
-            constructor(private abortSignal: AbortSignal) { // eslint-disable-line @typescript-eslint/no-shadow
+        return new (class AbortablePopupRequestBehavior extends HubApi.PopupRequestBehavior {
+            // eslint-disable-next-line @typescript-eslint/no-shadow
+            constructor(private abortSignal: AbortSignal) {
                 // Create with same parameters as defaultBehavior
                 // @ts-expect-error _popupFeatures and _options are private
                 super(defaultBehavior._popupFeatures, defaultBehavior._options);
@@ -106,7 +104,7 @@ function getBehavior({
                 if (this.abortSignal.aborted) throw new Error('Failed to open popup'); // same error as on failed popup
                 return super.createPopup(url);
             }
-        }(abortSignal);
+        })(abortSignal);
     }
 
     // Return defaultBehavior which is a PopupRequestBehavior.
@@ -134,7 +132,9 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     }
 
     // Open optional Welcome modal, Backup modal, Bitcoin activation modal or USDC activation modal if appropriate.
-    await new Promise<void>((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => {
+        router.onReady(resolve);
+    });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
@@ -167,7 +167,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
         // returned in the ONBOARD redirect and directly returned. We simply treat this as the accounts not having been
         // lost, i.e. run the regular USDC activation check in syncFromHub (which happens at a later point) and the
         // Bitcoin activation check only after actual new logins.
-        default: break;
+        default:
+            break;
     }
 });
 
@@ -280,8 +281,8 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         for (const chain of ['internal', 'external'] as Array<'internal' | 'external'>) {
             for (const btcAddress of account.btcAddresses[chain]) {
-                const existingAddressInfo: BtcAddressInfo | Record<string, never> = btcAddressStore
-                    .$state.addressInfos[btcAddress] || {};
+                const existingAddressInfo: BtcAddressInfo | Record<string, never> =
+                    btcAddressStore.$state.addressInfos[btcAddress] || {};
 
                 btcAddressInfos.push({
                     address: btcAddress,
@@ -295,12 +296,14 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         const existingAccount = accountStore.$state.accountInfos[account.accountId];
         if (existingAccount && existingAccount.btcAddresses) {
             account.btcAddresses = {
-                internal: existingAccount.btcAddresses.internal.length > account.btcAddresses.internal.length
-                    ? existingAccount.btcAddresses.internal
-                    : account.btcAddresses.internal,
-                external: existingAccount.btcAddresses.external.length > account.btcAddresses.external.length
-                    ? existingAccount.btcAddresses.external
-                    : account.btcAddresses.external,
+                internal:
+                    existingAccount.btcAddresses.internal.length > account.btcAddresses.internal.length
+                        ? existingAccount.btcAddresses.internal
+                        : account.btcAddresses.internal,
+                external:
+                    existingAccount.btcAddresses.external.length > account.btcAddresses.external.length
+                        ? existingAccount.btcAddresses.external
+                        : account.btcAddresses.external,
             };
         }
 
@@ -408,7 +411,9 @@ export async function syncFromHub() {
     // for Ledgers USDC would not be enabled automatically on logins and the activation reminder on every app start
     // would be annoying for the user.
     const { activeAccountInfo } = storeToRefs(useAccountStore());
-    await new Promise<void>((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => {
+        router.onReady(resolve);
+    });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     if (
         activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
@@ -418,12 +423,8 @@ export async function syncFromHub() {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push({ name: RouteName.PolygonActivation });
     } else {
-        const welcomeModalAlreadyShown = window.localStorage.getItem(
-            WELCOME_MODAL_LOCALSTORAGE_KEY,
-        );
-        const multisigModalAlreadyShown = window.localStorage.getItem(
-            MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
-        );
+        const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+        const multisigModalAlreadyShown = window.localStorage.getItem(MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY);
 
         if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
             // Show regular first-time welcome flow which talks about Bitcoin and USDC.
@@ -439,10 +440,13 @@ export async function onboard(asRedirect = false) {
 
     if (asRedirect) {
         const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
-        hubApi.onboard({
-            appName: APP_NAME,
-            disableBack: true,
-        }, behavior as RequestBehavior<BehaviorType.REDIRECT>);
+        hubApi.onboard(
+            {
+                appName: APP_NAME,
+                disableBack: true,
+            },
+            behavior as RequestBehavior<BehaviorType.REDIRECT>,
+        );
         return null;
     }
 
@@ -461,7 +465,9 @@ export async function onboard(asRedirect = false) {
     }
 
     // Open optional Backup modal or Bitcoin activation modal if appropriate.
-    await new Promise<void>((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => {
+        router.onReady(resolve);
+    });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return true;
     if (accountType !== AccountType.LEGACY && !btcAddresses?.external.length && config.enableBitcoin) {
         // After adding an account that supports Bitcoin without it being activated yet (this is the case for Ledger
@@ -477,10 +483,15 @@ export async function onboard(asRedirect = false) {
 }
 
 export async function addAddress(accountId: string) {
-    const addedAddress = await hubApi.addAddress({
-        appName: APP_NAME,
-        accountId,
-    }, getBehavior()).catch(onError);
+    const addedAddress = await hubApi
+        .addAddress(
+            {
+                appName: APP_NAME,
+                accountId,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!addedAddress) return false;
 
     const addressInfo: AddressInfo = {
@@ -501,11 +512,16 @@ export async function addAddress(accountId: string) {
 }
 
 export async function backup(accountId: string, exportMethod: 'fileOnly' | 'wordsOnly' | 'backupCodesOnly') {
-    const exportResult = await hubApi.export({
-        appName: APP_NAME,
-        accountId,
-        [exportMethod]: true,
-    }, getBehavior()).catch(onError);
+    const exportResult = await hubApi
+        .export(
+            {
+                appName: APP_NAME,
+                accountId,
+                [exportMethod]: true,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!exportResult) return false;
 
     const accountStore = useAccountStore();
@@ -517,17 +533,22 @@ export async function backup(accountId: string, exportMethod: 'fileOnly' | 'word
 // Type for sendTransaction that accepts both single and multi-transaction formats
 type SendTransactionParams = Omit<SignTransactionRequest, 'appName'> & {
     // Allow any additional properties for compatibility
-    [key: string]: any,
+    [key: string]: any;
 };
 
 export async function sendTransaction(
     request: SendTransactionParams,
     abortSignal?: AbortSignal,
 ): Promise<PlainTransactionDetails | null> {
-    const signedTransaction = await hubApi.signTransaction({
-        appName: APP_NAME,
-        ...request,
-    } as SignTransactionRequest, getBehavior({ abortSignal })).catch(onError);
+    const signedTransaction = await hubApi
+        .signTransaction(
+            {
+                appName: APP_NAME,
+                ...request,
+            } as SignTransactionRequest,
+            getBehavior({ abortSignal }),
+        )
+        .catch(onError);
     if (!signedTransaction) return null;
 
     // Handle both single transaction and multi-transaction responses
@@ -546,10 +567,12 @@ export async function sendTransaction(
 }
 
 export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) {
-    const signedTransactions = await hubApi.signStaking({
-        appName: APP_NAME,
-        ...request,
-    }).catch(onError);
+    const signedTransactions = await hubApi
+        .signStaking({
+            appName: APP_NAME,
+            ...request,
+        })
+        .catch(onError);
     if (!signedTransactions) return null;
 
     const txDetails: PlainTransactionDetails[] = [];
@@ -561,7 +584,8 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
             txDetails.push(details);
             if (details.executionResult === false) break;
         }
-    } else { // Backward-compatibility
+    } else {
+        // Backward-compatibility
         txDetails.push(await sendTx(signedTransactions as SignedTransaction));
     }
 
@@ -575,25 +599,30 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
  * are sent to the watchtower for later broadcasting.
  */
 export async function signUnstakingTransactions(request: {
-    sender: string,
-    senderLabel?: string,
-    transactions: Uint8Array[], // Array of 3 serialized transactions: [deactivation, retire, unstake]
-    validatorAddress: string,
-    validatorImageUrl?: string,
+    sender: string;
+    senderLabel?: string;
+    transactions: Uint8Array[]; // Array of 3 serialized transactions: [deactivation, retire, unstake]
+    validatorAddress: string;
+    validatorImageUrl?: string;
 }): Promise<SignedTransaction[] | null> {
     if (request.transactions.length !== 3) {
         throw new Error('Expected exactly 3 transactions for unstaking flow: deactivation, retire, unstake');
     }
 
-    const signedTransactions = await hubApi.signTransaction({
-        appName: APP_NAME,
-        layout: 'unstaking',
-        sender: request.sender,
-        senderLabel: request.senderLabel,
-        transactions: request.transactions,
-        validatorAddress: request.validatorAddress,
-        validatorImageUrl: request.validatorImageUrl,
-    }, getBehavior()).catch(onError);
+    const signedTransactions = await hubApi
+        .signTransaction(
+            {
+                appName: APP_NAME,
+                layout: 'unstaking',
+                sender: request.sender,
+                senderLabel: request.senderLabel,
+                transactions: request.transactions,
+                validatorAddress: request.validatorAddress,
+                validatorImageUrl: request.validatorImageUrl,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
 
     if (!signedTransactions) return null;
 
@@ -615,25 +644,30 @@ export async function signUnstakingTransactions(request: {
  * and forwards the update-staker to the watchtower.
  */
 export async function signSwitchValidatorTransactions(request: {
-    sender: string,
-    transactions: [Uint8Array, Uint8Array], // [set-active-stake, update-staker]
-    senderLabel?: string,
-    recipientLabel?: string,
-    validatorImageUrl?: string,
-    fromValidatorAddress: string,
-    fromValidatorImageUrl?: string,
+    sender: string;
+    transactions: [Uint8Array, Uint8Array]; // [set-active-stake, update-staker]
+    senderLabel?: string;
+    recipientLabel?: string;
+    validatorImageUrl?: string;
+    fromValidatorAddress: string;
+    fromValidatorImageUrl?: string;
 }): Promise<SignedTransaction[] | null> {
-    const signedTransactions = await hubApi.signTransaction({
-        appName: APP_NAME,
-        layout: 'switch-validator',
-        sender: request.sender,
-        senderLabel: request.senderLabel,
-        recipientLabel: request.recipientLabel,
-        transactions: request.transactions,
-        validatorImageUrl: request.validatorImageUrl,
-        fromValidatorAddress: request.fromValidatorAddress,
-        fromValidatorImageUrl: request.fromValidatorImageUrl,
-    }, getBehavior()).catch(onError);
+    const signedTransactions = await hubApi
+        .signTransaction(
+            {
+                appName: APP_NAME,
+                layout: 'switch-validator',
+                sender: request.sender,
+                senderLabel: request.senderLabel,
+                recipientLabel: request.recipientLabel,
+                transactions: request.transactions,
+                validatorImageUrl: request.validatorImageUrl,
+                fromValidatorAddress: request.fromValidatorAddress,
+                fromValidatorImageUrl: request.fromValidatorImageUrl,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
 
     if (!signedTransactions) return null;
 
@@ -649,12 +683,17 @@ export async function signSwitchValidatorTransactions(request: {
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
-    const cashlink = await hubApi.createCashlink({
-        appName: APP_NAME,
-        senderAddress,
-        senderBalance,
-        fiatCurrency: useFiatStore().$state.currency,
-    }, getBehavior()).catch(onError);
+    const cashlink = await hubApi
+        .createCashlink(
+            {
+                appName: APP_NAME,
+                senderAddress,
+                senderBalance,
+                fiatCurrency: useFiatStore().$state.currency,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!cashlink) return false;
 
     // Handle cashlink
@@ -665,20 +704,26 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
 }
 
 export async function manageCashlink(cashlinkAddress: string) {
-    const cashlink = await hubApi.manageCashlink({
-        appName: APP_NAME,
-        cashlinkAddress,
-    }, getBehavior()).catch(onError).catch((error: null | Error) => {
-        if (!error) return null;
-        if (error.message.startsWith('Could not find Cashlink for address')) {
-            return {
-                address: cashlinkAddress,
-                message: '',
-                value: 0, // To signal this cashlink is not stored in the Hub
-            };
-        }
-        throw error;
-    });
+    const cashlink = await hubApi
+        .manageCashlink(
+            {
+                appName: APP_NAME,
+                cashlinkAddress,
+            },
+            getBehavior(),
+        )
+        .catch(onError)
+        .catch((error: null | Error) => {
+            if (!error) return null;
+            if (error.message.startsWith('Could not find Cashlink for address')) {
+                return {
+                    address: cashlinkAddress,
+                    message: '',
+                    value: 0, // To signal this cashlink is not stored in the Hub
+                };
+            }
+            throw error;
+        });
     if (!cashlink) return false;
 
     // Handle cashlink
@@ -689,11 +734,16 @@ export async function manageCashlink(cashlinkAddress: string) {
 }
 
 export async function rename(accountId: string, address?: string) {
-    const account = await hubApi.rename({
-        appName: APP_NAME,
-        accountId,
-        address,
-    }, getBehavior()).catch(onError);
+    const account = await hubApi
+        .rename(
+            {
+                appName: APP_NAME,
+                accountId,
+                address,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!account) return false;
 
     const accountStore = useAccountStore();
@@ -708,9 +758,14 @@ export async function rename(accountId: string, address?: string) {
 }
 
 export async function addVestingContract() {
-    const account = await hubApi.addVestingContract({
-        appName: APP_NAME,
-    }, getBehavior()).catch(onError);
+    const account = await hubApi
+        .addVestingContract(
+            {
+                appName: APP_NAME,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -719,17 +774,27 @@ export async function addVestingContract() {
 }
 
 export async function changePassword(accountId: string) {
-    await hubApi.changePassword({
-        appName: APP_NAME,
-        accountId,
-    }, getBehavior()).catch(onError);
+    await hubApi
+        .changePassword(
+            {
+                appName: APP_NAME,
+                accountId,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
 }
 
 export async function logout(accountId: string) {
-    const loggedOut = await hubApi.logout({
-        appName: APP_NAME,
-        accountId,
-    }, getBehavior()).catch(onError);
+    const loggedOut = await hubApi
+        .logout(
+            {
+                appName: APP_NAME,
+                accountId,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!loggedOut) return false;
 
     if (!loggedOut.success) return false;
@@ -747,22 +812,24 @@ export async function logout(accountId: string) {
         .map((addressInfo) => addressInfo.address)
         .filter((address) => !addressesToDelete.includes(address));
 
-    let transactionsToDelete = Object.values(transactionStore.$state.transactions)
-        .filter((tx) => !remainingAddresses.includes(tx.sender) && !remainingAddresses.includes(tx.recipient));
+    let transactionsToDelete = Object.values(transactionStore.$state.transactions).filter(
+        (tx) => !remainingAddresses.includes(tx.sender) && !remainingAddresses.includes(tx.recipient),
+    );
 
-    const transactionsToDeleteHashes = transactionsToDelete
-        .map((tx) => tx.transactionHash);
+    const transactionsToDeleteHashes = transactionsToDelete.map((tx) => tx.transactionHash);
 
-    const remainingTransactions = Object.values(transactionStore.$state.transactions)
-        .filter((tx) => !transactionsToDeleteHashes.includes(tx.transactionHash));
+    const remainingTransactions = Object.values(transactionStore.$state.transactions).filter(
+        (tx) => !transactionsToDeleteHashes.includes(tx.transactionHash),
+    );
 
     const remainingTransactionRelatedTransactionHashes = remainingTransactions
         .map((tx) => tx.relatedTransactionHash)
         .filter((hash) => Boolean(hash));
 
     // Keep the transactions that are still referenced by remaining transactions' relatedTransactionHash
-    transactionsToDelete = transactionsToDelete
-        .filter((tx) => !remainingTransactionRelatedTransactionHashes.includes(tx.transactionHash));
+    transactionsToDelete = transactionsToDelete.filter(
+        (tx) => !remainingTransactionRelatedTransactionHashes.includes(tx.transactionHash),
+    );
 
     const pendingProxiesToDelete = transactionsToDelete
         .map((tx) => {
@@ -777,20 +844,20 @@ export async function logout(accountId: string) {
     /**
      * Bitcoin
      */
-    const btcAddressesToDelete = accountStore.$state.accountInfos[accountId].btcAddresses.internal
-        .concat(accountStore.$state.accountInfos[accountId].btcAddresses.external);
+    const btcAddressesToDelete = accountStore.$state.accountInfos[accountId].btcAddresses.internal.concat(
+        accountStore.$state.accountInfos[accountId].btcAddresses.external,
+    );
 
     const remainingBtcAddresses = Object.values(btcAddressStore.$state.addressInfos)
         .map((addressInfo) => addressInfo.address)
         .filter((address) => !btcAddressesToDelete.includes(address));
 
-    const btcTransactionsToDelete = Object.values(btcTransactionStore.$state.transactions)
-        .filter((tx) => {
-            for (const address of tx.addresses) {
-                if (remainingBtcAddresses.includes(address)) return false;
-            }
-            return true;
-        });
+    const btcTransactionsToDelete = Object.values(btcTransactionStore.$state.transactions).filter((tx) => {
+        for (const address of tx.addresses) {
+            if (remainingBtcAddresses.includes(address)) return false;
+        }
+        return true;
+    });
 
     // Delete account, it's addresses, their transactions and cashlinks
     for (const cashlinkAddress of pendingProxiesToDelete) {
@@ -813,23 +880,30 @@ export async function logout(accountId: string) {
 export async function sendBtcTransaction(
     tx: Omit<SignBtcTransactionRequest, 'appName'> | Promise<Omit<SignBtcTransactionRequest, 'appName'>>,
 ) {
-    const signedTransaction = await hubApi.signBtcTransaction(
-        Promise.resolve(tx).then((tx2) => ({
-            appName: APP_NAME,
-            ...tx2,
-        })),
-        getBehavior(),
-    ).catch(onError);
+    const signedTransaction = await hubApi
+        .signBtcTransaction(
+            Promise.resolve(tx).then((tx2) => ({
+                appName: APP_NAME,
+                ...tx2,
+            })),
+            getBehavior(),
+        )
+        .catch(onError);
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);
 }
 
 export async function activateBitcoin(accountId: string) {
-    const account = await hubApi.activateBitcoin({
-        appName: APP_NAME,
-        accountId,
-    }, getBehavior()).catch(onError);
+    const account = await hubApi
+        .activateBitcoin(
+            {
+                appName: APP_NAME,
+                accountId,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -838,10 +912,15 @@ export async function activateBitcoin(accountId: string) {
 }
 
 export async function activatePolygon(accountId: string) {
-    const account = await hubApi.activatePolygon({
-        appName: APP_NAME,
-        accountId,
-    }, getBehavior()).catch(onError);
+    const account = await hubApi
+        .activatePolygon(
+            {
+                appName: APP_NAME,
+                accountId,
+            },
+            getBehavior(),
+        )
+        .catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -870,10 +949,16 @@ export async function sendPolygonTransaction(
         recipientLabel,
         quote,
         corrects,
-        sign: (request) => hubApi.signPolygonTransaction({
-            ...request,
-            appName: APP_NAME,
-        }, getBehavior()).catch(onError),
+        sign: (request) =>
+            hubApi
+                .signPolygonTransaction(
+                    {
+                        ...request,
+                        appName: APP_NAME,
+                    },
+                    getBehavior(),
+                )
+                .catch(onError),
     });
     return tx || false;
 }
@@ -913,18 +998,16 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
     accountStore.patchAccount(accountId, {
         btcAddresses: {
             ...accountInfo.btcAddresses,
-            [chain]: [
-                ...accountInfo.btcAddresses[chain],
-                ...newAddresses,
-            ],
+            [chain]: [...accountInfo.btcAddresses[chain], ...newAddresses],
         },
     });
 
     return btcAddressInfos;
 }
 
-export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, 'appName' | 'kyc'>>)
-    : Promise<SetupSwapResult | SetupSwapWithKycResult | null | /* for redirect requests */ void> {
+export async function setupSwap(
+    requestPromise: Promise<Omit<SetupSwapRequest, 'appName' | 'kyc'>>,
+): Promise<SetupSwapResult | SetupSwapWithKycResult | null | /* for redirect requests */ void> {
     const { connectedUser: kycUser } = useKycStore();
     const requestWithAppNamePromise = requestPromise.then((request) => ({
         ...request,
@@ -941,21 +1024,25 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
         const SWAP_KYC_HANDLER_STORAGE_KEY: SWAP_KYC_HANDLER_STORAGE_KEY = 'wallet-swap-kyc-handler';
         window.sessionStorage.removeItem(SWAP_KYC_HANDLER_STORAGE_KEY);
 
-        const requestBehavior = getBehavior()
+        const requestBehavior =
+            getBehavior()
             // @ts-expect-error: _defaultBehavior is private
             || hubApi._defaultBehavior;
-        return requestBehavior.request(
-            `${window.location.origin}/swap-kyc-handler`,
-            HubApi.RequestType.SETUP_SWAP,
-            [requestWithAppNamePromise, kycUser],
-        ).catch(onError);
+        return requestBehavior
+            .request(`${window.location.origin}/swap-kyc-handler`, HubApi.RequestType.SETUP_SWAP, [
+                requestWithAppNamePromise,
+                kycUser,
+            ])
+            .catch(onError);
     }
     return hubApi.setupSwap(requestWithAppNamePromise, getBehavior()).catch(onError);
 }
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
-    return hubApi.refundSwap(
-        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
-        getBehavior(),
-    ).catch(onError);
+    return hubApi
+        .refundSwap(
+            requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
+            getBehavior(),
+        )
+        .catch(onError);
 }

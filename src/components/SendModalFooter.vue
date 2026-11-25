@@ -1,20 +1,27 @@
 <template>
     <PageFooter class="send-modal-footer">
         <button
-            class="nq-button" :class="buttonColor"
-            :disabled="disabled || !networkState.isReady || error
-                || ($config.disableNetworkInteraction && assets.includes(CryptoCurrency.NIM))"
+            class="nq-button"
+            :class="buttonColor"
+            :disabled="
+                disabled
+                || !networkState.isReady
+                || error
+                || ($config.disableNetworkInteraction && assets.includes(CryptoCurrency.NIM))
+            "
             @click="$emit('click')"
             @mousedown.prevent
-        ><slot name="cta">{{ $t('Confirm') }}</slot></button>
+        >
+            <slot name="cta">{{ $t('Confirm') }}</slot>
+        </button>
 
         <MessageTransition>
             <div v-if="networkState.message" class="footer-notice nq-light-blue flex-row">
-                <CircleSpinner/>
+                <CircleSpinner />
                 {{ networkState.message }}
             </div>
             <div v-else-if="error" class="footer-notice nq-orange flex-row">
-                <AlertTriangleIcon/>
+                <AlertTriangleIcon />
                 {{ error }}
             </div>
             <div v-else class="footer-notice nq-gray flex-row"><slot></slot></div>
@@ -23,14 +30,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from '@/lib/useI18n';
+import { CryptoCurrency } from '../lib/Constants';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useNetworkStore } from '../stores/Network';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
-import { CryptoCurrency } from '../lib/Constants';
 import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({

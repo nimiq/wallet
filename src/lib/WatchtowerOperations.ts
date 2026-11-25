@@ -69,7 +69,7 @@ async function prepare(stakerAddress: string) {
 async function broadcastAndRegister<R extends { deactivationTxHash: string }>(
     deactivation: SignedTransaction,
     record: R,
-    save: (record: R & { watchtowerRegistered?: boolean, watchtowerJobId?: string }) => void,
+    save: (record: R & { watchtowerRegistered?: boolean; watchtowerJobId?: string }) => void,
     register: () => Promise<string | undefined | null>,
 ): Promise<WatchtowerOperationResult> {
     const deactivationResult = await sendTx(deactivation);
@@ -122,9 +122,9 @@ async function broadcastAndRegister<R extends { deactivationTxHash: string }>(
 export async function startWatchtowerUnstaking(input: {
     // One snapshot for both the balances and the staker address, captured by the caller before the
     // Hub round-trip during which the active address can change.
-    stake: Stake,
-    validator: ValidatorRef,
-    activeBalanceAfter: number,
+    stake: Stake;
+    validator: ValidatorRef;
+    activeBalanceAfter: number;
 }): Promise<WatchtowerOperationResult> {
     const { stake, validator, activeBalanceAfter } = input;
     const { setUnstakingOperation } = useStakingStore();
@@ -134,13 +134,7 @@ export async function startWatchtowerUnstaking(input: {
     const totalInactiveAfterDeactivation = stake.inactiveBalance + deactivatedAmount;
     const totalRetiredAfterRetire = stake.retiredBalance + totalInactiveAfterDeactivation;
 
-    const deactivationTx = builder.newSetActiveStake(
-        sender,
-        BigInt(activeBalanceAfter),
-        BigInt(0),
-        height,
-        networkId,
-    );
+    const deactivationTx = builder.newSetActiveStake(sender, BigInt(activeBalanceAfter), BigInt(0), height, networkId);
     const retireTx = builder.newRetireStake(
         sender,
         BigInt(totalInactiveAfterDeactivation),
@@ -176,12 +170,13 @@ export async function startWatchtowerUnstaking(input: {
         signedTxs[0],
         { startedAtBlock: height, deactivationTxHash: signedTxs[0].hash },
         (record) => setUnstakingOperation(stake.address, record),
-        () => startUnstaking({
-            stakerAddress: stake.address,
-            inactiveStakeTxHash: signedTxs[0].hash,
-            retireTx: signedTxs[1].serializedTx,
-            unstakeTx: signedTxs[2].serializedTx,
-        }),
+        () =>
+            startUnstaking({
+                stakerAddress: stake.address,
+                inactiveStakeTxHash: signedTxs[0].hash,
+                retireTx: signedTxs[1].serializedTx,
+                unstakeTx: signedTxs[2].serializedTx,
+            }),
     );
 }
 
@@ -193,9 +188,9 @@ export async function startWatchtowerUnstaking(input: {
  * previous update-staker unsendable — back into the inactive balance it re-delegates.
  */
 export async function startWatchtowerSwitch(input: {
-    stakerAddress: string,
-    from: ValidatorRef,
-    target: ValidatorRef,
+    stakerAddress: string;
+    from: ValidatorRef;
+    target: ValidatorRef;
 }): Promise<WatchtowerOperationResult> {
     const { stakerAddress, from, target } = input;
     const { getSwitchOperation, setSwitchOperation } = useStakingStore();
@@ -203,13 +198,7 @@ export async function startWatchtowerSwitch(input: {
     const replaced = getSwitchOperation(stakerAddress);
     const { Address, builder, networkId, policy, height, sender, followUpHeight } = await prepare(stakerAddress);
 
-    const deactivateTx = builder.newSetActiveStake(
-        sender,
-        BigInt(0),
-        BigInt(0),
-        height,
-        networkId,
-    );
+    const deactivateTx = builder.newSetActiveStake(sender, BigInt(0), BigInt(0), height, networkId);
     const updateTx = builder.newUpdateStaker(
         sender,
         Address.fromUserFriendlyAddress(target.address),
@@ -253,9 +242,12 @@ export async function startWatchtowerSwitch(input: {
             // timed out) keeps the job, which the sync follows by id like any other.
             const landedAt = useTransactionsStore().$state.transactions[signedTxs[0].hash]?.blockHeight;
             const hasSameFollowUp = (block: number) => followUpHeightAfter(block, policy) === followUpHeight;
-            if (replaced?.watchtowerJobId && replaced.targetValidatorAddress === target.address
+            if (
+                replaced?.watchtowerJobId
+                && replaced.targetValidatorAddress === target.address
                 && hasSameFollowUp(replaced.startedAtBlock)
-                && (landedAt === undefined || hasSameFollowUp(landedAt))) {
+                && (landedAt === undefined || hasSameFollowUp(landedAt))
+            ) {
                 return Promise.resolve(replaced.watchtowerJobId);
             }
             return startSwitchValidator({

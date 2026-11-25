@@ -33,7 +33,7 @@ function supplyAtTime(currentTime: number): number {
         throw new Error('currentTime must be greater or equal to genesisTime');
     }
 
-    return (TOTAL_SUPPLY - ((TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t)));
+    return TOTAL_SUPPLY - (TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t);
 }
 
 /* oxlint-disable eslint-js/max-len */

@@ -1,6 +1,6 @@
 <template>
     <div class="staking-graph">
-        <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph">
+        <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph" />
         <div class="bubbles" v-if="!loading">
             <div class="bubble">~&nbsp;{{ estimatedRewards['4M'] }}&nbsp;{{ $t('NIM') }}</div>
             <div class="bubble">~&nbsp;{{ estimatedRewards['8M'] }}&nbsp;{{ $t('NIM') }}</div>
@@ -15,11 +15,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 
-import { formatNumber } from '../../lib/NumberFormatting';
 import { calculateStakingReward } from '../../lib/AlbatrossMath';
+import { formatNumber } from '../../lib/NumberFormatting';
 import { useStakingStore } from '../../stores/Staking';
 
 export default defineComponent({
@@ -42,7 +42,7 @@ export default defineComponent({
 
         const calculateReward = (months: number): number => {
             const days = months * (365 / 12); // Convert months to approximate days
-            const fee = (activeValidator.value && 'fee' in activeValidator.value) ? activeValidator.value.fee : 0;
+            const fee = activeValidator.value && 'fee' in activeValidator.value ? activeValidator.value.fee : 0;
             const rewardsPercentage = calculateStakingReward(fee, totalStake.value, days);
             const rewards = rewardsPercentage * props.stakedAmount;
 
@@ -72,8 +72,8 @@ export default defineComponent({
 }
 
 .graph-image {
-    grid-row: 1 / -1;  // Spans all rows
-    grid-column: 1 / -1;  // Spans all columns
+    grid-row: 1 / -1; // Spans all rows
+    grid-column: 1 / -1; // Spans all columns
     width: 100%;
     height: 100%;
 }
@@ -88,8 +88,8 @@ export default defineComponent({
         border: 2px solid currentColor;
         border-radius: 1.75rem;
 
-        margin: .5rem auto;
-        padding: .4rem 1rem;
+        margin: 0.5rem auto;
+        padding: 0.4rem 1rem;
         min-width: 10rem;
 
         font-size: 1.75rem;
@@ -118,8 +118,8 @@ export default defineComponent({
 
 .scale {
     display: grid;
-    grid-row: 5;  // Last row
-    grid-column: 1 / -1;  // Spans all columns
+    grid-row: 5; // Last row
+    grid-column: 1 / -1; // Spans all columns
     grid-template-columns: repeat(3, 1fr);
 
     gap: 3rem;

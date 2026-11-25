@@ -1,10 +1,10 @@
-import bitmap from '../data/NetworkBitMap';
 import { useGeoIp, GeoIpResponse } from '../composables/useGeoIp';
-import RobinsonProjection from './RobinsonProjection';
+import bitmap from '../data/NetworkBitMap';
 import { Peer } from '../stores/Network';
+import RobinsonProjection from './RobinsonProjection';
 
 /** how long the tangent to the control point is in relation to the distance between the two points */
-const CURVINESS_FACTOR = .2;
+const CURVINESS_FACTOR = 0.2;
 /**
  * start and end point offset on a circle
  * TODO calculated properly and only once depending on `CURVINESS_FACTOR`.
@@ -25,17 +25,17 @@ export const WIDTH = 1082;
 export const HEIGHT = 502;
 
 /** Map scaling factor */
-export const SCALING_FACTOR = .95;
+export const SCALING_FACTOR = 0.95;
 
 /** distance between 2 hexagons vertically in relation to its height */
 const VERTICAL_HEXAGON_DISTANCE = 1.142;
 /** overlap between 2 hexagons horizontally in relation to its width */
-const HORIZONTAL_HEXAGON_OVERLAP = .98;
+const HORIZONTAL_HEXAGON_OVERLAP = 0.98;
 
 //  easing functions
 // TODO more and/or better easing functions
 // const quadraticEasing = (t: number) => t < .5 ? 2 * t ** 2 : 1 - (2 * t - 2) ** 2 / 2;
-const cubicEasing = (t: number) => t < .5 ? 4 * t ** 3 : 1 + (2 * t - 2) ** 3 / 2;
+const cubicEasing = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 + (2 * t - 2) ** 3 / 2);
 // const quarticEasing = (t: number) => t < .5 ? 8 * t ** 4 : 1 - (2 * t - 2) ** 4 / 2;
 const sinEasing = (t: number) => (Math.sin(t * Math.PI - Math.PI / 2) / 2 + 0.5) ** 2;
 
@@ -64,20 +64,20 @@ export { NodeType };
  */
 type PlainAddressInfo = Peer;
 export type Node = PlainAddressInfo & {
-    hexagon: NodeHexagon,
-    type: NodeType,
+    hexagon: NodeHexagon;
+    type: NodeType;
     locationData: {
-        country?: string,
-        city?: string,
-        i18nCityNames?: { [language: string]: string },
-    },
-    host?: string,
-}
+        country?: string;
+        city?: string;
+        i18nCityNames?: { [language: string]: string };
+    };
+    host?: string;
+};
 
 class Hexagon {
     public static SCALE = (2 * WIDTH) / (NETWORK_MAP_WIDTH * HORIZONTAL_HEXAGON_OVERLAP);
 
-    public position: {x: number, y: number} = {
+    public position: { x: number; y: number } = {
         x: 0,
         y: 0,
     };
@@ -99,61 +99,63 @@ class Hexagon {
      * y coordinate of top left border of the bounding box
      */
     public get y() {
-        const off = this.position.x % 2 === 0 ? .5 : 0;
-        return (this.position.y + off) * Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE
-            - .5 * Hexagon.SCALE
-            + 2 * (1 - SCALING_FACTOR) * HEIGHT;
+        const off = this.position.x % 2 === 0 ? 0.5 : 0;
+        return (
+            (this.position.y + off) * Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE
+            - 0.5 * Hexagon.SCALE
+            + 2 * (1 - SCALING_FACTOR) * HEIGHT
+        );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
         dc.lineWidth = 1;
         dc.beginPath();
-        dc.moveTo(this.x + .22 * Hexagon.SCALE, this.y + .04 * Hexagon.SCALE);
+        dc.moveTo(this.x + 0.22 * Hexagon.SCALE, this.y + 0.04 * Hexagon.SCALE);
         dc.arc(
-            this.x + .298 * Hexagon.SCALE,
-            this.y + .0825 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
+            this.x + 0.298 * Hexagon.SCALE,
+            this.y + 0.0825 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
             (7 / 6) * Math.PI,
             1.5 * Math.PI,
         );
-        dc.lineTo(this.x + .71 * Hexagon.SCALE, this.y);
+        dc.lineTo(this.x + 0.71 * Hexagon.SCALE, this.y);
         dc.arc(
-            this.x + .71 * Hexagon.SCALE,
-            this.y + .0825 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
+            this.x + 0.71 * Hexagon.SCALE,
+            this.y + 0.0825 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
             1.5 * Math.PI,
             (11 / 6) * Math.PI,
         );
-        dc.lineTo(this.x + .9875 * Hexagon.SCALE, this.y + .4 * Hexagon.SCALE);
+        dc.lineTo(this.x + 0.9875 * Hexagon.SCALE, this.y + 0.4 * Hexagon.SCALE);
         dc.arc(
-            this.x + .9175 * Hexagon.SCALE,
-            this.y + .445 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
+            this.x + 0.9175 * Hexagon.SCALE,
+            this.y + 0.445 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
             (11 / 6) * Math.PI,
             (1 / 6) * Math.PI,
         );
-        dc.lineTo(this.x + .78 * Hexagon.SCALE, this.y + .85 * Hexagon.SCALE);
+        dc.lineTo(this.x + 0.78 * Hexagon.SCALE, this.y + 0.85 * Hexagon.SCALE);
         dc.arc(
-            this.x + .71 * Hexagon.SCALE,
-            this.y + .8075 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
+            this.x + 0.71 * Hexagon.SCALE,
+            this.y + 0.8075 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
             (1 / 6) * Math.PI,
-            .5 * Math.PI,
+            0.5 * Math.PI,
         );
-        dc.lineTo(this.x + .29 * Hexagon.SCALE, this.y + .89 * Hexagon.SCALE);
+        dc.lineTo(this.x + 0.29 * Hexagon.SCALE, this.y + 0.89 * Hexagon.SCALE);
         dc.arc(
-            this.x + .2980 * Hexagon.SCALE,
-            this.y + .8075 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
-            .5 * Math.PI,
+            this.x + 0.298 * Hexagon.SCALE,
+            this.y + 0.8075 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
+            0.5 * Math.PI,
             (5 / 6) * Math.PI,
         );
-        dc.lineTo(this.x + .0125 * Hexagon.SCALE, this.y + .49 * Hexagon.SCALE);
+        dc.lineTo(this.x + 0.0125 * Hexagon.SCALE, this.y + 0.49 * Hexagon.SCALE);
         dc.arc(
-            this.x + .0825 * Hexagon.SCALE,
-            this.y + .445 * Hexagon.SCALE,
-            .0825 * Hexagon.SCALE,
+            this.x + 0.0825 * Hexagon.SCALE,
+            this.y + 0.445 * Hexagon.SCALE,
+            0.0825 * Hexagon.SCALE,
             (5 / 6) * Math.PI,
             (7 / 6) * Math.PI,
         );
@@ -291,25 +293,24 @@ export class NodeHexagon extends Hexagon {
         if (!this.isConnected || this._connections.size === 0) {
             dc.fillStyle! = `rgba(255, 255, 255, ${
                 // maximum opacity
-                .3
-                * (
-                    // old state
-                    NodeHexagon.getAlpha(this._oldPeerCount)
+                0.3
+                // old state
+                * (NodeHexagon.getAlpha(this._oldPeerCount)
                     // animation to new state
-                    + NodeHexagon.getAlpha(this.peers.size - this._oldPeerCount) * this._animation.hexagon
-                )}`;
+                    + NodeHexagon.getAlpha(this.peers.size - this._oldPeerCount) * this._animation.hexagon)
+            }`;
             super.draw(dc, timeDelta);
         }
 
         if (this.isConnected) {
             dc.fillStyle = this.createGradient(
                 dc,
-                `rgba(38, 93, 215, ${this._connections.size === 0
-                    ? 1 - this._animation.hexagon
-                    : this._animation.hexagon})`,
-                `rgba(5, 130, 202, ${this._connections.size === 0
-                    ? 1 - this._animation.hexagon
-                    : this._animation.hexagon})`,
+                `rgba(38, 93, 215, ${
+                    this._connections.size === 0 ? 1 - this._animation.hexagon : this._animation.hexagon
+                })`,
+                `rgba(5, 130, 202, ${
+                    this._connections.size === 0 ? 1 - this._animation.hexagon : this._animation.hexagon
+                })`,
             );
             super.draw(dc, timeDelta);
         }
@@ -326,17 +327,18 @@ export class NodeHexagon extends Hexagon {
         );
 
         // middle points of each hexagon, note that hexagons are .89 the height of their width
-        const xPeer = this.x + .5 * Hexagon.SCALE;
-        const yPeer = this.y + .445 * Hexagon.SCALE;
-        const xSelf = self.x + .5 * Hexagon.SCALE;
-        const ySelf = self.y + .445 * Hexagon.SCALE;
+        const xPeer = this.x + 0.5 * Hexagon.SCALE;
+        const yPeer = this.y + 0.445 * Hexagon.SCALE;
+        const xSelf = self.x + 0.5 * Hexagon.SCALE;
+        const ySelf = self.y + 0.445 * Hexagon.SCALE;
 
-        let angle = (Math.atan2(yPeer - ySelf, xPeer - xSelf));
+        let angle = Math.atan2(yPeer - ySelf, xPeer - xSelf);
         const distance = Math.sqrt((xSelf - xPeer) ** 2 + (ySelf - yPeer) ** 2);
 
         // set up stroke style depending on node state
         dc.lineWidth = 3.5;
-        if (this._animation.connection !== 1) { // animating is going on TODO
+        if (this._animation.connection !== 1) {
+            // animating is going on TODO
             switch (this._connections.size) {
                 case 0: // animating towards disconnected
                     dc.strokeStyle = `rgba(117, 121, 157, ${1 - sinEasing(this._animation.connection)})`;
@@ -348,18 +350,21 @@ export class NodeHexagon extends Hexagon {
                     dc.setLineDash([distance, distance]);
                     dc.lineDashOffset = -(distance + cubicEasing(this._animation.connection) * distance);
             }
-        } else { // no animation
+        } else {
+            // no animation
             dc.strokeStyle = `rgba(117, 121, 157, ${this.isConnected ? 1 : 0})`;
             dc.setLineDash([]);
             dc.lineDashOffset = 0;
         }
 
         dc.beginPath();
-        if (distance >= 3.5 * Hexagon.SCALE) { // quadratic curves for distant nodes
+        if (distance >= 3.5 * Hexagon.SCALE) {
+            // quadratic curves for distant nodes
             let counterAngle = 0;
             let tangent = 0;
 
-            if (Math.abs(angle) > Math.PI / 2) { // atan2 returns positive and negative numbers between 0 and Math.PI
+            if (Math.abs(angle) > Math.PI / 2) {
+                // atan2 returns positive and negative numbers between 0 and Math.PI
                 counterAngle = angle + Math.PI - CURVINESS_ANGLE;
                 tangent = angle + Math.PI / 2;
                 angle += CURVINESS_ANGLE;
@@ -369,24 +374,19 @@ export class NodeHexagon extends Hexagon {
                 angle -= CURVINESS_ANGLE;
             }
 
-            dc.moveTo(
-                xSelf + Math.cos(angle) * Hexagon.SCALE,
-                ySelf + Math.sin(angle) * Hexagon.SCALE * .89,
-            );
+            dc.moveTo(xSelf + Math.cos(angle) * Hexagon.SCALE, ySelf + Math.sin(angle) * Hexagon.SCALE * 0.89);
             dc.quadraticCurveTo(
                 (xSelf + xPeer) / 2 + Math.cos(tangent) * distance * CURVINESS_FACTOR,
                 (ySelf + yPeer) / 2 + Math.sin(tangent) * distance * CURVINESS_FACTOR,
                 xPeer + Math.cos(counterAngle) * Hexagon.SCALE,
-                yPeer + Math.sin(counterAngle) * Hexagon.SCALE * .89,
+                yPeer + Math.sin(counterAngle) * Hexagon.SCALE * 0.89,
             );
-        } else if (distance > 1.5 * Hexagon.SCALE) { // straight lines for close nodes
-            dc.moveTo(
-                xSelf + Math.cos(angle) * Hexagon.SCALE,
-                ySelf + Math.sin(angle) * Hexagon.SCALE * .89,
-            );
+        } else if (distance > 1.5 * Hexagon.SCALE) {
+            // straight lines for close nodes
+            dc.moveTo(xSelf + Math.cos(angle) * Hexagon.SCALE, ySelf + Math.sin(angle) * Hexagon.SCALE * 0.89);
             dc.lineTo(
                 xPeer + Math.cos(angle + Math.PI) * Hexagon.SCALE,
-                yPeer + Math.sin(angle + Math.PI) * Hexagon.SCALE * .89,
+                yPeer + Math.sin(angle + Math.PI) * Hexagon.SCALE * 0.89,
             );
         } // draw nothing if direct neighbour nodes or same node as self
         dc.stroke();
@@ -442,35 +442,40 @@ export default class NetworkMap {
         };
 
         // set up self location
-        this._geoLocate().then((response) => {
-            if (response && response.location && response.location.latitude && response.location.longitude) {
-                const selfPosition = this._hexagonByCoordinate(response.location.latitude, response.location.longitude);
-                this._self = new SelfHexagon(selfPosition.x, selfPosition.y);
+        this._geoLocate()
+            .then((response) => {
+                if (response && response.location && response.location.latitude && response.location.longitude) {
+                    const selfPosition = this._hexagonByCoordinate(
+                        response.location.latitude,
+                        response.location.longitude,
+                    );
+                    this._self = new SelfHexagon(selfPosition.x, selfPosition.y);
 
-                // add a NodeHexagon for self as well which will not be drawn
-                // use dummy Node data for it, as it will not be used
-                const selfHexagon = new NodeHexagon(selfPosition.x, selfPosition.y);
-                selfHexagon.addNode({
-                    connected: false,
-                    peerId: '',
-                    multiAddress: '',
-                    nodeType: 'light',
-                    hexagon: selfHexagon,
-                    locationData: {
-                        country: response.country,
-                        city: response.city,
-                        i18nCityNames: response.city_names,
-                    },
-                    type: NodeType.SELF,
-                });
-                if (!this._nodeHexagons.has(selfPosition.x)) {
-                    this._nodeHexagons.set(selfPosition.x, new Map<number, NodeHexagon>());
-                }
-                this._nodeHexagons.get(selfPosition.x)!.set(selfPosition.y, selfHexagon);
+                    // add a NodeHexagon for self as well which will not be drawn
+                    // use dummy Node data for it, as it will not be used
+                    const selfHexagon = new NodeHexagon(selfPosition.x, selfPosition.y);
+                    selfHexagon.addNode({
+                        connected: false,
+                        peerId: '',
+                        multiAddress: '',
+                        nodeType: 'light',
+                        hexagon: selfHexagon,
+                        locationData: {
+                            country: response.country,
+                            city: response.city,
+                            i18nCityNames: response.city_names,
+                        },
+                        type: NodeType.SELF,
+                    });
+                    if (!this._nodeHexagons.has(selfPosition.x)) {
+                        this._nodeHexagons.set(selfPosition.x, new Map<number, NodeHexagon>());
+                    }
+                    this._nodeHexagons.get(selfPosition.x)!.set(selfPosition.y, selfHexagon);
 
-                this.draw();
-            } // TODO what to do when no response, or wrong response?
-        }).catch(() => undefined);
+                    this.draw();
+                } // TODO what to do when no response, or wrong response?
+            })
+            .catch(() => undefined);
 
         this.draw();
     }
@@ -493,7 +498,8 @@ export default class NetworkMap {
 
     private _updateOrAddNode(nodeAddressInfo: PlainAddressInfo): boolean {
         const { peerId, connected, multiAddress, nodeType } = nodeAddressInfo;
-        if (this._nodes.has(nodeAddressInfo.peerId)) { // existing peer
+        if (this._nodes.has(nodeAddressInfo.peerId)) {
+            // existing peer
             const node = this._nodes.get(peerId)!;
             let updated = false;
             if (node.multiAddress !== multiAddress && multiAddress.startsWith('/dns')) {
@@ -509,8 +515,8 @@ export default class NetworkMap {
         }
 
         if (this._getPeerLocator(multiAddress)) {
-            this._geoLocate(this._getPeerLocator(multiAddress)!).then(
-                (response) => {
+            this._geoLocate(this._getPeerLocator(multiAddress)!)
+                .then((response) => {
                     if (response && response.location && response.location.latitude && response.location.longitude) {
                         const nodePosition = this._hexagonByCoordinate(
                             response.location.latitude,
@@ -549,8 +555,8 @@ export default class NetworkMap {
                         hexagon.addNode(node);
                         this._nodes.set(peerId, node);
                     }
-                },
-            ).catch(() => undefined);
+                })
+                .catch(() => undefined);
         }
 
         return true;
@@ -570,7 +576,8 @@ export default class NetworkMap {
      * 2. Hostname for WS and WSS peers if available (not 0.0.0.0)
      * 3. IP if available
      */
-    private _getPeerLocator(multiAddress: string) { // eslint-disable-line class-methods-use-this
+    // eslint-disable-next-line class-methods-use-this
+    private _getPeerLocator(multiAddress: string) {
         const locator = multiAddress.split('/')[2];
         if (locator && locator !== '0.0.0.0' && locator !== '127.0.0.1') {
             return locator;
@@ -588,7 +595,8 @@ export default class NetworkMap {
         return undefined;
     }
 
-    private _isIp(locator: string) { // eslint-disable-line class-methods-use-this
+    // eslint-disable-next-line class-methods-use-this
+    private _isIp(locator: string) {
         return /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(locator) || locator.includes(':');
     }
 
@@ -614,7 +622,7 @@ export default class NetworkMap {
      * @param longitude
      */
     // eslint-disable-next-line class-methods-use-this
-    private _hexagonByCoordinate(latitude: number, longitude: number): {x: number, y: number} {
+    private _hexagonByCoordinate(latitude: number, longitude: number): { x: number; y: number } {
         // the map that we have is cropped out from the full robinson projected map. We have to make
         // the computation on the full/original map, so we calculate the full size.
         const fullMapWidth = 1.0946808510638297 * 2 * WIDTH;
@@ -629,13 +637,11 @@ export default class NetworkMap {
         point.y = Math.max(0, point.y - 0.012380952380952381 * fullMapHeight);
 
         const xHexagon = Math.floor(point.x / (Hexagon.SCALE * HORIZONTAL_HEXAGON_OVERLAP));
-        const off = (xHexagon % 2 === 0 ? .5 : 0);
+        const off = xHexagon % 2 === 0 ? 0.5 : 0;
 
         return {
             x: xHexagon,
-            y: Math.floor(
-                (point.y + .5 * Hexagon.SCALE) / (Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE) - off,
-            ),
+            y: Math.floor((point.y + 0.5 * Hexagon.SCALE) / (Hexagon.SCALE * VERTICAL_HEXAGON_DISTANCE) - off),
         };
     }
 
@@ -644,7 +650,7 @@ export default class NetworkMap {
      * @returns true if an animation is ongoing, false otherwise.
      */
     private _drawOverlay(timeDelta: number): boolean {
-        this._overlayDc.clearRect(0, 0, (2 * WIDTH) / .95, (2 * HEIGHT) / .95);
+        this._overlayDc.clearRect(0, 0, (2 * WIDTH) / 0.95, (2 * HEIGHT) / 0.95);
         if (this._self) {
             let animating = false;
             animating = this._self.draw(this._overlayDc, timeDelta) || animating;
@@ -686,7 +692,7 @@ export default class NetworkMap {
      * @param timeDelta time that passed since last animationFrame, or 0 if it is the first animation frame
      */
     private _drawMap(timeDelta: number) {
-        this._mapDc.clearRect(0, 0, (2 * WIDTH) / .95, (2 * HEIGHT) / .95);
+        this._mapDc.clearRect(0, 0, (2 * WIDTH) / 0.95, (2 * HEIGHT) / 0.95);
         this._mapDc.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         this._mapDc.fillStyle! = 'rgba(255, 255, 255, 0.1)';
         this._hexagons.forEach((hexagon) => hexagon.draw(this._mapDc, timeDelta));

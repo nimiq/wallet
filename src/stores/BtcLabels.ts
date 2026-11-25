@@ -2,20 +2,25 @@ import { defineStore } from 'pinia';
 import { normalizeAddress } from '../lib/BitcoinTransactionUtils';
 
 export type BtcLabelsState = {
-    recipientLabels: {[address: string]: string},
-    senderLabels: {[address: string]: string},
+    recipientLabels: { [address: string]: string };
+    senderLabels: { [address: string]: string };
 };
 
 export const useBtcLabelsStore = defineStore('btcLabels', {
-    state: () => ({
-        recipientLabels: {},
-        senderLabels: {},
-    } as BtcLabelsState),
+    state: () =>
+        ({
+            recipientLabels: {},
+            senderLabels: {},
+        }) as BtcLabelsState,
     getters: {
-        getRecipientLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
-            state.recipientLabels[address],
-        getSenderLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
-            state.senderLabels[address],
+        getRecipientLabel:
+            (state): ((address: string) => string | undefined) =>
+            (address: string): Readonly<string> =>
+                state.recipientLabels[address],
+        getSenderLabel:
+            (state): ((address: string) => string | undefined) =>
+            (address: string): Readonly<string> =>
+                state.senderLabels[address],
     },
     actions: {
         setRecipientLabel(address: string, label: string) {

@@ -3,14 +3,17 @@
         <div ref="list$" class="list flex-column">
             <div class="scroll-mask top"></div>
             <AddressListItem
-                v-for="addressInfo in (showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2))"
+                v-for="addressInfo in showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2)"
                 :key="addressInfo.address"
                 :addressInfo="addressInfo"
                 @click="$emit('contact-selected', addressInfo, RecipientType.OWN_ADDRESS)"
             />
-            <button v-if="ownAddressInfos.length > 2 && !showAllOwnAddresses"
+            <button
+                v-if="ownAddressInfos.length > 2 && !showAllOwnAddresses"
                 class="nq-button-s show-own-addresses-button"
-                @click="showAllOwnAddresses = true" @mousedown.prevent>
+                @click="showAllOwnAddresses = true"
+                @mousedown.prevent
+            >
                 {{ $t('Show all my addresses') }}
             </button>
             <div v-if="ownAddressInfos.length" class="separator"></div>
@@ -21,31 +24,43 @@
                 @click="!editing && $emit('contact-selected', contact, RecipientType.CONTACT)"
                 :tabindex="editing ? -1 : 0"
             >
-                <Identicon :address="contact.address"/>
+                <Identicon :address="contact.address" />
                 <label v-if="!editing">{{ contact.label }}</label>
-                <LabelInput v-else
+                <LabelInput
+                    v-else
                     :value="contact.label"
                     :placeholder="$t('Name your contact')"
-                    @input="onInput(contact.address, $event)"/>
+                    @input="onInput(contact.address, $event)"
+                />
                 <div class="flex-grow"></div>
-                <InteractiveShortAddress :address="contact.address" tooltipPosition="top right"
-                    :tooltipContainer="list$ ? { $el: list$ } : null" :offsetTooltipPosition="false"/>
+                <InteractiveShortAddress
+                    :address="contact.address"
+                    tooltipPosition="top right"
+                    :tooltipContainer="list$ ? { $el: list$ } : null"
+                    :offsetTooltipPosition="false"
+                />
                 <button v-if="editing" class="reset delete-button" @click="setContact(contact.address, '')">
-                    <TrashIcon/>
+                    <TrashIcon />
                 </button>
             </button>
             <div class="scroll-mask bottom"></div>
         </div>
         <template v-if="contacts.length">
-            <button v-if="!editing"
+            <button
+                v-if="!editing"
                 class="nq-button-s edit-button"
-                @click="editing = true" @mousedown.prevent key="edit"
+                @click="editing = true"
+                @mousedown.prevent
+                key="edit"
             >
                 {{ $t('Edit contacts') }}
             </button>
-            <button v-else
+            <button
+                v-else
                 class="nq-button-pill light-blue edit-button"
-                @click="editing = false" @mousedown.prevent key="done"
+                @click="editing = false"
+                @mousedown.prevent
+                key="done"
             >
                 {{ $t('Done') }}
             </button>
@@ -54,15 +69,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Identicon, LabelInput } from '@nimiq/vue-components';
-import AddressListItem from './AddressListItem.vue';
-import InteractiveShortAddress from './InteractiveShortAddress.vue';
-import TrashIcon from './icons/TrashIcon.vue';
-import { RecipientType } from './modals/SendModal.vue';
-import { useContactsStore } from '../stores/Contacts';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref } from 'vue';
 import { useAddressStore, AddressType } from '../stores/Address';
+import { useContactsStore } from '../stores/Contacts';
+import AddressListItem from './AddressListItem.vue';
+import TrashIcon from './icons/TrashIcon.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import { RecipientType } from './modals/SendModal.vue';
 
 export default defineComponent({
     setup() {
@@ -73,9 +88,11 @@ export default defineComponent({
 
         const list$ = ref<HTMLDivElement | null>(null);
 
-        const ownAddressInfos = computed(() => addressInfos.value.filter(
-            (addressInfo) => addressInfo.address !== activeAddress.value && addressInfo.type === AddressType.BASIC,
-        ));
+        const ownAddressInfos = computed(() =>
+            addressInfos.value.filter(
+                (addressInfo) => addressInfo.address !== activeAddress.value && addressInfo.type === AddressType.BASIC,
+            ),
+        );
 
         const showAllOwnAddresses = ref(false);
 
@@ -251,7 +268,8 @@ export default defineComponent({
     align-self: center;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .contact-button {
         background: none !important;
 

@@ -8,14 +8,15 @@
             </h3> -->
             <h3 v-else-if="peer.host">{{ peer.host }}</h3>
             <h3 v-else>
-                {{ peer.type === 1
-                    ? $t('Full Node')
-                    : peer.type === 2
-                        ? $t('Light Node')
-                        : $tc('Browser | {count} Browsers', peer.count) }}
+                {{
+                    peer.type === 1
+                        ? $t('Full Node')
+                        : peer.type === 2
+                          ? $t('Light Node')
+                          : $tc('Browser | {count} Browsers', peer.count)
+                }}
             </h3>
-            <p v-if="peer.locationData.country"
-                :class="{'self': peer.type === 0, 'connected': peer.connected}">
+            <p v-if="peer.locationData.country" :class="{ self: peer.type === 0, connected: peer.connected }">
                 {{ getPeerCity(peer) ? `${getPeerCity(peer)},` : '' }}
                 {{ getPeerCountry(peer) }}
             </p>
@@ -27,8 +28,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import I18nDisplayNames from '@/lib/I18nDisplayNames';
 import { useSettingsStore } from '@/stores/Settings';
 import { Node, NodeType } from '../lib/NetworkMap';
@@ -117,7 +118,7 @@ div + div {
 }
 
 h3 {
-    opacity: .5;
+    opacity: 0.5;
     font-size: var(--small-label-size);
     line-height: 1;
     margin: 0;
@@ -131,7 +132,7 @@ h3 {
 p {
     font-size: var(--body-size);
     line-height: 1;
-    margin: .75rem 0 0;
+    margin: 0.75rem 0 0;
     white-space: nowrap;
 
     &.self {
@@ -139,7 +140,7 @@ p {
     }
 
     &.connected {
-        --nimiq-light-blue: #0582CA; // Real light blue, not the "on-dark" version
+        --nimiq-light-blue: #0582ca; // Real light blue, not the "on-dark" version
         color: var(--nimiq-light-blue);
     }
 }

@@ -13,8 +13,11 @@
             <UsdtIconPadded />
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue" @click="$router.push({ name: RouteName.StablecoinSelection })"
-            @mousedown.prevent>
+            <button
+                class="nq-button light-blue"
+                @click="$router.push({ name: RouteName.StablecoinSelection })"
+                @mousedown.prevent
+            >
                 {{ $t('Learn more') }}
             </button>
             <a class="nq-link" @click="stickWithUsdc">
@@ -25,16 +28,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
+import { defineComponent, ref } from 'vue';
 import { useRouter, RouteName } from '@/router';
-import Modal from './Modal.vue';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIconPadded from '../icons/UsdtIconPadded.vue';
-import { useWindowSize } from '../../composables/useWindowSize';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'usdt-added-modal',

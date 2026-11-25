@@ -1,19 +1,18 @@
 <template>
-    <button class="reset validator-icon-stack flex-column" v-on="$listeners" :class="{
-        interactive,
-    }">
-        <ValidatorIcon class="secondary"
-            v-if="backgroundValidators[0]" :validator="backgroundValidators[0]"/>
+    <button
+        class="reset validator-icon-stack flex-column"
+        v-on="$listeners"
+        :class="{
+            interactive,
+        }"
+    >
+        <ValidatorIcon class="secondary" v-if="backgroundValidators[0]" :validator="backgroundValidators[0]" />
 
-        <ValidatorIcon class="secondary"
-            v-if="backgroundValidators[1]"
-            :validator="backgroundValidators[1]"/>
+        <ValidatorIcon class="secondary" v-if="backgroundValidators[1]" :validator="backgroundValidators[1]" />
 
         <div class="primary-container">
             <div class="primary-background"></div>
-            <ValidatorIcon class="primary"
-                v-if="primaryValidator"
-                :validator="primaryValidator"/>
+            <ValidatorIcon class="primary" v-if="primaryValidator" :validator="primaryValidator" />
         </div>
     </button>
 </template>
@@ -37,9 +36,8 @@ export default defineComponent({
     setup(props) {
         const primaryValidator = computed(() => props.validators[0] || null);
 
-        const backgroundValidators = computed(() =>
-            props.validators
-                .slice(1, 3), // Get validators at index 1 and 2 (up to 2 validators)
+        const backgroundValidators = computed(
+            () => props.validators.slice(1, 3), // Get validators at index 1 and 2 (up to 2 validators)
         );
 
         return {

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { captureException, init } from '@sentry/vue';
+import Vue from 'vue';
 import { useConfig } from '../composables/useConfig';
 import { ENV_MAIN } from './Constants';
 
@@ -40,17 +40,19 @@ export function startSentry() {
 }
 
 type ErrorContext = Partial<{
-    accountId: string,
+    accountId: string;
     extra: Partial<{
-        method: string,
-    }>,
+        method: string;
+    }>;
 }>;
 
 export function reportToSentry(error: any, context?: ErrorContext) {
     captureException(error, {
         extra: context?.extra,
-        user: context?.accountId ? {
-            id: context.accountId,
-        } : undefined,
+        user: context?.accountId
+            ? {
+                  id: context.accountId,
+              }
+            : undefined,
     });
 }

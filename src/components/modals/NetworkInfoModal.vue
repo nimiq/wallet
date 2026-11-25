@@ -1,20 +1,28 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
     <Modal v-bind="$attrs" v-on="$listeners" class="network-info-modal" closeButtonInverse :swipePadding="false">
-        <PageBody :style="height !== 0 ? `--height: calc(${height}px)`: ''">
+        <PageBody :style="height !== 0 ? `--height: calc(${height}px)` : ''">
             <div class="image">
                 <img src="../../assets/browser-network.png" alt="Browser Network Graph" />
             </div>
 
             <div ref="textDiv$">
-                <h1 class="nq-h1">{{ $t('With Nimiq, you\'re a\npart of the Blockchain.') }}</h1>
+                <h1 class="nq-h1">{{ $t("With Nimiq, you're a\npart of the Blockchain.") }}</h1>
                 <p>
-                    {{ $t('Unlike any other crypto, Nimiq connects your wallet directly to peers from all around' +
-                        ' the world. This makes you a first-class citizen of the blockchain.') }}
+                    {{
+                        $t(
+                            'Unlike any other crypto, Nimiq connects your wallet directly to peers from all around'
+                                + ' the world. This makes you a first-class citizen of the blockchain.',
+                        )
+                    }}
                 </p>
                 <p>
-                    {{ $t('Send and receive NIM to the Blockchain without anyone in-between.' +
-                        ' Be truly censorship-resistant.') }}
+                    {{
+                        $t(
+                            'Send and receive NIM to the Blockchain without anyone in-between.'
+                                + ' Be truly censorship-resistant.',
+                        )
+                    }}
                 </p>
                 <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank" rel="noopener">
                     {{ $t('Learn more') }}
@@ -25,11 +33,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import Modal from './Modal.vue';
 import BlueLink from '../BlueLink.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     setup() {
@@ -76,7 +84,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .modal {
     position: absolute;
@@ -146,7 +154,8 @@ export default defineComponent({
     max-width: 20ch;
 }
 
-p, a {
+p,
+a {
     font-size: var(--body-size);
 }
 
@@ -154,7 +163,8 @@ a {
     display: inline-flex;
 }
 
-@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .modal {
         display: block;
 
@@ -172,7 +182,8 @@ a {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .image img {
         max-height: 36rem;
     }

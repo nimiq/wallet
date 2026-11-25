@@ -1,12 +1,19 @@
 <template>
-    <component :is="embedded ? 'div' : 'Modal'" ref="modal$" class="warning-modal"
-        :class="[color, { 'page flex-column': embedded }]" v-bind="embedded ? {} : { closeButtonInverse: !!color }">
-        <PageHeader @back="back"
-            :backArrow="backArrow !== undefined ? backArrow : !embedded && !!$route.params.canUserGoBack">
+    <component
+        :is="embedded ? 'div' : 'Modal'"
+        ref="modal$"
+        class="warning-modal"
+        :class="[color, { 'page flex-column': embedded }]"
+        v-bind="embedded ? {} : { closeButtonInverse: !!color }"
+    >
+        <PageHeader
+            @back="back"
+            :backArrow="backArrow !== undefined ? backArrow : !embedded && !!$route.params.canUserGoBack"
+        >
             <div v-if="$slots.icon || icon !== 'none'" class="icon">
                 <slot name="icon">
-                    <MaintenanceIcon v-if="icon === 'maintenance'"/>
-                    <AlertTriangleIcon v-else-if="icon === 'warning'"/>
+                    <MaintenanceIcon v-if="icon === 'maintenance'" />
+                    <AlertTriangleIcon v-else-if="icon === 'warning'" />
                 </slot>
             </div>
             {{ title }}
@@ -31,17 +38,17 @@
 </template>
 
 <script lang="ts">
-import { CreateElement, computed, defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter, AlertTriangleIcon } from '@nimiq/vue-components';
+import { CreateElement, computed, defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
-import Modal, { disableNextModalTransition } from './Modal.vue';
 import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 /** Colors which have a nq-<color>-bg background class and a matching nq-button.<color> modifier. */
 export const WarningModalColors = ['orange', 'red', 'gold', 'green', 'light-blue'] as const;
-export type WarningModalColor = typeof WarningModalColors[number];
+export type WarningModalColor = (typeof WarningModalColors)[number];
 export const WarningModalIcons = ['maintenance', 'warning', 'none'] as const;
-export type WarningModalIcon = typeof WarningModalIcons[number];
+export type WarningModalIcon = (typeof WarningModalIcons)[number];
 
 export interface WarningModalProps {
     title: string;
@@ -179,7 +186,7 @@ export function createWarningModal(props: () => WarningModalProps) {
     font-weight: 600;
     line-height: 1.4;
     margin-top: 1.5rem;
-    opacity: .6;
+    opacity: 0.6;
 }
 
 .page-body {
@@ -218,7 +225,8 @@ export function createWarningModal(props: () => WarningModalProps) {
 @each $color in ('orange', 'red', 'gold', 'green', 'light-blue') {
     .warning-modal.#{$color} {
         ::v-deep .small-page,
-        &.page { // if embedded
+        &.page {
+            // if embedded
             background: var(--nimiq-#{$color});
             background-image: var(--nimiq-#{$color}-bg);
             color: white;
@@ -229,13 +237,13 @@ export function createWarningModal(props: () => WarningModalProps) {
         }
 
         .icon {
-            color: rgba(255, 255, 255, .7);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .nq-link {
             color: inherit;
-            opacity: .6;
-            transition: opacity .3s var(--nimiq-ease);
+            opacity: 0.6;
+            transition: opacity 0.3s var(--nimiq-ease);
 
             &:hover,
             &:focus {

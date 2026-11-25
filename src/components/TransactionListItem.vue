@@ -1,46 +1,50 @@
 <template>
     <button
         class="reset transaction"
-        :class="[state, {'not-executed': transaction.executionResult === false}]"
-        @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
+        :class="[state, { 'not-executed': transaction.executionResult === false }]"
+        @click="$router.push({ name: 'transaction', params: { hash: transaction.transactionHash } })"
         :key="`tx-${transaction.transactionHash}`"
     >
-        <div v-if="
-            state === TransactionState.INCLUDED
-            || state === TransactionState.CONFIRMED
-            || state === TransactionState.MINED
-        " class="date">
-            <span class="day">{{ dateDay }}</span><br>
+        <div
+            v-if="
+                state === TransactionState.INCLUDED
+                || state === TransactionState.CONFIRMED
+                || state === TransactionState.MINED
+            "
+            class="date"
+        >
+            <span class="day">{{ dateDay }}</span><br />
             <span class="month">{{ dateMonth }}</span>
         </div>
         <div v-else-if="state === TransactionState.PENDING" class="pending">
-            <CircleSpinner/>
+            <CircleSpinner />
         </div>
         <div
             v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
             class="invalid nq-red"
         >
-            <CrossIcon/>
+            <CrossIcon />
         </div>
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
-            <AlertTriangleIcon/>
+            <AlertTriangleIcon />
         </div>
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
-            <UsdcIcon v-else-if="swapData
-                && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
-            <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
-            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-            <StakingIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
+            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC" />
+            <UsdcIcon
+                v-else-if="swapData && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"
+            />
+            <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC" />
+            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR" />
+            <StakingIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size />
             <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
-            <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
+            <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon /></div>
+            <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon /></div>
         </div>
         <div class="data">
-            <div v-if="peerLabel" class="label">{{
-                peerAddress === constants.STAKING_CONTRACT_ADDRESS ? data : peerLabel
-            }}</div>
+            <div v-if="peerLabel" class="label">
+                {{ peerAddress === constants.STAKING_CONTRACT_ADDRESS ? data : peerLabel }}
+            </div>
             <div v-else class="address">{{ peerAddress }}</div>
             <div class="time-and-message">
                 <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
@@ -53,34 +57,39 @@
                     <strong class="dot">&middot;</strong>{{ data }}
                     <TransactionListOasisPayoutStatus
                         v-if="swapData && swapData.asset === SwapAsset.EUR"
-                        :data="swapData"/>
+                        :data="swapData"
+                    />
                 </span>
             </div>
         </div>
-        <div class="amounts" :class="{isIncoming, 'signalling': transaction.flags === 2}">
-            <Amount :amount="transaction.value" value-mask/>
+        <div class="amounts" :class="{ isIncoming, signalling: transaction.flags === 2 }">
+            <Amount :amount="transaction.value" value-mask />
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask />
                 <div v-else-if="fiat.value === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
                 <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount fiat-unavailable">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <!-- <HistoricValueIcon/> -->
-                    <FiatAmount :amount="fiat.value" :currency="fiat.currency" value-mask/>
+                    <FiatAmount :amount="fiat.value" :currency="fiat.currency" value-mask />
                 </div>
             </transition>
-            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
-                :amount="(swapData.amount / 100)
-                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                    * (isIncoming ? 1 : -1)"
-                :currency="swapData.asset.toLowerCase()" value-mask/>
+            <FiatAmount
+                v-else-if="swapData.asset === SwapAsset.EUR"
+                :amount="
+                    swapData.amount / 100
+                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0) * (isIncoming ? 1 : -1)
+                "
+                :currency="swapData.asset.toLowerCase()"
+                value-mask
+            />
         </div>
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import {
     CircleSpinner,
     AlertTriangleIcon,
@@ -89,27 +98,22 @@ import {
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { defineComponent, computed } from 'vue';
+import { useFormattedDate } from '../composables/useFormattedDate';
+import { useTransactionInfo } from '../composables/useTransactionInfo';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS, STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
 import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
+import BankIcon from './icons/BankIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import StakingIcon from './icons/Staking/StakingIcon.vue';
+import SwapSmallIcon from './icons/SwapSmallIcon.vue';
+import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
-import BankIcon from './icons/BankIcon.vue';
-import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import {
-    FIAT_PRICE_UNAVAILABLE,
-    CASHLINK_ADDRESS,
-    BANK_ADDRESS,
-    STAKING_CONTRACT_ADDRESS,
-} from '../lib/Constants';
-import { useTransactionInfo } from '../composables/useTransactionInfo';
-import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import StakingIcon from './icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     props: {
@@ -130,17 +134,8 @@ export default defineComponent({
 
         const transaction = computed(() => props.transaction);
 
-        const {
-            data,
-            isCashlink,
-            isIncoming,
-            isSwapProxy,
-            peerAddress,
-            peerLabel,
-            swapData,
-            swapInfo,
-            fiat,
-        } = useTransactionInfo(transaction);
+        const { data, isCashlink, isIncoming, isSwapProxy, peerAddress, peerLabel, swapData, swapInfo, fiat } =
+            useTransactionInfo(transaction);
 
         const timestamp = computed(() => transaction.value.timestamp && toMs(transaction.value.timestamp));
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
@@ -187,8 +182,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use "../scss/variables.scss" as *;
-@use "../scss/mixins.scss" as *;
+@use '../scss/variables.scss' as *;
+@use '../scss/mixins.scss' as *;
 
 svg {
     display: block;
@@ -202,7 +197,7 @@ svg {
     padding: 1.5rem 1rem;
     border: 0;
     background: transparent;
-    border-radius: .75rem;
+    border-radius: 0.75rem;
     cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
     font-size: var(--body-size);
@@ -212,7 +207,7 @@ svg {
         background: var(--nimiq-highlight-bg);
 
         .identicon .cashlink-or-swap {
-            border-color: #F2F2F4;
+            border-color: #f2f2f4;
         }
     }
 
@@ -263,7 +258,9 @@ svg {
         height: 6rem;
         flex-shrink: 0;
 
-        img { height: 100% }
+        img {
+            height: 100%;
+        }
 
         svg:not(.staking-icon) {
             height: 100%;
@@ -276,9 +273,15 @@ svg {
             padding: 0.375rem;
             overflow: initial;
 
-            &.bitcoin { color: var(--bitcoin-orange) }
-            &.usdc { color: var(--usdc-blue) }
-            &.usdt { color: var(--usdt-green) }
+            &.bitcoin {
+                color: var(--bitcoin-orange);
+            }
+            &.usdc {
+                color: var(--usdc-blue);
+            }
+            &.usdt {
+                color: var(--usdt-green);
+            }
         }
 
         .cashlink-or-swap {
@@ -306,7 +309,7 @@ svg {
         .label,
         .address {
             white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
 
         .label {
@@ -323,7 +326,7 @@ svg {
             font-weight: 600;
             color: var(--text-50);
             white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
             .dot {
                 margin: 0 0.875rem;
@@ -442,7 +445,8 @@ svg {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .transaction {
         padding: 1rem 1rem;
 

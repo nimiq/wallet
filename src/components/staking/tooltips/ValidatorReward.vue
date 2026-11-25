@@ -1,8 +1,9 @@
 <template>
-    <div class="validator-reward flex-row"
+    <div
+        class="validator-reward flex-row"
         :class="{
-            'dry': dry,
-            'low-reward': !dry && (reward * 100) < 2.5,
+            dry: dry,
+            'low-reward': !dry && reward * 100 < 2.5,
         }"
     >
         {{ formatted }}% {{ percentOnly ? '' : $t('p.a.') }}
@@ -38,11 +39,7 @@ export default defineComponent({
             const numberOfIntegers = integers.length;
             const numberOfDecimals = 3 - numberOfIntegers;
             decimals = (decimals || '').substring(0, numberOfDecimals);
-            return [
-                integers || '0',
-                decimals ? '.' : '',
-                decimals,
-            ].join('');
+            return [integers || '0', decimals ? '.' : '', decimals].join('');
         });
 
         return {
@@ -60,6 +57,8 @@ export default defineComponent({
     align-items: center;
     color: var(--text-50);
 
-    &.low-reward { color: var(--nimiq-orange) }
+    &.low-reward {
+        color: var(--nimiq-orange);
+    }
 }
 </style>

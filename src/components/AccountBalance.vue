@@ -1,11 +1,11 @@
 <template>
     <div class="account-balance-container">
-        <div class="account-balance" :class="{'privacy-on': amountsHidden}">
+        <div class="account-balance" :class="{ 'privacy-on': amountsHidden }">
             <h2 class="nq-label flex-row">
                 <span>{{ $t('Total Balance') }}</span>
                 <button class="reset" @click="toggleAmountsHidden" @mousedown.prevent>
-                    <PrivacyOffIcon v-if="!amountsHidden"/>
-                    <PrivacyOnIcon v-else/>
+                    <PrivacyOffIcon v-if="!amountsHidden" />
+                    <PrivacyOnIcon v-else />
                 </button>
             </h2>
             <div class="fiat-amount" ref="fiatAmountContainer$">
@@ -24,33 +24,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
-import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
-import { useAddressStore } from '../stores/Address';
-import { useBtcAddressStore } from '../stores/BtcAddress';
-import { usePolygonAddressStore } from '../stores/PolygonAddress';
-import { useSettingsStore } from '../stores/Settings';
-import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useFiatStore } from '../stores/Fiat';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import { useSettingsStore } from '../stores/Settings';
 import { useStakingStore } from '../stores/Staking';
+import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
+import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 
 export default defineComponent({
     setup() {
         const { accountBalance } = storeToRefs(useAddressStore());
         const { totalAccountStake } = storeToRefs(useStakingStore());
         const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
-        const {
-            accountUsdcBalance,
-            accountUsdcBridgedBalance,
-            accountUsdtBridgedBalance,
-        } = storeToRefs(usePolygonAddressStore());
+        const { accountUsdcBalance, accountUsdcBridgedBalance, accountUsdtBridgedBalance } =
+            storeToRefs(usePolygonAddressStore());
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const { currency: fiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
         const { config } = useConfig();
@@ -59,17 +56,17 @@ export default defineComponent({
             let amount = 0;
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
-            const nimFiatAmount = nimExchangeRate !== undefined
-                ? ((accountBalance.value + totalAccountStake.value) / 1e5) * nimExchangeRate
-                : undefined;
+            const nimFiatAmount =
+                nimExchangeRate !== undefined
+                    ? ((accountBalance.value + totalAccountStake.value) / 1e5) * nimExchangeRate
+                    : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;
 
             if (config.enableBitcoin) {
                 const btcExchangeRate = exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value];
-                const btcFiatAmount = btcExchangeRate !== undefined
-                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate
-                    : undefined;
+                const btcFiatAmount =
+                    btcExchangeRate !== undefined ? (btcAccountBalance.value / 1e8) * btcExchangeRate : undefined;
                 if (btcFiatAmount === undefined) return undefined;
                 amount += btcFiatAmount;
             }
@@ -78,12 +75,14 @@ export default defineComponent({
                 const usdcExchangeRate = exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value];
                 const usdtExchangeRate = exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency.value];
                 const usdFiatAmount = {
-                    [CryptoCurrency.USDC]: usdcExchangeRate !== undefined
-                        ? ((accountUsdcBalance.value + accountUsdcBridgedBalance.value) / 1e6) * usdcExchangeRate
-                        : undefined,
-                    [CryptoCurrency.USDT]: usdtExchangeRate !== undefined
-                        ? (accountUsdtBridgedBalance.value / 1e6) * usdtExchangeRate
-                        : undefined,
+                    [CryptoCurrency.USDC]:
+                        usdcExchangeRate !== undefined
+                            ? ((accountUsdcBalance.value + accountUsdcBridgedBalance.value) / 1e6) * usdcExchangeRate
+                            : undefined,
+                    [CryptoCurrency.USDT]:
+                        usdtExchangeRate !== undefined
+                            ? (accountUsdtBridgedBalance.value / 1e6) * usdtExchangeRate
+                            : undefined,
                     none: 0,
                 }[stablecoin.value || 'none'];
                 if (usdFiatAmount === undefined) return undefined;
@@ -99,7 +98,7 @@ export default defineComponent({
         const { amountsHidden } = storeToRefs(useSettingsStore());
         const { toggleAmountsHidden } = useSettingsStore();
         const { isFullDesktop } = useWindowSize();
-        const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
+        const fiatAmountMaxSize = computed(() => (isFullDesktop.value ? 7 : 5.5)); // rem
         // Minimum size to ensure that the amount always keeps a measurable width, by which it can be scaled up again.
         const fiatAmountMinSize = 1; // rem
         const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
@@ -122,7 +121,8 @@ export default defineComponent({
             if (!availableWidth || !referenceWidth) return;
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
-            if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
+            if (scaleFactor > 1.02 || scaleFactor < 0.98) {
+                // needed for safari
                 fiatAmountFontSize.value = Math.max(
                     fiatAmountMinSize,
                     Math.min(fiatAmountMaxSize.value, fiatAmountFontSize.value * scaleFactor),
@@ -242,7 +242,8 @@ export default defineComponent({
     margin-top: calc(var(--item-margin) / 4);
 }
 
-@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .nq-label span {
         transform: translateX(0);
     }
@@ -259,7 +260,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 700px) {
+    // Full mobile breakpoint
     .account-balance-container {
         padding-left: 1rem;
         padding-right: 1rem;

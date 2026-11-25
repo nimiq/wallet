@@ -1,11 +1,13 @@
 <template>
     <div class="reset usdc-address-info flex-column" v-on="$listeners">
         <div class="crypto-logo-container">
-            <UsdcIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDC" :class="{'nq-blue': dark}" />
+            <UsdcIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDC" :class="{ 'nq-blue': dark }" />
             <UsdtIcon v-else-if="isOwnAddress && stablecoin === CryptoCurrency.USDT" />
-            <Avatar v-else :label="localLabel || ''"/>
+            <Avatar v-else :label="localLabel || ''" />
         </div>
-        <input type="text" class="nq-input-s vanishing"
+        <input
+            type="text"
+            class="nq-input-s vanishing"
             v-if="editable && !isOwnAddress"
             :placeholder="$t('Add contact')"
             v-model="localLabel"
@@ -16,22 +18,22 @@
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>
-        <InteractiveShortAddress :address="address" :copyable="copyable" :tooltipPosition="tooltipPosition"/>
+        <InteractiveShortAddress :address="address" :copyable="copyable" :tooltipPosition="tooltipPosition" />
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { CryptoCurrency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
-import Avatar from './Avatar.vue';
-import InteractiveShortAddress from './InteractiveShortAddress.vue';
-import UsdcIcon from './icons/UsdcIcon.vue';
-import UsdtIcon from './icons/UsdtIcon.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { useUsdtContactsStore } from '../stores/UsdtContacts';
-import { useAccountSettingsStore } from '../stores/AccountSettings';
+import Avatar from './Avatar.vue';
+import UsdcIcon from './icons/UsdcIcon.vue';
+import UsdtIcon from './icons/UsdtIcon.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
 
 enum TooltipPosition {
     BOTTOM_LEFT = 'bottom left',
@@ -69,28 +71,35 @@ export default defineComponent({
     setup(props) {
         const { addressInfo } = storeToRefs(usePolygonAddressStore());
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
-        const { getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore());
-        const { setContact } = stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore();
+        const { getLabel } = storeToRefs(
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore(),
+        );
+        const { setContact } =
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore();
 
         const isOwnAddress = computed(() => addressInfo.value?.address === props.address);
 
         const localLabel = ref(props.label || getLabel.value(props.address) || '');
 
-        watch(() => props.label, (newLabel) => {
-            if (newLabel !== undefined) {
-                localLabel.value = newLabel;
-            }
-        }, { immediate: true });
+        watch(
+            () => props.label,
+            (newLabel) => {
+                if (newLabel !== undefined) {
+                    localLabel.value = newLabel;
+                }
+            },
+            { immediate: true },
+        );
 
-        watch(localLabel, (newLabel) => {
-            if (props.editable && newLabel !== props.label) {
-                setContact(props.address, newLabel);
-            }
-        }, { immediate: true });
+        watch(
+            localLabel,
+            (newLabel) => {
+                if (props.editable && newLabel !== props.label) {
+                    setContact(props.address, newLabel);
+                }
+            },
+            { immediate: true },
+        );
 
         return {
             CryptoCurrency,
@@ -111,7 +120,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../scss/variables.scss" as *;
+@use '../scss/variables.scss' as *;
 
 .usdc-address-info {
     align-items: center;
@@ -168,7 +177,7 @@ export default defineComponent({
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
-    mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
     &.unlabelled {
         font-style: italic;
@@ -182,10 +191,11 @@ export default defineComponent({
 }
 
 .nq-input-s:not(:focus):not(:hover) {
-    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+    mask: linear-gradient(90deg, white, white calc(100% - 4rem), rgba(255, 255, 255, 0) calc(100% - 1rem));
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .usdc-address-info {
         flex-shrink: 0;
     }

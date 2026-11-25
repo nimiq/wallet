@@ -1,17 +1,21 @@
 <template>
-    <div class="address-overview"
-        :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
+    <div
+        class="address-overview"
+        :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }"
+    >
         <StakingIcon class="svg-id-fix" />
         <template
-            v-if="activeAddressInfo
+            v-if="
+                activeAddressInfo
                 || activeCurrency === CryptoCurrency.BTC
                 || activeCurrency === CryptoCurrency.USDC
-                || activeCurrency === CryptoCurrency.USDT"
+                || activeCurrency === CryptoCurrency.USDT
+            "
         >
             <div class="actions-mobile flex-row" v-if="isMobile">
-                <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
+                <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon /></button>
 
-                <SearchBar v-model="searchString"/>
+                <SearchBar v-model="searchString" />
 
                 <CashlinkButton
                     v-if="activeCurrency === CryptoCurrency.NIM && unclaimedCashlinkCount"
@@ -25,39 +29,46 @@
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
-                    <MenuDotsIcon/>
+                    <MenuDotsIcon />
                     <div class="popup-menu nq-blue-bg">
-                        <button v-if="activeCurrency === CryptoCurrency.NIM"
+                        <button
+                            v-if="activeCurrency === CryptoCurrency.NIM"
                             class="reset flex-row"
                             @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                         >
-                            <RenameIcon/>{{ $t('Rename') }}
+                            <RenameIcon />{{ $t('Rename') }}
                         </button>
-                        <button v-if="activeCurrency === CryptoCurrency.BTC"
+                        <button
+                            v-if="activeCurrency === CryptoCurrency.BTC"
                             class="reset flex-row"
                             @pointerdown="rescan"
                         >
-                            <RefreshIcon/>{{ $t('Rescan') }}
+                            <RefreshIcon />{{ $t('Rescan') }}
                         </button>
                         <button
                             class="reset flex-row"
-                            @pointerdown="$router.push({
-                                name: RouteName.ExportHistory, params: { type: address } }
-                            )"
+                            @pointerdown="
+                                $router.push({
+                                    name: RouteName.ExportHistory,
+                                    params: { type: address },
+                                })
+                            "
                         >
                             <BoxedArrowUpIcon />{{ $t('Export History') }}
                         </button>
-                        <button v-if="activeCurrency === CryptoCurrency.USDC"
+                        <button
+                            v-if="activeCurrency === CryptoCurrency.USDC"
                             class="reset flex-row"
                             @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
                         >
-                            <UsdtIcon/>{{ $t('Switch to USDT') }}
+                            <UsdtIcon />{{ $t('Switch to USDT') }}
                         </button>
-                        <button v-if="activeCurrency === CryptoCurrency.USDT"
+                        <button
+                            v-if="activeCurrency === CryptoCurrency.USDT"
                             class="reset flex-row"
                             @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
                         >
-                            <UsdcIcon/>{{ $t('Switch to USDC') }}
+                            <UsdcIcon />{{ $t('Switch to USDC') }}
                         </button>
                     </div>
                 </button>
@@ -66,45 +77,50 @@
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === CryptoCurrency.NIM" :address="activeAddressInfo.address" />
-                    <BitcoinIcon v-if="activeCurrency === CryptoCurrency.BTC"/>
-                    <UsdcIcon v-if="activeCurrency === CryptoCurrency.USDC"/>
-                    <UsdtIcon v-if="activeCurrency === CryptoCurrency.USDT"/>
-                    <button class="reset identicon-menu flex-row"
+                    <BitcoinIcon v-if="activeCurrency === CryptoCurrency.BTC" />
+                    <UsdcIcon v-if="activeCurrency === CryptoCurrency.USDC" />
+                    <UsdtIcon v-if="activeCurrency === CryptoCurrency.USDT" />
+                    <button
+                        class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
-                        <GearIcon/>
+                        <GearIcon />
                         <div class="popup-menu nq-blue-bg">
-                            <button v-if="activeCurrency === CryptoCurrency.NIM"
+                            <button
+                                v-if="activeCurrency === CryptoCurrency.NIM"
                                 class="reset flex-row"
                                 @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
-                                <RenameIcon/>{{ $t('Rename') }}
+                                <RenameIcon />{{ $t('Rename') }}
                             </button>
-                            <button v-if="activeCurrency === CryptoCurrency.BTC"
+                            <button
+                                v-if="activeCurrency === CryptoCurrency.BTC"
                                 class="reset flex-row"
                                 @pointerdown="rescan"
                             >
-                                <RefreshIcon/>{{ $t('Rescan') }}
+                                <RefreshIcon />{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @pointerdown="$router.push(
-                                    { name: RouteName.ExportHistory, params: { type: 'address'}}
-                                )"
+                                @pointerdown="
+                                    $router.push({ name: RouteName.ExportHistory, params: { type: 'address' } })
+                                "
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
-                            <button v-if="activeCurrency === CryptoCurrency.USDC"
+                            <button
+                                v-if="activeCurrency === CryptoCurrency.USDC"
                                 class="reset flex-row"
                                 @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
                             >
-                                <UsdtIcon/>{{ $t('Switch to USDT') }}
+                                <UsdtIcon />{{ $t('Switch to USDT') }}
                             </button>
-                            <button v-if="activeCurrency === CryptoCurrency.USDT"
+                            <button
+                                v-if="activeCurrency === CryptoCurrency.USDT"
                                 class="reset flex-row"
                                 @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
                             >
-                                <UsdcIcon/>{{ $t('Switch to USDC') }}
+                                <UsdcIcon />{{ $t('Switch to USDC') }}
                             </button>
                         </div>
                     </button>
@@ -123,22 +139,26 @@
                         <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
                             {{ $t('Tether USD') }}
                         </div>
-                        <Amount v-if="activeCurrency === CryptoCurrency.NIM"
+                        <Amount
+                            v-if="activeCurrency === CryptoCurrency.NIM"
                             :amount="activeAddressInfo.balance + totalActiveStake"
                             :currency="CryptoCurrency.NIM"
                             value-mask
                         />
-                        <Amount v-if="activeCurrency === CryptoCurrency.BTC"
+                        <Amount
+                            v-if="activeCurrency === CryptoCurrency.BTC"
                             :amount="btcAccountBalance"
                             :currency="CryptoCurrency.BTC"
                             value-mask
                         />
-                        <Amount v-if="activeCurrency === CryptoCurrency.USDC"
+                        <Amount
+                            v-if="activeCurrency === CryptoCurrency.USDC"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                             :currency="CryptoCurrency.USDC"
                             value-mask
                         />
-                        <Amount v-if="activeCurrency === CryptoCurrency.USDT"
+                        <Amount
+                            v-if="activeCurrency === CryptoCurrency.USDT"
                             :amount="accountUsdtBridgedBalance"
                             :currency="CryptoCurrency.USDT"
                             value-mask
@@ -147,11 +167,13 @@
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
-                        <Copyable v-if="activeCurrency === CryptoCurrency.NIM"
-                            :text="activeAddressInfo.address" :key="activeAddressInfo.address"
+                        <Copyable
+                            v-if="activeCurrency === CryptoCurrency.NIM"
+                            :text="activeAddressInfo.address"
+                            :key="activeAddressInfo.address"
                         >
-                            <div class="address" ref="address$" :class="{ 'masked': addressMasked  }">
-                                {{activeAddressInfo.address}}
+                            <div class="address" ref="address$" :class="{ masked: addressMasked }">
+                                {{ activeAddressInfo.address }}
                             </div>
                         </Copyable>
                         <!--
@@ -174,18 +196,21 @@
                         />
                         <span v-else-if="activeCurrency === CryptoCurrency.NIM" class="fiat-amount"></span>
 
-                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.BTC"
+                        <FiatConvertedAmount
+                            v-if="activeCurrency === CryptoCurrency.BTC"
                             :amount="btcAccountBalance"
                             :currency="CryptoCurrency.BTC"
                             value-mask
                         />
 
-                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDC"
+                        <FiatConvertedAmount
+                            v-if="activeCurrency === CryptoCurrency.USDC"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                             :currency="CryptoCurrency.USDC"
                             value-mask
                         />
-                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
+                        <FiatConvertedAmount
+                            v-if="activeCurrency === CryptoCurrency.USDT"
                             :amount="accountUsdtBridgedBalance"
                             :currency="CryptoCurrency.USDT"
                             value-mask
@@ -197,7 +222,7 @@
             <StakingOverview v-if="activeCurrency === CryptoCurrency.NIM && totalActiveStake" />
 
             <div class="actions flex-row" v-if="!isMobile">
-                <SearchBar v-model="searchString"/>
+                <SearchBar v-model="searchString" />
 
                 <div class="flex-row ml-auto">
                     <CashlinkButton
@@ -212,21 +237,27 @@
                         <div class="vertical-separator"></div>
                     </template>
 
-                    <button class="send nq-button-pill light-blue flex-row"
-                        @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
+                    <button
+                        class="send nq-button-pill light-blue flex-row"
+                        @click="$router.push(`/send/${activeCurrency}`)"
+                        @mousedown.prevent
                         :disabled="
                             (activeCurrency === CryptoCurrency.NIM
                                 && ($config.disableNetworkInteraction
-                                    || !activeAddressInfo || !activeAddressInfo.balance))
+                                    || !activeAddressInfo
+                                    || !activeAddressInfo.balance))
                             || (activeCurrency === CryptoCurrency.BTC && !btcAccountBalance)
                             || (activeCurrency === CryptoCurrency.USDC
-                                && !accountUsdcBalance /* can only send native usdc */)
-                            || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"
+                                && !accountUsdcBalance) /* can only send native usdc */
+                            || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)
+                        "
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>
-                    <button class="receive nq-button-s flex-row"
-                        @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
+                    <button
+                        class="receive nq-button-s flex-row"
+                        @click="$router.push(`/receive/${activeCurrency}`)"
+                        @mousedown.prevent
                     >
                         <ArrowRightSmallIcon />{{ $t('Receive') }}
                     </button>
@@ -240,15 +271,24 @@
                     <UsdcIcon />
                     {{ $t('Legacy USDC (USDC.e)') }}
                     <div class="flex-grow"></div>
-                    <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask/>
+                    <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask />
                 </div>
                 <div class="flex-row">
                     <span class="description">
                         <InfoCircleSmallIcon />
-                        {{ $t('USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your '
-                            + 'recovery words into another Polygon wallet, which may need POL for fees.') }}
-                        <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
-                            target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
+                        {{
+                            $t(
+                                'USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your '
+                                    + 'recovery words into another Polygon wallet, which may need POL for fees.',
+                            )
+                        }}
+                        <a
+                            href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
+                            target="_blank"
+                            rel="noopener"
+                            class="nq-link"
+                            >{{ $t('Learn more') }}</a
+                        >
                     </span>
                 </div>
             </div>
@@ -261,21 +301,12 @@
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
                 @scroll="onTransactionListScroll"
             />
-            <BtcTransactionList
-                v-if="activeCurrency === CryptoCurrency.BTC"
-                :searchString="searchString"
-            />
-            <UsdcTransactionList
-                v-if="activeCurrency === CryptoCurrency.USDC"
-                :searchString="searchString"
-            />
-            <UsdtTransactionList
-                v-if="activeCurrency === CryptoCurrency.USDT"
-                :searchString="searchString"
-            />
+            <BtcTransactionList v-if="activeCurrency === CryptoCurrency.BTC" :searchString="searchString" />
+            <UsdcTransactionList v-if="activeCurrency === CryptoCurrency.USDC" :searchString="searchString" />
+            <UsdtTransactionList v-if="activeCurrency === CryptoCurrency.USDT" :searchString="searchString" />
         </template>
         <template v-else>
-            <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
+            <span class="opacity-75">{{ $t("Let's get started! Create your Nimiq account:") }}</span>
             <button class="nq-button" @click="onboard(false)" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
 
@@ -295,18 +326,18 @@
             </div>
         </transition>
 
-        <MobileActionBar/>
+        <MobileActionBar />
 
         <Portal>
             <transition name="modal">
-                <router-view name="modal"/>
+                <router-view name="modal" />
             </transition>
         </Portal>
 
         <Portal>
             <transition name="modal">
                 <keep-alive>
-                    <router-view name="persistent-modal"/>
+                    <router-view name="persistent-modal" />
                 </keep-alive>
             </transition>
         </Portal>
@@ -314,8 +345,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import {
     Identicon,
     GearIcon,
@@ -325,40 +354,42 @@ import {
     MenuDotsIcon,
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch, computed } from 'vue';
 import { RouteName } from '@/router';
 
+import Amount from '../Amount.vue';
+import BtcTransactionList from '../BtcTransactionList.vue';
+import CashlinkButton from '../CashlinkButton.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import RefreshIcon from '../icons/RefreshIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
-import Amount from '../Amount.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import MobileActionBar from '../MobileActionBar.vue';
 import SearchBar from '../SearchBar.vue';
+import StakingButton from '../staking/StakingButton.vue';
 import TransactionList from '../TransactionList.vue';
-import BtcTransactionList from '../BtcTransactionList.vue';
 import UsdcTransactionList from '../UsdcTransactionList.vue';
 import UsdtTransactionList from '../UsdtTransactionList.vue';
-import MobileActionBar from '../MobileActionBar.vue';
-import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
-import RefreshIcon from '../icons/RefreshIcon.vue';
-import StakingButton from '../staking/StakingButton.vue';
-import CashlinkButton from '../CashlinkButton.vue';
 
+import { useConfig } from '../../composables/useConfig';
+import { useElementResize } from '../../composables/useElementResize';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { checkHistory } from '../../electrum';
+import { onboard, rename } from '../../hub';
+import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { onboard, rename } from '../../hub';
-import { useElementResize } from '../../composables/useElementResize';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
-import { checkHistory } from '../../electrum';
-import HighFiveIcon from '../icons/HighFiveIcon.vue';
+import { useStakingStore } from '../../stores/Staking';
 import { useSwapsStore } from '../../stores/Swaps';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
-import { useConfig } from '../../composables/useConfig';
+import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
-import { useStakingStore } from '../../stores/Staking';
-import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 import StakingOverview from '../staking/StakingOverview.vue';
 
 export default defineComponent({
@@ -413,20 +444,28 @@ export default defineComponent({
             searchString.value = '';
         }
 
-        watch(activeAddress, (address, oldAddress) => {
-            hideUnclaimedCashlinkList();
-            clearSearchString();
+        watch(
+            activeAddress,
+            (address, oldAddress) => {
+                hideUnclaimedCashlinkList();
+                clearSearchString();
 
-            if (address !== oldAddress && promoBoxVisible) {
-                setPromoBoxVisible(false);
-            }
-        }, { immediate: true });
+                if (address !== oldAddress && promoBoxVisible) {
+                    setPromoBoxVisible(false);
+                }
+            },
+            { immediate: true },
+        );
 
-        watch(activeCurrency, (currency, oldCurrency) => {
-            if (currency !== oldCurrency && promoBoxVisible) {
-                setPromoBoxVisible(false);
-            }
-        }, { immediate: true });
+        watch(
+            activeCurrency,
+            (currency, oldCurrency) => {
+                if (currency !== oldCurrency && promoBoxVisible) {
+                    setPromoBoxVisible(false);
+                }
+            },
+            { immediate: true },
+        );
 
         function rescan() {
             const { addressSet } = storeToRefs(useBtcAddressStore());
@@ -584,7 +623,8 @@ export default defineComponent({
         --padding-bottom: 5rem;
     }
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         --padding: 1rem;
         --padding-bottom: 2rem;
     }
@@ -709,9 +749,11 @@ export default defineComponent({
         font-weight: 600;
         margin-bottom: 0.75rem;
         margin-right: 3rem;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
-        &.bitcoin, &.usdc, &.usdt {
+        &.bitcoin,
+        &.usdc,
+        &.usdt {
             position: relative;
             top: 1.25rem;
         }
@@ -719,16 +761,16 @@ export default defineComponent({
 
     .address {
         word-spacing: -0.2em;
-        font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
-        transition: opacity .3s var(--nimiq-ease);
+        font-family: 'Fira Mono', monospace; // TODO: Improve monospace font stack
+        transition: opacity 0.3s var(--nimiq-ease);
 
         &.masked {
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
 
         &::after {
             /* Preload the 500 weight by using it, hidden */
-            content: "preload";
+            content: 'preload';
             font-weight: 500;
             position: absolute;
             left: -9999px;
@@ -788,7 +830,9 @@ export default defineComponent({
     margin: 0 var(--padding) 2rem;
     padding: 0 3rem 0 2rem;
 
-    button { flex-shrink: 0 }
+    button {
+        flex-shrink: 0;
+    }
 
     .vertical-separator {
         background: rgba(31, 35, 72, 0.15);
@@ -800,7 +844,7 @@ export default defineComponent({
         margin-bottom: 0.625rem;
 
         margin-left: 2rem;
-        margin-right: .5rem;
+        margin-right: 0.5rem;
     }
 }
 
@@ -823,7 +867,7 @@ export default defineComponent({
             padding: 1rem 1.5rem 1rem 1rem;
             margin: 0; // Safari adds margin by default to all buttons
             border-radius: 0.25rem;
-            transition: background-color .3s var(--nimiq-ease);
+            transition: background-color 0.3s var(--nimiq-ease);
             white-space: nowrap;
             width: 100%;
 
@@ -926,7 +970,8 @@ export default defineComponent({
     }
 }
 
-.send, .receive {
+.send,
+.receive {
     margin: 0 0.5rem;
     align-items: center;
 
@@ -945,7 +990,7 @@ export default defineComponent({
     &:disabled {
         pointer-events: none;
         background: rgba(131, 131, 131, 0.07);
-        color: #B5B6C1;
+        color: #b5b6c1;
     }
 }
 
@@ -983,9 +1028,9 @@ export default defineComponent({
     box-shadow: inset 0 0 0 1.5px rgba(252, 135, 2, 0.35); // Based on Nimiq Orange
 
     transition:
-        color .3s var(--nimiq-ease),
-        background-color .3s var(--nimiq-ease),
-        box-shadow .3s var(--nimiq-ease);
+        color 0.3s var(--nimiq-ease),
+        background-color 0.3s var(--nimiq-ease),
+        box-shadow 0.3s var(--nimiq-ease);
 
     &:hover,
     &:focus {
@@ -994,7 +1039,7 @@ export default defineComponent({
 
     &.active {
         box-shadow: none;
-        background:rgba(252, 135, 2, 0.13) !important;
+        background: rgba(252, 135, 2, 0.13) !important;
     }
 }
 
@@ -1037,66 +1082,67 @@ export default defineComponent({
     }
 
     // ul {
-        // padding-left: 2.25rem;
-        // margin: 0;
+    // padding-left: 2.25rem;
+    // margin: 0;
 
-        // li {
-        //     padding-top: 1.5rem;
+    // li {
+    //     padding-top: 1.5rem;
 
-        //     svg.nq-icon {
-        //         margin-right: 1rem;
-        //     }
+    //     svg.nq-icon {
+    //         margin-right: 1rem;
+    //     }
 
-        //     &.flex-row {
-        //         margin-left: -2.25rem;
-        //         list-style-type: none;
-        //         position: relative;
-        //         align-items: flex-start;
+    //     &.flex-row {
+    //         margin-left: -2.25rem;
+    //         list-style-type: none;
+    //         position: relative;
+    //         align-items: flex-start;
 
-        //         .nq-icon {
-        //             opacity: .7;
-        //             width: 12px;
-        //             height: auto;
-        //             padding-top: 6px;
-        //         }
+    //         .nq-icon {
+    //             opacity: .7;
+    //             width: 12px;
+    //             height: auto;
+    //             padding-top: 6px;
+    //         }
 
-        //         .nq-button-s {
-        //             font-size: 14px;
-        //             line-height: 18px;
-        //             margin-left: 2rem;
+    //         .nq-button-s {
+    //             font-size: 14px;
+    //             line-height: 18px;
+    //             margin-left: 2rem;
 
-        //             &:hover,
-        //             &:focus,
-        //             &:active {
-        //                 color: white;
-        //             }
+    //             &:hover,
+    //             &:focus,
+    //             &:active {
+    //                 color: white;
+    //             }
 
-        //             svg {
-        //                 width: 15px;
-        //                 height: auto;
-        //             }
-        //         }
-        //     }
+    //             svg {
+    //                 width: 15px;
+    //                 height: auto;
+    //             }
+    //         }
+    //     }
 
-        //     &::marker {
-        //         color: rgba(white, .7);
-        //         transform: translateX(2px);
-        //         font-size: 12px;
-        //     }
-        // }
+    //     &::marker {
+    //         color: rgba(white, .7);
+    //         transform: translateX(2px);
+    //         font-size: 12px;
+    //     }
+    // }
     // }
 
-    p, li {
+    p,
+    li {
         font-size: 14px;
         color: rgba(white, 0.8);
         font-weight: 600;
     }
 
     // .cross-close-button {
-        // position: absolute;
-        // top: 1rem;
-        // right: 1rem;
-        // opacity: .7;
+    // position: absolute;
+    // top: 1rem;
+    // right: 1rem;
+    // opacity: .7;
     // }
 
     a.nq-button-s {
@@ -1107,7 +1153,8 @@ export default defineComponent({
         }
     }
 
-    &.fadeY-enter-active, &.fadeY-leave-active {
+    &.fadeY-enter-active,
+    &.fadeY-leave-active {
         will-change: opacity, transform;
         transition: {
             property: opacity, transform;
@@ -1128,7 +1175,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .address-overview {
         position: relative;
     }
@@ -1204,7 +1252,9 @@ export default defineComponent({
         }
 
         .label {
-            &.bitcoin, &.usdc, &.usdt {
+            &.bitcoin,
+            &.usdc,
+            &.usdt {
                 top: 0.625rem;
             }
         }

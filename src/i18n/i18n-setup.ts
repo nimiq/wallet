@@ -1,41 +1,51 @@
+import { Cookie } from '@nimiq/utils';
+import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
-import { Cookie } from '@nimiq/utils';
 
 Vue.use(VueI18n);
 
-export const Languages = [{
-    code: 'en',
-    name: 'English',
-}, {
-    code: 'es',
-    name: 'Español',
-}, {
-    code: 'zh',
-    name: '简体中文',
-}, {
-    code: 'de',
-    name: 'Deutsch',
-}, {
-    code: 'fr',
-    name: 'Français',
-}, {
-    code: 'pt',
-    name: 'Português',
-}, {
-    code: 'ru',
-    name: 'Русский',
-}, {
-    code: 'uk',
-    name: 'Українська',
-}, {
-    code: 'nl',
-    name: 'Nederlands',
-// }, {
-//     code: 'tr',
-//     name: 'Türkçe',
-}];
+export const Languages = [
+    {
+        code: 'en',
+        name: 'English',
+    },
+    {
+        code: 'es',
+        name: 'Español',
+    },
+    {
+        code: 'zh',
+        name: '简体中文',
+    },
+    {
+        code: 'de',
+        name: 'Deutsch',
+    },
+    {
+        code: 'fr',
+        name: 'Français',
+    },
+    {
+        code: 'pt',
+        name: 'Português',
+    },
+    {
+        code: 'ru',
+        name: 'Русский',
+    },
+    {
+        code: 'uk',
+        name: 'Українська',
+    },
+    {
+        code: 'nl',
+        name: 'Nederlands',
+        // }, {
+        //     code: 'tr',
+        //     name: 'Türkçe',
+    },
+];
 
 // Language files are loaded lazily, each as a separate chunk.
 const languageFiles = import.meta.glob<{ default: VueI18n.LocaleMessageObject }>('./*.po');
@@ -56,9 +66,11 @@ if (import.meta.env.PROD) {
 
 function setI18nLanguage(lang: string): string {
     const { hostname } = window.location;
-    const cookieDomain = hostname.includes('nimiq-testnet.com') ? 'nimiq-testnet.com'
-        : hostname.includes('nimiq.com') ? 'nimiq.com'
-            : undefined;
+    const cookieDomain = hostname.includes('nimiq-testnet.com')
+        ? 'nimiq-testnet.com'
+        : hostname.includes('nimiq.com')
+          ? 'nimiq.com'
+          : undefined;
 
     Cookie.setCookie('lang', lang, { domain: cookieDomain, samesite: 'lax' });
     i18n.locale = lang;

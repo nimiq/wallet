@@ -1,17 +1,17 @@
-import { Ref, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { Ref, computed } from 'vue';
 
+import { useAccountStore } from '@/stores/Account';
+import { useAddressStore } from '@/stores/Address';
+import { useFiatStore } from '@/stores/Fiat';
+import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { useSwapsStore } from '@/stores/Swaps';
-import { Transaction } from '@/stores/UsdtTransactions';
 import { useTransactionsStore } from '@/stores/Transactions';
 import { useUsdtContactsStore } from '@/stores/UsdtContacts';
-import { usePolygonAddressStore } from '@/stores/PolygonAddress';
-import { useAddressStore } from '@/stores/Address';
-import { useAccountStore } from '@/stores/Account';
-import { useFiatStore } from '@/stores/Fiat';
+import { Transaction } from '@/stores/UsdtTransactions';
 
 import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
@@ -47,8 +47,9 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
     const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
     useOasisPayoutStatusUpdater(swapData);
-    const isCancelledSwap = computed(() =>
-        (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset));
+    const isCancelledSwap = computed(
+        () => swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset,
+    );
 
     const swapTransaction = computed(() => {
         if (!swapData.value) return null;
@@ -74,8 +75,10 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
                 const swapPeerAddress = isIncoming.value
                     ? swapTransaction.value.sender
                     : swapTransaction.value.recipient;
-                if (!useAddressStore().$state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
-                    && !swapTransaction.value.relatedTransactionHash) {
+                if (
+                    !useAddressStore().$state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
+                    && !swapTransaction.value.relatedTransactionHash
+                ) {
                     // Avoid displaying proxy address identicon until we know related address.
                     return '';
                 }
@@ -94,9 +97,11 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
 
         if (swapData.value) {
             if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                return useAddressStore().$state.addressInfos[peerAddress.value]?.label
+                return (
+                    useAddressStore().$state.addressInfos[peerAddress.value]?.label
                     // avoid displaying proxy address until we know related peer address
-                    || i18n.t('Swap') as string;
+                    || (i18n.t('Swap') as string)
+                );
             }
 
             if (swapData.value.asset === SwapAsset.BTC) {
@@ -104,7 +109,7 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
             }
 
             if (swapData.value.asset === SwapAsset.EUR) {
-                return swapData.value.bankLabel || i18n.t('Bank Account') as string;
+                return swapData.value.bankLabel || (i18n.t('Bank Account') as string);
             }
 
             return swapData.value.asset.toUpperCase();
@@ -115,9 +120,9 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
         if (ownedAddressInfo) {
             // Find account label
             const { accountInfos } = useAccountStore();
-            return Object.values(accountInfos)
-                .find((accountInfo) => accountInfo
-                    .polygonAddresses?.includes(ownedAddressInfo.address))?.label;
+            return Object.values(accountInfos).find((accountInfo) =>
+                accountInfo.polygonAddresses?.includes(ownedAddressInfo.address),
+            )?.label;
         }
 
         // Search contacts
@@ -128,12 +133,8 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     const data = computed(() => {
         if (swapData.value && !isCancelledSwap.value) {
             const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-                fromAsset: isIncoming.value
-                    ? assetToCurrency(swapData.value.asset).toUpperCase()
-                    : 'USDT',
-                toAsset: isIncoming.value
-                    ? 'USDT'
-                    : assetToCurrency(swapData.value.asset).toUpperCase(),
+                fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : 'USDT',
+                toAsset: isIncoming.value ? 'USDT' : assetToCurrency(swapData.value.asset).toUpperCase(),
             }) as string;
 
             // The TransactionListOasisPayoutStatus takes care of the second half of the message
@@ -141,7 +142,9 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
                 swapData.value.asset === SwapAsset.EUR
                 && swapData.value.htlc?.settlement
                 && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-            ) return `${message.split('–')[0]} –`;
+            ) {
+                return `${message.split('–')[0]} –`;
+            }
 
             return message;
         }
@@ -168,8 +171,8 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
             FIAT_API_PROVIDER_TX_HISTORY,
         );
         return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-            ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+            ? // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+              { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
             : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
     });
 

@@ -1,14 +1,18 @@
 <template>
     <Modal ref="modal$" class="btc-activation-modal">
         <PageBody class="flex-column">
-            <BitcoinIcon/>
+            <BitcoinIcon />
 
             <h1 v-if="hasBitcoinAddresses" class="nq-h1">{{ $t('Your account now\nsupports Bitcoin!') }}</h1>
             <h1 v-else class="nq-h1">{{ $t('Add Bitcoin\nto your account') }}</h1>
 
             <p class="nq-text">
-                {{ $t('Easily swap between NIM, the super performant payment coin '
-                    + 'and BTC, the gold standard of crypto.') }}
+                {{
+                    $t(
+                        'Easily swap between NIM, the super performant payment coin '
+                            + 'and BTC, the gold standard of crypto.',
+                    )
+                }}
             </p>
             <p class="nq-text">
                 {{ $t('Or buy BTC directly in the wallet.') }}
@@ -23,8 +27,11 @@
                 {{ $t('Activate Bitcoin') }}
             </button>
 
-            <a v-if="!hasBitcoinAddresses || shouldOpenWelcomeModal" class="nq-link"
-                @click="close(hasBitcoinAddresses && shouldOpenWelcomeModal)">
+            <a
+                v-if="!hasBitcoinAddresses || shouldOpenWelcomeModal"
+                class="nq-link"
+                @click="close(hasBitcoinAddresses && shouldOpenWelcomeModal)"
+            >
                 {{ $t('Skip') }}
             </a>
         </PageBody>
@@ -32,17 +39,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref } from 'vue';
 import { useRouter, RouteName } from '@/router';
-import Modal from './Modal.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import { useConfig } from '../../composables/useConfig';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { activateBitcoin } from '../../hub';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
-import { useConfig } from '../../composables/useConfig';
-import { useWindowSize } from '../../composables/useWindowSize';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     props: {
@@ -60,7 +67,8 @@ export default defineComponent({
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
         //  Welcome modal for new accounts/users anymore which hold no balance.
-        const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
+        const shouldOpenWelcomeModal =
+            !welcomeModalAlreadyShown
             && !props.redirect // if a redirect is set, don't redirect to Welcome modal and don't offer going there.
             && useConfig().config.polygon.enabled; // Welcome modal talks about USDC.
 

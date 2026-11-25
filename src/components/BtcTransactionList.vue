@@ -9,11 +9,7 @@
             ref="scroller"
         >
             <template v-slot:default="{ item, index }">
-                <div
-                    class="list-element loading"
-                    v-if="item.loading"
-                    :style="{ animationDelay: `${index * .1}s` }"
-                >
+                <div class="list-element loading" v-if="item.loading" :style="{ animationDelay: `${index * 0.1}s` }">
                     <div class="date flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
@@ -29,23 +25,24 @@
                     </div>
                 </div>
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div v-if="!item.inputs /* true for non-transaction item (month header) */"
+                    <div
+                        v-if="!item.inputs /* true for non-transaction item (month header) */"
                         class="month-label flex-row"
                     >
                         <label>{{ item.transactionHash /* the transactionHash is the Month name */ }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
-                            <CircleSpinner/>
+                            <CircleSpinner />
                             <span>{{ $t('Fetching') }}</span>
                         </div>
                         <div
                             v-else-if="item.isLatestMonth && consensus === 'connecting'"
                             class="consensus-lost nq-orange flex-row"
                         >
-                            <AlertTriangleIcon/>
+                            <AlertTriangleIcon />
                             <span>{{ $t('Connection lost') }}</span>
                         </div>
                     </div>
-                    <BtcTransactionListItem v-else :transaction="item"/>
+                    <BtcTransactionListItem v-else :transaction="item" />
                 </div>
             </template>
 
@@ -80,20 +77,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from 'vue';
-import { storeToRefs } from 'pinia';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from 'vue';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
-import { ENV_MAIN } from '../lib/Constants';
-import { useBtcAddressStore } from '../stores/BtcAddress';
-import { Transaction, useBtcTransactionsStore } from '../stores/BtcTransactions';
-import { useBtcNetworkStore } from '../stores/BtcNetwork';
-import { useAccountStore } from '../stores/Account';
-import { useBtcLabelsStore } from '../stores/BtcLabels';
-import { useWindowSize } from '../composables/useWindowSize';
-import { useConfig } from '../composables/useConfig';
 import { useBtcTransactionInfo } from '../composables/useBtcTransactionInfo';
+import { useConfig } from '../composables/useConfig';
+import { useWindowSize } from '../composables/useWindowSize';
+import { ENV_MAIN } from '../lib/Constants';
+import { useAccountStore } from '../stores/Account';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useBtcLabelsStore } from '../stores/BtcLabels';
+import { useBtcNetworkStore } from '../stores/BtcNetwork';
+import { Transaction, useBtcTransactionsStore } from '../stores/BtcTransactions';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -105,11 +102,7 @@ function processTimestamp(timestamp: number) {
     };
 }
 
-function getLocaleMonthStringFromDate(
-    date: Date,
-    locale: string,
-    options: Intl.DateTimeFormatOptions,
-) {
+function getLocaleMonthStringFromDate(date: Date, locale: string, options: Intl.DateTimeFormatOptions) {
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
@@ -150,11 +143,14 @@ export default defineComponent({
 
         // Height of items in pixel
         const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const itemSize = computed(() => (isMobile.value ? 68 : 72)); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active addresses
-        const txsForActiveAddress = computed(() => Object.values(btcTransactions$.transactions)
-            .filter((tx) => tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress))));
+        const txsForActiveAddress = computed(() =>
+            Object.values(btcTransactions$.transactions).filter((tx) =>
+                tx.addresses.some((txAddress) => activeAddresses.value.includes(txAddress)),
+            ),
+        );
 
         const txCount = computed(() => txsForActiveAddress.value.length);
 
@@ -162,41 +158,46 @@ export default defineComponent({
         const filteredTxs = computed(() => {
             if (!props.searchString) return txsForActiveAddress.value;
 
-            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
+            const searchStrings = props.searchString
+                .toUpperCase()
+                .split(' ')
+                .filter((value) => value !== '');
 
-            const {
-                getRecipientLabel,
-                getSenderLabel,
-            } = storeToRefs(useBtcLabelsStore());
+            const { getRecipientLabel, getSenderLabel } = storeToRefs(useBtcLabelsStore());
 
             return txsForActiveAddress.value.filter((tx) => {
                 const transaction = ref<Readonly<Transaction>>(tx);
                 const { peerLabel, data } = useBtcTransactionInfo(transaction);
 
-                const labels = tx.addresses.map((address) => {
-                    let label = '';
-                    if (peerLabel.value) label += `${peerLabel.value} `;
+                const labels = tx.addresses
+                    .map((address) => {
+                        let label = '';
+                        if (peerLabel.value) label += `${peerLabel.value} `;
 
-                    const recipientLabel = getRecipientLabel.value(address);
-                    if (recipientLabel) label += `${recipientLabel} `;
+                        const recipientLabel = getRecipientLabel.value(address);
+                        if (recipientLabel) label += `${recipientLabel} `;
 
-                    const senderLabel = getSenderLabel.value(address);
-                    if (senderLabel) label += `${senderLabel} `;
+                        const senderLabel = getSenderLabel.value(address);
+                        if (senderLabel) label += `${senderLabel} `;
 
-                    const ownedAddressInfo = btcAddresses$.addressInfos[address];
-                    if (ownedAddressInfo) {
-                        // Find account label
-                        const { accountInfos } = storeToRefs(useAccountStore());
-                        const accountLabel = Object.values(accountInfos.value)
-                            .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
-                            || Object.values(accountInfos.value)
-                                .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
-                        if (accountLabel) label += `${accountLabel} `;
-                    }
+                        const ownedAddressInfo = btcAddresses$.addressInfos[address];
+                        if (ownedAddressInfo) {
+                            // Find account label
+                            const { accountInfos } = storeToRefs(useAccountStore());
+                            const accountLabel =
+                                Object.values(accountInfos.value).find((accountInfo) =>
+                                    accountInfo.btcAddresses.external.includes(address),
+                                )?.label
+                                || Object.values(accountInfos.value).find((accountInfo) =>
+                                    accountInfo.btcAddresses.internal.includes(address),
+                                )!.label;
+                            if (accountLabel) label += `${accountLabel} `;
+                        }
 
-                    return label;
-                    // TODO: Search global address book
-                }).filter((label) => label) as string[];
+                        return label;
+                        // TODO: Search global address book
+                    })
+                    .filter((label) => label) as string[];
 
                 const concatenatedTxStrings = `
                     ${tx.addresses.map((address) => address.toUpperCase()).join(' ')}
@@ -221,11 +222,13 @@ export default defineComponent({
 
             // Sort transactions by descending timestamp
             const txs = filteredTxs.value.slice(0).sort((a, b) => {
-                const aHeight = a.blockHeight
+                const aHeight =
+                    a.blockHeight
                     // || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
                     //     && a.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
-                const bHeight = b.blockHeight
+                const bHeight =
+                    b.blockHeight
                     // || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
                     //     && b.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
@@ -284,14 +287,10 @@ export default defineComponent({
                 if (txMonthYear !== displayedMonthYear) {
                     // Inject a month label
                     transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            locale,
-                            {
-                                month: 'long',
-                                year: txYear !== currentYear ? 'numeric' : undefined,
-                            },
-                        ),
+                        transactionHash: getLocaleMonthStringFromDate(txDate, locale, {
+                            month: 'long',
+                            year: txYear !== currentYear ? 'numeric' : undefined,
+                        }),
                         isLatestMonth,
                     });
                     isLatestMonth = false;
@@ -434,8 +433,12 @@ export default defineComponent({
         animation-iteration-count: 1;
 
         @keyframes fadein {
-            0% { opacity: 0 }
-            100% { opacity: 1 }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
     }
 
@@ -456,9 +459,15 @@ export default defineComponent({
             animation-delay: inherit;
 
             @keyframes loading {
-                0% { opacity: 1 }
-                50% { opacity: .5 }
-                100% { opacity: 1 }
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+                100% {
+                    opacity: 1;
+                }
             }
         }
 
@@ -594,7 +603,8 @@ export default defineComponent({
     opacity: 1;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .month-label {
         padding-top: 4rem;
     }

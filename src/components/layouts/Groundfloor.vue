@@ -1,21 +1,20 @@
 <template>
     <div class="groundfloor flex-row">
-
         <div>
             <transition :name="preventNextTransition ? 'none' : 'fade'">
                 <keep-alive>
-                    <router-view name="accountOverview"/>
+                    <router-view name="accountOverview" />
                 </keep-alive>
             </transition>
             <transition :name="preventNextTransition ? 'none' : 'fade'">
-                <router-view name="settings"/>
+                <router-view name="settings" />
             </transition>
         </div>
 
         <div>
             <transition name="slide-right">
                 <keep-alive>
-                    <router-view name="addressOverview"/>
+                    <router-view name="addressOverview" />
                 </keep-alive>
             </transition>
         </div>
@@ -33,9 +32,12 @@ export default defineComponent({
         const router = useRouter();
         const preventNextTransition = ref(false);
 
-        watch(() => router.currentRoute, (to) => {
-            preventNextTransition.value = to.name === 'network';
-        });
+        watch(
+            () => router.currentRoute,
+            (to) => {
+                preventNextTransition.value = to.name === 'network';
+            },
+        );
 
         return {
             preventNextTransition,
@@ -63,7 +65,8 @@ export default defineComponent({
     width: calc(100vw - var(--sidebar-width));
 }
 
-@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .mobile-tap-area {
         display: block;
         position: absolute;

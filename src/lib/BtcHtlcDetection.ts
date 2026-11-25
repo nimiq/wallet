@@ -1,17 +1,17 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
+import { useConfig } from '../composables/useConfig';
 import { getElectrumClient } from '../electrum';
 import { ENV_MAIN } from './Constants';
-import { useConfig } from '../composables/useConfig';
 import { reportToSentry } from './Sentry';
 
 export type BtcHtlcDetails = {
-    script: string,
-    refundAddress: string,
-    redeemAddress: string,
-    hash: string,
-    timeoutTimestamp: number,
-    outputIndex: number,
+    script: string;
+    refundAddress: string;
+    redeemAddress: string;
+    hash: string;
+    timeoutTimestamp: number;
+    outputIndex: number;
 };
 
 export const HTLC_ADDRESS_LENGTH = 62;
@@ -21,7 +21,11 @@ async function decodeBtcHtlcScript(script: string) {
 
     const [
         { toBech32: addressToBech32 },
-        { decompile: scriptDecompile, toASM: scriptToAsm, number: { decode: scriptDecodeNumber } },
+        {
+            decompile: scriptDecompile,
+            toASM: scriptToAsm,
+            number: { decode: scriptDecodeNumber },
+        },
         { Buffer },
     ] = await Promise.all([
         import('bitcoinjs-lib/src/address'), // eslint-disable-line import/extensions, import/no-unresolved
@@ -62,7 +66,7 @@ async function decodeBtcHtlcScript(script: string) {
     }
 
     // Check timeout
-    const timeoutTimestamp = scriptDecodeNumber(Buffer.from(asm[++i], 'hex')) + (60 * 60);
+    const timeoutTimestamp = scriptDecodeNumber(Buffer.from(asm[++i], 'hex')) + 60 * 60;
     // Opcode 0xb1, which bitcoinjs-lib 7 renders as OP_NOP2, its name before BIP65.
     if (!['OP_CHECKLOCKTIMEVERIFY', 'OP_NOP2'].includes(asm[++i]) || asm[++i] !== 'OP_DROP') throw error;
 
@@ -153,9 +157,7 @@ export async function isHtlcRefunding(tx: TransactionDetails): Promise<BtcHtlcDe
     }
 }
 
-export async function isHtlcFunding(
-    tx: TransactionDetails,
-): Promise<BtcHtlcDetails | false> {
+export async function isHtlcFunding(tx: TransactionDetails): Promise<BtcHtlcDetails | false> {
     const htlcOutput = tx.outputs.find((output) => output.address?.length === HTLC_ADDRESS_LENGTH);
     if (!htlcOutput) return false;
 

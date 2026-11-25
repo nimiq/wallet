@@ -23,8 +23,8 @@ export interface BeforeInstallPromptEvent extends Event {
      * or "dismissed".
      */
     readonly userChoice: Promise<{
-        outcome: UserChoiceOutcome,
-        platform: string,
+        outcome: UserChoiceOutcome;
+        platform: string;
     }>;
     /**
      * Allows a developer to show the install-prompt at a time of their own
@@ -52,7 +52,9 @@ export function initPwa() {
 
     canInstallPwa = ref(false);
     installPrompt = ref(null);
-    pwaInstallationChoice = computed(() => typeof installPrompt?.value === 'string' ? installPrompt.value : 'pending');
+    pwaInstallationChoice = computed(() =>
+        typeof installPrompt?.value === 'string' ? installPrompt.value : 'pending',
+    );
     // Event triggered when the browser and website have PWA capabilities and support
     window.addEventListener('beforeinstallprompt', (event) => {
         canInstallPwa!.value = true;

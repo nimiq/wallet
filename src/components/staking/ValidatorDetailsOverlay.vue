@@ -9,9 +9,7 @@
                 <ShortAddress v-else :address="validator.address" />
             </PageHeader>
             <PageBody class="flex-column">
-                <ValidatorScoreDetails v-if="'score' in validator"
-                    :score="validator.score"
-                />
+                <ValidatorScoreDetails v-if="'score' in validator" :score="validator.score" />
 
                 <div class="reward-info" v-if="'annualReward' in validator">
                     <div class="info-row">
@@ -20,12 +18,14 @@
                     </div>
                     <div class="info-row sub-info">
                         <span class="label">{{ $t('incl. pool fee') }}</span>
-                        <span class="fee">
-                            {{ Math.trunc((validator.fee * 100) * 100) / 100 }}%
-                        </span>
+                        <span class="fee"> {{ Math.trunc(validator.fee * 100 * 100) / 100 }}% </span>
                     </div>
                     <p class="description">
-                        {{ $t('Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee.') }}
+                        {{
+                            $t(
+                                'Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee.',
+                            )
+                        }}
                     </p>
                 </div>
 
@@ -36,13 +36,20 @@
                     <p v-else>{{ $t('No description available') }}</p>
                 </div>
 
-                <BlueLink v-if="'website' in validator && validator.website && 'name' in validator"
-                    :href="validator.website" target="_blank" rel="noopener"
+                <BlueLink
+                    v-if="'website' in validator && validator.website && 'name' in validator"
+                    :href="validator.website"
+                    target="_blank"
+                    rel="noopener"
                 >
                     {{ $t('{poolName} Website', { poolName: validator.name }) }}
                 </BlueLink>
                 <p class="disclaimer">
-                    {{ $t('The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq.') }}
+                    {{
+                        $t(
+                            'The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq.',
+                        )
+                    }}
                 </p>
             </PageBody>
         </div>
@@ -61,25 +68,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onBeforeUnmount } from 'vue';
-import { storeToRefs } from 'pinia';
 import { CircleSpinner, PageHeader, PageBody } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, onBeforeUnmount } from 'vue';
 import { useI18n } from '@/lib/useI18n';
-import { Validator, useStakingStore } from '../../stores/Staking';
-import ValidatorIcon from './ValidatorIcon.vue';
-import ShortAddress from '../ShortAddress.vue';
-import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
-import { useAddressStore } from '../../stores/Address';
-import { useNetworkStore } from '../../stores/Network';
-import { nimiqNetworkNotice } from '../../network';
-import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import { reportToSentry } from '../../lib/Sentry';
 import { StakingOperationType, stakingErrorMessage, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import { startWatchtowerSwitch } from '../../lib/WatchtowerOperations';
-import ValidatorReward from './tooltips/ValidatorReward.vue';
+import { nimiqNetworkNotice } from '../../network';
+import { useAddressStore } from '../../stores/Address';
+import { useNetworkStore } from '../../stores/Network';
+import { Validator, useStakingStore } from '../../stores/Staking';
 import BlueLink from '../BlueLink.vue';
 import MessageTransition from '../MessageTransition.vue';
-import { reportToSentry } from '../../lib/Sentry';
+import ShortAddress from '../ShortAddress.vue';
+import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
+import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 
 export default defineComponent({
     name: 'ValidatorDetailsOverlay',
@@ -96,44 +103,36 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = storeToRefs(useAddressStore());
-        const {
-            activeStake,
-            activeValidator,
-            totalActiveStake,
-            pendingOperation,
-        } = storeToRefs(useStakingStore());
-        const {
-            setStake,
-            clearSwitchOperation,
-        } = useStakingStore();
+        const { activeStake, activeValidator, totalActiveStake, pendingOperation } = storeToRefs(useStakingStore());
+        const { setStake, clearSwitchOperation } = useStakingStore();
         const { height } = storeToRefs(useNetworkStore());
 
         // Retired stake counts too: a retired-only staker still exists on chain and must never be
         // overwritten by the zero placeholder written for a first validator selection.
         const hasExistingStake = computed(() => totalActiveStake.value > 0);
 
-        const isCurrentValidator = computed(() => !!activeValidator.value
-            && activeValidator.value.address === props.validator.address);
+        const isCurrentValidator = computed(
+            () => !!activeValidator.value && activeValidator.value.address === props.validator.address,
+        );
 
         // Only a switch signs; not opening the list from the current validator, nor a first selection.
-        const networkNotice = computed(() => (hasExistingStake.value && !isCurrentValidator.value
-            ? nimiqNetworkNotice()
-            : null));
+        const networkNotice = computed(() =>
+            hasExistingStake.value && !isCurrentValidator.value ? nimiqNetworkNotice() : null,
+        );
 
         // Every switch the user can start goes through this button, so a watchtower operation in flight
         // (which chain balances alone can't reveal) disables it here, with the label giving the reason.
         const actionButtonLabel = computed(() => {
             if (pendingOperation.value === 'switch') return $t('Validator switch in progress');
             if (pendingOperation.value === 'unstake') return $t('Unstaking in progress');
-            return hasExistingStake.value
-                ? $t('Switch validator')
-                : $t('Select validator');
+            return hasExistingStake.value ? $t('Switch validator') : $t('Select validator');
         });
 
         const isSubmitting = ref(false);
 
-        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value
-            || !!networkNotice.value);
+        const isActionDisabled = computed(
+            () => isSubmitting.value || !!pendingOperation.value || !!networkNotice.value,
+        );
 
         let successRedirectTimer: number | null = null;
         function scheduleSuccessRedirect() {
@@ -193,8 +192,10 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Validator switch needs a manual step') as string,
-                    message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
-                        + 'Come back once the countdown has ended and activate the validator manually.') as string,
+                    message: $t(
+                        'Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                            + 'Come back once the countdown has ended and activate the validator manually.',
+                    ) as string,
                 });
                 return;
             }
@@ -239,10 +240,7 @@ export default defineComponent({
 
             context.emit('statusChange', {
                 state: State.SUCCESS,
-                title: $t(
-                    'Successfully changed validator to {validator}',
-                    { validator: validatorLabel(target) },
-                ),
+                title: $t('Successfully changed validator to {validator}', { validator: validatorLabel(target) }),
             });
 
             scheduleSuccessRedirect();
@@ -269,9 +267,11 @@ export default defineComponent({
                     return;
                 }
 
-                if (activeStake.value!.inactiveBalance > 0
+                if (
+                    activeStake.value!.inactiveBalance > 0
                     && activeStake.value!.inactiveRelease
-                    && activeStake.value!.inactiveRelease <= height.value) {
+                    && activeStake.value!.inactiveRelease <= height.value
+                ) {
                     await switchImmediate();
                     return;
                 }
@@ -350,8 +350,12 @@ export default defineComponent({
     padding-top: 6rem;
     padding-bottom: 4rem;
 
-    &::v-deep h1 { font-size: 3rem }
-    .short-address { justify-content: center }
+    &::v-deep h1 {
+        font-size: 3rem;
+    }
+    .short-address {
+        justify-content: center;
+    }
 
     .validator-icon {
         --size: 14rem;
@@ -414,7 +418,9 @@ hr {
     font-weight: 500;
     color: var(--nimiq-blue);
 
-    p { margin: 0 }
+    p {
+        margin: 0;
+    }
 
     q {
         display: block;
@@ -470,7 +476,9 @@ hr {
     font-weight: bold;
     line-height: 1.22;
 
-    transition: background-color 200ms var(--nimiq-ease), opacity 200ms var(--nimiq-ease);
+    transition:
+        background-color 200ms var(--nimiq-ease),
+        opacity 200ms var(--nimiq-ease);
 
     &:hover:not(:disabled),
     &:focus:not(:disabled) {
@@ -500,6 +508,8 @@ hr {
     font-weight: 600;
     color: var(--nimiq-light-blue);
 
-    ::v-deep .circle-spinner { margin-right: 1rem }
+    ::v-deep .circle-spinner {
+        margin-right: 1rem;
+    }
 }
 </style>

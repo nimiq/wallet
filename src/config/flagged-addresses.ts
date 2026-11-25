@@ -184,32 +184,57 @@ type __nimAddresses = ArrayEntriesOf<ValuesOf<ValuesOf<typeof FLAGGED_ADDRESSES>
 type __btcAddresses = ArrayEntriesOf<ValuesOf<ValuesOf<typeof FLAGGED_ADDRESSES>>['btc']>;
 type __evmAddresses = ArrayEntriesOf<ValuesOf<ValuesOf<typeof FLAGGED_ADDRESSES>>['evm']>;
 
-type CheckDigit<S extends string> = S extends `${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`
-    ? true
-    : never;
-type CheckNimiqAddressAlphabet<S extends string> = S extends 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'J'
-    | 'K' | 'L' | 'M' | 'N' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'X' | 'Y' // also enforces uppercase
+type CheckDigit<S extends string> = S extends `${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}` ? true : never;
+type CheckNimiqAddressAlphabet<S extends string> = S extends
+    | 'A'
+    | 'B'
+    | 'C'
+    | 'D'
+    | 'E'
+    | 'F'
+    | 'G'
+    | 'H'
+    | 'J'
+    | 'K'
+    | 'L'
+    | 'M'
+    | 'N'
+    | 'P'
+    | 'Q'
+    | 'R'
+    | 'S'
+    | 'T'
+    | 'U'
+    | 'V'
+    | 'X'
+    | 'Y' // also enforces uppercase
     ? true
     : CheckDigit<S>;
 type CheckNimAddressChecksumFormat<S extends string> = S extends `${infer A}${infer B}`
     ? CheckDigit<A> & CheckDigit<B>
     : never;
 type CheckNimAddressBlockFormat<S extends string> = S extends `${infer A}${infer B}${infer C}${infer D}`
-    ? CheckNimiqAddressAlphabet<A> & CheckNimiqAddressAlphabet<B> & CheckNimiqAddressAlphabet<C>
-        & CheckNimiqAddressAlphabet<D>
+    ? CheckNimiqAddressAlphabet<A>
+          & CheckNimiqAddressAlphabet<B>
+          & CheckNimiqAddressAlphabet<C>
+          & CheckNimiqAddressAlphabet<D>
     : never;
 type CheckNimAddressFormat<S extends string> =
     S extends `NQ${infer A} ${infer B} ${infer C} ${infer D} ${infer E} ${infer F} ${infer G} ${infer H} ${infer I}`
-        ? true extends CheckNimAddressChecksumFormat<A> & CheckNimAddressBlockFormat<B> & CheckNimAddressBlockFormat<C>
-            & CheckNimAddressBlockFormat<D> & CheckNimAddressBlockFormat<E> & CheckNimAddressBlockFormat<F>
-            & CheckNimAddressBlockFormat<G> & CheckNimAddressBlockFormat<H> & CheckNimAddressBlockFormat<I>
+        ? true extends CheckNimAddressChecksumFormat<A>
+              & CheckNimAddressBlockFormat<B>
+              & CheckNimAddressBlockFormat<C>
+              & CheckNimAddressBlockFormat<D>
+              & CheckNimAddressBlockFormat<E>
+              & CheckNimAddressBlockFormat<F>
+              & CheckNimAddressBlockFormat<G>
+              & CheckNimAddressBlockFormat<H>
+              & CheckNimAddressBlockFormat<I>
             ? S
             : never
         : never;
 
-type NormalizeBtcAddress<S extends string> = S extends `${'b' | 'B'}${'c' | 'C'}1${infer R}`
-    ? `bc1${Lowercase<R>}`
-    : S; // Legacy base58 addresses are case-sensitive and not to be normalized.
+type NormalizeBtcAddress<S extends string> = S extends `${'b' | 'B'}${'c' | 'C'}1${infer R}` ? `bc1${Lowercase<R>}` : S; // Legacy base58 addresses are case-sensitive and not to be normalized.
 
 type NormalizeEvmAddress<S extends string> = Lowercase<S>;
 

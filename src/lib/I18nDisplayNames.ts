@@ -1,8 +1,8 @@
-import { watch } from 'vue';
-import { storeToRefs } from 'pinia';
 // The package's exports field requires the .js file extension.
 // eslint-disable-next-line import/extensions
 import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill.js';
+import { storeToRefs } from 'pinia';
+import { watch } from 'vue';
 
 import type {
     DisplayNames as IntlDisplayNames,
@@ -14,20 +14,20 @@ import { useSettingsStore } from '../stores/Settings';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {
     // oxlint-disable-next-line typescript/no-unused-vars -- false positive for this ambient declaration
-    let DisplayNames: undefined | {
-        new (
-            locales?: string | string[],
-            options?: IntlDisplayNamesOptions,
-        ): IntlDisplayNames,
+    let DisplayNames:
+        | undefined
+        | {
+              new (locales?: string | string[], options?: IntlDisplayNamesOptions): IntlDisplayNames;
 
-        readonly polyfilled?: true,
-    };
+              readonly polyfilled?: true;
+          };
 }
 
 /* eslint-disable import/extensions */
-const intlDisplayNamesReadyPromise = !Intl.DisplayNames?.polyfilled && shouldPolyFillIntlDisplayNames()
-    ? import('@formatjs/intl-displaynames/polyfill.js')
-    : Promise.resolve();
+const intlDisplayNamesReadyPromise =
+    !Intl.DisplayNames?.polyfilled && shouldPolyFillIntlDisplayNames()
+        ? import('@formatjs/intl-displaynames/polyfill.js')
+        : Promise.resolve();
 
 // Polyfill locale data for the languages supported by the Wallet, see i18n-setup.ts.
 const polyfillLocaleData: Record<string, () => Promise<unknown>> = {

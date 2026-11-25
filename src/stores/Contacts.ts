@@ -1,17 +1,19 @@
-import { defineStore } from 'pinia';
 import { ValidationUtils } from '@nimiq/utils';
+import { defineStore } from 'pinia';
 
 export type ContactsState = {
-     contacts: {[address: string]: string},
+    contacts: { [address: string]: string };
 };
 
 export const useContactsStore = defineStore('contact', {
-    state: (): ContactsState => ({ contacts: {} } as ContactsState),
+    state: (): ContactsState => ({ contacts: {} }) as ContactsState,
     getters: {
-        contactsArray: (state): Readonly<Array<{address: string, label: string}>> =>
+        contactsArray: (state): Readonly<Array<{ address: string; label: string }>> =>
             Object.entries(state.contacts).map(([address, label]) => ({ address, label })),
-        getLabel: (state): ((address: string) => string | undefined) => (address: string): Readonly<string> =>
-            state.contacts[address],
+        getLabel:
+            (state): ((address: string) => string | undefined) =>
+            (address: string): Readonly<string> =>
+                state.contacts[address],
     },
     actions: {
         setContact(address: string, label: string) {

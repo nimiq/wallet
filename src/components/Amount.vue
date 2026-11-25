@@ -1,18 +1,20 @@
 <template>
-    <Amount v-if="typeof amount === 'number'"
+    <Amount
+        v-if="typeof amount === 'number'"
         :decimals="displayedDecimals"
         :amount="amount"
         :currency="ticker"
-        :currencyDecimals="currencyDecimals"/>
+        :currencyDecimals="currencyDecimals"
+    />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Amount } from '@nimiq/vue-components';
-import { useSettingsStore } from '../stores/Settings';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
 import { calculateDisplayedDecimals } from '../lib/NumberFormatting';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -30,12 +32,14 @@ export default defineComponent({
 
         const currencyDecimals = computed(() => {
             switch (props.currency) {
-                case CryptoCurrency.BTC: return btcUnit.value.decimals;
+                case CryptoCurrency.BTC:
+                    return btcUnit.value.decimals;
                 case CryptoCurrency.USDC:
                 case 'usdc.e':
                 case CryptoCurrency.USDT:
                     return 6;
-                default: return 5;
+                default:
+                    return 5;
             }
         });
 

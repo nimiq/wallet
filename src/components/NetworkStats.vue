@@ -1,25 +1,25 @@
 <template>
     <div class="network-stats flex-row">
         <div class="network-info">
-            <h3><slot name="network"/></h3>
-            <slot name="network-info"/>
+            <h3><slot name="network" /></h3>
+            <slot name="network-info" />
         </div>
         <div v-if="$slots.consensus" class="stat">
             <div class="nq-label">{{ $t('Consensus') }}</div>
-            <div class="value capitalize flex-row active"><ConsensusIcon/><slot name="consensus"/></div>
+            <div class="value capitalize flex-row active"><ConsensusIcon /><slot name="consensus" /></div>
         </div>
         <div v-if="$slots.peerCount" class="stat">
             <div class="nq-label">{{ $t('Connected to') }}</div>
-            <div class="value capitalize"><slot name="peerCount"/></div>
+            <div class="value capitalize"><slot name="peerCount" /></div>
         </div>
         <div v-if="$slots.consensus || $slots.peerCount" class="vr"></div>
         <div v-if="$slots.fee" class="stat">
             <div class="nq-label">{{ $t('Fee') }}</div>
-            <div class="value"><slot name="fee"/></div>
+            <div class="value"><slot name="fee" /></div>
         </div>
         <div v-if="$slots.txTime" class="stat">
             <div class="nq-label">{{ $t('Tx time') }}</div>
-            <div class="value"><slot name="txTime"/></div>
+            <div class="value"><slot name="txTime" /></div>
         </div>
     </div>
 </template>

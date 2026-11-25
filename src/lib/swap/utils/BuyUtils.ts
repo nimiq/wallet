@@ -1,18 +1,12 @@
 import { getEstimate, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
-import {
-    ClearingInfo,
-    ClearingStatus,
-    DeniedReason,
-    Htlc as OasisHtlc,
-    HtlcStatus,
-} from '@nimiq/oasis-api';
-import { computed } from 'vue';
+import { ClearingInfo, ClearingStatus, DeniedReason, Htlc as OasisHtlc, HtlcStatus } from '@nimiq/oasis-api';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { i18n } from '../../../i18n/i18n-setup';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
-import { i18n } from '../../../i18n/i18n-setup';
 import { calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 
 const { activeSwap: swap } = storeToRefs(useSwapsStore());
@@ -48,15 +42,14 @@ export const oasisBuyLimitExceeded = computed(() => {
  * Buy - Functions
  */
 
-export async function updateBuyEstimate({ fiatAmount, cryptoAmount }
-    : { fiatAmount: number, cryptoAmount?: number }
-    | { fiatAmount?: number, cryptoAmount: number },
-) {
+export async function updateBuyEstimate({
+    fiatAmount,
+    cryptoAmount,
+}: { fiatAmount: number; cryptoAmount?: number } | { fiatAmount?: number; cryptoAmount: number }) {
     if (!fiatAmount && !cryptoAmount) return;
 
-    const { from, to } = getFiatSwapParameters(fiatAmount
-        ? { from: { asset: SwapAsset.EUR, amount: fiatAmount } }
-        : { to: { amount: cryptoAmount! } },
+    const { from, to } = getFiatSwapParameters(
+        fiatAmount ? { from: { asset: SwapAsset.EUR, amount: fiatAmount } } : { to: { amount: cryptoAmount! } },
     );
 
     const newEstimate = await getEstimate(
@@ -80,18 +73,20 @@ export async function updateBuyEstimate({ fiatAmount, cryptoAmount }
     newEstimate.to.fee = settlementFee;
 
     // Check against minimums
-    if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+    if (!newEstimate.from.amount || newEstimate.to.amount - newEstimate.to.fee <= 0) {
         // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
         if (newEstimate.to.asset === SwapAsset.BTC) {
             // Note: This currently only checks BTC fees!
             const btcPrice = newEstimate.to;
             const toCoinsFactor = 1e8;
-            const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
+            const minimumFiat =
+                ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
                 * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!;
-            throw new Error(i18n.t(
-                'The fees (currently {amount}) determine the minimum amount.',
-                { amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
-            ) as string);
+            throw new Error(
+                i18n.t('The fees (currently {amount}) determine the minimum amount.', {
+                    amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
+                }) as string,
+            );
         } else {
             throw new Error(i18n.t('The fees determine the minimum amount.') as string);
         }

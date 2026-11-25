@@ -1,17 +1,20 @@
 <template>
-    <div class="message-transition"
-        :style="isTransitioning && { '--message-height': `${messageHeight || 0}px` }"
-    ><transition name="fadeY"
+    <div class="message-transition" :style="isTransitioning && { '--message-height': `${messageHeight || 0}px` }">
+        <transition
+            name="fadeY"
             @before-enter="onBeforeEnter"
             @before-leave="onBeforeLeave"
             @enter="onEnter"
             @after-enter="onAfterEnter"
             @after-leave="onAfterLeave"
-        ><div
-            :key="getKey($slots.default && $slots.default.length > 0 && $slots.default[0])"
-            :class="{ 'reverse': isReverse }"
-        ><slot></slot></div>
-    </transition></div>
+            ><div
+                :key="getKey($slots.default && $slots.default.length > 0 && $slots.default[0])"
+                :class="{ reverse: isReverse }"
+            >
+                <slot></slot>
+            </div>
+        </transition>
+    </div>
 </template>
 
 <script lang="ts">
@@ -135,16 +138,20 @@ export default defineComponent({
 
 .fadeY-enter {
     opacity: 0;
-    transform: translateY(.5rem);
+    transform: translateY(0.5rem);
 }
 
 .fadeY-leave-to {
     opacity: 0;
-    transform: translateY(-.5rem);
+    transform: translateY(-0.5rem);
 }
 
 .reverse {
-    &.fadeY-enter { transform: translateY(-.5rem) }
-    &.fadeY-leave-to { transform: translateY(.5rem) }
+    &.fadeY-enter {
+        transform: translateY(-0.5rem);
+    }
+    &.fadeY-leave-to {
+        transform: translateY(0.5rem);
+    }
 }
 </style>

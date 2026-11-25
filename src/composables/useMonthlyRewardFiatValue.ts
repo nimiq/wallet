@@ -1,15 +1,10 @@
-import { ref, computed, watch, Ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { ref, computed, watch, Ref } from 'vue';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '@/lib/StakingUtils';
 import { useFiatStore } from '@/stores/Fiat';
 import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
-import {
-    CryptoCurrency,
-    FiatCurrency,
-    FIAT_API_PROVIDER_TX_HISTORY,
-    FIAT_PRICE_UNAVAILABLE,
-} from '@/lib/Constants';
-import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '@/lib/StakingUtils';
 
 /**
  * Composable for calculating fiat value of staking rewards for a given month
@@ -27,10 +22,11 @@ export function useMonthlyRewardFiatValue(
     const { currency: preferredFiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
     const stakingStore = useStakingStore();
 
-    const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
-        preferredFiatCurrency.value,
-        FIAT_API_PROVIDER_TX_HISTORY,
-    ) ? preferredFiatCurrency.value : FiatCurrency.USD);
+    const fiatCurrency = computed(() =>
+        isHistorySupportedFiatCurrency(preferredFiatCurrency.value, FIAT_API_PROVIDER_TX_HISTORY)
+            ? preferredFiatCurrency.value
+            : FiatCurrency.USD,
+    );
 
     const fiatValue = ref<number | typeof FIAT_PRICE_UNAVAILABLE | undefined>(undefined);
 
@@ -79,13 +75,17 @@ export function useMonthlyRewardFiatValue(
     };
 
     // Recalculate when relevant data changes
-    watch([
-        monthKey,
-        nimAmount,
-        fiatCurrency,
-        () => stakingEvents.value?.length,
-        exchangeRates, // Watch exchange rates for real-time updates
-    ], calculateFiatValue, { immediate: true });
+    watch(
+        [
+            monthKey,
+            nimAmount,
+            fiatCurrency,
+            () => stakingEvents.value?.length,
+            exchangeRates, // Watch exchange rates for real-time updates
+        ],
+        calculateFiatValue,
+        { immediate: true },
+    );
 
     return {
         fiatValue,

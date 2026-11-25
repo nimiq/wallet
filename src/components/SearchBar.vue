@@ -1,14 +1,27 @@
 <template>
     <div class="container" ref="containerDiv">
-        <div class="search-bar cover-all" @click="$refs.searchBarInput.focus()" @pointerdown.prevent
-            :style="{ 'max-width': `${maxWidth}` }">
+        <div
+            class="search-bar cover-all"
+            @click="$refs.searchBarInput.focus()"
+            @pointerdown.prevent
+            :style="{ 'max-width': `${maxWidth}` }"
+        >
             <svg fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
-                <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
-                    fill="currentColor" />
+                <path
+                    d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+                    fill="currentColor"
+                />
             </svg>
-            <input ref="searchBarInput" type="text" :value="value" :placeholder="placeholderText"
-                @input="$emit('input', $event.target.value)" @focus="handleFocus" @blur="handleBlur" />
+            <input
+                ref="searchBarInput"
+                type="text"
+                :value="value"
+                :placeholder="placeholderText"
+                @input="$emit('input', $event.target.value)"
+                @focus="handleFocus"
+                @blur="handleBlur"
+            />
             <transition name="fade">
                 <CrossCloseButton class="cross-close-button" v-if="isInputActive" @click="handleClose" />
             </transition>
@@ -17,8 +30,8 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from '@/lib/useI18n';
 import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { useI18n } from '@/lib/useI18n';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 
@@ -76,11 +89,15 @@ export default defineComponent({
             e.stopImmediatePropagation();
         };
 
-        watch([observer, searchBarInput, containerDiv], () => {
-            if (!observer.value) return;
-            if (searchBarInput.value) observer.value.observe(searchBarInput.value);
-            if (containerDiv.value) observer.value.observe(containerDiv.value);
-        }, { immediate: true });
+        watch(
+            [observer, searchBarInput, containerDiv],
+            () => {
+                if (!observer.value) return;
+                if (searchBarInput.value) observer.value.observe(searchBarInput.value);
+                if (containerDiv.value) observer.value.observe(containerDiv.value);
+            },
+            { immediate: true },
+        );
 
         onMounted(() => {
             if ('ResizeObserver' in window) {
@@ -88,15 +105,15 @@ export default defineComponent({
                     for (const entry of entries) {
                         if (entry.target === containerDiv.value) {
                             containerWidth.value = entry.contentBoxSize
-                                ? ('length' in entry.contentBoxSize
+                                ? 'length' in entry.contentBoxSize
                                     ? entry.contentBoxSize[0].inlineSize
-                                    : (entry.contentBoxSize as any).inlineSize)
+                                    : (entry.contentBoxSize as any).inlineSize
                                 : entry.contentRect.width;
                         } else if (entry.target === searchBarInput.value) {
                             inputWidth.value = entry.contentBoxSize
-                                ? ('length' in entry.contentBoxSize
+                                ? 'length' in entry.contentBoxSize
                                     ? entry.contentBoxSize[0].inlineSize
-                                    : (entry.contentBoxSize as any).inlineSize)
+                                    : (entry.contentBoxSize as any).inlineSize
                                 : entry.contentRect.width;
                         }
                     }
@@ -137,7 +154,7 @@ export default defineComponent({
 }
 
 .search-bar {
-    $borderTickness: .1875rem; // 1.5px
+    $borderTickness: 0.1875rem; // 1.5px
     --default-sb-width: clamp(5.5rem, 100%, 30rem);
 
     position: relative;
@@ -224,7 +241,8 @@ input {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     input {
         &::placeholder {
             font-weight: 600;
@@ -270,6 +288,6 @@ input {
 
 <style>
 .actions-mobile:has(.search-bar:focus-within) .container ~ :is(.reset.icon-button, .staking-button, .cashlink-button) {
-   display: none;
+    display: none;
 }
 </style>

@@ -1,12 +1,11 @@
-/* eslint-disable no-console */
-import type { Contract, providers } from 'ethers';
-import type { Client } from 'viem';
 import type { ChainPins, TransferRequest, TokenAuthorization } from '@nimiq/gasless-sdk/core';
 import type { FeeResponse, RelayClient, SubmitTransferBody } from '@nimiq/gasless-sdk/relay';
 import type { TransferOutcome } from '@nimiq/gasless-sdk/viem';
 import type { SignedPolygonGaslessTransfer, SignPolygonGaslessTransferRequest } from '@nimiq/hub-api';
+/* eslint-disable no-console */
+import type { Contract, providers } from 'ethers';
+import type { Client } from 'viem';
 import { useConfig } from '../../composables/useConfig';
-import { ENV_MAIN } from '../Constants';
 import { getPolygonClient, gaslessReceiptToTransaction, updatePolygonBalances } from '../../ethers';
 import {
     useGaslessPaymentsStore,
@@ -17,6 +16,7 @@ import {
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { Transaction, useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
+import { ENV_MAIN } from '../Constants';
 
 /**
  * Gasless USDC and USDT0 transfers through the GaslessTransfer contract and the Nimiq relay, see
@@ -113,38 +113,44 @@ export async function getGaslessPins(): Promise<ChainPins> {
             chainId,
             transfer: config.polygon.gasless.transferContract,
             relays: config.polygon.gasless.relays,
-            tokens: config.environment === ENV_MAIN
-                // On Polygon mainnet, definePins also checks the tokens against these frozen, verified constants.
-                ? core.POLYGON_TOKENS
-                : [{
-                    symbol: 'USDC',
-                    address: config.polygon.usdc.tokenContract,
-                    decimals: 6,
-                    authModes: ['permit', 'none'],
-                    domain: {
-                        name: testTokens!.usdcDomainName,
-                        version: '2',
-                        chainId,
-                        verifyingContract: config.polygon.usdc.tokenContract as `0x${string}`,
-                    },
-                }, {
-                    // Not the Wallet's USDT on test networks, see `gasless.testTokens` in the config. Sending USDT
-                    // there fails, as it is not pinned.
-                    symbol: 'USDT0',
-                    address: testTokens!.usdt0Contract,
-                    decimals: 6,
-                    authModes: ['permit', 'metaTxApprove', 'none'],
-                    domain: {
-                        name: 'USDT0',
-                        version: '1',
-                        verifyingContract: testTokens!.usdt0Contract as `0x${string}`,
-                        salt: core.chainIdSalt(chainId),
-                    },
-                }],
+            tokens:
+                config.environment === ENV_MAIN
+                    ? // On Polygon mainnet, definePins also checks the tokens against these frozen, verified constants.
+                      core.POLYGON_TOKENS
+                    : [
+                          {
+                              symbol: 'USDC',
+                              address: config.polygon.usdc.tokenContract,
+                              decimals: 6,
+                              authModes: ['permit', 'none'],
+                              domain: {
+                                  name: testTokens!.usdcDomainName,
+                                  version: '2',
+                                  chainId,
+                                  verifyingContract: config.polygon.usdc.tokenContract as `0x${string}`,
+                              },
+                          },
+                          {
+                              // Not the Wallet's USDT on test networks, see `gasless.testTokens` in the config. Sending USDT
+                              // there fails, as it is not pinned.
+                              symbol: 'USDT0',
+                              address: testTokens!.usdt0Contract,
+                              decimals: 6,
+                              authModes: ['permit', 'metaTxApprove', 'none'],
+                              domain: {
+                                  name: 'USDT0',
+                                  version: '1',
+                                  verifyingContract: testTokens!.usdt0Contract as `0x${string}`,
+                                  salt: core.chainIdSalt(chainId),
+                              },
+                          },
+                      ],
             deployBlock: config.polygon.gasless.deployBlock,
         });
     })();
-    pinsPromise.catch(() => { pinsPromise = null; });
+    pinsPromise.catch(() => {
+        pinsPromise = null;
+    });
     return pinsPromise;
 }
 
@@ -156,7 +162,9 @@ async function getRelayClient(): Promise<RelayClient> {
         const { config } = useConfig();
         return new relay.RelayClient(config.polygon.gasless.relayUrl, { pins });
     })();
-    relayClientPromise.catch(() => { relayClientPromise = null; });
+    relayClientPromise.catch(() => {
+        relayClientPromise = null;
+    });
     return relayClientPromise;
 }
 
@@ -178,16 +186,19 @@ async function getViemClient(): Promise<Client> {
     if (viemClient) return viemClient;
     const { createClient, custom } = await import('viem');
     viemClient = createClient({
-        transport: custom({
-            async request({ method, params }) {
-                // The provider is either a StaticJsonRpcProvider or a WebSocketProvider, see getPolygonClient
-                const provider = (await getPolygonClient()).provider as providers.JsonRpcProvider;
-                return provider.send(method, (params as unknown[] | undefined) || []);
+        transport: custom(
+            {
+                async request({ method, params }) {
+                    // The provider is either a StaticJsonRpcProvider or a WebSocketProvider, see getPolygonClient
+                    const provider = (await getPolygonClient()).provider as providers.JsonRpcProvider;
+                    return provider.send(method, (params as unknown[] | undefined) || []);
+                },
             },
-        }, {
-            // The outcome check polls by itself, and expects refused reads (e.g. of old state) to fail right away
-            retryCount: 0,
-        }),
+            {
+                // The outcome check polls by itself, and expects refused reads (e.g. of old state) to fail right away
+                retryCount: 0,
+            },
+        ),
     });
     return viemClient;
 }
@@ -294,10 +305,12 @@ function settleInBackground(request: Pick<TransferRequest, 'from' | 'nonce'>) {
     const payment = useGaslessPaymentsStore().$state.payments[gaslessPaymentKey(request)];
     if (!payment || settling.has(payment.id)) return;
     settling.add(payment.id);
-    decidePayment(payment).catch((error) => {
-        // Not final yet, or the chain could not be read. Keep the payment and check again on the next launch.
-        console.warn('Gasless payment outcome not final yet', payment.id, error);
-    }).finally(() => settling.delete(payment.id));
+    decidePayment(payment)
+        .catch((error) => {
+            // Not final yet, or the chain could not be read. Keep the payment and check again on the next launch.
+            console.warn('Gasless payment outcome not final yet', payment.id, error);
+        })
+        .finally(() => settling.delete(payment.id));
 }
 
 let resumed = false;
@@ -334,15 +347,24 @@ const QUOTE_MIN_VALIDITY_SECONDS = 90;
  * @param corrects - When retrying a payment that failed (`GaslessTransferError.payment`), its latest signed version.
  * @returns The mined transaction, or null if the user cancelled.
  */
-export async function sendGaslessTransfer({ token, to, amount, recipientLabel, quote, corrects, sign }: {
-    token: string,
-    to: string,
-    amount: number,
-    recipientLabel?: string,
-    quote?: GaslessFeeQuote,
-    corrects?: TransferRequest,
-    sign: (request: Omit<SignPolygonGaslessTransferRequest, 'appName'>)
-        => Promise<SignedPolygonGaslessTransfer | null | void>,
+export async function sendGaslessTransfer({
+    token,
+    to,
+    amount,
+    recipientLabel,
+    quote,
+    corrects,
+    sign,
+}: {
+    token: string;
+    to: string;
+    amount: number;
+    recipientLabel?: string;
+    quote?: GaslessFeeQuote;
+    corrects?: TransferRequest;
+    sign: (
+        request: Omit<SignPolygonGaslessTransferRequest, 'appName'>,
+    ) => Promise<SignedPolygonGaslessTransfer | null | void>;
 }): Promise<Transaction | null> {
     const { addressInfo } = usePolygonAddressStore();
     if (!addressInfo) throw new Error('No active Polygon address');
@@ -372,7 +394,8 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     // A payment of the same token to the same recipient that failed as far as the user was told (`corrects`, or as
     // recorded in the store) might still execute. Sending again is therefore a correction of its latest version, which
     // keeps its nonce, not a new payment. A payment that was settled already is decided, and a new payment is safe.
-    const isCorrectable = !!open
+    const isCorrectable =
+        !!open
         && core.sameAddress(open.latest.request.token, token)
         && core.sameAddress(open.latest.request.to, to)
         && (open.status !== GaslessPaymentStatus.SUBMITTED
@@ -430,17 +453,21 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     }
     const intentNonce = corrects ? corrects.nonce : nonce.toString();
 
-    if (!quote || quote.token.toLowerCase() !== token.toLowerCase()
-        || quote.expiresAt < Date.now() / 1000 + QUOTE_MIN_VALIDITY_SECONDS) {
+    if (
+        !quote
+        || quote.token.toLowerCase() !== token.toLowerCase()
+        || quote.expiresAt < Date.now() / 1000 + QUOTE_MIN_VALIDITY_SECONDS
+    ) {
         // Leave the user time to confirm in the Keyguard while the quote is still valid
         quote = await quoteGaslessFee(token);
     }
     const fee = Number(quote.fee);
 
     // Ensure to send only what is possible with the current fee
-    const balance = (token.toLowerCase() === useConfig().config.polygon.usdc.tokenContract.toLowerCase()
-        ? addressInfo.balanceUsdc
-        : addressInfo.balanceUsdtBridged) || 0;
+    const balance =
+        (token.toLowerCase() === useConfig().config.polygon.usdc.tokenContract.toLowerCase()
+            ? addressInfo.balanceUsdc
+            : addressInfo.balanceUsdtBridged) || 0;
     amount = Math.min(amount, Math.max(balance - fee, 0));
     if (amount <= 0) throw new GaslessTransferError('Insufficient balance to pay the fee', corrects || null);
 
@@ -463,9 +490,15 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
 
     // Make sure the signed transfer is the one we asked for, and valid for our pins
     const request = core.normalizeTransferRequest(signed.request);
-    if (!core.sameAddress(request.token, token) || !core.sameAddress(request.from, from)
-        || !core.sameAddress(request.to, to) || request.amount !== amount.toString() || request.fee !== quote.fee
-        || !core.sameAddress(request.relay, quote.relay) || request.nonce !== intentNonce) {
+    if (
+        !core.sameAddress(request.token, token)
+        || !core.sameAddress(request.from, from)
+        || !core.sameAddress(request.to, to)
+        || request.amount !== amount.toString()
+        || request.fee !== quote.fee
+        || !core.sameAddress(request.relay, quote.relay)
+        || request.nonce !== intentNonce
+    ) {
         throw new Error('The signed transfer does not match the requested transfer');
     }
     if (corrects) {
@@ -518,9 +551,11 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
                         throw new GaslessTransferError(`The relay refused the transfer: ${error.message}`, request);
                     }
                     if (error.code === 'internal_error') unclear = true;
-                    if ((error.code === 'sender_busy' || error.code === 'nonce_too_high')
+                    if (
+                        (error.code === 'sender_busy' || error.code === 'nonce_too_high')
                         // eslint-disable-next-line no-await-in-loop
-                        && await readIntentNonce(from) > BigInt(request.nonce)) {
+                        && (await readIntentNonce(from)) > BigInt(request.nonce)
+                    ) {
                         // The nonce was used meanwhile: the payment is decided. Its outcome tells how.
                         settleInBackground(request);
                         throw new GaslessTransferError(
@@ -532,7 +567,7 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
                 } else if (error instanceof relayModule.RelayClientError) {
                     if (error.code === 'pin_mismatch') {
                         settleInBackground(request);
-                        throw new GaslessTransferError('The relay does not match the Wallet\'s configuration', request);
+                        throw new GaslessTransferError("The relay does not match the Wallet's configuration", request);
                     }
                     unclear = true;
                 } else {
@@ -544,7 +579,10 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
                     settleInBackground(request);
                     throw new GaslessTransferError(`Could not reach the relay: ${(error as Error).message}`, request);
                 }
-                await new Promise((resolve) => { window.setTimeout(resolve, 2000 * attempt); }); // eslint-disable-line
+                // eslint-disable-next-line
+                await new Promise((resolve) => {
+                    window.setTimeout(resolve, 2000 * attempt);
+                });
             }
         }
 

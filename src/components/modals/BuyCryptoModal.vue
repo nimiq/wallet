@@ -1,8 +1,11 @@
 <template>
-    <Modal class="buy-crypto-modal"
-        :class="{'wider-overlay': !!swap}"
+    <Modal
+        class="buy-crypto-modal"
+        :class="{ 'wider-overlay': !!swap }"
         :showOverlay="page === Pages.BANK_CHECK || addressListOpened || kycOverlayOpened || !!swap"
-        :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :emitClose="true"
+        @close="onClose"
+        @close-overlay="onClose"
         :swipePadding="page !== Pages.WELCOME"
     >
         <transition duration="650">
@@ -11,8 +14,12 @@
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
-                        {{ $t('Welcome to the first fiat-to-crypto atomic swap. '
-                            + 'It’s simple, fast and decentralized.') }}
+                        {{
+                            $t(
+                                'Welcome to the first fiat-to-crypto atomic swap. '
+                                    + 'It’s simple, fast and decentralized.',
+                            )
+                        }}
                     </p>
                 </div>
 
@@ -31,13 +38,13 @@
                 <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
-                        <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="_self">
+                        <Tooltip :styles="{ width: '25.5rem' }" preferredPosition="bottom right" :container="_self">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
-                                1 NIM = <FiatAmount :amount="eurPerNim || 0"
-                                    :maxRelativeDeviation="0.001" currency="eur"/>
+                                1 NIM =
+                                <FiatAmount :amount="eurPerNim || 0" :maxRelativeDeviation="0.001" currency="eur" />
                             </div>
                             <div v-else slot="trigger" class="pill exchange-rate">
-                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
+                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur" />
                             </div>
                             <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
                             <p class="explainer">
@@ -56,62 +63,85 @@
                             :currency="selectedFiatCurrency"
                             :container="_self"
                         >
-                            <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': fiatFees.isHigh}">
-                                <LightningIcon v-if="fiatFees.isHigh"/>
-                                <FiatAmount :amount="fiatFees.total" :currency="selectedFiatCurrency"/>
+                            <div slot="trigger" class="pill fees flex-row" :class="{ 'high-fees': fiatFees.isHigh }">
+                                <LightningIcon v-if="fiatFees.isHigh" />
+                                <FiatAmount :amount="fiatFees.total" :currency="selectedFiatCurrency" />
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="_self"
-                            class="limits-tooltip" :class="{ 'kyc-connected': kycUser }">
+                        <Tooltip
+                            :styles="{ width: '28.75rem' }"
+                            preferredPosition="bottom left"
+                            :container="_self"
+                            class="limits-tooltip"
+                            :class="{ 'kyc-connected': kycUser }"
+                        >
                             <div slot="trigger" class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
                                 <LimitIcon />
                                 <template v-if="limits">
-                                    <FiatAmount :amount="currentLimitFiat"
-                                        :currency="selectedFiatCurrency" hideDecimals/>
+                                    <FiatAmount
+                                        :amount="currentLimitFiat"
+                                        :currency="selectedFiatCurrency"
+                                        hideDecimals
+                                    />
                                     <KycIcon v-if="kycUser" />
                                 </template>
                                 <template v-else>
-                                    <CircleSpinner/>
+                                    <CircleSpinner />
                                 </template>
                             </div>
                             <template v-if="limits && 'eur' in limits.current && limits.current.eur < Infinity">
                                 <div class="price-breakdown">
                                     <label>{{ $t('Initial Swap Limit') }}</label>
-                                    <FiatAmount :amount="100" currency="eur" hideDecimals/>
+                                    <FiatAmount :amount="100" currency="eur" hideDecimals />
                                 </div>
                                 <i18n class="explainer" path="{value} remaining" tag="p">
-                                    <FiatAmount slot="value" :amount="currentLimitFiat" currency="eur" hideDecimals/>
+                                    <FiatAmount slot="value" :amount="currentLimitFiat" currency="eur" hideDecimals />
                                 </i18n>
                                 <div class="price-breakdown">
                                     <label>{{ $t('After 72 hours') }}</label>
-                                    <FiatConvertedAmount v-if="limits"
-                                        :amount="limits.monthly.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"/>
+                                    <FiatConvertedAmount
+                                        v-if="limits"
+                                        :amount="limits.monthly.luna"
+                                        roundDown
+                                        currency="nim"
+                                        :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxAmountEur"
+                                    />
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <div></div>
                                 <p class="explainer">
-                                    {{ $t('72 hours after your first buy, '
-                                        + 'your limit will be increased automatically.')
+                                    {{
+                                        $t(
+                                            '72 hours after your first buy, '
+                                                + 'your limit will be increased automatically.',
+                                        )
                                     }}
                                 </p>
                             </template>
                             <template v-else>
                                 <div class="price-breakdown">
                                     <label>{{ $t('30-day Limit') }}</label>
-                                    <FiatConvertedAmount v-if="limits"
-                                        :amount="limits.monthly.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"/>
+                                    <FiatConvertedAmount
+                                        v-if="limits"
+                                        :amount="limits.monthly.luna"
+                                        roundDown
+                                        currency="nim"
+                                        :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxAmountEur"
+                                    />
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                                    <FiatConvertedAmount slot="value"
-                                        :amount="limits.remaining.luna" roundDown
-                                        currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"/>
+                                    <FiatConvertedAmount
+                                        slot="value"
+                                        :amount="limits.remaining.luna"
+                                        roundDown
+                                        currency="nim"
+                                        :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxAmountEur"
+                                    />
                                 </i18n>
                             </template>
                             <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
@@ -120,25 +150,27 @@
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
-                        <BankIconButton
-                            :bankName="bank ? bank.name : ''"
-                            @click="page = Pages.BANK_CHECK"/>
+                        <BankIconButton :bankName="bank ? bank.name : ''" @click="page = Pages.BANK_CHECK" />
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
                         <div class="flex-column">
                             <IdenticonStack @click="addressListOpened = true" />
-                            <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
+                            <InteractiveShortAddress
+                                v-if="activeCurrency === CryptoCurrency.NIM"
                                 :address="activeAddressInfo.address"
-                                tooltipPosition="bottom left"/>
+                                tooltipPosition="bottom left"
+                            />
                         </div>
                     </section>
 
                     <section class="amount-section" :class="{ orange: insufficientLimit || isBelowOasisMinimum }">
                         <div class="flex-row primary-amount">
-                            <AmountInput v-model="fiatAmount"
+                            <AmountInput
+                                v-model="fiatAmount"
                                 :decimals="fiatCurrencyInfo.decimals"
-                                placeholder="0.00" ref="eurAmountInput$"
+                                placeholder="0.00"
+                                ref="eurAmountInput$"
                             >
                                 <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
@@ -147,15 +179,19 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="31" height="29" viewBox="0 0 31 29">
                                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
                                     <path d="M.75 1.25v12.5a8 8 0 008 8h21.5" />
-                                    <path d="M23.75 15.25l6.5 6.5-6.5 6.5" stroke-linejoin="round"/>
+                                    <path d="M23.75 15.25l6.5 6.5-6.5 6.5" stroke-linejoin="round" />
                                 </g>
                             </svg>
-                            <AmountInput v-model="cryptoAmount"
-                                :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
+                            <AmountInput
+                                v-model="cryptoAmount"
+                                :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5"
+                            >
                                 <span class="ticker" slot="suffix">
-                                    {{ activeCurrency === CryptoCurrency.BTC
-                                        ? btcUnit.ticker
-                                        : activeCurrency.toUpperCase() }}
+                                    {{
+                                        activeCurrency === CryptoCurrency.BTC
+                                            ? btcUnit.ticker
+                                            : activeCurrency.toUpperCase()
+                                    }}
                                 </span>
                             </AmountInput>
                         </span>
@@ -165,23 +201,25 @@
                         <template v-if="insufficientLimit">
                             <!-- TEMP: wording TBD -->
                             <i18n path="Max swappable amount is {amount}">
-                                <FiatAmount slot="amount"
+                                <FiatAmount
+                                    slot="amount"
                                     :amount="currentLimitFiat"
                                     currency="eur"
                                     hideDecimals
-                                />
-                            </i18n><br />
+                                /> </i18n
+                            ><br />
                             <a @click="buyMax">{{ $t('Buy max') }}</a>
                         </template>
                         <template v-else-if="isBelowOasisMinimum">
                             <!-- TEMP: wording TBD -->
                             <i18n path="Minimum buy amount is {amount}">
-                                <FiatAmount slot="amount"
+                                <FiatAmount
+                                    slot="amount"
                                     :amount="$config.oasis.minBuyAmount"
                                     currency="eur"
                                     hideDecimals
-                                />
-                            </i18n><br />
+                                /> </i18n
+                            ><br />
                             <a @click="buyMin">{{ $t('Set minimum') }}</a>
                         </template>
                     </MessageTransition>
@@ -197,28 +235,39 @@
                     @click="sign"
                 >
                     <template v-slot:cta>{{ $t('Buy Crypto') }}</template>
-                    <i18n v-if="isMainnet"
+                    <i18n
+                        v-if="isMainnet"
                         path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
                         tag="span"
                     >
                         <span slot="text">{{ $t('Buy Crypto') }}</span>
                         <span slot="Fastspot">
-                            <a href="https://fastspot.io/terms"
-                                target="_blank" rel="noopener" class="nq-link">Fastspot</a>,
-                            <a href="https://go.fastspot.io/terms"
-                                target="_blank" rel="noopener" class="nq-link">Fastspot GO</a>
+                            <a href="https://fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
+                                >Fastspot</a
+                            >,
+                            <a href="https://go.fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
+                                >Fastspot GO</a
+                            >
                         </span>
-                        <a slot="FastspotGO" href="https://digital.ten31.com/oasis/terms"
-                            target="_blank" rel="noopener" class="nq-link">OASIS</a>
+                        <a
+                            slot="FastspotGO"
+                            href="https://digital.ten31.com/oasis/terms"
+                            target="_blank"
+                            rel="noopener"
+                            class="nq-link"
+                            >OASIS</a
+                        >
                     </i18n>
-                    <i18n v-else
-                        path="By clicking '{text}', you agree to the ToS of {Fastspot}."
-                        tag="span"
-                    >
+                    <i18n v-else path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
                         <span slot="text">{{ $t('Buy Crypto') }}</span>
-                        <a slot="Fastspot" href="https://test.fastspot.io/terms"
-                            target="_blank" rel="noopener" class="nq-link"
-                        >Fastspot</a>
+                        <a
+                            slot="Fastspot"
+                            href="https://test.fastspot.io/terms"
+                            target="_blank"
+                            rel="noopener"
+                            class="nq-link"
+                            >Fastspot</a
+                        >
                     </i18n>
                 </SendModalFooter>
                 <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
@@ -226,7 +275,7 @@
         </transition>
 
         <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem;" class="flex-column">
+            <PageBody style="padding: 0.75rem" class="flex-column">
                 <SwapAnimation
                     :swapId="swap.id"
                     :swapState="swap.state"
@@ -256,28 +305,39 @@
                         @cancel="finishSwap"
                         @paid="onPaid"
                     />
-                    <button v-else
+                    <button
+                        v-else
                         slot="manual-funding-instructions"
                         class="nq-button light-blue"
                         @click="onPaid"
                         @mousedown.prevent
-                    >{{ $t('Simulate EUR payment') }}</button>
+                    >
+                        {{ $t('Simulate EUR payment') }}
+                    </button>
                 </SwapAnimation>
             </PageBody>
-            <button v-if="swap.state !== SwapState.CREATE_OUTGOING"
+            <button
+                v-if="swap.state !== SwapState.CREATE_OUTGOING"
                 class="nq-button-s minimize-button top-right"
-                @click="onClose" @mousedown.prevent
+                @click="onClose"
+                @mousedown.prevent
             >
-                <MinimizeIcon/>
+                <MinimizeIcon />
             </button>
-            <Timer v-else :startTime="Date.now()" :endTime="swap.expires * 1000"
-                theme="white" maxUnit="minute" :tooltipProps="{
+            <Timer
+                v-else
+                :startTime="Date.now()"
+                :endTime="swap.expires * 1000"
+                theme="white"
+                maxUnit="minute"
+                :tooltipProps="{
                     preferredPosition: 'bottom left',
                 }"
             />
         </div>
 
-        <BuyCryptoBankCheckOverlay slot="overlay"
+        <BuyCryptoBankCheckOverlay
+            slot="overlay"
             v-else-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
         />
@@ -285,8 +345,11 @@
         <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false"
-                    :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"/>
+                <AddressList
+                    embedded
+                    @address-selected="addressListOpened = false"
+                    :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"
+                />
             </PageBody>
         </div>
 
@@ -295,27 +358,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
+import { RequestAsset, SwapAsset, PreSwap, createSwap, cancelSwap, getSwap, Swap, Contract } from '@nimiq/fastspot-api';
 import {
-    PageHeader,
-    PageBody,
-    Tooltip,
-    FiatAmount,
-    Timer,
-    CircleSpinner,
-} from '@nimiq/vue-components';
-import { useAddressStore } from '@/stores/Address';
-import {
-    RequestAsset,
-    SwapAsset,
-    PreSwap,
-    createSwap,
-    cancelSwap,
-    getSwap,
-    Swap,
-    Contract,
-} from '@nimiq/fastspot-api';
+    EuroHtlcCreationInstructions,
+    HtlcCreationInstructions,
+    HtlcSettlementInstructions,
+    SetupSwapRequest,
+    SetupSwapResult,
+} from '@nimiq/hub-api';
 import {
     getHtlc,
     Htlc as OasisHtlc,
@@ -324,44 +374,27 @@ import {
     TransactionType,
     SepaClearingInstruction,
 } from '@nimiq/oasis-api';
-import {
-    EuroHtlcCreationInstructions,
-    HtlcCreationInstructions,
-    HtlcSettlementInstructions,
-    SetupSwapRequest,
-    SetupSwapResult,
-} from '@nimiq/hub-api';
 import { Bank } from '@nimiq/oasis-bank-list';
+import { PageHeader, PageBody, Tooltip, FiatAmount, Timer, CircleSpinner } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { getElectrumClient } from '@/electrum';
+import { setupSwap } from '@/hub';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { getNetworkClient } from '@/network';
 import { useRouter } from '@/router';
-import { SwapState, useSwapsStore } from '@/stores/Swaps';
-import { useNetworkStore } from '@/stores/Network';
-import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
-import { useSettingsStore } from '@/stores/Settings';
+import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
-import { setupSwap } from '@/hub';
-import { getElectrumClient } from '@/electrum';
+import { useFiatStore } from '@/stores/Fiat';
+import { useNetworkStore } from '@/stores/Network';
+import { useSettingsStore } from '@/stores/Settings';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
-import Modal from './Modal.vue';
-import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
-import AddressList from '../AddressList.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import AmountInput from '../AmountInput.vue';
-import SwapAnimation from '../swap/SwapAnimation.vue';
-import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
-import MinimizeIcon from '../icons/MinimizeIcon.vue';
-import LimitIcon from '../icons/LimitIcon.vue';
-import KycIcon from '../icons/KycIcon.vue';
-import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
-import SendModalFooter from '../SendModalFooter.vue';
-import IdenticonStack from '../IdenticonStack.vue';
-import InteractiveShortAddress from '../InteractiveShortAddress.vue';
-import BankIconButton from '../BankIconButton.vue';
-import MessageTransition from '../MessageTransition.vue';
+import { reportToSentry } from '../../lib/Sentry';
+import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
 import {
     calculateFees,
     capDecimals,
@@ -375,12 +408,26 @@ import {
     getFiatSwapParameters,
     fiatFees,
 } from '../../lib/swap/utils/CommonUtils';
-import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
 import { useBankStore } from '../../stores/Bank';
 import { useKycStore } from '../../stores/Kyc';
-import KycPrompt from '../kyc/KycPrompt.vue';
+import AddressList from '../AddressList.vue';
+import AmountInput from '../AmountInput.vue';
+import BankIconButton from '../BankIconButton.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import KycIcon from '../icons/KycIcon.vue';
+import LimitIcon from '../icons/LimitIcon.vue';
+import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import IdenticonStack from '../IdenticonStack.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
-import { reportToSentry } from '../../lib/Sentry';
+import KycPrompt from '../kyc/KycPrompt.vue';
+import MessageTransition from '../MessageTransition.vue';
+import SendModalFooter from '../SendModalFooter.vue';
+import SwapAnimation from '../swap/SwapAnimation.vue';
+import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
+import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
+import Modal from './Modal.vue';
+import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 
 enum Pages {
     WELCOME,
@@ -452,24 +499,27 @@ export default defineComponent({
 
         const isMainnet = config.environment === ENV_MAIN;
 
-        const insufficientLimit = computed(() => (
-            (_cryptoAmount.value > (currentLimitCrypto.value || 0))
-            || (_fiatAmount.value > (currentLimitFiat.value || 0) * 1e2)
-        ));
+        const insufficientLimit = computed(
+            () =>
+                _cryptoAmount.value > (currentLimitCrypto.value || 0)
+                || _fiatAmount.value > (currentLimitFiat.value || 0) * 1e2,
+        );
 
-        const isBelowOasisMinimum = computed(() => (
-            _fiatAmount.value > 0 && _fiatAmount.value < config.oasis.minBuyAmount * 1e2
-        ));
+        const isBelowOasisMinimum = computed(
+            () => _fiatAmount.value > 0 && _fiatAmount.value < config.oasis.minBuyAmount * 1e2,
+        );
 
-        const canSign = computed(() =>
-            fiatAmount.value
-            && !estimateError.value && !swapError.value
-            && estimate.value
-            && bank.value
-            && limits.value?.current.usd
-            && !fetchingEstimate.value
-            && !insufficientLimit.value
-            && !isBelowOasisMinimum.value,
+        const canSign = computed(
+            () =>
+                fiatAmount.value
+                && !estimateError.value
+                && !swapError.value
+                && estimate.value
+                && bank.value
+                && limits.value?.current.usd
+                && !fetchingEstimate.value
+                && !insufficientLimit.value
+                && !isBelowOasisMinimum.value,
         );
 
         const router = useRouter();
@@ -506,15 +556,16 @@ export default defineComponent({
 
             fetchingEstimate.value = true;
 
-            await updateBuyEstimate(_fiatAmount.value
-                ? { fiatAmount: fiatAmount.value }
-                : { cryptoAmount: cryptoAmount.value },
-            ).then(() => {
-                estimateError.value = null;
-            }).catch((error) => {
-                console.warn(error); // eslint-disable-line no-console
-                estimateError.value = error.message;
-            });
+            await updateBuyEstimate(
+                _fiatAmount.value ? { fiatAmount: fiatAmount.value } : { cryptoAmount: cryptoAmount.value },
+            )
+                .then(() => {
+                    estimateError.value = null;
+                })
+                .catch((error) => {
+                    console.warn(error); // eslint-disable-line no-console
+                    estimateError.value = error.message;
+                });
 
             fetchingEstimate.value = false;
         }
@@ -533,9 +584,10 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
-                        ? { from: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
-                        : { to: { amount: cryptoAmount.value } },
+                    const { from, to } = getFiatSwapParameters(
+                        _fiatAmount.value
+                            ? { from: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
+                            : { to: { amount: cryptoAmount.value } },
                     );
 
                     swapSuggestion = await createSwap(
@@ -638,7 +690,7 @@ export default defineComponent({
 
                 const serviceSwapFee = Math.round(
                     (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
-                    * swapSuggestion.serviceFeePercentage,
+                        * swapSuggestion.serviceFeePercentage,
                 );
 
                 const request: Omit<SetupSwapRequest, 'appName'> = {
@@ -677,7 +729,7 @@ export default defineComponent({
                 return;
             }
 
-            const { swapId } = (await hubRequest);
+            const { swapId } = await hubRequest;
 
             if (!signedTransactions) {
                 // Hub popup cancelled
@@ -711,13 +763,14 @@ export default defineComponent({
 
                 // Apply the correct local fees from the swap request
                 const request = await hubRequest;
-                confirmedSwap.from.fee = (request.fund as EuroHtlcCreationInstructions).fee
-                    - confirmedSwap.from.serviceEscrowFee;
-                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
-                    ? request.redeem.fee
-                    : request.redeem.type === SwapAsset.BTC
-                        ? request.redeem.input.value - request.redeem.output.value
-                        : 0;
+                confirmedSwap.from.fee =
+                    (request.fund as EuroHtlcCreationInstructions).fee - confirmedSwap.from.serviceEscrowFee;
+                confirmedSwap.to.fee =
+                    request.redeem.type === SwapAsset.NIM
+                        ? request.redeem.fee
+                        : request.redeem.type === SwapAsset.BTC
+                          ? request.redeem.input.value - request.redeem.output.value
+                          : 0;
             } catch (error) {
                 reportToSentry(error);
                 swapError.value = 'Invalid swap state, swap aborted!';
@@ -735,9 +788,10 @@ export default defineComponent({
                 stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
                 fundingSerializedTx: signedTransactions.eur,
-                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
-                    ? signedTransactions.nim!.serializedTx
-                    : signedTransactions.btc!.serializedTx,
+                settlementSerializedTx:
+                    confirmedSwap.to.asset === SwapAsset.NIM
+                        ? signedTransactions.nim!.serializedTx
+                        : signedTransactions.btc!.serializedTx,
             });
 
             // Fetch OASIS HTLC to get clearing instructions
@@ -779,8 +833,9 @@ export default defineComponent({
                 return;
             }
 
-            const fundingInstructions = (oasisHtlc as OasisHtlc<HtlcStatus.PENDING>).clearing.options
-                .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
+            const fundingInstructions = (oasisHtlc as OasisHtlc<HtlcStatus.PENDING>).clearing.options.find(
+                (clearing) => clearing.type === TransactionType.SEPA,
+            ) as SepaClearingInstruction | undefined;
 
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
@@ -820,19 +875,21 @@ export default defineComponent({
                         redeem: settlementSerializedTx,
                         // ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        throw new Error((await response.json()).message);
-                    }
+                })
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            throw new Error((await response.json()).message);
+                        }
 
-                    setActiveSwap({
-                        ...swap.value!,
-                        watchtowerNotified: true,
+                        setActiveSwap({
+                            ...swap.value!,
+                            watchtowerNotified: true,
+                        });
+                        console.debug('Swap watchtower notified'); // eslint-disable-line no-console
+                    })
+                    .catch((error) => {
+                        reportToSentry(error);
                     });
-                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
-                }).catch((error) => {
-                    reportToSentry(error);
-                });
             }
 
             // setTimeout(() => currentlySigning.value = false, 1000);
@@ -907,8 +964,8 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
-        const oasisMaxAmountEur = computed(
-            () => kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
+        const oasisMaxAmountEur = computed(() =>
+            kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
         return {
@@ -1027,13 +1084,13 @@ export default defineComponent({
         bottom: 4rem;
         left: 5rem;
         right: 6rem;
-    };
+    }
     background: {
         image: url('../../assets/buy-welcome-background.svg');
         repeat: no-repeat;
         position: top center;
         size: 100% auto;
-    };
+    }
 
     .welcome-text {
         text-align: center;
@@ -1245,7 +1302,7 @@ export default defineComponent({
             flex-grow: 1;
             align-self: center;
             overflow: hidden;
-            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
             .separator {
                 height: 100%;
@@ -1258,8 +1315,12 @@ export default defineComponent({
                 animation: separatorSliding 2.2s infinite;
 
                 @keyframes separatorSliding {
-                    0% { transform: translateX(0) }
-                    100% { transform: translateX(300%) }
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(300%);
+                    }
                 }
             }
         }
@@ -1275,7 +1336,9 @@ export default defineComponent({
             transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
             .amount-input {
-                &, &:hover, &:focus {
+                &,
+                &:hover,
+                &:focus {
                     color: var(--nimiq-orange);
                     transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
@@ -1313,7 +1376,7 @@ export default defineComponent({
                 ::v-deep .label-input * {
                     font-weight: 600;
                     font-size: 4rem !important;
-                    padding: .5rem 1rem;
+                    padding: 0.5rem 1rem;
                 }
             }
         }
@@ -1388,7 +1451,7 @@ export default defineComponent({
         height: 4rem;
         width: 4rem;
         border-radius: 50%;
-        transition: background .2s var(--nimiq-ease);
+        transition: background 0.2s var(--nimiq-ease);
 
         &::before {
             border-radius: 50%;
@@ -1397,7 +1460,7 @@ export default defineComponent({
         &:hover,
         &:active,
         &:focus {
-            background: rgba(255, 255, 255, 0.20);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         &.top-right {

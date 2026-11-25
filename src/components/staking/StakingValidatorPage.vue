@@ -13,8 +13,11 @@
         <PageBody>
             <!-- <ValidatorFilter @changed="changeFilter" @search="onSearch"/> -->
             <div class="search flex-row">
-                <input type="text" class="search-field nq-input flex-grow"
-                    v-model="searchValue" :placeholder="$t('Search for validators...')"
+                <input
+                    type="text"
+                    class="search-field nq-input flex-grow"
+                    v-model="searchValue"
+                    :placeholder="$t('Search for validators...')"
                 />
                 <FatSearchIcon />
             </div>
@@ -22,7 +25,8 @@
                 <div class="scroll-mask top"></div>
                 <LoadingList v-if="validatorsList.length === 0" :length="5" :type="LoadingListType.VALIDATOR" />
                 <ValidatorListItem
-                    v-for="validator in sortedList" :key="validator.address"
+                    v-for="validator in sortedList"
+                    :key="validator.address"
                     :validator="validator"
                     :container="validatorList$"
                     @click.native="$emit('selectValidator', validator)"
@@ -34,18 +38,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_DEV } from '../../lib/Constants';
+import { useStakingStore } from '../../stores/Staking';
 
+import { FilterState } from '../../lib/StakingUtils';
+import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
+import LoadingList, { LoadingListType } from '../LoadingList.vue';
 // import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
-import { FilterState } from '../../lib/StakingUtils';
-import LoadingList, { LoadingListType } from '../LoadingList.vue';
-import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 
 export default defineComponent({
     props: {
@@ -61,7 +65,7 @@ export default defineComponent({
         const validatorList$ = ref<HTMLElement | null>(null);
 
         const filter = ref(FilterState.TRUST);
-        const changeFilter = (newFilter: FilterState) => filter.value = newFilter;
+        const changeFilter = (newFilter: FilterState) => (filter.value = newFilter);
 
         const sortedList = computed(() => {
             switch (filter.value) {
@@ -93,22 +97,22 @@ export default defineComponent({
                     const showDefaultList = searchValue.value.length < 3;
                     const isLocalDev = config.environment === ENV_DEV;
 
-                    return validatorsList.value.slice()
+                    return validatorsList.value
+                        .slice()
                         .filter((validator) => {
                             if (showDefaultList) {
                                 // In local dev, show all validators even if API is unavailable
                                 // Otherwise, filter to show only pools with payout types
                                 if (isLocalDev) {
-                                    return 'payoutType' in validator
-                                        ? validator.payoutType !== 'none'
-                                        : true; // Show validators without API data in local dev
+                                    return 'payoutType' in validator ? validator.payoutType !== 'none' : true; // Show validators without API data in local dev
                                 }
                                 return 'payoutType' in validator && validator.payoutType !== 'none';
                             }
 
                             const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
                             const validatorLabel = ('name' in validator ? validator.name : '')
-                                .toLowerCase().replace(/\s+/g, '');
+                                .toLowerCase()
+                                .replace(/\s+/g, '');
                             const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
 
                             return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
@@ -116,7 +120,7 @@ export default defineComponent({
                         .sort((a, b) => {
                             const scoreA = 'score' in a ? a.score.total || 0 : 0;
                             const scoreB = 'score' in b ? b.score.total || 0 : 0;
-                            return (scoreB - scoreA) || (a.address < b.address ? -1 : 1);
+                            return scoreB - scoreA || (a.address < b.address ? -1 : 1);
                         });
                 }
             }
@@ -150,79 +154,82 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @use '../../scss/mixins.scss' as *;
+@use '../../scss/mixins.scss' as *;
 
-    @include scroll-mask(true, true, true);
+@include scroll-mask(true, true, true);
 
-    .staking-validator-page {
-        flex-grow: 1;
-    }
+.staking-validator-page {
+    flex-grow: 1;
+}
 
-    .page-header {
-        padding-bottom: 1rem;
-    }
+.page-header {
+    padding-bottom: 1rem;
+}
 
-    .page-body {
-        padding: 1rem 0;
+.page-body {
+    padding: 1rem 0;
 
-        .search {
-            flex-direction: row-reverse;
-            margin: 0 4rem;
-            margin-bottom: 1rem;
+    .search {
+        flex-direction: row-reverse;
+        margin: 0 4rem;
+        margin-bottom: 1rem;
+        position: relative;
+
+        input {
+            padding-left: 5rem;
+            border-radius: 4rem;
+        }
+
+        svg {
+            width: 2.5rem;
+            margin-right: -2.5rem;
             position: relative;
+            left: 1.5rem;
+            transition: color 200ms ease;
 
-            input {
-                padding-left: 5rem;
-                border-radius: 4rem;
-            }
-
-            svg {
-                width: 2.5rem;
-                margin-right: -2.5rem;
-                position: relative;
-                left: 1.5rem;
-                transition: color 200ms ease;
-
-                line, circle {
-                    stroke-width: 2.0;
-                }
-            }
-
-            input:focus + svg,
-            input:hover + svg {
-                color: var(--nimiq-light-blue);
+            line,
+            circle {
+                stroke-width: 2;
             }
         }
 
-        .loading-list {
-            margin: 0 3.25rem;
-        }
-
-        .validator-list {
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow-y: auto;
-            width: 100%;
-            // height: 46.5rem;
-            height: 54rem;
-
-            @extend %custom-scrollbar;
-
-            .validator-list-item {
-                margin: 0 auto;
-            }
+        input:focus + svg,
+        input:hover + svg {
+            color: var(--nimiq-light-blue);
         }
     }
-    .nq-text {
-        margin-top: .875rem;
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
+
+    .loading-list {
+        margin: 0 3.25rem;
     }
 
-    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
-    }
+    .validator-list {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow-y: auto;
+        width: 100%;
+        // height: 46.5rem;
+        height: 54rem;
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+        @extend %custom-scrollbar;
+
+        .validator-list-item {
+            margin: 0 auto;
+        }
     }
+}
+.nq-text {
+    margin-top: 0.875rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 960px) and (min-width: 701px) {
+    // Tablet breakpoint
+}
+
+@media (max-width: 700px) {
+    // Full mobile breakpoint
+}
 </style>

@@ -1,17 +1,17 @@
-import { Ref, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { AddressBook, isHistorySupportedFiatCurrency, ValidationUtils } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { AddressBook, isHistorySupportedFiatCurrency, ValidationUtils } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { Ref, computed } from 'vue';
 
 import Config from 'config';
 
-import { useSwapsStore } from '@/stores/Swaps';
-import { Transaction, useTransactionsStore } from '@/stores/Transactions';
 import { useAddressStore } from '@/stores/Address';
 import { useContactsStore } from '@/stores/Contacts';
-import { useProxyStore } from '@/stores/Proxy';
 import { useFiatStore } from '@/stores/Fiat';
+import { useProxyStore } from '@/stores/Proxy';
+import { useSwapsStore } from '@/stores/Swaps';
+import { Transaction, useTransactionsStore } from '@/stores/Transactions';
 
 import {
     FiatCurrency,
@@ -20,10 +20,10 @@ import {
     BANK_ADDRESS,
     BURNER_ADDRESS,
 } from '@/lib/Constants';
-import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
-import { assetToCurrency } from '@/lib/swap/utils/Assets';
+import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { getStakingTransactionMeaning } from '@/lib/StakingUtils';
+import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
@@ -33,7 +33,8 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     const { $state: addresses$ } = useAddressStore();
     const { getLabel } = storeToRefs(useContactsStore());
 
-    const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
+    // eslint-disable-next-line arrow-body-style
+    const isIncoming = computed(() => {
         // const haveSender = !!addresses$.addressInfos[props.transaction.sender];
         // const haveRecipient = !!addresses$.addressInfos[props.transaction.recipient];
 
@@ -52,22 +53,28 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     const { getSwapByTransactionHash } = storeToRefs(useSwapsStore());
-    const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash)
+    const swapInfo = computed(
+        () =>
+            getSwapByTransactionHash.value(transaction.value.transactionHash)
             || (transaction.value.relatedTransactionHash
                 ? getSwapByTransactionHash.value(transaction.value.relatedTransactionHash)
-                : null));
+                : null),
+    );
     const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
     useOasisPayoutStatusUpdater(swapData);
 
     // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
     // related to our address, always holds the proxy data.
     const isSwapProxy = computed(() => isProxyData(transaction.value.data.raw, ProxyType.HTLC_PROXY));
-    const isCancelledSwap = computed(() =>
-        (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
+    const isCancelledSwap = computed(
+        () =>
+            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
             // Funded proxy and then refunded without creating an actual htlc?
-            || (isSwapProxy.value && (isIncoming.value
-                ? transaction.value.recipient === relatedTx.value?.sender
-                : transaction.value.sender === relatedTx.value?.recipient)));
+            || (isSwapProxy.value
+                && (isIncoming.value
+                    ? transaction.value.recipient === relatedTx.value?.sender
+                    : transaction.value.sender === relatedTx.value?.recipient)),
+    );
 
     // Data
     const isCashlink = computed(() => isProxyData(transaction.value.data.raw, ProxyType.CASHLINK));
@@ -104,11 +111,9 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
         if (transaction.value.recipient === BURNER_ADDRESS) {
             // Only consider txs within the pre-staking window
             if (
-                (
-                    transaction.value.blockHeight
-                    && transaction.value.blockHeight >= Config.staking.prestakingStartBlock
-                    && transaction.value.blockHeight < Config.staking.prestakingEndBlock
-                )
+                transaction.value.blockHeight
+                && transaction.value.blockHeight >= Config.staking.prestakingStartBlock
+                && transaction.value.blockHeight < Config.staking.prestakingEndBlock
                 && transaction.value.data.raw
                 && ValidationUtils.isValidAddress(parseData(transaction.value.data.raw))
             ) {
@@ -138,7 +143,7 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             }
 
             if (swapData.value.asset === SwapAsset.EUR) {
-                return swapData.value.bankLabel || i18n.t('Bank Account') as string;
+                return swapData.value.bankLabel || (i18n.t('Bank Account') as string);
             }
 
             return swapData.value.asset.toUpperCase();
@@ -146,9 +151,7 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
 
         // Label cashlinks
         if (peerAddress.value === CASHLINK_ADDRESS) {
-            return isIncoming.value
-                ? i18n.t('Cashlink') as string
-                : i18n.t('Unclaimed Cashlink') as string;
+            return isIncoming.value ? (i18n.t('Cashlink') as string) : (i18n.t('Unclaimed Cashlink') as string);
         }
 
         // Search other stored addresses
@@ -185,17 +188,17 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
                 swapData.value.asset === SwapAsset.EUR
                 && swapData.value.htlc?.settlement
                 && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-            ) return `${message.split('–')[0]} –`;
+            ) {
+                return `${message.split('–')[0]} –`;
+            }
 
             return message;
         }
 
-        if ('hashRoot' in transaction.value.data
-            || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
+        if ('hashRoot' in transaction.value.data || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
             return i18n.t('HTLC Creation') as string;
         }
-        if ('hashRoot' in transaction.value.proof
-            || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
+        if ('hashRoot' in transaction.value.proof || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
             return i18n.t('HTLC Settlement') as string;
         }
         if ('creator' in transaction.value.proof) {
@@ -209,10 +212,12 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
 
             return i18n.t('HTLC Refund') as string;
         }
-        if ((relatedTx.value && 'creator' in relatedTx.value.proof)
+        if (
+            (relatedTx.value && 'creator' in relatedTx.value.proof)
             // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
             // tx are regular transactions and we regard the tx from the proxy as refund
-            || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+            || (relatedTx.value && isSwapProxy.value && isIncoming.value)
+        ) {
             return i18n.t('HTLC Refund') as string;
         }
 
@@ -231,8 +236,8 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             FIAT_API_PROVIDER_TX_HISTORY,
         );
         return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-            ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+            ? // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+              { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
             : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
     });
 

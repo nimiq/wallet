@@ -89,7 +89,7 @@ export default {
                 // The deployment's mock USDT0. It is not the Wallet's USDT (`usdt_bridged.tokenContract`), which
                 // therefore cannot be sent, and which the Keyguard rejects on this network.
                 usdt0Contract: '0xfA9Dabbf3C68a126a627ad48098700DFc6F27c82',
-            } as { usdcDomainName: string, usdt0Contract: string } | null,
+            } as { usdcDomainName: string; usdt0Contract: string } | null,
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config
             deniedRecipients: [] as string[],
         },
@@ -121,7 +121,7 @@ export default {
         underMaintenance: true,
         apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
         feePercentage: 0.01, // 1%
-        minFee: 0.50, // Euro
+        minFee: 0.5, // Euro
         minBuyAmount: 35, // Euro
         maxFreeAmount: 999, // Euro
         maxKycAmount: 4999, // Euro

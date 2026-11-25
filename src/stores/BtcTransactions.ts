@@ -1,41 +1,38 @@
-import Vue from 'vue';
-import { defineStore } from 'pinia';
-import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { useFiatStore } from './Fiat';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { defineStore } from 'pinia';
+import Vue from 'vue';
+import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useBtcAddressStore } from './BtcAddress';
-import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
+import { useFiatStore } from './Fiat';
 import { useSwapsStore } from './Swaps';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
-    addresses: string[],
+    addresses: string[];
     outputs: (PlainOutput & {
-        fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
-    })[],
+        fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>;
+    })[];
 };
 
-const VALID_TRANSACTION_STATES = [
-    TransactionState.PENDING,
-    TransactionState.MINED,
-    TransactionState.CONFIRMED,
-];
+const VALID_TRANSACTION_STATES = [TransactionState.PENDING, TransactionState.MINED, TransactionState.CONFIRMED];
 
 const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
 
 export const useBtcTransactionsStore = defineStore('btcTransactions', {
     state: () => ({
-        transactions: {} as {[hash: string]: Transaction},
+        transactions: {} as { [hash: string]: Transaction },
     }),
     getters: {
-        spentInputs: (state) => Object.values(state.transactions).reduce((set, tx) => {
-            if (!VALID_TRANSACTION_STATES.includes(tx.state)) return set;
-            for (const input of tx.inputs) {
-                set.add(`${input.transactionHash}:${input.outputIndex}`);
-            }
-            return set;
-        }, new Set<string>()),
+        spentInputs: (state) =>
+            Object.values(state.transactions).reduce((set, tx) => {
+                if (!VALID_TRANSACTION_STATES.includes(tx.state)) return set;
+                for (const input of tx.inputs) {
+                    set.add(`${input.transactionHash}:${input.outputIndex}`);
+                }
+                return set;
+            }, new Set<string>()),
     },
     actions: {
         // Note: this method should not be async to avoid race conditions between parallel calls. Otherwise an older
@@ -56,22 +53,27 @@ export const useBtcTransactionsStore = defineStore('btcTransactions', {
                     ...tx,
                     addresses: inputAddresses.concat(outputAddresses),
                     // Preserve known fiatValues.
-                    ...(knownTx ? {
-                        outputs: tx.outputs.map((output, i) => {
-                            const knownOutput = knownTx.outputs[i];
-                            if (!knownOutput
-                                || typeof knownOutput.fiatValue === 'undefined'
-                                || knownOutput.script !== output.script
-                                || knownOutput.address !== output.address
-                                || knownOutput.value !== output.value
-                                || knownOutput.index !== output.index
-                            ) return output;
-                            return {
-                                ...output,
-                                fiatValue: knownOutput.fiatValue,
-                            };
-                        }),
-                    } : null),
+                    ...(knownTx
+                        ? {
+                              outputs: tx.outputs.map((output, i) => {
+                                  const knownOutput = knownTx.outputs[i];
+                                  if (
+                                      !knownOutput
+                                      || typeof knownOutput.fiatValue === 'undefined'
+                                      || knownOutput.script !== output.script
+                                      || knownOutput.address !== output.address
+                                      || knownOutput.value !== output.value
+                                      || knownOutput.index !== output.index
+                                  ) {
+                                      return output;
+                                  }
+                                  return {
+                                      ...output,
+                                      fiatValue: knownOutput.fiatValue,
+                                  };
+                              }),
+                          }
+                        : null),
                 } as Transaction;
             });
 
@@ -122,13 +124,14 @@ export const useBtcTransactionsStore = defineStore('btcTransactions', {
             const lastExchangeRateUpdateTime = fiatStore.timestamp;
             const currentRate = fiatStore.exchangeRates[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates[CryptoCurrency.BTC]?.[FiatCurrency.USD];
-            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter((tx) =>
-                // Only update fiat amount if neither completely set for actual fiatCurrency nor historyFiatCurrency.
-                // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
-                // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
-                // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
-                // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
-                tx.outputs.some((output) => typeof output.fiatValue?.[fiatCurrency!] !== 'number')
+            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter(
+                (tx) =>
+                    // Only update fiat amount if neither completely set for actual fiatCurrency nor historyFiatCurrency.
+                    // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
+                    // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
+                    // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
+                    // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
+                    tx.outputs.some((output) => typeof output.fiatValue?.[fiatCurrency!] !== 'number')
                     && tx.outputs.some((output) => typeof output.fiatValue?.[historyFiatCurrency] !== 'number')
                     && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
                     // BTC transactions don't need to be filtered by age,
@@ -183,11 +186,12 @@ export const useBtcTransactionsStore = defineStore('btcTransactions', {
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction from the store in case the object changed in the meantime due to
                     // calculation of txDetails in addTransactions.
-                    tx = this.$state.transactions[tx.transactionHash] as typeof tx || tx;
+                    tx = (this.$state.transactions[tx.transactionHash] as typeof tx) || tx;
                     for (const output of tx.outputs) {
-                        Vue.set(output.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
-                            ? exchangeRate * (output.value / 1e8)
-                            : FIAT_PRICE_UNAVAILABLE,
+                        Vue.set(
+                            output.fiatValue!,
+                            historyFiatCurrency,
+                            exchangeRate !== undefined ? exchangeRate * (output.value / 1e8) : FIAT_PRICE_UNAVAILABLE,
                         );
                     }
 
@@ -229,9 +233,9 @@ async function detectSwap(transaction: Transaction) {
             transactionHash: transaction.transactionHash,
             outputIndex: fundingData.outputIndex,
             htlc: {
-                address: transaction.outputs
-                    .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
-                    .address || undefined,
+                address:
+                    transaction.outputs.find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!.address
+                    || undefined,
                 script: fundingData.script,
                 refundAddress: fundingData.refundAddress,
                 redeemAddress: fundingData.redeemAddress,
@@ -239,9 +243,9 @@ async function detectSwap(transaction: Transaction) {
             },
         });
 
-        const htlcAddress = transaction.outputs
-            .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
-            .address;
+        const htlcAddress = transaction.outputs.find(
+            (output) => output.address?.length === HTLC_ADDRESS_LENGTH,
+        )!.address;
         if (htlcAddress) {
             await detectSwapFiatCounterpart(htlcAddress, fundingData.hash, 'settlement', SwapAsset.BTC);
         }

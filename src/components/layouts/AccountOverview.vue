@@ -5,14 +5,11 @@
             class="backup-warning file nq-orange-bg flex-row"
         >
             <span class="alert-text">
-                <AlertTriangleIcon class="alert-icon"/>
+                <AlertTriangleIcon class="alert-icon" />
                 {{ $t('Your account is not safe yet!') }}
             </span>
-            <button
-                class="nq-button-s inverse"
-                @click="backup(activeAccountInfo.id, 'fileOnly')" @mousedown.prevent
-            >
-                {{ $t('Login File') }}<ArrowRightSmallIcon/>
+            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id, 'fileOnly')" @mousedown.prevent>
+                {{ $t('Login File') }}<ArrowRightSmallIcon />
             </button>
         </div>
         <div
@@ -20,65 +17,74 @@
             class="backup-warning words nq-orange flex-row"
         >
             <span class="alert-text">
-                <AlertTriangleIcon class="alert-icon"/>
+                <AlertTriangleIcon class="alert-icon" />
                 {{ $t('There is no ‘forgot password’') }}
             </span>
             <button
                 class="nq-button-pill orange"
-                @click.stop="$router.push({ name: RouteName.Backup })" @mousedown.prevent
+                @click.stop="$router.push({ name: RouteName.Backup })"
+                @mousedown.prevent
             >
-                {{ $t('Backup') }}<ArrowRightSmallIcon/>
+                {{ $t('Backup') }}<ArrowRightSmallIcon />
             </button>
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: 'true'}})">
-                <MenuIcon/>
-                <AttentionDot v-if="updateAvailable"/>
+            <button class="reset menu-button" @click="$router.push({ name: 'root', query: { sidebar: 'true' } })">
+                <MenuIcon />
+                <AttentionDot v-if="updateAvailable" />
             </button>
             <button class="reset consensus" @click="$router.push({ name: RouteName.Network }).catch(() => {})">
-                <ConsensusIcon/>
+                <ConsensusIcon />
             </button>
         </div>
 
         <template v-if="showFullLegacyAccountNotice">
-            <LegacyAccountNotice/>
+            <LegacyAccountNotice />
         </template>
 
         <template v-else>
             <AccountBalance />
 
-            <div class=account-grid>
+            <div class="account-grid">
                 <div class="nimiq-background">
-                    <div class="nimiq-account" ref="nimiqAccount$"
+                    <div
+                        class="nimiq-account"
+                        ref="nimiqAccount$"
                         :key="activeAccountId"
                         :class="{
                             scrolling: isNimiqAddressListScrolling,
-                        }">
+                        }"
+                    >
                         <header class="flex-row">
                             <span class="nq-icon nimiq-logo"></span>
                             <span>NIM</span>
                             <!-- <AccountStake v-if="totalAccountStake" /> -->
                             <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
-                                <MiniAddIcon/>
+                                <MiniAddIcon />
                             </button>
                         </header>
-                        <AddressList @address-selected="onAddressSelected"/>
+                        <AddressList @address-selected="onAddressSelected" />
                     </div>
                 </div>
 
                 <Tooltip
-                    v-if="!$config.disableNetworkInteraction
+                    v-if="
+                        !$config.disableNetworkInteraction
                         && $config.fastspot.enabled
-                        && hasBitcoinAddresses && $config.enableBitcoin
-                        && (nimAccountBalance > 0 || btcAccountBalance > 0)"
+                        && hasBitcoinAddresses
+                        && $config.enableBitcoin
+                        && (nimAccountBalance > 0 || btcAccountBalance > 0)
+                    "
                     class="nim-btc-swap-button"
                     ref="nimBtcSwapTooltip$"
                     :container="_self"
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger"
+                    <button
+                        class="reset"
+                        slot="trigger"
                         @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
                         @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
                         @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
@@ -91,17 +97,19 @@
                 </Tooltip>
 
                 <Tooltip
-                    v-if="!$config.disableNetworkInteraction
+                    v-if="
+                        !$config.disableNetworkInteraction
                         && $config.fastspot.enabled
-                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
-                        && hasPolygonAddresses && $config.polygon.enabled
-                        && (
-                            nimAccountBalance > 0
+                        && activeAccountInfo
+                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && hasPolygonAddresses
+                        && $config.polygon.enabled
+                        && (nimAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
-                                /* only swap with native USDC supported, not bridged */
-                                ? accountUsdcBalance
-                                : accountUsdtBridgedBalance) > 0
-                        )"
+                                ? /* only swap with native USDC supported, not bridged */
+                                  accountUsdcBalance
+                                : accountUsdtBridgedBalance) > 0)
+                    "
                     class="nim-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="nimUsdcSwapTooltip$"
@@ -109,13 +117,18 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger" :disabled="!stablecoin"
-                        @click="onSwapButtonPointerDown(
-                            $event,
-                            `${SwapAsset.NIM}-${stablecoin === CryptoCurrency.USDC
-                                ? SwapAsset.USDC_MATIC
-                                : SwapAsset.USDT_MATIC}`
-                        )"
+                    <button
+                        class="reset"
+                        slot="trigger"
+                        :disabled="!stablecoin"
+                        @click="
+                            onSwapButtonPointerDown(
+                                $event,
+                                `${SwapAsset.NIM}-${
+                                    stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
+                                }`,
+                            )
+                        "
                         @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
                         @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
                     >
@@ -130,49 +143,55 @@
                     </template>
                 </Tooltip>
 
-                <button v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
+                <button
+                    v-if="canHaveMultipleAddresses && $config.enableBitcoin"
+                    ref="bitcoinAccount$"
                     class="reset bitcoin-account flex-column"
                     :class="{
-                            'active': activeCurrency === CryptoCurrency.BTC,
-                            'requires-activation': !hasBitcoinAddresses,
-                        }"
-                    >
+                        active: activeCurrency === CryptoCurrency.BTC,
+                        'requires-activation': !hasBitcoinAddresses,
+                    }"
+                >
                     <div class="bitcoin-account-item reset flex-column" @click="selectBitcoin">
-                        <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
+                        <div class="bitcoin-account-item-name flex-row"><BitcoinIcon />{{ $t('Bitcoin') }}</div>
                         <div class="balances" v-if="hasBitcoinAddresses">
                             <div class="flex-row">
                                 <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
-                                <Amount
-                                    :amount="btcAccountBalance"
-                                    :currency="CryptoCurrency.BTC"
-                                    value-mask
-                                />
+                                <Amount :amount="btcAccountBalance" :currency="CryptoCurrency.BTC" value-mask />
                             </div>
-                            <FiatConvertedAmount class="fiat-balance"
+                            <FiatConvertedAmount
+                                class="fiat-balance"
                                 :amount="btcAccountBalance"
                                 :currency="CryptoCurrency.BTC"
                                 value-mask
                             />
                         </div>
-                        <button v-else
+                        <button
+                            v-else
                             class="nq-button-pill light-blue"
-                            @click.stop="$router.push({ name: RouteName.BtcActivation })" @mousedown.prevent
-                        >{{ $t('Activate') }}</button>
+                            @click.stop="$router.push({ name: RouteName.BtcActivation })"
+                            @mousedown.prevent
+                        >
+                            {{ $t('Activate') }}
+                        </button>
                     </div>
                 </button>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabled
-                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
-                        && hasBitcoinAddresses && $config.enableBitcoin
-                        && hasPolygonAddresses && $config.polygon.enabled
-                        && (
-                            btcAccountBalance > 0
+                    v-if="
+                        $config.fastspot.enabled
+                        && activeAccountInfo
+                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && hasBitcoinAddresses
+                        && $config.enableBitcoin
+                        && hasPolygonAddresses
+                        && $config.polygon.enabled
+                        && (btcAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
-                                /* only swap with native USDC supported, not bridged */
-                                ? accountUsdcBalance
-                                : accountUsdtBridgedBalance) > 0
-                        )"
+                                ? /* only swap with native USDC supported, not bridged */
+                                  accountUsdcBalance
+                                : accountUsdtBridgedBalance) > 0)
+                    "
                     class="btc-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="btcUsdcSwapTooltip$"
@@ -180,13 +199,18 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger" :disabled="!stablecoin"
-                        @click="onSwapButtonPointerDown(
-                            $event,
-                            `${SwapAsset.BTC}-${stablecoin === CryptoCurrency.USDC
-                                ? SwapAsset.USDC_MATIC
-                                : SwapAsset.USDT_MATIC}`
-                        )"
+                    <button
+                        class="reset"
+                        slot="trigger"
+                        :disabled="!stablecoin"
+                        @click="
+                            onSwapButtonPointerDown(
+                                $event,
+                                `${SwapAsset.BTC}-${
+                                    stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
+                                }`,
+                            )
+                        "
                         @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
                         @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
                     >
@@ -201,37 +225,48 @@
                     </template>
                 </Tooltip>
 
-                <button v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
+                <button
+                    v-if="
+                        activeAccountInfo
+                        && activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
-                        && $config.polygon.enabled" ref="usdcAccount$"
+                        && $config.polygon.enabled
+                    "
+                    ref="usdcAccount$"
                     class="reset usdc-account flex-column"
                     :class="{
-                            'active': activeCurrency === CryptoCurrency.USDC || activeCurrency === CryptoCurrency.USDT,
-                            'requires-activation': !hasPolygonAddresses || !stablecoin,
-                        }"
-                    >
+                        active: activeCurrency === CryptoCurrency.USDC || activeCurrency === CryptoCurrency.USDT,
+                        'requires-activation': !hasPolygonAddresses || !stablecoin,
+                    }"
+                >
                     <div class="usdc-account-item reset flex-column" @click="selectStablecoin">
                         <div class="usdc-account-item-name flex-row">
                             <template v-if="!stablecoin">
-                                <UsdcIcon/><UsdtIconPadded class="pull-left"/>USDC/USDT
+                                <UsdcIcon /><UsdtIconPadded class="pull-left" />USDC/USDT
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDC">
-                                <UsdcIcon/>{{ $t('USD Coin') }}
+                                <UsdcIcon />{{ $t('USD Coin') }}
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDT">
-                                <UsdtIcon/>{{ $t('Tether USD') }}
+                                <UsdtIcon />{{ $t('Tether USD') }}
                             </template>
                         </div>
                         <div class="balances" v-if="hasPolygonAddresses">
                             <template v-if="!stablecoin">
                                 <button
                                     class="nq-button-pill light-blue"
-                                    @click.stop="$router.push({ name: 'stablecoin-selection' })" @mousedown.prevent
-                                >{{ $t('Choose Stablecoin') }}</button>
+                                    @click.stop="$router.push({ name: 'stablecoin-selection' })"
+                                    @mousedown.prevent
+                                >
+                                    {{ $t('Choose Stablecoin') }}
+                                </button>
                             </template>
-                            <template v-else-if="stablecoin === CryptoCurrency.USDC
-                                && accountUsdcBalance !== null
-                                && accountUsdcBridgedBalance !== null"
+                            <template
+                                v-else-if="
+                                    stablecoin === CryptoCurrency.USDC
+                                    && accountUsdcBalance !== null
+                                    && accountUsdcBridgedBalance !== null
+                                "
                             >
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
@@ -241,14 +276,15 @@
                                         value-mask
                                     />
                                 </div>
-                                <FiatConvertedAmount class="fiat-balance"
+                                <FiatConvertedAmount
+                                    class="fiat-balance"
                                     :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                                     :currency="CryptoCurrency.USDC"
                                     value-mask
                                 />
                             </template>
-                            <template v-else-if="stablecoin === CryptoCurrency.USDT
-                                && accountUsdtBridgedBalance !== null"
+                            <template
+                                v-else-if="stablecoin === CryptoCurrency.USDT && accountUsdtBridgedBalance !== null"
                             >
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
@@ -258,7 +294,8 @@
                                         value-mask
                                     />
                                 </div>
-                                <FiatConvertedAmount class="fiat-balance"
+                                <FiatConvertedAmount
+                                    class="fiat-balance"
                                     :amount="accountUsdtBridgedBalance"
                                     :currency="CryptoCurrency.USDT"
                                     value-mask
@@ -268,16 +305,20 @@
                                 <CircleSpinner />
                             </template>
                         </div>
-                        <button v-else
+                        <button
+                            v-else
                             class="nq-button-pill light-blue"
-                            @click.stop="$router.push({ name: RouteName.PolygonActivation })" @mousedown.prevent
-                        >{{ $t('Activate') }}</button>
+                            @click.stop="$router.push({ name: RouteName.PolygonActivation })"
+                            @mousedown.prevent
+                        >
+                            {{ $t('Activate') }}
+                        </button>
                     </div>
                 </button>
             </div>
 
             <div v-if="!canHaveMultipleAddresses">
-                <LegacyAccountUpgradeButton/>
+                <LegacyAccountUpgradeButton />
                 <p class="future-notice">
                     {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
                 </p>
@@ -285,14 +326,16 @@
 
             <div class="bottom-spacer"></div>
 
-            <MobileActionBar/>
+            <MobileActionBar />
         </template>
 
         <Portal>
             <transition name="modal">
                 <LegacyAccountNoticeModal
                     v-if="showModalLegacyAccountNotice"
-                    emitClose @close="showModalLegacyAccountNotice = false"/>
+                    emitClose
+                    @close="showModalLegacyAccountNotice = false"
+                />
             </transition>
         </Portal>
 
@@ -305,42 +348,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onActivated } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
-import { RouteName, useRouter } from '@/router';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, watch, onActivated } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { RouteName, useRouter } from '@/router';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { backup, addAddress } from '../../hub';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
+import { useSettingsStore } from '../../stores/Settings';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
+import Amount from '../Amount.vue';
+// import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
+import AttentionDot from '../AttentionDot.vue';
+import ConsensusIcon from '../ConsensusIcon.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
+import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
+import MenuIcon from '../icons/MenuIcon.vue';
+import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
 import UsdtIconPadded from '../icons/UsdtIconPadded.vue';
-import MenuIcon from '../icons/MenuIcon.vue';
-import Amount from '../Amount.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import ConsensusIcon from '../ConsensusIcon.vue';
-import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
+import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
-// import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
-import AttentionDot from '../AttentionDot.vue';
-import { backup, addAddress } from '../../hub';
-import { useAccountStore, AccountType } from '../../stores/Account';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { CryptoCurrency } from '../../lib/Constants';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
-import { useSettingsStore } from '../../stores/Settings';
-import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
-import MiniAddIcon from '../icons/MiniAddIcon.vue';
-import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
-import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
-import { useAddressStore } from '../../stores/Address';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
 
@@ -348,28 +391,22 @@ export default defineComponent({
     name: 'account-overview',
     setup() {
         const router = useRouter();
-        const {
-            activeAccountInfo,
-            activeAccountId,
-            activeCurrency,
-            hasBitcoinAddresses,
-            hasPolygonAddresses,
-        } = storeToRefs(useAccountStore());
+        const { activeAccountInfo, activeAccountId, activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } =
+            storeToRefs(useAccountStore());
         const { setActiveCurrency } = useAccountStore();
         const { accountBalance: nimAccountBalance } = storeToRefs(useAddressStore());
         const { accountBalance: btcAccountBalance } = storeToRefs(useBtcAddressStore());
-        const {
-            accountUsdcBridgedBalance,
-            accountUsdcBalance,
-            accountUsdtBridgedBalance,
-        } = storeToRefs(usePolygonAddressStore());
+        const { accountUsdcBridgedBalance, accountUsdcBalance, accountUsdtBridgedBalance } =
+            storeToRefs(usePolygonAddressStore());
         const { stablecoin, knowsAboutUsdt } = storeToRefs(useAccountSettingsStore());
 
-        const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
-            && activeAccountInfo.value.type === AccountType.LEGACY);
+        const isLegacyAccount = computed(
+            () => (activeAccountInfo.value || false) && activeAccountInfo.value.type === AccountType.LEGACY,
+        );
 
-        const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
-            && activeAccountInfo.value.type !== AccountType.LEGACY);
+        const canHaveMultipleAddresses = computed(
+            () => (activeAccountInfo.value || false) && activeAccountInfo.value.type !== AccountType.LEGACY,
+        );
 
         const { isMobile, isTablet } = useWindowSize();
 
@@ -406,10 +443,9 @@ export default defineComponent({
             }
         }
 
-        const showFullLegacyAccountNotice = computed(() =>
-            isLegacyAccount.value
-            && activeAccountInfo.value!.addresses.length === 1
-            && !isTablet.value);
+        const showFullLegacyAccountNotice = computed(
+            () => isLegacyAccount.value && activeAccountInfo.value!.addresses.length === 1 && !isTablet.value,
+        );
 
         const showModalLegacyAccountNotice = ref(false);
 
@@ -560,12 +596,14 @@ export default defineComponent({
         --padding-bottom: 0;
     }
 
-    @media (max-width: $tabletBreakpoint) { // Tablet breakpoint
+    @media (max-width: $tabletBreakpoint) {
+        // Tablet breakpoint
         --padding-top: 3rem;
         --padding-sides: 3rem;
     }
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         --padding-top: 1rem;
         --padding-sides: 1rem;
     }
@@ -653,7 +691,7 @@ export default defineComponent({
 
 .address-list {
     height: auto;
-    padding-bottom: .5rem;
+    padding-bottom: 0.5rem;
     z-index: 2;
 }
 
@@ -773,13 +811,18 @@ export default defineComponent({
         overflow-x: hidden;
 
         mask-repeat: no-repeat;
-        mask: linear-gradient(to bottom,
-            transparent, transparent 1rem, black 3rem,
-            black calc(100% - 3rem), transparent calc(100% - 1rem), transparent
-        ) left / calc(100% - 0.6rem) 100%,
-        linear-gradient(to left,
-            black 0px, black 0.6rem, transparent 1.2rem, transparent 100%
-        ) right / 100% 100%;
+        mask:
+            linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparent 1rem,
+                    black 3rem,
+                    black calc(100% - 3rem),
+                    transparent calc(100% - 1rem),
+                    transparent
+                )
+                left / calc(100% - 0.6rem) 100%,
+            linear-gradient(to left, black 0px, black 0.6rem, transparent 1.2rem, transparent 100%) right / 100% 100%;
     }
 
     header {
@@ -796,7 +839,7 @@ export default defineComponent({
         }
 
         .nq-icon + span {
-            opacity: .7;
+            opacity: 0.7;
         }
     }
 
@@ -818,7 +861,7 @@ export default defineComponent({
             width: 8px;
             height: auto;
             color: var(--nimiq-blue);
-            opacity: .6;
+            opacity: 0.6;
 
             path {
                 stroke-width: 2px;
@@ -896,7 +939,7 @@ export default defineComponent({
         border-radius: 0.75rem;
 
         &::before {
-            content: "";
+            content: '';
             position: absolute;
             top: 0;
             bottom: 0;
@@ -912,7 +955,7 @@ export default defineComponent({
                 property: opacity, box-shadow;
                 duration: 350ms;
                 timing-function: cubic-bezier(0.4, 0, 0, 1);
-            };
+            }
         }
     }
 
@@ -954,7 +997,7 @@ export default defineComponent({
             &.pull-left {
                 width: 3.75rem;
                 margin-left: -2rem;
-                stroke: #E7E8EA;
+                stroke: #e7e8ea;
                 stroke-width: 14;
                 paint-order: stroke fill;
             }
@@ -988,7 +1031,9 @@ export default defineComponent({
 .nim-usdc-swap-button,
 .nim-btc-swap-button,
 .btc-usdc-swap-button {
-    ::v-deep .trigger { pointer-events: none }
+    ::v-deep .trigger {
+        pointer-events: none;
+    }
     button {
         --size: 3rem;
         --transition-duration: 200ms;
@@ -1030,7 +1075,7 @@ export default defineComponent({
             property: height, width, background-color, outline;
             duration: var(--transition-duration);
             timing-function: var(--nimiq-ease);
-        };
+        }
 
         svg {
             opacity: 0;
@@ -1045,7 +1090,7 @@ export default defineComponent({
             path {
                 transition: d var(--transition-duration) var(--nimiq-ease);
 
-                d: path("m4 7 0 0 0 0m0 0 0 0 0 0");
+                d: path('m4 7 0 0 0 0m0 0 0 0 0 0');
             }
         }
     }
@@ -1068,7 +1113,9 @@ export default defineComponent({
             svg {
                 opacity: 1;
 
-                path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
+                path {
+                    d: path('m1 4 3-3 3 3m0 6-3 3-3-3');
+                }
             }
         }
     }
@@ -1098,7 +1145,8 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .mobile-menu-bar {
         display: flex;
         flex-shrink: 0;
@@ -1167,13 +1215,15 @@ export default defineComponent({
         margin-top: -4rem;
     }
 }
-@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) {
+    // Tablet breakpoint
     .account-balance {
         margin-top: -2rem;
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .address-list {
         margin-top: var(--item-margin);
     }
@@ -1206,15 +1256,19 @@ export default defineComponent({
     .nim-usdc-swap-button,
     .nim-btc-swap-button,
     .btc-usdc-swap-button {
-        button { --size: 4rem }
+        button {
+            --size: 4rem;
+        }
 
         .inner-circle {
             background: none;
 
             svg {
                 height: 1.75rem;
-                opacity: .4;
-                path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
+                opacity: 0.4;
+                path {
+                    d: path('m1 4 3-3 3 3m0 6-3 3-3-3');
+                }
             }
         }
     }
@@ -1225,7 +1279,8 @@ export default defineComponent({
     }
 }
 
-@media (max-height: 520px) { // small mobile
+@media (max-height: 520px) {
+    // small mobile
     .mobile-menu-bar,
     .bitcoin-account,
     .usdc-account {
@@ -1237,7 +1292,8 @@ export default defineComponent({
     }
 }
 
-@media (max-height: 450px) { // tiny mobile
+@media (max-height: 450px) {
+    // tiny mobile
     .account-balance-container {
         margin-top: -3rem;
     }

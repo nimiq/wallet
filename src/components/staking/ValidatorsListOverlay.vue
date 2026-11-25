@@ -25,21 +25,21 @@
                             </div>
                         </div>
                         <div class="reward-info">
-                            <Amount
-                                class="reward-amount nq-green"
-                                :amount="validatorReward.amount"
-                                value-mask
-                            />
+                            <Amount class="reward-amount nq-green" :amount="validatorReward.amount" value-mask />
                             <div class="fiat-amount">
                                 <FiatAmount
-                                    v-if="validatorReward.fiatValue !== undefined
-                                        && validatorReward.fiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                                    v-if="
+                                        validatorReward.fiatValue !== undefined
+                                        && validatorReward.fiatValue !== constants.FIAT_PRICE_UNAVAILABLE
+                                    "
                                     :amount="validatorReward.fiatValue"
                                     :currency="fiatCurrency"
                                     value-mask
                                 />
-                                <span v-else-if="validatorReward.fiatValue === constants.FIAT_PRICE_UNAVAILABLE"
-                                    class="unavailable">
+                                <span
+                                    v-else-if="validatorReward.fiatValue === constants.FIAT_PRICE_UNAVAILABLE"
+                                    class="unavailable"
+                                >
                                     {{ $t('unavailable') }}
                                 </span>
                                 <div v-else class="amount-loading-placeholder"></div>
@@ -53,24 +53,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
-import { useFiatStore } from '@/stores/Fiat';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
-import { Validator, useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
-import { useI18n } from '../../lib/useI18n';
+import { useFiatStore } from '@/stores/Fiat';
 import { buildRewardsByValidatorMap, getEndOfMonthTimestamp, isCurrentMonthAndYear } from '../../lib/StakingUtils';
-import ValidatorIcon from './ValidatorIcon.vue';
-import ShortAddress from '../ShortAddress.vue';
+import { useI18n } from '../../lib/useI18n';
+import { Validator, useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 import Amount from '../Amount.vue';
+import ShortAddress from '../ShortAddress.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 type ValidatorReward = {
-    validator: Validator | { address: string },
-    amount: number,
-    dateLabel: string,
-    fiatValue?: number | typeof FIAT_PRICE_UNAVAILABLE,
+    validator: Validator | { address: string };
+    amount: number;
+    dateLabel: string;
+    fiatValue?: number | typeof FIAT_PRICE_UNAVAILABLE;
 };
 
 export default defineComponent({
@@ -90,10 +90,11 @@ export default defineComponent({
         const { $t, locale } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
-        const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
-            preferredFiatCurrency.value,
-            FIAT_API_PROVIDER_TX_HISTORY,
-        ) ? preferredFiatCurrency.value : FiatCurrency.USD);
+        const fiatCurrency = computed(() =>
+            isHistorySupportedFiatCurrency(preferredFiatCurrency.value, FIAT_API_PROVIDER_TX_HISTORY)
+                ? preferredFiatCurrency.value
+                : FiatCurrency.USD,
+        );
 
         // Get events for this month
         const monthEvents = computed(() => {
@@ -124,7 +125,8 @@ export default defineComponent({
                 const sortedTimestamps = [...validatorData.timestamps].sort((a, b) => a - b);
                 const firstDate = new Date(sortedTimestamps[0]);
                 const lastDate = new Date(sortedTimestamps[sortedTimestamps.length - 1]);
-                const isOngoing = lastDate.getMonth() === new Date().getMonth()
+                const isOngoing =
+                    lastDate.getMonth() === new Date().getMonth()
                     && lastDate.getFullYear() === new Date().getFullYear();
 
                 let dateLabel = '';
@@ -159,7 +161,7 @@ export default defineComponent({
 
         const loadFiatValues = async (
             events: readonly AggregatedRestakingEvent[],
-            rewardsByValidator: Map<string, { amount: number, timestamps: number[] }>,
+            rewardsByValidator: Map<string, { amount: number; timestamps: number[] }>,
         ) => {
             // Determine if this is the current month using helper function
             const { isCurrentMonth } = isCurrentMonthAndYear(props.month);
@@ -199,8 +201,7 @@ export default defineComponent({
                 validatorRewards.value = updatedRewards;
             } else {
                 // For current month: Use historic rates for each individual reward event
-                const allTimestamps = Array.from(rewardsByValidator.values())
-                    .flatMap((data) => data.timestamps);
+                const allTimestamps = Array.from(rewardsByValidator.values()).flatMap((data) => data.timestamps);
                 const ratesMap = await getHistoricExchangeRates(
                     CryptoCurrency.NIM,
                     fiatCurrency.value,
@@ -247,22 +248,24 @@ export default defineComponent({
         };
 
         // Recalculate rewards when month, validators, or events change
-        watch([
-            () => props.month,
-            () => props.validators,
-            () => monthEvents.value.length,
-        ], calculateValidatorRewards, { immediate: true });
+        watch([() => props.month, () => props.validators, () => monthEvents.value.length], calculateValidatorRewards, {
+            immediate: true,
+        });
 
         // Reload fiat values when currency changes (without recalculating the entire list)
-        watch(() => fiatCurrency.value, () => {
-            const events = monthEvents.value;
-            if (!events.length) return;
+        watch(
+            () => fiatCurrency.value,
+            () => {
+                const events = monthEvents.value;
+                if (!events.length) return;
 
-            // Rebuild rewardsByValidator map
-            const rewardsByValidator = buildRewardsByValidatorMap(events);
+                // Rebuild rewardsByValidator map
+                const rewardsByValidator = buildRewardsByValidatorMap(events);
 
-            loadFiatValues(events, rewardsByValidator);
-        }, { immediate: true });
+                loadFiatValues(events, rewardsByValidator);
+            },
+            { immediate: true },
+        );
 
         return {
             validatorRewards,

@@ -1,5 +1,5 @@
-import { UTXO } from '../stores/BtcAddress';
 import { useConfig } from '../composables/useConfig';
+import { UTXO } from '../stores/BtcAddress';
 import { BTC_DUST_LIMIT, ENV_MAIN } from './Constants';
 
 // Source for Weight Units: https://bitcoinops.org/en/tools/calc-size/
@@ -28,22 +28,25 @@ export function selectOutputs(
     extraWeightUnits = 0,
 ) {
     // Group UTXOs by address and sort by value ASC
-    const balances: {script: string, balance: number, count: number}[] = Object.values(
+    const balances: { script: string; balance: number; count: number }[] = Object.values(
         utxos
             .map((utxo) => ({ script: utxo.witness.script, balance: utxo.witness.value }))
-            .reduce((obj, utxo) => {
-                const existingBalance = obj[utxo.script];
-                if (existingBalance) {
-                    existingBalance.balance += utxo.balance;
-                    existingBalance.count += 1;
-                } else {
-                    obj[utxo.script] = {
-                        ...utxo,
-                        count: 1,
-                    };
-                }
-                return obj;
-            }, {} as {[script: string]: {script: string, balance: number, count: number}}),
+            .reduce(
+                (obj, utxo) => {
+                    const existingBalance = obj[utxo.script];
+                    if (existingBalance) {
+                        existingBalance.balance += utxo.balance;
+                        existingBalance.count += 1;
+                    } else {
+                        obj[utxo.script] = {
+                            ...utxo,
+                            count: 1,
+                        };
+                    }
+                    return obj;
+                },
+                {} as { [script: string]: { script: string; balance: number; count: number } },
+            ),
     ).sort((a, b) => a.balance - b.balance);
 
     // Sum up outputs until we find a sum that is bigger than the amount + fees
@@ -94,17 +97,21 @@ export const BIP84_ADDRESS_PREFIX = {
 };
 
 export async function validateAddress(address: string) {
-    const {
-        fromBase58Check: addressFromBase58Check,
-        fromBech32: addressFromBech32,
-    } = await import('bitcoinjs-lib/src/address'); // eslint-disable-line import/extensions, import/no-unresolved
+    const { fromBase58Check: addressFromBase58Check, fromBech32: addressFromBech32 } =
+        await import('bitcoinjs-lib/src/address'); // eslint-disable-line import/extensions, import/no-unresolved
     return validateAddressSync(address, { addressFromBase58Check, addressFromBech32 });
 }
 
-export function validateAddressSync(address: string, { addressFromBase58Check, addressFromBech32 }: {
-    addressFromBase58Check: (typeof import('bitcoinjs-lib/src/address'))['fromBase58Check'],
-    addressFromBech32: (typeof import('bitcoinjs-lib/src/address'))['fromBech32'],
-}) {
+export function validateAddressSync(
+    address: string,
+    {
+        addressFromBase58Check,
+        addressFromBech32,
+    }: {
+        addressFromBase58Check: (typeof import('bitcoinjs-lib/src/address'))['fromBase58Check'];
+        addressFromBech32: (typeof import('bitcoinjs-lib/src/address'))['fromBech32'];
+    },
+) {
     const { config } = useConfig();
     const network = config.environment === ENV_MAIN ? 'MAIN' : 'TEST';
     try {

@@ -1,5 +1,6 @@
 <template>
-    <Tooltip class="validator-description-tooltip"
+    <Tooltip
+        class="validator-description-tooltip"
         :preferredPosition="preferredPosition"
         :disabled="disabled"
         :container="container && { $el: container }"
@@ -13,11 +14,14 @@
         </blockquote>
 
         <p>{{ $t('The validator is solely responsible for information provided above.') }}</p>
-        <BlueLink v-if="'link' in validator && 'name' in validator"
-            :href="validator.link" target="_blank" rel="noopener">
+        <BlueLink
+            v-if="'link' in validator && 'name' in validator"
+            :href="validator.link"
+            target="_blank"
+            rel="noopener"
+        >
             {{ $t('{poolName} Website', { poolName: validator.name }) }}
         </BlueLink>
-
     </Tooltip>
 </template>
 
@@ -62,14 +66,18 @@ export default defineComponent({
         z-index: 2;
     }
 
-    &[class*='position-top'] ::v-deep .tooltip-box { transform: translateY(-1.9rem) }
-    &[class*='position-bottom'] ::v-deep .tooltip-box { transform: translateY(1.9rem) }
+    &[class*='position-top'] ::v-deep .tooltip-box {
+        transform: translateY(-1.9rem);
+    }
+    &[class*='position-bottom'] ::v-deep .tooltip-box {
+        transform: translateY(1.9rem);
+    }
 }
 
 blockquote {
     margin: 0;
     padding-left: 1.25rem;
-    border-left: 1.5px solid rgba(white, .4);
+    border-left: 1.5px solid rgba(white, 0.4);
 
     font-size: 2rem;
     line-height: 130%;
@@ -79,13 +87,13 @@ blockquote {
         margin: 0;
     }
     span.no-description {
-        opacity: .25;
+        opacity: 0.25;
         font-style: italic;
     }
 }
 
 p:not(.description) {
-    opacity: .6;
+    opacity: 0.6;
     font-size: 1.75rem;
     line-height: 130%;
 }

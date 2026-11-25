@@ -1,10 +1,10 @@
 import { CurrencyInfo } from '@nimiq/utils';
-import { type FiatCurrency } from '../Constants';
+import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { toMs, Transaction as NimTx } from '../../stores/Transactions';
-import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
+import { type FiatCurrency } from '../Constants';
 import { Format } from './Format';
 import { ExportFormat } from './TransactionExport';
 
@@ -32,7 +32,7 @@ export class GenericFormat extends Format {
 
     constructor(
         public override nimAddresses: string[],
-        public override btcAddresses: { internal: string[], external: string[] },
+        public override btcAddresses: { internal: string[]; external: string[] },
         public override usdcAddresses: string[],
         public override usdtAddresses: string[],
         public override transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
@@ -72,10 +72,7 @@ export class GenericFormat extends Format {
         let fiatOut: number | undefined;
 
         if (txIn) {
-            ({
-                value: valueIn,
-                fiatValue: fiatIn,
-            } = this.getValue(txIn, true, this.referenceAsset));
+            ({ value: valueIn, fiatValue: fiatIn } = this.getValue(txIn, true, this.referenceAsset));
         }
         if (txOut) {
             ({
@@ -89,8 +86,10 @@ export class GenericFormat extends Format {
         if (txOut) this.assertAndSetCryptoAsset(txOut);
 
         let message = messageOverride || '';
-        if (!message && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
-            || (txOut && txOut.asset === 'NIM' && !txIn))) {
+        if (
+            !message
+            && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut) || (txOut && txOut.asset === 'NIM' && !txIn))
+        ) {
             message = this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn);
         }
 
@@ -116,13 +115,13 @@ export class GenericFormat extends Format {
         const txDate = this.getTxDate(timestamp);
         const date = [
             txDate.year,
-            (txDate.month).toString().padStart(2, '0'),
-            (txDate.date).toString().padStart(2, '0'),
+            txDate.month.toString().padStart(2, '0'),
+            txDate.date.toString().padStart(2, '0'),
         ].join('/');
         const time = [
-            (txDate.hour).toString().padStart(2, '0'),
-            (txDate.minute).toString().padStart(2, '0'),
-            (txDate.second).toString().padStart(2, '0'),
+            txDate.hour.toString().padStart(2, '0'),
+            txDate.minute.toString().padStart(2, '0'),
+            txDate.second.toString().padStart(2, '0'),
         ].join(':');
         return {
             date,

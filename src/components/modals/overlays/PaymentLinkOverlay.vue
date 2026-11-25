@@ -10,53 +10,55 @@
             <div class="inputs">
                 <div class="separator"></div>
 
-                <AmountInput v-if="activeCurrency === 'nim' || activeCurrency === 'btc'"
-                    v-model="amount" :decimals="currency === 'btc' ? btcUnit.decimals : undefined"
-                    :maxFontSize="5" ref="amountInputRef"
+                <AmountInput
+                    v-if="activeCurrency === 'nim' || activeCurrency === 'btc'"
+                    v-model="amount"
+                    :decimals="currency === 'btc' ? btcUnit.decimals : undefined"
+                    :maxFontSize="5"
+                    ref="amountInputRef"
                 >
-                    <AmountMenu slot="suffix" class="ticker"
+                    <AmountMenu
+                        slot="suffix"
+                        class="ticker"
                         :open="amountMenuOpened"
                         :currency="currency"
                         :activeCurrency="activeCurrency === 'nim' ? activeCurrency : btcUnit.ticker.toLowerCase()"
                         :fiatCurrency="fiatCurrency"
                         :otherFiatCurrencies="otherFiatCurrencies"
-                        :feeOption="false" :sendAllOption="false"
-                        @currency="(currency) => activeCurrency = currency"
-                        @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                        :feeOption="false"
+                        :sendAllOption="false"
+                        @currency="(currency) => (activeCurrency = currency)"
+                        @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                    />
                 </AmountInput>
-                <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" :maxFontSize="5" >
+                <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" :maxFontSize="5">
                     <span slot="prefix" class="tilde">~</span>
-                    <AmountMenu slot="suffix" class="ticker"
+                    <AmountMenu
+                        slot="suffix"
+                        class="ticker"
                         :open="amountMenuOpened"
                         :currency="currency"
                         :activeCurrency="activeCurrency"
                         :fiatCurrency="fiatCurrency"
                         :otherFiatCurrencies="otherFiatCurrencies"
-                        :feeOption="false" :sendAllOption="false"
-                        @currency="(currency) => activeCurrency = currency"
-                        @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                        :feeOption="false"
+                        :sendAllOption="false"
+                        @currency="(currency) => (activeCurrency = currency)"
+                        @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                    />
                 </AmountInput>
 
                 <div class="secondary-amount">
                     <span v-if="activeCurrency === 'nim' || activeCurrency === 'btc'" key="fiat-amount">
-                        {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" :currency="activeCurrency"/>
+                        {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" :currency="activeCurrency" />
                     </span>
-                    <span v-else-if="currency === 'nim'" key="nim-amount">
-                        {{ amount / 1e5 }} NIM
-                    </span>
-                    <span v-else key="btc-amount">
-                        {{ amount / btcUnit.unitToCoins }} {{ btcUnit.ticker }}
-                    </span>
+                    <span v-else-if="currency === 'nim'" key="nim-amount"> {{ amount / 1e5 }} NIM </span>
+                    <span v-else key="btc-amount"> {{ amount / btcUnit.unitToCoins }} {{ btcUnit.ticker }} </span>
                 </div>
 
                 <div class="separator"></div>
             </div>
-            <QrCode
-                :data="requestLink"
-                :size="400"
-                :fill="'#1F2348' /* nimiq-blue */"
-                class="qr-code"
-            />
+            <QrCode :data="requestLink" :size="400" :fill="'#1F2348' /* nimiq-blue */" class="qr-code" />
             <Copyable :text="`${origin}/${requestLink}`">
                 {{ origin.replace(/https?:\/\//, '') }}/{{ requestLink }}
             </Copyable>
@@ -65,16 +67,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, watchEffect } from 'vue';
-import { storeToRefs } from 'pinia';
-import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
 import { createRequestLink, CurrencyInfo, GeneralRequestLinkOptions, NimiqRequestLinkType } from '@nimiq/utils';
+import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, computed, watch, watchEffect } from 'vue';
 import { useSettingsStore } from '@/stores/Settings';
+import { CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../../lib/Constants';
+import { useFiatStore } from '../../../stores/Fiat';
 import AmountInput from '../../AmountInput.vue';
 import AmountMenu from '../../AmountMenu.vue';
 import FiatConvertedAmount from '../../FiatConvertedAmount.vue';
-import { CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../../lib/Constants';
-import { useFiatStore } from '../../../stores/Fiat';
 
 export default defineComponent({
     props: {
@@ -88,21 +90,22 @@ export default defineComponent({
             validator: (currency: CryptoCurrency) => Object.values(CryptoCurrency).includes(currency),
         },
     },
-    setup(props/* , context */) {
+    setup(props /* , context */) {
         const amount = ref(0);
         const message = ref('');
         const { btcUnit } = storeToRefs(useSettingsStore());
 
-        const requestLinkOptions = computed(() => ({
-            type: props.currency === CryptoCurrency.NIM ? NimiqRequestLinkType.URI : undefined,
-            amount: amount.value,
-            currency: props.currency,
-            message: message.value,
-        } as GeneralRequestLinkOptions));
-
-        const requestLink = computed(
-            () => createRequestLink(props.address, requestLinkOptions.value),
+        const requestLinkOptions = computed(
+            () =>
+                ({
+                    type: props.currency === CryptoCurrency.NIM ? NimiqRequestLinkType.URI : undefined,
+                    amount: amount.value,
+                    currency: props.currency,
+                    message: message.value,
+                }) as GeneralRequestLinkOptions,
         );
+
+        const requestLink = computed(() => createRequestLink(props.address, requestLinkOptions.value));
 
         const amountMenuOpened = ref(false);
         const activeCurrency = ref(props.currency);
@@ -119,28 +122,33 @@ export default defineComponent({
             return new CurrencyInfo(activeCurrency.value);
         });
 
-        const fiatToCoinDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals
-            / (props.currency === CryptoCurrency.NIM ? 1e5 : 1e8));
+        const fiatToCoinDecimalRatio = computed(
+            () => 10 ** fiatCurrencyInfo.value.decimals / (props.currency === CryptoCurrency.NIM ? 1e5 : 1e8),
+        );
 
-        watch(activeCurrency, (currency) => {
-            if (currency === CryptoCurrency.NIM || currency === CryptoCurrency.BTC) {
-                fiatAmount.value = 0;
-                return;
-            }
+        watch(
+            activeCurrency,
+            (currency) => {
+                if (currency === CryptoCurrency.NIM || currency === CryptoCurrency.BTC) {
+                    fiatAmount.value = 0;
+                    return;
+                }
 
-            // Fiat store already has all exchange rates for all supported fiat currencies
-            // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value
-                * fiat$.exchangeRates[props.currency][currency]!
-                * fiatToCoinDecimalRatio.value;
-        }, { immediate: true });
+                // Fiat store already has all exchange rates for all supported fiat currencies
+                // TODO: What to do when exchange rates are not yet populated?
+                fiatAmount.value =
+                    amount.value * fiat$.exchangeRates[props.currency][currency]! * fiatToCoinDecimalRatio.value;
+            },
+            { immediate: true },
+        );
 
         watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) return;
             amount.value = Math.floor(
                 fiatAmount.value
-                / exchangeRates.value[props.currency][activeCurrency.value]!
-                / fiatToCoinDecimalRatio.value);
+                    / exchangeRates.value[props.currency][activeCurrency.value]!
+                    / fiatToCoinDecimalRatio.value,
+            );
         });
 
         return {

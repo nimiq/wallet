@@ -29,14 +29,24 @@ setTimeout(() => {
             switch (meta.column) {
                 case Columns.DYNAMIC:
                     switch (path) {
-                        case '/': activeMobileColumn.value = ColumnType.ACCOUNT; break;
-                        case '/transactions': activeMobileColumn.value = ColumnType.ADDRESS; break;
-                        default: break; // Don't change column
+                        case '/':
+                            activeMobileColumn.value = ColumnType.ACCOUNT;
+                            break;
+                        case '/transactions':
+                            activeMobileColumn.value = ColumnType.ADDRESS;
+                            break;
+                        default:
+                            break; // Don't change column
                     }
                     break;
-                case Columns.ACCOUNT: activeMobileColumn.value = ColumnType.ACCOUNT; break;
-                case Columns.ADDRESS: activeMobileColumn.value = ColumnType.ADDRESS; break;
-                default: break;
+                case Columns.ACCOUNT:
+                    activeMobileColumn.value = ColumnType.ACCOUNT;
+                    break;
+                case Columns.ADDRESS:
+                    activeMobileColumn.value = ColumnType.ADDRESS;
+                    break;
+                default:
+                    break;
             }
         }
 

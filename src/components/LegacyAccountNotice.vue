@@ -9,21 +9,21 @@
         <section class="flex-column">
             <div class="flex-spacer"></div>
             <div class="flex-row">
-                <img src="../assets/account-ring.png" alt="Identicons of an account">
+                <img src="../assets/account-ring.png" alt="Identicons of an account" />
                 <div class="text">
                     <h2 class="nq-h2">{{ $t('Multiple Addresses') }}</h2>
                     <p class="nq-text">{{ $t('One account can now have multiple addresses.') }}</p>
                 </div>
             </div>
             <div class="flex-row">
-                <BitcoinIcon/>
+                <BitcoinIcon />
                 <div class="text">
                     <h2 class="nq-h2">{{ $t('Bitcoin') }}</h2>
                     <p class="nq-text">{{ $t('Send, receive and hold BTC in your wallet.') }}</p>
                 </div>
             </div>
             <div class="flex-row staking">
-                <img src="../assets/staking-preview-icon.svg" alt="Staking Icon">
+                <img src="../assets/staking-preview-icon.svg" alt="Staking Icon" />
                 <div class="text">
                     <h2 class="nq-h2">{{ $t('Staking') }}</h2>
                     <p class="nq-text">{{ $t('Stake NIM to generate rewards for securing the network.') }}</p>
@@ -32,7 +32,7 @@
             <div class="flex-spacer"></div>
         </section>
         <footer>
-            <LegacyAccountUpgradeButton/>
+            <LegacyAccountUpgradeButton />
             <p class="future-notice">
                 {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
             </p>
@@ -76,12 +76,13 @@ h1 {
     color: var(--text-60);
 }
 
-img, svg {
+img,
+svg {
     width: 93px;
     height: 93px;
     margin-right: 4rem;
     flex-shrink: 0;
-    color: #F7931A;
+    color: #f7931a;
 }
 
 svg {
@@ -135,7 +136,8 @@ section .nq-text {
         align-items: flex-start;
     }
 
-    img, svg {
+    img,
+    svg {
         width: 68px;
         height: 68px;
         margin-right: 3rem;
@@ -153,8 +155,10 @@ section .nq-text {
     }
 }
 
-@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
-    img, svg {
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) {
+    // Tablet breakpoint
+    img,
+    svg {
         display: none;
     }
 }

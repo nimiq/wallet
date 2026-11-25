@@ -2,12 +2,12 @@
     <Modal class="moonpay-modal">
         <header class="flex-row">
             <Tooltip preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger"/>
+                <InfoCircleSmallIcon slot="trigger" />
                 <i18n path="This service is operated by {link}" tag="span">
                     <a slot="link" href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
                 </i18n>
             </Tooltip>
-            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay Logo">
+            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay Logo" />
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
@@ -18,25 +18,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { SignBtcTransactionRequest } from '@nimiq/hub-api';
-import Modal from './Modal.vue';
-import { useSettingsStore } from '../../stores/Settings';
-import { useFiatStore } from '../../stores/Fiat';
+import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useConfig } from '../../composables/useConfig';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
+import { loadScript } from '../../lib/ScriptLoader';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
+import { useFiatStore } from '../../stores/Fiat';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useSettingsStore } from '../../stores/Settings';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
-import { useConfig } from '../../composables/useConfig';
-import { loadScript } from '../../lib/ScriptLoader';
-import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
+import Modal from './Modal.vue';
 
 import { getElectrumClient } from '../../electrum';
 import {
@@ -58,25 +58,25 @@ declare global {
 }
 
 type InitiateDepositProperties = {
-    transactionId: string,
+    transactionId: string;
     cryptoCurrency: {
-        id: string,
-        name: string,
-        code: CryptoCurrency | 'usdc_polygon' | 'usdt_polygon',
-        contractAddress: string | null,
-        chainId: string | null,
-        coinType: string,
-        networkCode: string,
-    },
+        id: string;
+        name: string;
+        code: CryptoCurrency | 'usdc_polygon' | 'usdt_polygon';
+        contractAddress: string | null;
+        chainId: string | null;
+        coinType: string;
+        networkCode: string;
+    };
     fiatCurrency: {
-        id: string,
-        name: string,
-        code: FiatCurrency,
-    },
-    cryptoCurrencyAmount: string,
-    cryptoCurrencyAmountSmallestDenomination: string,
-    fiatCurrencyAmount: string | null,
-    depositWalletAddress: string,
+        id: string;
+        name: string;
+        code: FiatCurrency;
+    };
+    cryptoCurrencyAmount: string;
+    cryptoCurrencyAmountSmallestDenomination: string;
+    fiatCurrencyAmount: string | null;
+    depositWalletAddress: string;
 };
 
 export default defineComponent({
@@ -96,8 +96,10 @@ export default defineComponent({
         if (defaultCurrencyCode === CryptoCurrency.NIM && config.disableNetworkInteraction) {
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
-        if ((defaultCurrencyCode === CryptoCurrency.USDC || defaultCurrencyCode === CryptoCurrency.USDT)
-            && config.polygon.maintenance.transfers) {
+        if (
+            (defaultCurrencyCode === CryptoCurrency.USDC || defaultCurrencyCode === CryptoCurrency.USDT)
+            && config.polygon.maintenance.transfers
+        ) {
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
         if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
@@ -106,8 +108,8 @@ export default defineComponent({
         // Note: even though NIM is not currency supported anymore by Moonpay, we have to provide the nimAddress because
         // our signing endpoint config.moonpay.signatureEndpoint expects it.
         const nimAddress = !config.disableNetworkInteraction
-            // Remove spaces in NIM address, as spaces are invalid URI components
-            ? useAddressStore().$state.activeAddress?.replace(/\s/g, '')
+            ? // Remove spaces in NIM address, as spaces are invalid URI components
+              useAddressStore().$state.activeAddress?.replace(/\s/g, '')
             : undefined;
 
         // Having a BTC address must be optional, so that the widget also works
@@ -118,15 +120,17 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = stablecoin.value === CryptoCurrency.USDC && !config.polygon.maintenance.transfers
-            ? usePolygonAddressStore().activeAddress
-            : undefined;
+        const usdcAddress =
+            stablecoin.value === CryptoCurrency.USDC && !config.polygon.maintenance.transfers
+                ? usePolygonAddressStore().activeAddress
+                : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdtAddress = stablecoin.value === CryptoCurrency.USDT && !config.polygon.maintenance.transfers
-            ? usePolygonAddressStore().activeAddress
-            : undefined;
+        const usdtAddress =
+            stablecoin.value === CryptoCurrency.USDT && !config.polygon.maintenance.transfers
+                ? usePolygonAddressStore().activeAddress
+                : undefined;
 
         const walletAddresses = {
             ...(nimAddress ? { nim: nimAddress } : {}),
@@ -152,42 +156,50 @@ export default defineComponent({
                     apiKey: config.moonpay.clientApiKey,
                     colorCode: '#0582CA',
                     language,
-                    ...(props.flow === 'buy' ? {
-                        baseCurrencyCode,
-                        defaultCurrencyCode,
-                        walletAddresses: JSON.stringify(walletAddresses),
-                    } : {}),
-                    ...(props.flow === 'sell' ? {
-                        defaultBaseCurrencyCode: defaultCurrencyCode,
-                        quoteCurrencyCode: baseCurrencyCode,
-                        refundWalletAddresses: JSON.stringify(walletAddresses),
-                    } : {}),
+                    ...(props.flow === 'buy'
+                        ? {
+                              baseCurrencyCode,
+                              defaultCurrencyCode,
+                              walletAddresses: JSON.stringify(walletAddresses),
+                          }
+                        : {}),
+                    ...(props.flow === 'sell'
+                        ? {
+                              defaultBaseCurrencyCode: defaultCurrencyCode,
+                              quoteCurrencyCode: baseCurrencyCode,
+                              refundWalletAddresses: JSON.stringify(walletAddresses),
+                          }
+                        : {}),
                 },
-                ...(props.flow === 'sell' ? {
-                    handlers: {
-                        async onInitiateDeposit(properties: InitiateDepositProperties) {
-                            console.debug({ properties }); // eslint-disable-line no-console
+                ...(props.flow === 'sell'
+                    ? {
+                          handlers: {
+                              async onInitiateDeposit(properties: InitiateDepositProperties) {
+                                  console.debug({ properties }); // eslint-disable-line no-console
 
-                            if (config.polygon.maintenance.transfers
-                                && ['usdc_polygon', 'usdt_polygon'].includes(properties.cryptoCurrency.code)) {
-                                const { title, message } = gasAbstractionMaintenanceWarning();
-                                alert(`${title}\n\n${message}`); // eslint-disable-line no-alert
-                                return;
-                            }
+                                  if (
+                                      config.polygon.maintenance.transfers
+                                      && ['usdc_polygon', 'usdt_polygon'].includes(properties.cryptoCurrency.code)
+                                  ) {
+                                      const { title, message } = gasAbstractionMaintenanceWarning();
+                                      alert(`${title}\n\n${message}`); // eslint-disable-line no-alert
+                                      return;
+                                  }
 
-                            if (properties.cryptoCurrency.code === CryptoCurrency.BTC) {
-                                useAccountStore().setActiveCurrency(CryptoCurrency.BTC);
-                                sendBitcoin(properties);
-                            } else if (properties.cryptoCurrency.code === 'usdc_polygon') {
-                                useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
-                                sendUsdc(properties);
-                            } else if (properties.cryptoCurrency.code === 'usdt_polygon') {
-                                useAccountStore().setActiveCurrency(CryptoCurrency.USDT);
-                                sendUsdt(properties);
-                            }
-                        },
-                    },
-                } : {}),
+                                  if (properties.cryptoCurrency.code === CryptoCurrency.BTC) {
+                                      useAccountStore().setActiveCurrency(CryptoCurrency.BTC);
+                                      sendBitcoin(properties);
+                                  } else if (properties.cryptoCurrency.code === 'usdc_polygon') {
+                                      useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
+                                      sendUsdc(properties);
+                                  } else if (properties.cryptoCurrency.code === 'usdt_polygon') {
+                                      useAccountStore().setActiveCurrency(CryptoCurrency.USDT);
+                                      sendUsdt(properties);
+                                  }
+                              },
+                          },
+                      }
+                    : {}),
             });
 
             const widgetUrl = widget.generateUrlForSigning();
@@ -258,12 +270,14 @@ export default defineComponent({
                             label: 'Moonpay',
                             value,
                         },
-                        ...(requiredInputs.changeAmount > 0 ? {
-                            changeOutput: {
-                                address: changeAddress!,
-                                value: requiredInputs.changeAmount,
-                            },
-                        } : {}),
+                        ...(requiredInputs.changeAmount > 0
+                            ? {
+                                  changeOutput: {
+                                      address: changeAddress!,
+                                      value: requiredInputs.changeAmount,
+                                  },
+                              }
+                            : {}),
                     });
                 });
 
@@ -306,12 +320,7 @@ export default defineComponent({
                     throw new Error('Insufficient USDC balance');
                 }
 
-                const tx = await sendPolygonTransaction(
-                    tokenContract,
-                    normalizedDepositAddress,
-                    value,
-                    'Moonpay',
-                );
+                const tx = await sendPolygonTransaction(tokenContract, normalizedDepositAddress, value, 'Moonpay');
 
                 if (!tx) {
                     throw new Error('Failed to sign and/or send USDC transaction');
@@ -353,12 +362,7 @@ export default defineComponent({
                     throw new Error('Insufficient USDT balance');
                 }
 
-                const tx = await sendPolygonTransaction(
-                    tokenContract,
-                    normalizedDepositAddress,
-                    value,
-                    'Moonpay',
-                );
+                const tx = await sendPolygonTransaction(tokenContract, normalizedDepositAddress, value, 'Moonpay');
 
                 if (!tx) {
                     throw new Error('Failed to sign and/or send USDT transaction');

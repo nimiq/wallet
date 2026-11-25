@@ -8,7 +8,7 @@
                     :size="qrCodeCanvasSize"
                     :fill="'#1F2348' /* nimiq-blue */"
                     class="qr-code"
-                    :style="{'--qr-code-canvas-size': `${qrCodeCanvasSize}px`}"
+                    :style="{ '--qr-code-canvas-size': `${qrCodeCanvasSize}px` }"
                 />
                 <InteractiveShortAddress
                     :address="address"
@@ -18,16 +18,18 @@
                     :offsetTooltipPosition="false"
                 />
             </div>
-            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\n{currency} to this address', {
-                currency: currency.toUpperCase(),
-            }) }}</p>
+            <!-- Via v-text, as whitespace added by the formatter would be rendered due to white-space: pre -->
+            <p
+                class="qr-info-text nq-light-blue"
+                v-text="$t('Scan the code to send\n{currency} to this address', { currency: currency.toUpperCase() })"
+            />
         </PageBody>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
 import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
+import { defineComponent, computed } from 'vue';
 import { useWindowSize } from '../../../composables/useWindowSize';
 import InteractiveShortAddress from '../../InteractiveShortAddress.vue';
 
@@ -48,12 +50,12 @@ export default defineComponent({
     },
     setup(props) {
         const { height: windowHeight, isMobile } = useWindowSize();
-        const qrCodeCanvasSize = computed(() => Math.min(520, Math.floor(windowHeight.value * .95)));
+        const qrCodeCanvasSize = computed(() => Math.min(520, Math.floor(windowHeight.value * 0.95)));
         const displayedAddressCharacters = computed(() => {
             if (/nim/i.test(props.currency)) {
                 // Display an even number of 4 char blocks, plus spaces between.
                 const blockCount = Math.round(qrCodeCanvasSize.value / 170) * 2; // *2 because first factor gives pairs
-                return Math.max(8, blockCount * 4 + (/* spaces, but none for innermost blocks */ blockCount - 2));
+                return Math.max(8, blockCount * 4 + /* spaces, but none for innermost blocks */ (blockCount - 2));
             }
             // BTC
             const maxChars = isMobile.value ? 26 : 24;
@@ -101,7 +103,8 @@ export default defineComponent({
         text-align: center;
     }
 
-    @media (max-height: 520px) { // small mobile
+    @media (max-height: 520px) {
+        // small mobile
         min-height: unset;
         justify-content: space-between;
     }

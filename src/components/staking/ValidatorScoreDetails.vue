@@ -1,13 +1,14 @@
 <template>
     <div class="validator-score-details">
-        <div class="score"
+        <div
+            class="score"
             :class="{ expanded: isAvailabilityExpanded }"
             @click="isAvailabilityExpanded = !isAvailabilityExpanded"
         >
             <div class="score-header">
                 <CaretRightIcon />
                 <h2>{{ $t('Availability') }}</h2>
-                <ValidatorTrustScore :score="score.availability" borderless/>
+                <ValidatorTrustScore :score="score.availability" borderless />
             </div>
             <div class="score-content">
                 <p class="description">
@@ -19,14 +20,15 @@
             </div>
         </div>
 
-        <div class="score"
+        <div
+            class="score"
             :class="{ expanded: isReliabilityExpanded }"
             @click="isReliabilityExpanded = !isReliabilityExpanded"
         >
             <div class="score-header">
                 <CaretRightIcon />
                 <h2>{{ $t('Reliability') }}</h2>
-                <ValidatorTrustScore :score="score.reliability" borderless/>
+                <ValidatorTrustScore :score="score.reliability" borderless />
             </div>
             <div class="score-content">
                 <p class="description">
@@ -38,14 +40,15 @@
             </div>
         </div>
 
-        <div class="score"
+        <div
+            class="score"
             :class="{ expanded: isDominanceExpanded }"
             @click="isDominanceExpanded = !isDominanceExpanded"
         >
             <div class="score-header">
                 <CaretRightIcon />
                 <h2>{{ $t('Dominance') }}</h2>
-                <ValidatorTrustScore :score="score.dominance" borderless/>
+                <ValidatorTrustScore :score="score.dominance" borderless />
             </div>
             <div class="score-content">
                 <p class="description">
@@ -60,11 +63,11 @@
 </template>
 
 <script lang="ts">
-import { RegisteredValidator } from '@/stores/Staking';
 import { defineComponent, ref, computed } from 'vue';
+import { RegisteredValidator } from '@/stores/Staking';
+import { i18n } from '../../i18n/i18n-setup';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import { i18n } from '../../i18n/i18n-setup';
 
 const ScoreThresholds = {
     EXCELLENT: 4.5,
@@ -86,21 +89,9 @@ export default defineComponent({
         const isDominanceExpanded = ref(false);
 
         // Computed properties for each score type
-        const availabilityScore = computed(() =>
-            props.score.availability
-                ? props.score.availability * 5
-                : null,
-        );
-        const reliabilityScore = computed(() =>
-            props.score.reliability
-                ? props.score.reliability * 5
-                : null,
-        );
-        const dominanceScore = computed(() =>
-            props.score.dominance
-                ? props.score.dominance * 5
-                : null,
-        );
+        const availabilityScore = computed(() => (props.score.availability ? props.score.availability * 5 : null));
+        const reliabilityScore = computed(() => (props.score.reliability ? props.score.reliability * 5 : null));
+        const dominanceScore = computed(() => (props.score.dominance ? props.score.dominance * 5 : null));
 
         // Function for status classes
         const getStatusClass = (score: number | null) => {
@@ -235,7 +226,7 @@ export default defineComponent({
         height: 1.25rem;
         width: auto;
 
-        color: nimiq-blue(.4);
+        color: nimiq-blue(0.4);
 
         transition: transform var(--transition-duration) var(--nimiq-ease);
 
@@ -282,9 +273,15 @@ export default defineComponent({
     margin: 0;
     color: var(--text-50);
 
-    &.high-score { color: var(--nimiq-green); }
-    &.low-score { color: var(--nimiq-orange); }
-    &.very-low-score { color: var(--nimiq-red); }
+    &.high-score {
+        color: var(--nimiq-green);
+    }
+    &.low-score {
+        color: var(--nimiq-orange);
+    }
+    &.very-low-score {
+        color: var(--nimiq-red);
+    }
     &.disabled {
         color: var(--text-40);
         font-style: italic;

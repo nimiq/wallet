@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Copyable } from '@nimiq/vue-components';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 
 export default defineComponent({
     props: {
@@ -78,7 +78,7 @@ export default defineComponent({
         property: background-color, color, font-size;
         duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
-    };
+    }
 
     &:hover,
     &:focus {

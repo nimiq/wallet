@@ -1,17 +1,18 @@
 <template>
     <div class="sidebar padding flex-column">
         <div v-if="isTestnet" class="testnet-notice flex-row">
-            <StreetconeIcon/>
+            <StreetconeIcon />
             <span class="nq-label">{{ $t('PoS Testnet') }}</span>
             <div class="flex-grow"></div>
-            <Tooltip preferredPosition="bottom left"
+            <Tooltip
+                preferredPosition="bottom left"
                 :container="$parent"
                 theme="inverse"
                 :styles="{ transform: 'translate(0.5rem, 2rem)' }"
                 ref="testnetTooltip"
             >
                 <template #trigger>
-                    <InfoCircleIcon/>
+                    <InfoCircleIcon />
                 </template>
                 <template #default>
                     <p>{{ $t('You are connecting to the Nimiq PoS and Bitcoin Testnets.') }}</p>
@@ -25,24 +26,28 @@
             <span class="logo-wordmark">Nimiq</span>
         </header>
 
-        <AnnouncementBox/>
+        <AnnouncementBox />
 
         <div v-if="windowHeight >= 520" class="price-chart-wrapper">
-            <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
-            <PriceChart v-if="$config.enableBitcoin"
-                currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
+            <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange" />
+            <PriceChart
+                v-if="$config.enableBitcoin"
+                currency="btc"
+                :showTimespanLabel="false"
+                :timeRange="priceChartTimeRange"
+            />
         </div>
 
         <div class="trade-actions" v-if="!isLegacyAccount">
             <Tooltip
-                v-if="(
-                        $config.fastspot.enabled
+                v-if="
+                    ($config.fastspot.enabled
                         && fastspotEnabledCryptoSwapAssets.length
-                        && fastspotEnabledFiatSwapAssets.length
-                    )
+                        && fastspotEnabledFiatSwapAssets.length)
                     || $config.moonpay.enabled
                     || $config.simplex.enabled
-                    || $config.coinify.enabled"
+                    || $config.coinify.enabled
+                "
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -53,11 +58,15 @@
                 <template #trigger>
                     <button
                         class="nq-button-s inverse"
-                        :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
-                            || hasActiveSwap"
+                        :disabled="
+                            ($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
+                            || hasActiveSwap
+                        "
                         @click="openModal(RouteName.Buy)"
                         @mousedown.prevent="hideTooltips"
-                    >{{ $t('Buy') }}</button>
+                    >
+                        {{ $t('Buy') }}
+                    </button>
                 </template>
                 <template #default>{{
                     $t('Please wait for your current swap to finish before starting a new one.')
@@ -65,9 +74,10 @@
             </Tooltip>
 
             <Tooltip
-                v-if="/* (fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
-                    || */ $config.moonpay.enabled
-                    || $config.coinify.enabled"
+                v-if="
+                    /* (fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
+                    || */ $config.moonpay.enabled || $config.coinify.enabled
+                "
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -76,10 +86,14 @@
                 ref="sellTooltip"
             >
                 <template #trigger>
-                    <button class="nq-button-s inverse"
-                        :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
-                            || !sellEnabled"
-                        @click="openSellModal()" @mousedown.prevent="hideTooltips">
+                    <button
+                        class="nq-button-s inverse"
+                        :disabled="
+                            ($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM) || !sellEnabled
+                        "
+                        @click="openSellModal()"
+                        @mousedown.prevent="hideTooltips"
+                    >
                         {{ $t('Sell') }}
                     </button>
                 </template>
@@ -89,9 +103,11 @@
                         {{ nimSellOptions.intro }}
                         <ul class="nim-sell-options">
                             <li>{{ nimSellOptions.optionSwap }}</li>
-                            <li><a href="https://www.nimiq.com/buy-and-sell/" target="_blank" rel="noopener">{{
-                                nimSellOptions.optionExchange
-                            }}</a></li>
+                            <li>
+                                <a href="https://www.nimiq.com/buy-and-sell/" target="_blank" rel="noopener">{{
+                                    nimSellOptions.optionExchange
+                                }}</a>
+                            </li>
                         </ul>
                     </template>
                 </template>
@@ -119,13 +135,11 @@
             <BalanceDistribution />
         </div>
 
-        <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
+        <Tooltip
+            v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
-            :disabled="walletActivatedCurrencies.length > 1
-                && hasSwappableBalance
-                && canUseSwaps
-                && !hasActiveSwap"
+            :disabled="walletActivatedCurrencies.length > 1 && hasSwappableBalance && canUseSwaps && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
             :styles="{ minWidth: '25rem' }"
@@ -133,15 +147,19 @@
         >
             <template #trigger>
                 <button
-                    :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
+                    :disabled="
+                        ($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
                         || walletActivatedCurrencies.length <= 1
                         || !hasSwappableBalance
                         || !canUseSwaps
-                        || hasActiveSwap"
+                        || hasActiveSwap
+                    "
                     class="nq-button-s inverse"
                     @click="openModal(RouteName.Swap)"
                     @mousedown.prevent="hideTooltips"
-                >{{ $t('Swap') }}</button>
+                >
+                    {{ $t('Swap') }}
+                </button>
             </template>
             <template v-if="walletActivatedCurrencies.length <= 1" #default>{{
                 $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
@@ -151,7 +169,8 @@
             }}</template>
             <template v-else-if="!canUseSwaps" #default>{{
                 /* Re-using existing, translated strings already used by BuyOptionsModal */
-                $t('Not available in your browser') + '. '
+                $t('Not available in your browser')
+                + '. '
                 + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
             }}</template>
             <template v-else-if="hasActiveSwap" #default>{{
@@ -161,55 +180,53 @@
 
         <div class="flex-grow"></div>
 
-        <AccountMenu
-            :class="{'active': $route.name === 'root'}"
-            @click="navigateTo('/')"/>
+        <AccountMenu :class="{ active: $route.name === 'root' }" @click="navigateTo('/')" />
 
         <button
             class="network reset flex-row"
-            :class="{'active': $route.name === 'network'}"
+            :class="{ active: $route.name === 'network' }"
             @click="navigateTo('/network')"
         >
-            <ConsensusIcon/>
+            <ConsensusIcon />
             <span class="label">{{ $t('Network') }}</span>
         </button>
         <button
             class="settings reset flex-row"
-            :class="{'active': $route.name === 'settings'}"
+            :class="{ active: $route.name === 'settings' }"
             @click="navigateTo('/settings')"
         >
-            <GearIcon/>
+            <GearIcon />
             <span class="label">{{ $t('Settings') }}</span>
-            <AttentionDot v-if="updateAvailable"/>
+            <AttentionDot v-if="updateAvailable" />
         </button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
 import { RouteName, useRouter, getContextRouteName } from '@/router';
-import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
-import PriceChart, { TimeRange } from '../PriceChart.vue';
+import AnnouncementBox from '../AnnouncementBox.vue';
+import AttentionDot from '../AttentionDot.vue';
 import BalanceDistribution from '../BalanceDistribution.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
-import AttentionDot from '../AttentionDot.vue';
+import PriceChart, { TimeRange } from '../PriceChart.vue';
 
-import { useAddressStore } from '../../stores/Address';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useSettingsStore } from '../../stores/Settings';
-import { useAccountStore, AccountType } from '../../stores/Account';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
 import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
+import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useSettingsStore } from '../../stores/Settings';
+import { useSwapsStore } from '../../stores/Swaps';
 
 enum SellProvider {
     Simplex = 'simplex',
@@ -228,7 +245,9 @@ export default defineComponent({
             if (isMobile.value) {
                 return router.replace(path);
             }
-            return router.push(path).catch(() => { /* ignore */ });
+            return router.push(path).catch(() => {
+                /* ignore */
+            });
         }
 
         async function openModal(routeName: RouteName, params: Record<string, string> = {}) {
@@ -241,7 +260,8 @@ export default defineComponent({
             // current route, but with the modal still open on top.
             const modalRoute = router.resolve({ name: targetRouteName }).route;
             // Search for the closest named parent.
-            const expectedParentRoute = [...modalRoute.matched].reverse()
+            const expectedParentRoute = [...modalRoute.matched]
+                .reverse()
                 .find(({ name }) => !!name && name !== targetRouteName);
             if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
@@ -249,11 +269,15 @@ export default defineComponent({
                 // sidebar.
                 await navigateTo({ name: expectedParentRoute.name! });
             }
-            return router.push({
-                name: targetRouteName,
-                query: { sidebar: 'true' }, // on mobile keep sidebar open in background
-                params,
-            }).catch(() => { /* ignore */ });
+            return router
+                .push({
+                    name: targetRouteName,
+                    query: { sidebar: 'true' }, // on mobile keep sidebar open in background
+                    params,
+                })
+                .catch(() => {
+                    /* ignore */
+                });
         }
 
         // Note: config.environment should never change at runtime.
@@ -290,26 +314,31 @@ export default defineComponent({
             ...(config.polygon.enabled && hasPolygonAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
-        const fastspotEnabledFiatSwapAssets = computed(() => config.fastspot.enabledSwapAssets
-            .filter((asset) => (FIAT_CURRENCIES_OFFERED as string[]).includes(asset.toLowerCase())));
-        const fastspotEnabledCryptoSwapAssets = computed(() => config.fastspot.enabledSwapAssets
-            .filter((asset) => !fastspotEnabledFiatSwapAssets.value.includes(asset)
-                && (config.enableBitcoin || asset !== SwapAsset.BTC)
-                && (config.polygon.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
+        const fastspotEnabledFiatSwapAssets = computed(() =>
+            config.fastspot.enabledSwapAssets.filter((asset) =>
+                (FIAT_CURRENCIES_OFFERED as string[]).includes(asset.toLowerCase()),
+            ),
+        );
+        const fastspotEnabledCryptoSwapAssets = computed(() =>
+            config.fastspot.enabledSwapAssets.filter(
+                (asset) =>
+                    !fastspotEnabledFiatSwapAssets.value.includes(asset)
+                    && (config.enableBitcoin || asset !== SwapAsset.BTC)
+                    && (config.polygon.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
             ),
         );
 
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
-        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, usePolygonAddressStore]
-            .some((useStore) => {
+        const hasSwappableBalance = computed(() =>
+            [useAddressStore, useBtcAddressStore, usePolygonAddressStore].some((useStore) => {
                 const store = useStore();
                 return 'accountUsdcBalance' in store
                     ? stablecoin.value === CryptoCurrency.USDC
-                        // For USDC, only native USDC is supported for swapping.
-                        ? store.accountUsdcBalance
+                        ? // For USDC, only native USDC is supported for swapping.
+                          store.accountUsdcBalance
                         : stablecoin.value === CryptoCurrency.USDT
-                            ? store.accountUsdtBridgedBalance
-                            : 0
+                          ? store.accountUsdtBridgedBalance
+                          : 0
                     : store.accountBalance;
             }),
         );
@@ -355,20 +384,23 @@ export default defineComponent({
 
         function openSellModal() {
             if (enabledSellProviders.value.length === 0) return;
-            const modalName: RouteName = enabledSellProviders.value.length === 1
-                ? sellModals[enabledSellProviders.value[0]]
-                : RouteName.SellCrypto; // SellCrypto is for SEPA operations. We need to add a new Sell Selector.
+            const modalName: RouteName =
+                enabledSellProviders.value.length === 1
+                    ? sellModals[enabledSellProviders.value[0]]
+                    : RouteName.SellCrypto; // SellCrypto is for SEPA operations. We need to add a new Sell Selector.
             openModal(modalName);
         }
 
         const nimSellOptions = computed(() => {
-            const [intro, optionSwap, optionExchange] = (i18n.t('You can sell NIM\n'
-                + '- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n'
-                + '- on supported exchanges.') as string).split(/\s*-\s*/);
+            const [intro, optionSwap, optionExchange] = (
+                i18n.t(
+                    'You can sell NIM\n'
+                        + '- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n'
+                        + '- on supported exchanges.',
+                ) as string
+            ).split(/\s*-\s*/);
             // return options only if translators translated them correctly and kept the format
-            return intro && optionSwap && optionExchange
-                ? { intro, optionSwap, optionExchange }
-                : null;
+            return intro && optionSwap && optionExchange ? { intro, optionSwap, optionExchange } : null;
         });
 
         return {
@@ -441,7 +473,7 @@ $balance-distribution-display-breakpoint: 450px;
     width: calc(100% + calc(2 * var(--padding-sides)));
     margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);
     padding: var(--padding-sides);
-    background: rgba(255, 255, 255, .07);
+    background: rgba(255, 255, 255, 0.07);
 
     .nq-label {
         font-size: var(--small-label-size);
@@ -450,7 +482,7 @@ $balance-distribution-display-breakpoint: 450px;
     }
 
     .nq-icon {
-        color: rgba(255, 255, 255, .5);
+        color: rgba(255, 255, 255, 0.5);
         font-size: 1.75rem;
         stroke-width: 1.5px;
     }
@@ -498,12 +530,7 @@ $balance-distribution-display-breakpoint: 450px;
     width: 100%;
     scrollbar-width: none;
 
-    mask: linear-gradient(0deg,
-        rgba(255,255,255, 0),
-        white 3rem,
-        white calc(100% - 3rem),
-        rgba(255,255,255, 0)
-    );
+    mask: linear-gradient(0deg, rgba(255, 255, 255, 0), white 3rem, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
     &::-webkit-scrollbar {
         width: 0;
@@ -520,7 +547,7 @@ $balance-distribution-display-breakpoint: 450px;
     }
 
     &:last-child {
-        margin-bottom: .75rem;
+        margin-bottom: 0.75rem;
     }
 
     ::v-deep .timespan {
@@ -540,12 +567,12 @@ $balance-distribution-display-breakpoint: 450px;
 
     .nq-button-s {
         height: 3.25rem;
-        background: rgba(255, 255, 255, .1);
+        background: rgba(255, 255, 255, 0.1);
 
         &:active,
         &:focus,
         &:hover {
-            background: rgba(255, 255, 255, .2);
+            background: rgba(255, 255, 255, 0.2);
         }
         &:disabled {
             pointer-events: none;
@@ -561,7 +588,7 @@ $balance-distribution-display-breakpoint: 450px;
 
     @media (max-height: $price-chart-display-breakpoint - 1px) {
         margin-top: 2rem;
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
     }
     @media (max-height: $balance-distribution-display-breakpoint - 1px) {
         margin-bottom: 2rem;
@@ -572,7 +599,7 @@ $balance-distribution-display-breakpoint: 450px;
     }
 
     .nim-sell-options {
-        padding-top: .25rem;
+        padding-top: 0.25rem;
         padding-inline-start: 2.5rem;
     }
 }
@@ -605,7 +632,7 @@ $balance-distribution-display-breakpoint: 450px;
 .settings,
 .network {
     align-items: center;
-    color: rgba(255, 255, 255, .3);
+    color: rgba(255, 255, 255, 0.3);
     margin-top: 1rem;
     padding: 1.75rem 1.25rem;
     font-size: 2.5rem;
@@ -622,7 +649,7 @@ $balance-distribution-display-breakpoint: 450px;
 
     .label {
         margin-left: 2rem;
-        color: rgba(255, 255, 255, .7);
+        color: rgba(255, 255, 255, 0.7);
         font-size: 2rem;
 
         transition: color 0.2s var(--nimiq-ease);
@@ -631,8 +658,8 @@ $balance-distribution-display-breakpoint: 450px;
     &:hover,
     &:focus,
     &.active {
-        background: rgba(255, 255, 255, .1);
-        color: rgba(255, 255, 255, .5);
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.5);
 
         .label {
             color: rgba(255, 255, 255, 1);
@@ -655,7 +682,9 @@ $balance-distribution-display-breakpoint: 450px;
         color: white;
         opacity: 0.3;
 
-        transition: color 0.2s var(--nimiq-ease), opacity 0.2s var(--nimiq-ease);
+        transition:
+            color 0.2s var(--nimiq-ease),
+            opacity 0.2s var(--nimiq-ease);
     }
 
     &:hover .consensus-icon,

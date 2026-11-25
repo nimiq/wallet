@@ -1,40 +1,56 @@
 <template>
     <PageFooter class="polygon-warning-footer">
         <div class="nq-text-s" :class="[level, level === 'info' ? 'nq-light-blue' : 'nq-orange']">
-            {{ type === 'sending'
-                ? level === 'info'
-                    ? $t('Send to Polygon {ticker} addresses only!', { ticker })
-                    : $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
-                : level === 'info'
-                    ? $t('You can receive from Polygon {ticker} addresses only!', { ticker })
-                    : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
+            {{
+                type === 'sending'
+                    ? level === 'info'
+                        ? $t('Send to Polygon {ticker} addresses only!', { ticker })
+                        : $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
+                    : level === 'info'
+                      ? $t('You can receive from Polygon {ticker} addresses only!', { ticker })
+                      : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
             }}
-            <Tooltip :container="_self" autoWidth :margin="{
-                left: Math.min(88, .18 * windowWidth),
-                right: Math.min(88, .18 * windowWidth),
-            }">
-                <template #trigger><InfoCircleSmallIcon/></template>
-                <p>{{ type === 'sending'
-                    ? $t('Ask the receiver to ensure they have a Polygon {ticker} address.', { ticker })
-                    : $t('Ask the sender to ensure they have a Polygon {ticker} address.', { ticker })
-                }}</p>
-                <p class="explainer">
-                    {{ $t('The {ticker} stablecoin was originally launched on Ethereum. To avoid high fees and '
-                    + 'enable fast transactions, this wallet uses the Polygon version.', { ticker }) }}
+            <Tooltip
+                :container="_self"
+                autoWidth
+                :margin="{
+                    left: Math.min(88, 0.18 * windowWidth),
+                    right: Math.min(88, 0.18 * windowWidth),
+                }"
+            >
+                <template #trigger><InfoCircleSmallIcon /></template>
+                <p>
+                    {{
+                        type === 'sending'
+                            ? $t('Ask the receiver to ensure they have a Polygon {ticker} address.', { ticker })
+                            : $t('Ask the sender to ensure they have a Polygon {ticker} address.', { ticker })
+                    }}
                 </p>
-                <p class="nq-orange">{{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon {ticker} versions could be permanently lost!', { ticker })
-                    : $t('Funds sent from non-Polygon {ticker} versions could be permanently lost!', { ticker })
-                }}</p>
+                <p class="explainer">
+                    {{
+                        $t(
+                            'The {ticker} stablecoin was originally launched on Ethereum. To avoid high fees and '
+                                + 'enable fast transactions, this wallet uses the Polygon version.',
+                            { ticker },
+                        )
+                    }}
+                </p>
+                <p class="nq-orange">
+                    {{
+                        type === 'sending'
+                            ? $t('Funds sent to non-Polygon {ticker} versions could be permanently lost!', { ticker })
+                            : $t('Funds sent from non-Polygon {ticker} versions could be permanently lost!', { ticker })
+                    }}
+                </p>
             </Tooltip>
         </div>
     </PageFooter>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
 
@@ -95,8 +111,8 @@ export default defineComponent({
 .tooltip {
     contain: size layout style; // not paint because tooltip box overflows
     contain-intrinsic-size: 1em;
-    margin-left: .25rem;
-    margin-bottom: -.25rem;
+    margin-left: 0.25rem;
+    margin-bottom: -0.25rem;
     text-align: left;
 
     p:first-child {

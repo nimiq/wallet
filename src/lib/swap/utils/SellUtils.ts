@@ -1,20 +1,14 @@
 import { getEstimate, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
-import {
-    DeniedReason,
-    Htlc as OasisHtlc,
-    HtlcStatus,
-    SettlementInfo,
-    SettlementStatus,
-} from '@nimiq/oasis-api';
-import { computed } from 'vue';
+import { DeniedReason, Htlc as OasisHtlc, HtlcStatus, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { i18n } from '../../../i18n/i18n-setup';
 import { useAccountStore } from '../../../stores/Account';
+import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';
-import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { estimateFees } from '../../BitcoinTransactionUtils';
-import { useBtcAddressStore } from '../../../stores/BtcAddress';
-import { i18n } from '../../../i18n/i18n-setup';
+import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { assets, calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
 import { getFeePerUnit } from './Functions';
 
@@ -58,25 +52,20 @@ export const btcFeePerUnit = computed(() => {
 });
 
 // 48 extra weight units for BTC HTLC funding tx
-export const btcFeeForSendingAll = computed(() =>
-    estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48),
-);
+export const btcFeeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
 
-export const btcMaxSendableAmount = computed(() =>
-    Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0),
-);
+export const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
 /**
  * Sell - Functions
  */
 
-export async function updateSellEstimate({ fiatAmount, cryptoAmount }
-    : { fiatAmount: number, cryptoAmount?: number }
-    | { fiatAmount?: number, cryptoAmount: number },
-) {
-    const { from, to } = getFiatSwapParameters(fiatAmount
-        ? { to: { asset: SwapAsset.EUR, amount: fiatAmount } }
-        : { from: { amount: cryptoAmount! } },
+export async function updateSellEstimate({
+    fiatAmount,
+    cryptoAmount,
+}: { fiatAmount: number; cryptoAmount?: number } | { fiatAmount?: number; cryptoAmount: number }) {
+    const { from, to } = getFiatSwapParameters(
+        fiatAmount ? { to: { asset: SwapAsset.EUR, amount: fiatAmount } } : { from: { amount: cryptoAmount! } },
     );
 
     const newEstimate = await getEstimate(
@@ -100,18 +89,20 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
     newEstimate.to.fee = 0; // OASIS' SEPA Instant fees are already included
 
     // Check against minimums
-    if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+    if (!newEstimate.from.amount || newEstimate.to.amount - newEstimate.to.fee <= 0) {
         // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
         if (newEstimate.from.asset === SwapAsset.BTC) {
             // Note: This currently only checks BTC fees!
             const btcPrice = newEstimate.from;
             const toCoinsFactor = 1e8;
-            const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
+            const minimumFiat =
+                ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
                 * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!;
-            throw new Error(i18n.t(
-                'The fees (currently {amount}) determine the minimum amount.',
-                { amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
-            ) as string);
+            throw new Error(
+                i18n.t('The fees (currently {amount}) determine the minimum amount.', {
+                    amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}`,
+                }) as string,
+            );
         } else {
             throw new Error(i18n.t('The fees determine the minimum amount.') as string);
         }

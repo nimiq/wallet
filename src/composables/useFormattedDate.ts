@@ -1,7 +1,7 @@
-import { computed, Ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useSettingsStore } from '../stores/Settings';
+import { computed, Ref } from 'vue';
 import { twoDigit } from '../lib/NumberFormatting';
+import { useSettingsStore } from '../stores/Settings';
 
 let monthFormatter: Readonly<Ref<Readonly<Intl.DateTimeFormat>>> | null = null;
 
@@ -17,8 +17,9 @@ export function useFormattedDate(timestamp: Ref<number | undefined>) {
     const date = computed(() => timestamp.value && new Date(timestamp.value));
     const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
     const dateMonth = computed(() => date.value && monthFormatter!.value.format(date.value));
-    const dateTime = computed(() => date.value
-        && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
+    const dateTime = computed(
+        () => date.value && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`,
+    );
 
     return {
         dateDay,

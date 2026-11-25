@@ -1,5 +1,6 @@
 <template>
-    <Modal class="receive-modal"
+    <Modal
+        class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlay"
     >
@@ -8,11 +9,13 @@
             <div slot="more" class="subheader">
                 {{ $t('Share a single-use address with the sender.') }}
                 <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                    <InfoCircleSmallIcon slot="trigger"/>
+                    <InfoCircleSmallIcon slot="trigger" />
                     <div class="flex-column">
-                        <p>{{
-                            $t('With Bitcoin, a new address can be used for every transaction to improve privacy.')
-                        }}</p>
+                        <p>
+                            {{
+                                $t('With Bitcoin, a new address can be used for every transaction to improve privacy.')
+                            }}
+                        </p>
                         <div class="flex-column">
                             <div class="flex-row">
                                 <RefreshIcon />
@@ -30,7 +33,8 @@
             </div>
         </PageHeader>
         <PageBody class="flex-column">
-            <Copyable class="address"
+            <Copyable
+                class="address"
                 :style="{ fontSize: `calc(var(--body-size) * ${addressFontSizeScaleFactor})` }"
                 :text="currentlyShownAddress"
                 @click.native="copyActiveAddressCallback"
@@ -47,19 +51,27 @@
                 <transition name="fade">
                     <div v-if="!recentlyCopiedAddresses[currentlyShownAddress]" class="flex-row blue">
                         <span>{{ $t('This is a single-use address') }}</span>
-                        <Tooltip preferredPosition="bottom left" :autoWidth="true"
-                            :styles="{width: '205px', padding: '1.25rem 1.5rem'}"
+                        <Tooltip
+                            preferredPosition="bottom left"
+                            :autoWidth="true"
+                            :styles="{ width: '205px', padding: '1.25rem 1.5rem' }"
                         >
                             <template slot="trigger"><InfoCircleSmallIcon /></template>
                             <span class="header">
-                                {{ $t('Improve your privacy by creating a new address for every transaction. '
-                                    + 'Old addresses still work.') }}
+                                {{
+                                    $t(
+                                        'Improve your privacy by creating a new address for every transaction. '
+                                            + 'Old addresses still work.',
+                                    )
+                                }}
                             </span>
                         </Tooltip>
                     </div>
 
-                    <a v-else-if="recentlyCopiedAddressesListSorted.length < BTC_MAX_COPYABLE_ADDRESSES"
-                        class="flex-row create-new" @click="showNextExternalAddress"
+                    <a
+                        v-else-if="recentlyCopiedAddressesListSorted.length < BTC_MAX_COPYABLE_ADDRESSES"
+                        class="flex-row create-new"
+                        @click="showNextExternalAddress"
                     >
                         <RefreshIcon /><span>{{ $t('Create a new single-use address.') }}</span>
                     </a>
@@ -70,14 +82,16 @@
 
             <div class="recently-copied-addresses flex-column">
                 <transition name="fade">
-                    <p class="no-recently-copied-address"
-                        v-if="recentlyCopiedAddressesListSorted.length === 0">
+                    <p class="no-recently-copied-address" v-if="recentlyCopiedAddressesListSorted.length === 0">
                         {{ $t('Recent addresses will be listed here, until they receive a transaction.') }}
                     </p>
                     <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
-                        <div class="list flex-column" ref="addressList$"
-                            :class="{ scroll: recentlyCopiedAddressesListSorted.length > 1 }">
+                        <div
+                            class="list flex-column"
+                            ref="addressList$"
+                            :class="{ scroll: recentlyCopiedAddressesListSorted.length > 1 }"
+                        >
                             <div class="scroll-mask top"></div>
 
                             <transition-group name="translateY-fade-list" tag="div">
@@ -102,17 +116,20 @@
                     {{ $t('Create request link') }}
                 </button>
                 <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true;">
-                    <QrCodeIcon/>
+                    <QrCodeIcon />
                 </button>
             </footer>
         </PageBody>
 
-        <QrCodeOverlay v-if="addressQrCodeOverlayOpened"
+        <QrCodeOverlay
+            v-if="addressQrCodeOverlayOpened"
             slot="overlay"
-            :address="currentlyShownAddress" currency="btc"
+            :address="currentlyShownAddress"
+            currency="btc"
         />
 
-        <PaymentLinkOverlay slot="overlay"
+        <PaymentLinkOverlay
+            slot="overlay"
             v-if="receiveLinkOverlayOpened"
             :address="currentlyShownAddress"
             currency="btc"
@@ -121,36 +138,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
+import { PageBody, PageHeader, Copyable, Tooltip, InfoCircleSmallIcon, QrCodeIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
-import {
-    PageBody,
-    PageHeader,
-    Copyable,
-    Tooltip,
-    InfoCircleSmallIcon,
-    QrCodeIcon,
-} from '@nimiq/vue-components';
-import { useRouter } from '@/router';
-import { useI18n } from '@/lib/useI18n';
+import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import Modal, { disableNextModalTransition } from './Modal.vue';
+import { useI18n } from '@/lib/useI18n';
+import { useRouter } from '@/router';
+import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import RefreshIcon from '../icons/RefreshIcon.vue';
-import BracketsIcon from '../icons/BracketsIcon.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
-import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
+import BracketsIcon from '../icons/BracketsIcon.vue';
+import RefreshIcon from '../icons/RefreshIcon.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     setup() {
         const { $t, $tc } = useI18n();
-        const {
-            availableExternalAddresses,
-            accountCopiedExternalAddresses: copiedExternalAddresses,
-        } = storeToRefs(useBtcAddressStore());
+        const { availableExternalAddresses, accountCopiedExternalAddresses: copiedExternalAddresses } =
+            storeToRefs(useBtcAddressStore());
         const { setCopiedAddress } = useBtcAddressStore();
 
         const { senderLabels } = storeToRefs(useBtcLabelsStore());
@@ -178,26 +186,17 @@ export default defineComponent({
                 return $tc('Created just now');
             }
             if (difference < 1 * hour) {
-                return $tc(
-                    'Created {count} minute ago | Created {count} minutes ago',
-                    Math.trunc(difference / minute),
-                );
+                return $tc('Created {count} minute ago | Created {count} minutes ago', Math.trunc(difference / minute));
             }
             if (difference < 1 * day) {
-                return $tc(
-                    'Created {count} hour ago | Created {count} hours ago',
-                    Math.trunc(difference / hour),
-                );
+                return $tc('Created {count} hour ago | Created {count} hours ago', Math.trunc(difference / hour));
             }
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             if (timestamp > yesterday.setHours(0, 0, 0, 0)) {
                 return $t('Created yesterday') as string;
             }
-            return $tc(
-                'Created {count} day ago | Created {count} days ago',
-                Math.trunc(difference / day),
-            );
+            return $tc('Created {count} day ago | Created {count} days ago', Math.trunc(difference / day));
         }
 
         // Copied addresses
@@ -207,20 +206,27 @@ export default defineComponent({
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
                 .map((address) => ({
-                    get label() { return senderLabels.value[this.address] || ''; },
-                    set label(value) { setSenderLabel(this.address, value); },
-                    get timelabel() { return getTimeLabel(this.timestamp); },
+                    get label() {
+                        return senderLabels.value[this.address] || '';
+                    },
+                    set label(value) {
+                        setSenderLabel(this.address, value);
+                    },
+                    get timelabel() {
+                        return getTimeLabel(this.timestamp);
+                    },
                     timestamp: copiedExternalAddresses.value[address],
                     address,
                 }))
                 .reduce(
                     (acc, cur) => (acc[cur.address] = cur) && acc,
-                    {} as {[address: string]: BtcCopiedAddressInfo},
+                    {} as { [address: string]: BtcCopiedAddressInfo },
                 ),
         );
         const recentlyCopiedAddressesListSorted = computed(() =>
-            Object.values(recentlyCopiedAddresses.value)
-                .sort((addressA, addressB) => addressB.timestamp - addressA.timestamp),
+            Object.values(recentlyCopiedAddresses.value).sort(
+                (addressA, addressB) => addressB.timestamp - addressA.timestamp,
+            ),
         );
 
         // Currently displayed address
@@ -268,14 +274,17 @@ export default defineComponent({
         }
 
         // Watching for sub-modals openings to set the actively shown address as copied
-        watch([addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
+        watch(
+            [addressQrCodeOverlayOpened, receiveLinkOverlayOpened],
             (booleans, prevBooleans) => {
                 if (booleans && prevBooleans) {
                     const [qrCodeOpened, receiveLinkOpened] = booleans;
                     const [prevQrCodeOpened, prevReceiveLinkOpened] = prevBooleans;
 
-                    if ((qrCodeOpened === false && prevQrCodeOpened === true)
-                        || (receiveLinkOpened === false && prevReceiveLinkOpened === true)) {
+                    if (
+                        (qrCodeOpened === false && prevQrCodeOpened === true)
+                        || (receiveLinkOpened === false && prevReceiveLinkOpened === true)
+                    ) {
                         copyActiveAddressCallback();
                         showNextExternalAddress();
                     }
@@ -296,7 +305,8 @@ export default defineComponent({
             }
             if (!addressPadding) {
                 addressPadding = parseInt(
-                    window.getComputedStyle(availableAddressCopyable$.value.$el.children[1])
+                    window
+                        .getComputedStyle(availableAddressCopyable$.value.$el.children[1])
                         .getPropertyValue('padding-left')
                         .replace('px', ''),
                     10,
@@ -307,7 +317,7 @@ export default defineComponent({
             await nextTick();
 
             const addressWidth = addressWidthFinder$.value.clientWidth;
-            const maxWidth = availableAddressCopyable$.value.$el.clientWidth - (addressPadding * 2);
+            const maxWidth = availableAddressCopyable$.value.$el.clientWidth - addressPadding * 2;
 
             addressFontSizeScaleFactor.value = Math.min(maxWidth / addressWidth, 1);
 
@@ -403,7 +413,8 @@ export default defineComponent({
                 font-weight: 600;
                 transform: translate(1rem, 2rem);
 
-                @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+                @media (max-width: $mobileBreakpoint) {
+                    // Full mobile breakpoint
                     transform: translate(0, 2rem);
                 }
 
@@ -476,7 +487,7 @@ export default defineComponent({
         property: background-color, color, font-size;
         duration: var(--short-transition-duration);
         timing-function: var(--nimiq-ease);
-    };
+    }
 
     &.already-copied {
         color: var(--text-35);
@@ -658,10 +669,11 @@ export default defineComponent({
                 }
                 &:not(.copied) {
                     z-index: 0;
-                    transition: z-index 0s .3s, // Keep the Copyable elevated until the tooltip is faded out.
+                    transition:
+                        z-index 0s 0.3s, // Keep the Copyable elevated until the tooltip is faded out.
                         // Preserve original transitions.
                         transform var(--short-transition-duration) var(--nimiq-ease),
-                        color .3s var(--nimiq-ease);
+                        color 0.3s var(--nimiq-ease);
                 }
             }
         }
@@ -677,7 +689,7 @@ footer {
         position: absolute;
         right: 3rem;
         bottom: 3rem;
-        opacity: .4;
+        opacity: 0.4;
         transition: opacity 250ms var(--nimiq-ease);
 
         svg {
@@ -701,7 +713,7 @@ footer {
         property: opacity, transform;
         duration: var(--long-transition-duration);
         timing-function: var(--nimiq-ease);
-    };
+    }
 }
 
 .translateY-fade-list-enter-to,
@@ -725,7 +737,8 @@ footer {
     }
 }
 
-@media (max-width: 450px) { // Breakpoint of .page-body padding
+@media (max-width: 450px) {
+    // Breakpoint of .page-body padding
     .address-list .list {
         width: calc(100% + 6rem);
         padding: 0 3rem;

@@ -1,5 +1,6 @@
 <template>
-    <Modal class="receive-modal"
+    <Modal
+        class="receive-modal"
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlays"
     >
@@ -13,10 +14,10 @@
                 @click="addressQrCodeOverlayOpened = true"
                 class="reset qr-button"
             >
-                <QrCodeIcon/>
+                <QrCodeIcon />
             </button>
-            <Identicon :address="activeAddressInfo.address"/>
-            <AddressDisplay :address="activeAddressInfo.address" copyable/>
+            <Identicon :address="activeAddressInfo.address" />
+            <AddressDisplay :address="activeAddressInfo.address" copyable />
             <button
                 v-if="activeAddressInfo.type === AddressType.BASIC"
                 @click="receiveLinkOverlayOpened = true"
@@ -27,12 +28,15 @@
             </button>
         </PageBody>
 
-        <QrCodeOverlay v-if="addressQrCodeOverlayOpened"
+        <QrCodeOverlay
+            v-if="addressQrCodeOverlayOpened"
             slot="overlay"
-            :address="activeAddressInfo.address" currency="nim"
+            :address="activeAddressInfo.address"
+            currency="nim"
         />
 
-        <PaymentLinkOverlay slot="overlay"
+        <PaymentLinkOverlay
+            slot="overlay"
             v-if="receiveLinkOverlayOpened"
             currency="nim"
             :address="activeAddressInfo.address"
@@ -41,18 +45,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { PageHeader, PageBody, Identicon, AddressDisplay, QrCodeIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
-import {
-    PageHeader,
-    PageBody,
-    Identicon,
-    AddressDisplay,
-    QrCodeIcon,
-} from '@nimiq/vue-components';
+import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
-import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
@@ -133,7 +131,7 @@ export default defineComponent({
         border-radius: 0.625rem;
         margin: 1rem 0 4rem;
         transition:
-            color .3s var(--nimiq-ease),
+            color 0.3s var(--nimiq-ease),
             background 0.3s var(--nimiq-ease);
 
         ::v-deep .background {

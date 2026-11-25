@@ -1,7 +1,7 @@
 <template>
     <div class="staking-rewards-chart">
         <div v-if="isLoading" class="loading flex-row">
-            <CircleSpinner/>
+            <CircleSpinner />
             <span>{{ $t('Loading chart...') }}</span>
         </div>
         <component
@@ -36,10 +36,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, shallowRef, computed, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import type { Line } from 'vue-chartjs';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, shallowRef, computed, onMounted, onUnmounted } from 'vue';
+import type { Line } from 'vue-chartjs';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
 type TimeRange = 'ALL' | 'Y1' | 'M6' | 'M3';
@@ -110,7 +110,7 @@ export default defineComponent({
         const getDateRange = (
             range: TimeRange,
             rewardEvents: Readonly<AggregatedRestakingEvent[]>,
-        ): { startDate: Date, endDate: Date } => {
+        ): { startDate: Date; endDate: Date } => {
             const now = new Date();
 
             switch (range) {
@@ -148,10 +148,7 @@ export default defineComponent({
                 const [
                     { Chart: ChartJS, Title, Tooltip, LineElement, LinearScale, CategoryScale, PointElement },
                     { Line },
-                ] = await Promise.all([
-                    import('chart.js'),
-                    import('vue-chartjs'),
-                ]);
+                ] = await Promise.all([import('chart.js'), import('vue-chartjs')]);
 
                 // Register all required Chart.js components
                 ChartJS.register(
@@ -206,7 +203,7 @@ export default defineComponent({
             let eventIndex = 0;
             let cumulativeRewards = 0;
             for (let pointIndex = 0; pointIndex < CHART_POINT_COUNT; pointIndex++) {
-                const pointDateIsoString = new Date(startDate.getTime() + (pointIndex * intervalMs)).toISOString();
+                const pointDateIsoString = new Date(startDate.getTime() + pointIndex * intervalMs).toISOString();
 
                 // Find the index of the first event that occurred after point date and cumulative rewards until there.
                 const eventCount = events.length;
@@ -307,7 +304,7 @@ export default defineComponent({
     border-radius: 0.75rem;
     border: 1px solid var(--text-10);
     overflow: hidden;
-    padding: .5px;
+    padding: 0.5px;
 
     .loading {
         position: absolute;

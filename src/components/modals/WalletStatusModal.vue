@@ -10,27 +10,27 @@
         <PageBody class="flex-column">
             <a href="https://nimiq.watch" target="_blank" rel="noopener" class="destination-card">
                 <div class="icon-circle nq-light-blue-bg">
-                    <ViewIcon/>
+                    <ViewIcon />
                 </div>
                 <div class="card-text">
                     <span class="card-title">{{ $t('Check the blockchain') }}</span>
                     <span class="card-description">
                         {{ $t('Look up any balance or transaction on the public block explorer.') }}
                     </span>
-                    <span class="card-domain">nimiq.watch<ArrowRightSmallIcon/></span>
+                    <span class="card-domain">nimiq.watch<ArrowRightSmallIcon /></span>
                 </div>
             </a>
 
             <a href="https://discord.gg/nimiq" target="_blank" rel="noopener" class="destination-card">
                 <div class="icon-circle nq-purple-bg">
-                    <MessagesIcon/>
+                    <MessagesIcon />
                 </div>
                 <div class="card-text">
                     <span class="card-title">{{ $t('Ask the community') }}</span>
                     <span class="card-description">
                         {{ $t('The Nimiq team and community are on Discord, happy to help.') }}
                     </span>
-                    <span class="card-domain">discord.gg/nimiq<ArrowRightSmallIcon/></span>
+                    <span class="card-domain">discord.gg/nimiq<ArrowRightSmallIcon /></span>
                 </div>
             </a>
         </PageBody>
@@ -38,10 +38,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { PageHeader, PageBody, ViewIcon, ArrowRightSmallIcon } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import { defineComponent } from 'vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'WalletStatusModal',

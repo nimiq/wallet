@@ -1,36 +1,35 @@
 <template>
     <component :is="tag" class="account-menu-item flex-row">
         <div v-if="accountInfo.type === AccountType.BIP39" class="icon" :class="backgroundClass">
-            <LoginFileIcon/>
+            <LoginFileIcon />
         </div>
         <div v-else-if="accountInfo.type === AccountType.LEGACY" class="icon">
-            <Identicon :address="firstAddressInfo.address"/>
+            <Identicon :address="firstAddressInfo.address" />
         </div>
         <div v-else-if="accountInfo.type === AccountType.LEDGER" class="icon">
-            <LedgerIcon/>
+            <LedgerIcon />
         </div>
         <div class="meta">
             <div class="label">
-                {{ accountInfo.type === AccountType.LEGACY
-                    ? firstAddressInfo.label
-                    : accountInfo.label
-                }}
+                {{ accountInfo.type === AccountType.LEGACY ? firstAddressInfo.label : accountInfo.label }}
             </div>
-            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" value-mask/>
+            <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" value-mask />
         </div>
         <AlertTriangleIcon
-            v-if="(!accountInfo.fileExported && accountInfo.type === AccountType.BIP39)
-                || (!accountInfo.wordsExported && !accountInfo.backupCodesExported)"
+            v-if="
+                (!accountInfo.fileExported && accountInfo.type === AccountType.BIP39)
+                || (!accountInfo.wordsExported && !accountInfo.backupCodesExported)
+            "
         />
     </component>
 </template>
 
 <script lang="ts">
+import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { useConfig } from '@/composables/useConfig';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
-import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { CryptoCurrency } from '../lib/Constants';
 import { AccountType, useAccountStore } from '../stores/Account';
@@ -72,15 +71,21 @@ export default defineComponent({
                 pendingTxs.push(...(pendingTransactionsBySender.value[ai.address] || []));
                 addresses.push(ai.address);
             }
-            return pendingTxs
-                // Do not consider pending transactions to our own addresses, to prevent the account
-                // balance from getting reduced when sending between own accounts.
-                .filter((tx) => !addresses.includes(tx.recipient))
-                .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+            return (
+                pendingTxs
+                    // Do not consider pending transactions to our own addresses, to prevent the account
+                    // balance from getting reduced when sending between own accounts.
+                    .filter((tx) => !addresses.includes(tx.recipient))
+                    .reduce((sum, tx) => sum + tx.value + tx.fee, 0)
+            );
         });
-        const nimAccountBalance = computed(() => addressInfos.value.reduce(
-            (sum, ai) => sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0,
-        ) + totalStakesByAccount.value[props.id]);
+        const nimAccountBalance = computed(
+            () =>
+                addressInfos.value.reduce(
+                    (sum, ai) => sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value),
+                    0,
+                ) + totalStakesByAccount.value[props.id],
+        );
 
         const btcAddressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return null;
@@ -88,42 +93,55 @@ export default defineComponent({
             const { $state: btcAddressState } = useBtcAddressStore();
             return accountInfo.value.btcAddresses
                 ? {
-                    internal: accountInfo.value.btcAddresses.internal
-                        .map((addr) => btcAddressState.addressInfos[addr]),
-                    external: accountInfo.value.btcAddresses.external
-                        .map((addr) => btcAddressState.addressInfos[addr]),
-                }
+                      internal: accountInfo.value.btcAddresses.internal.map(
+                          (addr) => btcAddressState.addressInfos[addr],
+                      ),
+                      external: accountInfo.value.btcAddresses.external.map(
+                          (addr) => btcAddressState.addressInfos[addr],
+                      ),
+                  }
                 : {
-                    internal: [],
-                    external: [],
-                };
+                      internal: [],
+                      external: [],
+                  };
         });
         const btcAccountBalance = computed(() => {
             if (!btcAddressSet.value) return 0;
 
-            const internalBalance = (btcAddressSet.value).internal
-                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
-                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
-            const externalBalance = (btcAddressSet.value).external
-                .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
-                    .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
+            const internalBalance = btcAddressSet.value.internal.reduce(
+                (sum1, addressInfo) => sum1 + addressInfo.utxos.reduce((sum2, utxo) => sum2 + utxo.witness.value, 0),
+                0,
+            );
+            const externalBalance = btcAddressSet.value.external.reduce(
+                (sum1, addressInfo) => sum1 + addressInfo.utxos.reduce((sum2, utxo) => sum2 + utxo.witness.value, 0),
+                0,
+            );
 
             return internalBalance + externalBalance;
         });
 
         const { $state: polygonAddressState } = usePolygonAddressStore();
-        const polygonAddressInfos = computed(() => accountInfo.value.polygonAddresses
-            ? accountInfo.value.polygonAddresses.map((addr) => polygonAddressState.addressInfos[addr])
-            : []);
+        const polygonAddressInfos = computed(() =>
+            accountInfo.value.polygonAddresses
+                ? accountInfo.value.polygonAddresses.map((addr) => polygonAddressState.addressInfos[addr])
+                : [],
+        );
 
         const { $state: accountSettingsState } = useAccountSettingsStore();
         const stablecoin = computed(() => accountSettingsState.settings[props.id]?.stablecoin);
 
-        const stablecoinAccountBalance = computed(() => polygonAddressInfos.value.reduce((sum, ai) => sum + {
-            [CryptoCurrency.USDC]: (ai.balanceUsdc || 0) + (ai.balanceUsdcBridged || 0),
-            [CryptoCurrency.USDT]: (ai.balanceUsdtBridged || 0),
-            none: 0,
-        }[stablecoin.value || 'none'], 0));
+        const stablecoinAccountBalance = computed(() =>
+            polygonAddressInfos.value.reduce(
+                (sum, ai) =>
+                    sum
+                    + {
+                        [CryptoCurrency.USDC]: (ai.balanceUsdc || 0) + (ai.balanceUsdcBridged || 0),
+                        [CryptoCurrency.USDT]: ai.balanceUsdtBridged || 0,
+                        none: 0,
+                    }[stablecoin.value || 'none'],
+                0,
+            ),
+        );
 
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
@@ -131,28 +149,28 @@ export default defineComponent({
             let amount = 0;
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
-            const nimFiatAmount = nimExchangeRate !== undefined
-                ? (nimAccountBalance.value / 1e5) * nimExchangeRate
-                : undefined;
+            const nimFiatAmount =
+                nimExchangeRate !== undefined ? (nimAccountBalance.value / 1e5) * nimExchangeRate : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;
 
             if (config.enableBitcoin) {
                 const btcExchangeRate = exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value];
-                const btcFiatAmount = btcExchangeRate !== undefined
-                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate
-                    : undefined;
+                const btcFiatAmount =
+                    btcExchangeRate !== undefined ? (btcAccountBalance.value / 1e8) * btcExchangeRate : undefined;
                 if (btcFiatAmount === undefined) return undefined;
                 amount += btcFiatAmount;
             }
 
             if (config.polygon.enabled && stablecoin) {
-                const stableExchangeRate = stablecoin.value === CryptoCurrency.USDC
-                    ? exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]
-                    : exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency.value];
-                const usdFiatAmount = stableExchangeRate !== undefined
-                    ? (stablecoinAccountBalance.value / 1e6) * stableExchangeRate
-                    : undefined;
+                const stableExchangeRate =
+                    stablecoin.value === CryptoCurrency.USDC
+                        ? exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]
+                        : exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency.value];
+                const usdFiatAmount =
+                    stableExchangeRate !== undefined
+                        ? (stablecoinAccountBalance.value / 1e6) * stableExchangeRate
+                        : undefined;
                 if (usdFiatAmount === undefined) return undefined;
                 amount += usdFiatAmount;
             }
@@ -223,7 +241,8 @@ export default defineComponent({
     flex-shrink: 0;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .fiat-amount {
         font-size: 1.875rem;
     }

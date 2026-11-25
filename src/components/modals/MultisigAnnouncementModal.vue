@@ -2,7 +2,7 @@
     <Modal ref="modal$">
         <PageBody class="grid-layout">
             <div class="content-column">
-                <img src="@/assets/multisig-logo.svg" alt="Multisig" class="logo">
+                <img src="@/assets/multisig-logo.svg" alt="Multisig" class="logo" />
                 <h1 class="nq-h1">{{ $t('Check out Nimiq Multisig Wallets') }}</h1>
                 <p class="nq-text">
                     {{ $t('Share wallets with family, friends, and business partners.') }}
@@ -25,17 +25,17 @@
                 <a class="nq-link" @click="close">{{ $t('Skip') }} <span class="chevron">›</span></a>
             </div>
             <div class="image-column">
-                <img src="@/assets/multisig-announcement.webp" alt="Multisig App" class="hero-image">
+                <img src="@/assets/multisig-announcement.webp" alt="Multisig App" class="hero-image" />
             </div>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import { defineComponent, ref } from 'vue';
 import { MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     setup() {

@@ -1,17 +1,17 @@
-import { Ref, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { Ref, computed } from 'vue';
 
-import { useSwapsStore } from '@/stores/Swaps';
-import { Transaction } from '@/stores/BtcTransactions';
-import { useTransactionsStore } from '@/stores/Transactions';
-import { useBtcLabelsStore } from '@/stores/BtcLabels';
-import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
+import { useAddressStore } from '@/stores/Address';
+import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { useBtcLabelsStore } from '@/stores/BtcLabels';
+import { Transaction } from '@/stores/BtcTransactions';
 import { useFiatStore } from '@/stores/Fiat';
+import { useSwapsStore } from '@/stores/Swaps';
+import { useTransactionsStore } from '@/stores/Transactions';
 
 import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
@@ -22,41 +22,42 @@ import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
 export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
     const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
-    const {
-        activeInternalAddresses,
-        activeExternalAddresses,
-    } = storeToRefs(useBtcAddressStore());
+    const { activeInternalAddresses, activeExternalAddresses } = storeToRefs(useBtcAddressStore());
     const { $state: btcAddresses$ } = useBtcAddressStore();
 
-    const {
-        getRecipientLabel,
-        getSenderLabel,
-    } = storeToRefs(useBtcLabelsStore());
+    const { getRecipientLabel, getSenderLabel } = storeToRefs(useBtcLabelsStore());
 
-    const inputsSent = computed(() => transaction.value.inputs.filter((input) =>
-        input.address && (activeInternalAddresses.value.includes(input.address)
-            || activeExternalAddresses.value.includes(input.address)
+    const inputsSent = computed(() =>
+        transaction.value.inputs.filter(
+            (input) =>
+                input.address
+                && (activeInternalAddresses.value.includes(input.address)
+                    || activeExternalAddresses.value.includes(input.address)),
         ),
-    ));
+    );
 
     const isIncoming = computed(() => inputsSent.value.length === 0);
 
     const outputsReceived = computed(() => {
         if (!isIncoming.value) return [];
 
-        const receivedToExternal = transaction.value.outputs
-            .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
+        const receivedToExternal = transaction.value.outputs.filter(
+            (output) => output.address && activeExternalAddresses.value.includes(output.address),
+        );
 
         if (receivedToExternal.length > 0) return receivedToExternal;
 
-        return transaction.value.outputs
-            .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
+        return transaction.value.outputs.filter(
+            (output) => output.address && activeInternalAddresses.value.includes(output.address),
+        );
     });
 
-    const outputsSent = computed(() => isIncoming.value
-        ? []
-        : transaction.value.outputs.filter((output) =>
-            !output.address || !activeInternalAddresses.value.includes(output.address)),
+    const outputsSent = computed(() =>
+        isIncoming.value
+            ? []
+            : transaction.value.outputs.filter(
+                  (output) => !output.address || !activeInternalAddresses.value.includes(output.address),
+              ),
     );
 
     const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
@@ -66,8 +67,9 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
     const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
     const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
     useOasisPayoutStatusUpdater(swapData);
-    const isCancelledSwap = computed(() =>
-        swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
+    const isCancelledSwap = computed(
+        () => swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset,
+    );
 
     const swapTransaction = computed(() => {
         if (!swapData.value) return null;
@@ -93,8 +95,10 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
                 const swapPeerAddress = isIncoming.value
                     ? swapTransaction.value.sender
                     : swapTransaction.value.recipient;
-                if (!useAddressStore().$state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
-                    && !swapTransaction.value.relatedTransactionHash) {
+                if (
+                    !useAddressStore().$state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
+                    && !swapTransaction.value.relatedTransactionHash
+                ) {
                     // Avoid displaying proxy address identicon until we know related address.
                     return [''];
                 }
@@ -103,9 +107,10 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
             if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
         }
 
-        return (isIncoming.value
-            ? transaction.value.inputs.map((input) => input.address || input.script)
-            : outputsSent.value.map((output) => output.address || output.script)
+        return (
+            isIncoming.value
+                ? transaction.value.inputs.map((input) => input.address || input.script)
+                : outputsSent.value.map((output) => output.address || output.script)
         ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
     });
 
@@ -116,9 +121,11 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
 
         if (swapData.value) {
             if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                return useAddressStore().$state.addressInfos[peerAddresses.value[0]]?.label
+                return (
+                    useAddressStore().$state.addressInfos[peerAddresses.value[0]]?.label
                     // avoid displaying proxy address until we know related peer address
-                    || i18n.t('Swap') as string;
+                    || (i18n.t('Swap') as string)
+                );
             }
 
             if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
@@ -130,7 +137,7 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
             }
 
             if (swapData.value.asset === SwapAsset.EUR) {
-                return swapData.value.bankLabel || i18n.t('Bank Account') as string;
+                return swapData.value.bankLabel || (i18n.t('Bank Account') as string);
             }
 
             return swapData.value.asset.toUpperCase();
@@ -158,10 +165,14 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
             if (ownedAddressInfo) {
                 // Find account label
                 const { accountInfos } = useAccountStore();
-                return Object.values(accountInfos)
-                    .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
-                    || Object.values(accountInfos)
-                        .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                return (
+                    Object.values(accountInfos).find((accountInfo) =>
+                        accountInfo.btcAddresses.external.includes(address),
+                    )?.label
+                    || Object.values(accountInfos).find((accountInfo) =>
+                        accountInfo.btcAddresses.internal.includes(address),
+                    )!.label
+                );
             }
         }
 
@@ -186,7 +197,9 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
                     swapData.value.asset === SwapAsset.EUR
                     && swapData.value.htlc?.settlement
                     && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-                ) return `${message.split('–')[0]} –`;
+                ) {
+                    return `${message.split('–')[0]} –`;
+                }
 
                 return message;
             }
@@ -216,8 +229,8 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
             FIAT_API_PROVIDER_TX_HISTORY,
         );
         return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-            ? { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }
+            ? // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+              { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }
             : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
     });
 

@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts">
-import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -32,6 +31,8 @@ import { useSwipes } from '../../composables/useSwipes';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { pointerdown } from '../../directives/PointerEvents';
 import { useSettingsStore } from '../../stores/Settings';
+import CloseButton from '../CloseButton.vue';
+import SmallPage from '../SmallPage.vue';
 
 export function enableModalTransition() {
     document.body.classList.remove('modal-transition-disabled');

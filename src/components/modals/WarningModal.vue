@@ -38,10 +38,13 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter, AlertTriangleIcon } from '@nimiq/vue-components';
 import { CreateElement, computed, defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
+import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
 import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 
 /** Colors which have a nq-<color>-bg background class and a matching nq-button.<color> modifier. */

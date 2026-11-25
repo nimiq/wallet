@@ -25,7 +25,6 @@
 </template>
 
 <script lang="ts">
-import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { useConfig } from '@/composables/useConfig';
@@ -39,8 +38,11 @@ import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useStakingStore } from '../stores/Staking';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
+import FiatAmount from './FiatAmount.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
+import Identicon from './Identicon.vue';
 
 export default defineComponent({
     props: {

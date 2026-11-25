@@ -77,7 +77,6 @@
 </template>
 
 <script lang="ts">
-import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from 'vue';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
@@ -91,6 +90,8 @@ import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { Transaction, useBtcTransactionsStore } from '../stores/BtcTransactions';
+import CircleSpinner from './CircleSpinner.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);

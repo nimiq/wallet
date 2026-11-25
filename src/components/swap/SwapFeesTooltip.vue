@@ -88,9 +88,11 @@
 </template>
 
 <script lang="ts">
-import { InfoCircleSmallIcon, Tooltip, FiatAmount } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
 import { FiatCurrency } from '../../lib/Constants';
+import FiatAmount from '../FiatAmount.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import Tooltip from '../Tooltip.vue';
 
 export default defineComponent({
     props: {

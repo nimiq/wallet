@@ -175,7 +175,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
@@ -187,10 +186,13 @@ import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
+import CircleSpinner from '../CircleSpinner.vue';
 import CountryFlag from '../CountryFlag.vue';
 import CountrySelector from '../CountrySelector.vue';
+import FiatAmount from '../FiatAmount.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 // import { Trial } from '../../lib/Trials';
 

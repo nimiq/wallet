@@ -111,10 +111,12 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
 import BlueLink from '../BlueLink.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 
 import Modal from './Modal.vue';
 

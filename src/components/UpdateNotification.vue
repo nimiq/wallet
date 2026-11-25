@@ -19,11 +19,12 @@
 </template>
 
 <script lang="ts">
-import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch } from 'vue';
 import { updateServiceWorker } from '../registerServiceWorker';
 import { useSettingsStore } from '../stores/Settings';
+import BottomOverlay from './BottomOverlay.vue';
+import CircleSpinner from './CircleSpinner.vue';
 
 export default defineComponent({
     setup() {

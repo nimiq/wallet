@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts">
-import { FiatAmount } from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
+import FiatAmount from './FiatAmount.vue';
 
 export default defineComponent({
     name: 'FiatConvertedAmount',

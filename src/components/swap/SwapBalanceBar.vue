@@ -14,22 +14,22 @@
                     <Identicon class="primary" :address="activeAddressInfo.address" />
                 </div>
                 <label>{{ activeAddressInfo.label }}</label>
-                <Amount :amount="newLeftBalance" currency="nim" :decimals="0" />
+                <CryptoAmount :amount="newLeftBalance" currency="nim" :decimals="0" />
             </button>
             <div v-if="leftAsset === SwapAsset.BTC" class="currency left bitcoin">
                 <BitcoinIcon />
                 <label>{{ $t('Bitcoin') }}</label>
-                <Amount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
+                <CryptoAmount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDC_MATIC" class="currency left usdc">
                 <UsdcIcon />
                 <label>{{ $t('USD Coin') }}</label>
-                <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
+                <CryptoAmount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDT_MATIC" class="currency left usdt">
                 <UsdtIcon />
                 <label>{{ $t('Tether USD') }}</label>
-                <Amount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
+                <CryptoAmount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
             </div>
             <button
                 v-if="rightAsset === SwapAsset.NIM"
@@ -38,7 +38,7 @@
                 @click="onActiveAddressClick"
             >
                 <label>{{ activeAddressInfo.label }}</label>
-                <Amount :amount="newRightBalance" currency="nim" :decimals="0" />
+                <CryptoAmount :amount="newRightBalance" currency="nim" :decimals="0" />
                 <div class="identicon-stack">
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]" />
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]" />
@@ -47,17 +47,17 @@
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
                 <label>{{ $t('Bitcoin') }}</label>
-                <Amount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
+                <CryptoAmount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
                 <BitcoinIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDC_MATIC" class="currency right usdc">
                 <label>{{ $t('USD Coin') }}</label>
-                <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
+                <CryptoAmount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDT_MATIC" class="currency right usdt">
                 <label>{{ $t('Tether USD') }}</label>
-                <Amount :amount="newRightBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
+                <CryptoAmount :amount="newRightBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
                 <UsdtIcon />
             </div>
         </div>
@@ -135,7 +135,6 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { Identicon, Amount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -145,11 +144,13 @@ import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import CryptoAmount from '../CryptoAmount.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
+import Identicon from '../Identicon.vue';
 
 type BarDefinition = {
     readonly address: string;
@@ -709,7 +710,7 @@ export default defineComponent({
         SlideHint,
         UsdcIcon,
         UsdtIcon,
-        Amount,
+        CryptoAmount,
     },
 });
 </script>

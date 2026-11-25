@@ -33,8 +33,9 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

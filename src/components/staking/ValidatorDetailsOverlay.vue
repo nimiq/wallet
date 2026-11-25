@@ -68,7 +68,6 @@
 </template>
 
 <script lang="ts">
-import { CircleSpinner, PageHeader, PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, onBeforeUnmount } from 'vue';
 import { useI18n } from '@/lib/useI18n';
@@ -81,7 +80,10 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import BlueLink from '../BlueLink.vue';
+import CircleSpinner from '../CircleSpinner.vue';
 import MessageTransition from '../MessageTransition.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';

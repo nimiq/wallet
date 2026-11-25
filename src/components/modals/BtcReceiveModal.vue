@@ -138,7 +138,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader, Copyable, Tooltip, InfoCircleSmallIcon, QrCodeIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -148,8 +147,14 @@ import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../li
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
+import Copyable from '../Copyable.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import QrCodeIcon from '../icons/QrCodeIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';

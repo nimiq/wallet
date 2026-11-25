@@ -61,7 +61,6 @@
 </template>
 
 <script lang="ts">
-import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
 import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
@@ -74,6 +73,8 @@ import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { useUsdcTransactionsStore, Transaction, TransactionState } from '../stores/UsdcTransactions';
+import CircleSpinner from './CircleSpinner.vue';
+import HexagonIcon from './icons/HexagonIcon.vue';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);

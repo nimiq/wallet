@@ -40,7 +40,10 @@ vi.mock('config', () => ({
         polygon: { usdc: {}, usdc_bridged: {}, usdt_bridged: {} },
     },
 }));
-vi.mock('@nimiq/vue-components', () => ({ PageBody: {}, PageHeader: {}, PageFooter: {}, CircleSpinner: {} }));
+vi.mock('@/components/PageBody.vue', () => ({ default: {} }));
+vi.mock('@/components/PageHeader.vue', () => ({ default: {} }));
+vi.mock('@/components/PageFooter.vue', () => ({ default: {} }));
+vi.mock('@/components/CircleSpinner.vue', () => ({ default: {} }));
 vi.mock('@/components/ButtonGroup.vue', () => ({ default: {} }));
 vi.mock('@/components/modals/Modal.vue', () => ({ default: {} }));
 vi.mock('@/composables/useConfig', () => ({ useConfig: () => ({ config: { environment: 'main' } }) }));

@@ -36,11 +36,12 @@
 </template>
 
 <script lang="ts">
-import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, shallowRef, computed, onMounted, onUnmounted } from 'vue';
 import type { Line } from 'vue-chartjs';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
+import CircleSpinner from '../CircleSpinner.vue';
+import SliderToggle from '../SliderToggle.vue';
 
 type TimeRange = 'ALL' | 'Y1' | 'M6' | 'M3';
 

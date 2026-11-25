@@ -26,10 +26,10 @@
 </template>
 
 <script lang="ts">
-import { Tooltip } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
 import { Validator } from '../../../stores/Staking';
 import BlueLink from '../../BlueLink.vue';
+import Tooltip from '../../Tooltip.vue';
 
 export default defineComponent({
     props: {

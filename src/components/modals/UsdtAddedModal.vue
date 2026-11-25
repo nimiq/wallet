@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import { useRouter, RouteName } from '@/router';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -37,6 +36,9 @@ import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIconPadded from '../icons/UsdtIconPadded.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

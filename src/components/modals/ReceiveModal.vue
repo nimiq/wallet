@@ -45,11 +45,15 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, Identicon, AddressDisplay, QrCodeIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
 import { useAddressStore, AddressType } from '../../stores/Address';
+import AddressDisplay from '../AddressDisplay.vue';
+import QrCodeIcon from '../icons/QrCodeIcon.vue';
+import Identicon from '../Identicon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';

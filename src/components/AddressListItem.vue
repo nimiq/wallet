@@ -30,19 +30,21 @@
 </template>
 
 <script lang="ts">
-import { Identicon, LockLockedIcon, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
 import { AddressInfo, AddressType } from '../stores/Address';
 import { useStakingStore } from '../stores/Staking';
 import Amount from './Amount.vue';
+import CircleSpinner from './CircleSpinner.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import LockLockedIcon from './icons/LockLockedIcon.vue';
 import TwoLeafStakingIcon from './icons/Staking/TwoLeafStakingIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
 import VestingIcon from './icons/VestingIcon.vue';
+import Identicon from './Identicon.vue';
 
 export default defineComponent({
     props: {

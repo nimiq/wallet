@@ -33,10 +33,10 @@
 </template>
 
 <script lang="ts">
-import { PageBody } from '@nimiq/vue-components';
 import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import BlueLink from '../BlueLink.vue';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

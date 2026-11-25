@@ -31,11 +31,14 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import AlertCircleIcon from './icons/AlertCircleIcon.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import StopSignIcon from './icons/StopSignIcon.vue';
+import PageBody from './PageBody.vue';
+import PageHeader from './PageHeader.vue';
 
 export default defineComponent({
     props: {

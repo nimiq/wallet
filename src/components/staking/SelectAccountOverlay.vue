@@ -10,13 +10,14 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, onMounted } from 'vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import AddressList from '../AddressList.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 
 export default defineComponent({
     setup(props, context) {

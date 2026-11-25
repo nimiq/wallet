@@ -31,13 +31,13 @@
 </template>
 
 <script lang="ts">
-import { LabelInput } from '@nimiq/vue-components';
 import Vue, { defineComponent, ref } from 'vue';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import Avatar from './Avatar.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import LabelInput from './LabelInput.vue';
 
 export type BtcCopiedAddressInfo = {
     address: string;

@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { parseRequestLink, Currency } from '@nimiq/utils';
-import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
@@ -48,6 +47,8 @@ import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../lib/UnstoppableDomains';
+import ScanQrCodeIcon from './icons/ScanQrCodeIcon.vue';
+import LabelInput from './LabelInput.vue';
 
 const BtcAddressInput = defineComponent({
     props: {

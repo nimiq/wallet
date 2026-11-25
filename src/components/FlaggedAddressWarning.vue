@@ -50,12 +50,16 @@
 
 <script lang="ts">
 import { CryptoCurrency } from '@nimiq/utils';
-import { PageBody, AddressDisplay, Tooltip, AlertTriangleIcon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import type { FlaggedAddressInfo } from '../composables/useFlaggedAddressCheck';
 import { useWindowSize } from '../composables/useWindowSize';
 import { i18n } from '../i18n/i18n-setup';
+import AddressDisplay from './AddressDisplay.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
+import InfoCircleSmallIcon from './icons/InfoCircleSmallIcon.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import PageBody from './PageBody.vue';
+import Tooltip from './Tooltip.vue';
 
 export enum Events {
     ABORT = 'abort',

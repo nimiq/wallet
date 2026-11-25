@@ -29,7 +29,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
 import { useI18n } from '@/lib/useI18n';
@@ -38,6 +37,10 @@ import { ExportFormat, exportTransactions } from '../../lib/export/TransactionEx
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import ButtonGroup from '../ButtonGroup.vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

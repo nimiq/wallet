@@ -60,10 +60,10 @@
 </template>
 
 <script lang="ts">
-import { AlertTriangleIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { RouteName, useRouter } from '@/router';
+import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
 
 import { useWindowSize } from '../../composables/useWindowSize';
 import { backup, rename, changePassword, logout, onboard } from '../../hub';

@@ -80,16 +80,18 @@
 </template>
 
 <script lang="ts">
-import { PageBody, ArrowLeftIcon, Tooltip } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
 import { backup } from '../../hub';
 import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
+import ArrowLeftIcon from '../icons/ArrowLeftIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
 import ShieldIcon from '../icons/ShieldIcon.vue';
 import WordsIcon from '../icons/WordsIcon.vue';
+import PageBody from '../PageBody.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

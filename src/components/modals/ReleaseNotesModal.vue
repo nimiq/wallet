@@ -22,10 +22,11 @@
 
 <script lang="ts">
 import VueMarkdown from '@adapttive/vue-markdown';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { defineComponent, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../../lib/Constants';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
 
 type Release = {

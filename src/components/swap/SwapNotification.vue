@@ -63,7 +63,6 @@ import {
     SettlementInfo,
     SettlementStatus,
 } from '@nimiq/oasis-api';
-import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import type { Route } from 'vue-router';
@@ -80,7 +79,11 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useNetworkStore } from '../../stores/Network';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
+import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
+import CheckmarkIcon from '../icons/CheckmarkIcon.vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
+import StopwatchIcon from '../icons/StopwatchIcon.vue';
+import LoadingSpinner from '../LoadingSpinner.vue';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',

@@ -27,11 +27,11 @@
 
 <script lang="ts">
 import { Provider, getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_PRICE_CHART } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
+import FiatAmount from './FiatAmount.vue';
 import LineChart from './LineChart.vue';
 
 export enum TimeRange {

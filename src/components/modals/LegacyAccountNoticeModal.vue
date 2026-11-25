@@ -20,12 +20,12 @@
 </template>
 
 <script lang="ts">
-import { PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

@@ -38,12 +38,13 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_DEV } from '../../lib/Constants';
 import { useStakingStore } from '../../stores/Staking';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 
 import { FilterState } from '../../lib/StakingUtils';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';

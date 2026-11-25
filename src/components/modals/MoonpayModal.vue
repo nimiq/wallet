@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { SignBtcTransactionRequest } from '@nimiq/hub-api';
-import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
@@ -36,6 +35,8 @@ import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 
 import { getElectrumClient } from '../../electrum';

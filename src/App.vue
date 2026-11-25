@@ -49,12 +49,12 @@
 </template>
 
 <script lang="ts">
-import { LoadingSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, computed, onMounted, Ref, getCurrentInstance } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { provideI18n } from '@/lib/useI18n';
 import Sidebar from './components/layouts/Sidebar.vue';
+import LoadingSpinner from './components/LoadingSpinner.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
 import WalletStatusButton from './components/WalletStatusButton.vue';

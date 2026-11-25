@@ -306,10 +306,10 @@
 
 <script lang="ts">
 import { ValidationUtils } from '@nimiq/utils';
-import { CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
 import { RouteName } from '@/router';
+import CircleSpinner from '../CircleSpinner.vue';
 
 import { useI18n } from '@/lib/useI18n';
 import { usePwaInstallPrompt } from '../../composables/usePwaInstallPrompt';

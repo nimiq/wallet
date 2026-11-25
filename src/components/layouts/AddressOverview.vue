@@ -345,18 +345,16 @@
 </template>
 
 <script lang="ts">
-import {
-    Identicon,
-    GearIcon,
-    Copyable,
-    ArrowRightSmallIcon,
-    ArrowLeftIcon,
-    MenuDotsIcon,
-    InfoCircleSmallIcon,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, computed } from 'vue';
 import { RouteName } from '@/router';
+import Copyable from '../Copyable.vue';
+import ArrowLeftIcon from '../icons/ArrowLeftIcon.vue';
+import ArrowRightSmallIcon from '../icons/ArrowRightSmallIcon.vue';
+import GearIcon from '../icons/GearIcon.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import MenuDotsIcon from '../icons/MenuDotsIcon.vue';
+import Identicon from '../Identicon.vue';
 
 import Amount from '../Amount.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';

@@ -349,7 +349,6 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, watch, onActivated } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -370,8 +369,11 @@ import AddressList from '../AddressList.vue';
 import Amount from '../Amount.vue';
 // import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
+import CircleSpinner from '../CircleSpinner.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
+import ArrowRightSmallIcon from '../icons/ArrowRightSmallIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
@@ -384,6 +386,7 @@ import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
+import Tooltip from '../Tooltip.vue';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
 

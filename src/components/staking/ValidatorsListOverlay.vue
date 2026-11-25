@@ -54,7 +54,6 @@
 
 <script lang="ts">
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { PageHeader, PageBody, FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
@@ -63,6 +62,9 @@ import { buildRewardsByValidatorMap, getEndOfMonthTimestamp, isCurrentMonthAndYe
 import { useI18n } from '../../lib/useI18n';
 import { Validator, useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 import Amount from '../Amount.vue';
+import FiatAmount from '../FiatAmount.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 

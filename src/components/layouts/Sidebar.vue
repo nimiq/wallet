@@ -204,7 +204,6 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
 import { RouteName, useRouter, getContextRouteName } from '@/router';
@@ -213,8 +212,11 @@ import AnnouncementBox from '../AnnouncementBox.vue';
 import AttentionDot from '../AttentionDot.vue';
 import BalanceDistribution from '../BalanceDistribution.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
+import GearIcon from '../icons/GearIcon.vue';
+import InfoCircleIcon from '../icons/InfoCircleIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
+import Tooltip from '../Tooltip.vue';
 
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';

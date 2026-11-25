@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts">
-import { Identicon } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
 import { Validator } from '../../stores/Staking';
+import Identicon from '../Identicon.vue';
 
 export default defineComponent({
     props: {

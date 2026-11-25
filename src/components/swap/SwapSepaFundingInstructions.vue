@@ -144,9 +144,12 @@
 </template>
 
 <script lang="ts">
-import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { defineComponent, onUnmounted, ref } from 'vue';
 import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
+import Copyable from '../Copyable.vue';
+import FiatAmount from '../FiatAmount.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import Tooltip from '../Tooltip.vue';
 
 enum Pages {
     PAYMENT_DETAILS = 'payment-details',

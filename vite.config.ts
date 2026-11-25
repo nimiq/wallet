@@ -117,20 +117,6 @@ export default defineConfig(async ({ command, mode }) => {
             credentialsPlugin(env),
             staticCopyPlugin({
                 'img/nimiq-style.icons.svg': 'node_modules/@nimiq/style/nimiq-style.icons.svg',
-                ...Object.fromEntries(
-                    fs
-                        .globSync('node_modules/@nimiq/vue-components/dist/iqons.min.*.svg', { cwd: rootDir })
-                        .map((file) => [`img/${path.basename(file)}`, file]),
-                ),
-                // The bundled NimiqVueComponents.umd.js loads the language files from the asset path set in main.ts and
-                // tries to load the non-minified files.
-                ...Object.fromEntries(
-                    fs
-                        .globSync('node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js', {
-                            cwd: rootDir,
-                        })
-                        .map((file) => [`js/${path.basename(file).replace('.min', '')}`, file]),
-                ),
             }),
             pwaManifestPlugin(appName),
             VitePWA({
@@ -204,8 +190,8 @@ export default defineConfig(async ({ command, mode }) => {
                             {
                                 // Like Vue CLI's chunk-vendors, put the dependencies of the entry points into a separate
                                 // chunk, which can be cached long-term, and which webpack-i18n-tools' optimizer skips, such
-                                // that it doesn't rewrite translation usages in dependencies, like @nimiq/vue-components,
-                                // which come with their own translations.
+                                // that it doesn't rewrite translation usages in dependencies, which are not covered by the
+                                // wallet's translations.
                                 name: 'vendor',
                                 test: /[\\/]node_modules[\\/]/,
                                 tags: ['$initial'],

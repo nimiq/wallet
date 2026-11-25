@@ -69,7 +69,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed } from 'vue';
 import { useI18n } from '@/lib/useI18n';
@@ -79,6 +78,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { activatePolygon } from '../../hub';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

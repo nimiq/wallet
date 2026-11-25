@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import { LabelInput } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, Ref, ref, watch } from 'vue';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';
+import LabelInput from './LabelInput.vue';
 
 const BtcLabelInput = defineComponent({
     props: {

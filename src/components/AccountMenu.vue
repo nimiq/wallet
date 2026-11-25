@@ -19,10 +19,11 @@
 </template>
 
 <script lang="ts">
-import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from '@/router';
+import MenuDotsIcon from './icons/MenuDotsIcon.vue';
+import Identicon from './Identicon.vue';
 
 import { getBackgroundClass } from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';

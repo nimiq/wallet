@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { useConfig } from '@/composables/useConfig';
@@ -31,6 +30,8 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { AddressType, useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import ArrowRightSmallIcon from './icons/ArrowRightSmallIcon.vue';
+import ScanQrCodeIcon from './icons/ScanQrCodeIcon.vue';
 
 export default defineComponent({
     setup() {

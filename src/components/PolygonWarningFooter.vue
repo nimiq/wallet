@@ -48,11 +48,13 @@
 </template>
 
 <script lang="ts">
-import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import InfoCircleSmallIcon from './icons/InfoCircleSmallIcon.vue';
+import PageFooter from './PageFooter.vue';
+import Tooltip from './Tooltip.vue';
 
 export default defineComponent({
     props: {

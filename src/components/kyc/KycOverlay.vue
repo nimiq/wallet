@@ -53,7 +53,6 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { connectKyc } from '../../lib/KycConnection';
@@ -61,6 +60,9 @@ import { Trial } from '../../lib/Trials';
 import { KycProvider } from '../../stores/Kyc';
 import { useSettingsStore } from '../../stores/Settings';
 import KycIcon from '../icons/KycIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 
 export default defineComponent({
     setup(props, { emit }) {

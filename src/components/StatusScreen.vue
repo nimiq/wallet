@@ -110,9 +110,12 @@
 </template>
 
 <script lang="ts">
-import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
 import { defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import CheckmarkIcon from './icons/CheckmarkIcon.vue';
+import FaceNeutralIcon from './icons/FaceNeutralIcon.vue';
+import FaceSadIcon from './icons/FaceSadIcon.vue';
+import LoadingSpinner from './LoadingSpinner.vue';
 
 export const SUCCESS_REDIRECT_DELAY = 2000; // 1s of transition + 1s of display
 

@@ -177,6 +177,7 @@ export default defineConfig(async ({ command, mode }) => {
             // Like Vue CLI, never inline svgs as data urls, but always emit them as separate files.
             assetsInlineLimit: (filePath: string) => (/\.svg(?:\?|$)/.test(filePath) ? false : undefined),
             rolldownOptions: {
+                // The html pages, which are also allowlisted for nginx by scripts/makeNginxAllowlist.js.
                 input: {
                     index: path.join(rootDir, 'index.html'),
                     'swap-kyc-handler': path.join(rootDir, 'swap-kyc-handler.html'),
@@ -368,9 +369,10 @@ const lintConfig: OxlintConfig = {
             },
         },
         {
-            files: ['*.js', '*.mjs', '*.ts', 'lint/**'],
+            // Configuration files at the project root can use the dev dependencies. They're listed explicitly, as a
+            // pattern like *.ts matches files in all directories in Oxlint, not only at the project root.
+            files: ['eslint.config.mjs', 'vite.config.ts', 'lint/**'],
             rules: {
-                // Configuration files at the project root can use the dev dependencies.
                 'import-js/no-extraneous-dependencies': ['error', { devDependencies: true }],
             },
         },
@@ -519,6 +521,9 @@ function pwaManifestPlugin(appName: string): Plugin {
         generateBundle() {
             this.emitFile({ type: 'asset', fileName: 'manifest.json', source: manifest });
         },
+        // Append the tags to the head, as @vue/cli-plugin-pwa did, instead of prepending them, which is Vite's
+        // default. The theme-color metas for light and dark mode in the html pages then take precedence over the
+        // generic theme-color, as browsers use the first matching one.
         transformIndexHtml: () => [
             ...[32, 16].map((size) => ({
                 tag: 'link',
@@ -540,7 +545,7 @@ function pwaManifestPlugin(appName: string): Plugin {
                 attrs: { rel: 'mask-icon', href: '/img/icons/safari-pinned-tab.svg', color: themeColor },
             },
             { tag: 'meta', attrs: { name: 'msapplication-TileColor', content: '#1F2348' } },
-        ],
+        ].map((tag) => ({ ...tag, injectTo: 'head' as const })),
     };
 }
 

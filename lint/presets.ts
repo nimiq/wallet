@@ -94,6 +94,8 @@ export const airbnbBaseRules: LintRules = {
     'no-global-assign': ['error', { exceptions: [] }],
     'no-implied-eval': 'error',
     'no-import-assign': 'error',
+    // With ESLint's default options, as Oxlint by default also reports function declarations in blocks in strict mode.
+    'no-inner-declarations': ['error', 'functions', { blockScopedFunctions: 'allow' }],
     'no-invalid-regexp': 'error',
     'no-irregular-whitespace': 'error',
     'no-iterator': 'error',
@@ -294,7 +296,6 @@ export const airbnbBaseRules: LintRules = {
     'vars-on-top': 'error',
     yoda: 'error',
     'eslint-js/camelcase': ['error', { properties: 'never', ignoreDestructuring: false }],
-    'eslint-js/no-inner-declarations': 'error',
     'eslint-js/no-restricted-syntax': [
         'error',
         {

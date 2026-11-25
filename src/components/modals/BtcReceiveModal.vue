@@ -6,31 +6,37 @@
     >
         <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive BTC') }}
-            <div slot="more" class="subheader">
-                {{ $t('Share a single-use address with the sender.') }}
-                <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                    <InfoCircleSmallIcon slot="trigger" />
-                    <div class="flex-column">
-                        <p>
-                            {{
-                                $t('With Bitcoin, a new address can be used for every transaction to improve privacy.')
-                            }}
-                        </p>
+            <template #more>
+                <div class="subheader">
+                    {{ $t('Share a single-use address with the sender.') }}
+                    <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                        <template #trigger>
+                            <InfoCircleSmallIcon />
+                        </template>
                         <div class="flex-column">
-                            <div class="flex-row">
-                                <RefreshIcon />
-                                <p>{{ $t('Create a new address for every transaction.') }}</p>
-                            </div>
-                            <div class="flex-row">
-                                <BracketsIcon />
-                                <p>
-                                    {{ $t('Use labels to easily identify transactions.') }}
-                                </p>
+                            <p>
+                                {{
+                                    $t(
+                                        'With Bitcoin, a new address can be used for every transaction to improve privacy.',
+                                    )
+                                }}
+                            </p>
+                            <div class="flex-column">
+                                <div class="flex-row">
+                                    <RefreshIcon />
+                                    <p>{{ $t('Create a new address for every transaction.') }}</p>
+                                </div>
+                                <div class="flex-row">
+                                    <BracketsIcon />
+                                    <p>
+                                        {{ $t('Use labels to easily identify transactions.') }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Tooltip>
-            </div>
+                    </Tooltip>
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <Copyable
@@ -56,7 +62,7 @@
                             :autoWidth="true"
                             :styles="{ width: '205px', padding: '1.25rem 1.5rem' }"
                         >
-                            <template slot="trigger"><InfoCircleSmallIcon /></template>
+                            <template #trigger><InfoCircleSmallIcon /></template>
                             <span class="header">
                                 {{
                                     $t(
@@ -121,19 +127,10 @@
             </footer>
         </PageBody>
 
-        <QrCodeOverlay
-            v-if="addressQrCodeOverlayOpened"
-            slot="overlay"
-            :address="currentlyShownAddress"
-            currency="btc"
-        />
-
-        <PaymentLinkOverlay
-            slot="overlay"
-            v-if="receiveLinkOverlayOpened"
-            :address="currentlyShownAddress"
-            currency="btc"
-        />
+        <template #overlay>
+            <QrCodeOverlay v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress" currency="btc" />
+            <PaymentLinkOverlay v-if="receiveLinkOverlayOpened" :address="currentlyShownAddress" currency="btc" />
+        </template>
     </Modal>
 </template>
 

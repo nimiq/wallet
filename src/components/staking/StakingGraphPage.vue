@@ -23,7 +23,9 @@
                     :styles="{ width: '32rem', 'margin-left': '-6rem' }"
                     :container="tooltipContainer"
                 >
-                    <div slot="trigger" class="flex-row">Estimated rewards <InfoCircleSmallIcon /></div>
+                    <template #trigger>
+                        <div class="flex-row">Estimated rewards <InfoCircleSmallIcon /></div>
+                    </template>
 
                     <img src="/img/staking/estimated-rewards-projection.svg" alt="Estimated Rewards Projection" />
                     <p>

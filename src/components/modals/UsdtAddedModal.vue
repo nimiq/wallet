@@ -2,11 +2,15 @@
     <Modal ref="modal$" class="stablecoin-selection-modal">
         <PageHeader>
             <i18n path="You can now choose{linebreak}between USDC and USDT">
-                <br slot="linebreak" />
+                <template #linebreak>
+                    <br />
+                </template>
             </i18n>
-            <div slot="more" class="subtitle">
-                {{ $t('We added support for USDT, which you can now use instead of USDC.') }}
-            </div>
+            <template #more>
+                <div class="subtitle">
+                    {{ $t('We added support for USDT, which you can now use instead of USDC.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-row">
             <UsdcIcon />

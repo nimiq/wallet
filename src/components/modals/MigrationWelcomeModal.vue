@@ -3,21 +3,24 @@
         <PageHeader :backArrow="page > 1" @back="page -= 1" progressIndicator :numberSteps="3" :step="page">
             <template v-if="page === 1">
                 {{ $t('One Account, many Addresses') }}
-                <p slot="more" class="nq-notice info">
-                    {{ $t('The new and improved accounts\ncan have multiple addresses.') }}
-                </p>
             </template>
 
             <template v-if="page === 2">
                 {{ $t('Improved Accessibility') }}
-                <p slot="more" class="nq-notice info">
-                    {{ $t('Log in on your devices with the new\nNimiq Login Files.') }}
-                </p>
             </template>
 
             <template v-if="page === 3">
                 {{ $t('Old and new Accounts') }}
-                <p slot="more" class="nq-notice info">
+            </template>
+
+            <template #more>
+                <p v-if="page === 1" class="nq-notice info">
+                    {{ $t('The new and improved accounts\ncan have multiple addresses.') }}
+                </p>
+                <p v-if="page === 2" class="nq-notice info">
+                    {{ $t('Log in on your devices with the new\nNimiq Login Files.') }}
+                </p>
+                <p v-if="page === 3" class="nq-notice info">
                     {{ $t('Multiple addresses and Login Files\nare supported by new accounts only.') }}
                 </p>
             </template>

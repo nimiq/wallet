@@ -2,12 +2,14 @@
     <div class="staking-rewards-page flex-column">
         <PageHeader :backArrow="showBackArrow" @back="$emit('back')">
             <label>{{ $t('Staking Rewards') }}</label>
-            <span slot="more" class="date">
-                {{ monthLabel }}
-                <span v-if="showOngoingIndicator">
-                    <strong>&middot;</strong> <TextShimmer>{{ $t('Ongoing') }}</TextShimmer>
+            <template #more>
+                <span class="date">
+                    {{ monthLabel }}
+                    <span v-if="showOngoingIndicator">
+                        <strong>&middot;</strong> <TextShimmer>{{ $t('Ongoing') }}</TextShimmer>
+                    </span>
                 </span>
-            </span>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-row sender-recipient" v-if="monthlyReward && monthlyReward.validators.length">
@@ -56,7 +58,7 @@
                     </div>
                     <div v-else class="fiat-amount">
                         <Tooltip>
-                            <template slot="trigger">
+                            <template #trigger>
                                 <FiatAmount :amount="fiatHistoricValue" :currency="fiatHistoricCurrency" value-mask />
                             </template>
                             <span>{{ $t('Historic value') }}</span>

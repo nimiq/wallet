@@ -26,7 +26,9 @@
                             theme="inverse"
                             :styles="{ width: '35rem' }"
                         >
-                            <InfoCircleSmallIcon slot="trigger" />
+                            <template #trigger>
+                                <InfoCircleSmallIcon />
+                            </template>
                             <p class="intro">
                                 {{ $t('TEN31 Bank provides a bank account to lock your payment.') }}
                             </p>
@@ -70,7 +72,9 @@
                         theme="inverse"
                         :styles="{ width: '35rem' }"
                     >
-                        <InfoCircleSmallIcon slot="trigger" />
+                        <template #trigger>
+                            <InfoCircleSmallIcon />
+                        </template>
                         <p class="intro">{{ $t('Please ensure that you are sending an instant transaction!') }}</p>
                         <p class="explainer">
                             {{

@@ -6,7 +6,9 @@
         :container="container && { $el: container }"
         @click.native.stop
     >
-        <slot slot="trigger" />
+        <template #trigger>
+            <slot />
+        </template>
 
         <blockquote>
             <p v-if="'description' in validator" class="description">{{ validator.description }}</p>

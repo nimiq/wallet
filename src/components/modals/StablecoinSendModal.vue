@@ -63,50 +63,62 @@
             </button>
         </div>
 
-        <div v-if="contactListOpened" slot="overlay" class="page flex-column">
-            <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
-            <PageBody class="page__contact-list">
-                <UsdcContactBook @contact-selected="onContactSelected" />
-            </PageBody>
-        </div>
-
-        <div v-if="recipientDetailsOpened && recipientInfo" slot="overlay" class="page flex-column">
-            <PageBody class="page__recipient-overlay flex-column">
-                <Avatar :label="recipientInfo.label" />
-                <LabelInput
-                    v-if="recipientInfo.type === RecipientType.CONTACT"
-                    v-model="recipientInfo.label"
-                    :placeholder="$t('Name this contact...')"
-                    ref="labelInput$"
-                />
-                <label v-else>{{ recipientInfo.label }}</label>
-                <AddressDisplay :address="recipientInfo.address" format="ethereum" copyable />
-                <LongPressButton
-                    @long-press="
-                        recipientDetailsOpened = false;
+        <template #overlay>
+            <div v-if="contactListOpened" class="page flex-column">
+                <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
+                <PageBody class="page__contact-list">
+                    <UsdcContactBook @contact-selected="onContactSelected" />
+                </PageBody>
+            </div>
+            <div v-if="recipientDetailsOpened && recipientInfo" class="page flex-column">
+                <PageBody class="page__recipient-overlay flex-column">
+                    <Avatar :label="recipientInfo.label" />
+                    <LabelInput
+                        v-if="recipientInfo.type === RecipientType.CONTACT"
+                        v-model="recipientInfo.label"
+                        :placeholder="$t('Name this contact...')"
+                        ref="labelInput$"
+                    />
+                    <label v-else>{{ recipientInfo.label }}</label>
+                    <AddressDisplay :address="recipientInfo.address" format="ethereum" copyable />
+                    <LongPressButton
+                        @long-press="
+                            recipientDetailsOpened = false;
+                            page = Pages.AMOUNT_INPUT;
+                        "
+                    >
+                        {{ $t('Save and proceed') }}
+                        <template #subline>{{ $t('Long press to confirm') }}</template>
+                    </LongPressButton>
+                </PageBody>
+                <PolygonWarningFooter type="sending" level="warning" />
+            </div>
+            <transition name="fade">
+                <FlaggedAddressWarning
+                    v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                    :info="recipientInfo.flaggedInfo"
+                    :currency="stablecoin"
+                    @abort="reset"
+                    @continue="
                         page = Pages.AMOUNT_INPUT;
+                        closeRecipientDetails();
                     "
-                >
-                    {{ $t('Save and proceed') }}
-                    <template #subline>{{ $t('Long press to confirm') }}</template>
-                </LongPressButton>
-            </PageBody>
-            <PolygonWarningFooter type="sending" level="warning" />
-        </div>
-
-        <transition name="fade" slot="overlay">
-            <FlaggedAddressWarning
-                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
-                :info="recipientInfo.flaggedInfo"
-                :currency="stablecoin"
-                @abort="reset"
-                @continue="
-                    page = Pages.AMOUNT_INPUT;
-                    closeRecipientDetails();
-                "
-                class="page page__flagged-address-warning"
-            />
-        </transition>
+                    class="page page__flagged-address-warning"
+                />
+            </transition>
+            <div v-if="statusScreenOpened" class="page">
+                <StatusScreen
+                    :title="statusTitle"
+                    :state="statusState"
+                    :message="statusMessage"
+                    :mainAction="$t('Retry')"
+                    :alternativeAction="$t('Edit transaction')"
+                    @main-action="onStatusMainAction"
+                    @alternative-action="onStatusAlternativeAction"
+                    :lightBlue="true"
+                />
+            </div>
+        </template>
 
         <div
             v-if="page === Pages.AMOUNT_INPUT && recipientInfo"
@@ -157,20 +169,21 @@
                             :disabled="gotRequestUriAmount"
                             ref="amountInput$"
                         >
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :currency="stablecoin"
-                                :activeCurrency="activeCurrency"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :feeOption="false"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @send-max="sendMax"
-                                @currency="(currency) => (activeCurrency = currency)"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :currency="stablecoin"
+                                    :activeCurrency="activeCurrency"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :feeOption="false"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @send-max="sendMax"
+                                    @currency="(currency) => (activeCurrency = currency)"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                         <AmountInput
                             v-else
@@ -178,21 +191,24 @@
                             :decimals="fiatCurrencyInfo.decimals"
                             :disabled="gotRequestUriAmount"
                         >
-                            <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :currency="stablecoin"
-                                :activeCurrency="activeCurrency"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :feeOption="false"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @send-max="sendMax"
-                                @currency="(currency) => (activeCurrency = currency)"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #prefix>
+                                <span class="tilde">~</span>
+                            </template>
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :currency="stablecoin"
+                                    :activeCurrency="activeCurrency"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :feeOption="false"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @send-max="sendMax"
+                                    @currency="(currency) => (activeCurrency = currency)"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                     </div>
 
@@ -293,19 +309,6 @@
             <SendModalFooter :assets="[stablecoin]" :disabled="!canSend" :error="feeError" @click="sign"
                 ><template #cta>{{ $t('Send {currency}', { currency: stablecoin }) }}</template></SendModalFooter
             >
-        </div>
-
-        <div v-if="statusScreenOpened" slot="overlay" class="page">
-            <StatusScreen
-                :title="statusTitle"
-                :state="statusState"
-                :message="statusMessage"
-                :mainAction="$t('Retry')"
-                :alternativeAction="$t('Edit transaction')"
-                @main-action="onStatusMainAction"
-                @alternative-action="onStatusAlternativeAction"
-                :lightBlue="true"
-            />
         </div>
     </Modal>
 </template>

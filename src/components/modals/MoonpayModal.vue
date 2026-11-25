@@ -2,9 +2,13 @@
     <Modal class="moonpay-modal">
         <header class="flex-row">
             <Tooltip preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <i18n path="This service is operated by {link}" tag="span">
-                    <a slot="link" href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
+                    <template #link>
+                        <a href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
+                    </template>
                 </i18n>
             </Tooltip>
             <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay Logo" />

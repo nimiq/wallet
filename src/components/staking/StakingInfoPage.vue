@@ -34,15 +34,16 @@
                         :container="_self"
                         class="adjust-stake"
                     >
-                        <button
-                            slot="trigger"
-                            class="nq-button-s"
-                            @click="$emit('adjust-stake')"
-                            :disabled="isStakeDeactivating || !!pendingOperation"
-                        >
-                            <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
-                            <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                class="nq-button-s"
+                                @click="$emit('adjust-stake')"
+                                :disabled="isStakeDeactivating || !!pendingOperation"
+                            >
+                                <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
+                                <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
+                            </button>
+                        </template>
                         <span v-if="isSwitchingValidator">
                             {{ $t("You can't adjust your stake during a validator switch") }}
                         </span>

@@ -4,9 +4,13 @@
             {{ $t('Buy with Simplex') }}
         </PageHeader>
         <Tooltip preferredPosition="bottom right">
-            <InfoCircleSmallIcon slot="trigger" />
+            <template #trigger>
+                <InfoCircleSmallIcon />
+            </template>
             <i18n path="This service is operated by {link}" tag="span">
-                <a slot="link" href="https://simplex.com" target="_blank" rel="noopener">simplex.com</a>
+                <template #link>
+                    <a href="https://simplex.com" target="_blank" rel="noopener">simplex.com</a>
+                </template>
             </i18n>
         </Tooltip>
         <!-- Using v-show here is on purpose: the Simplex widget breaks when removing this element with using v-if -->

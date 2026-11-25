@@ -2,9 +2,11 @@
     <div class="payment-link-overlay flex-column" @click="amountMenuOpened = false">
         <PageHeader class="link-overlay">
             {{ $t('Share your Request Link') }}
-            <div slot="more">
-                {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
-            </div>
+            <template #more>
+                <div>
+                    {{ $t('Share the link or QR code with the sender.\nOptionally include an amount. ') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column link-overlay">
             <div class="inputs">
@@ -17,35 +19,39 @@
                     :maxFontSize="5"
                     ref="amountInputRef"
                 >
-                    <AmountMenu
-                        slot="suffix"
-                        class="ticker"
-                        :open="amountMenuOpened"
-                        :currency="currency"
-                        :activeCurrency="activeCurrency === 'nim' ? activeCurrency : btcUnit.ticker.toLowerCase()"
-                        :fiatCurrency="fiatCurrency"
-                        :otherFiatCurrencies="otherFiatCurrencies"
-                        :feeOption="false"
-                        :sendAllOption="false"
-                        @currency="(currency) => (activeCurrency = currency)"
-                        @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                    />
+                    <template #suffix>
+                        <AmountMenu
+                            class="ticker"
+                            :open="amountMenuOpened"
+                            :currency="currency"
+                            :activeCurrency="activeCurrency === 'nim' ? activeCurrency : btcUnit.ticker.toLowerCase()"
+                            :fiatCurrency="fiatCurrency"
+                            :otherFiatCurrencies="otherFiatCurrencies"
+                            :feeOption="false"
+                            :sendAllOption="false"
+                            @currency="(currency) => (activeCurrency = currency)"
+                            @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                        />
+                    </template>
                 </AmountInput>
                 <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals" :maxFontSize="5">
-                    <span slot="prefix" class="tilde">~</span>
-                    <AmountMenu
-                        slot="suffix"
-                        class="ticker"
-                        :open="amountMenuOpened"
-                        :currency="currency"
-                        :activeCurrency="activeCurrency"
-                        :fiatCurrency="fiatCurrency"
-                        :otherFiatCurrencies="otherFiatCurrencies"
-                        :feeOption="false"
-                        :sendAllOption="false"
-                        @currency="(currency) => (activeCurrency = currency)"
-                        @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                    />
+                    <template #prefix>
+                        <span class="tilde">~</span>
+                    </template>
+                    <template #suffix>
+                        <AmountMenu
+                            class="ticker"
+                            :open="amountMenuOpened"
+                            :currency="currency"
+                            :activeCurrency="activeCurrency"
+                            :fiatCurrency="fiatCurrency"
+                            :otherFiatCurrencies="otherFiatCurrencies"
+                            :feeOption="false"
+                            :sendAllOption="false"
+                            @currency="(currency) => (activeCurrency = currency)"
+                            @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                        />
+                    </template>
                 </AmountInput>
 
                 <div class="secondary-amount">

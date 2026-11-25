@@ -37,116 +37,134 @@
             <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
                 <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
-                    <div slot="more" class="pills flex-row">
-                        <Tooltip :styles="{ width: '25.5rem' }" preferredPosition="bottom right" :container="_self">
-                            <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
-                                1 NIM =
-                                <FiatAmount :amount="eurPerNim || 0" :maxRelativeDeviation="0.001" currency="eur" />
-                            </div>
-                            <div v-else slot="trigger" class="pill exchange-rate">
-                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur" />
-                            </div>
-                            <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
-                            <p class="explainer">
-                                {{ $t('The rate might change depending on the swap volume.') }}
-                            </p>
-                        </Tooltip>
-                        <SwapFeesTooltip
-                            preferredPosition="bottom left"
-                            :btcFeeFiat="fiatFees.btcFeeFiat"
-                            :oasisFeeFiat="fiatFees.oasisFeeFiat"
-                            :oasisFeePercentage="fiatFees.oasisFeePercentage"
-                            :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
-                            :nimFeeFiat="fiatFees.nimFeeFiat"
-                            :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
-                            :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
-                            :currency="selectedFiatCurrency"
-                            :container="_self"
-                        >
-                            <div slot="trigger" class="pill fees flex-row" :class="{ 'high-fees': fiatFees.isHigh }">
-                                <LightningIcon v-if="fiatFees.isHigh" />
-                                <FiatAmount :amount="fiatFees.total" :currency="selectedFiatCurrency" />
-                                {{ $t('fees') }}
-                            </div>
-                        </SwapFeesTooltip>
-                        <Tooltip
-                            :styles="{ width: '28.75rem' }"
-                            preferredPosition="bottom left"
-                            :container="_self"
-                            class="limits-tooltip"
-                            :class="{ 'kyc-connected': kycUser }"
-                        >
-                            <div slot="trigger" class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
-                                <LimitIcon />
-                                <template v-if="limits">
-                                    <FiatAmount
-                                        :amount="currentLimitFiat"
-                                        :currency="selectedFiatCurrency"
-                                        hideDecimals
-                                    />
-                                    <KycIcon v-if="kycUser" />
+                    <template #more>
+                        <div class="pills flex-row">
+                            <Tooltip :styles="{ width: '25.5rem' }" preferredPosition="bottom right" :container="_self">
+                                <template #trigger>
+                                    <div v-if="activeCurrency === CryptoCurrency.NIM" class="pill exchange-rate">
+                                        1 NIM =
+                                        <FiatAmount
+                                            :amount="eurPerNim || 0"
+                                            :maxRelativeDeviation="0.001"
+                                            currency="eur"
+                                        />
+                                    </div>
+                                    <div v-else class="pill exchange-rate">
+                                        1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur" />
+                                    </div>
+                                </template>
+                                <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
+                                <p class="explainer">
+                                    {{ $t('The rate might change depending on the swap volume.') }}
+                                </p>
+                            </Tooltip>
+                            <SwapFeesTooltip
+                                preferredPosition="bottom left"
+                                :btcFeeFiat="fiatFees.btcFeeFiat"
+                                :oasisFeeFiat="fiatFees.oasisFeeFiat"
+                                :oasisFeePercentage="fiatFees.oasisFeePercentage"
+                                :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
+                                :nimFeeFiat="fiatFees.nimFeeFiat"
+                                :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
+                                :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
+                                :currency="selectedFiatCurrency"
+                                :container="_self"
+                            >
+                                <template #trigger>
+                                    <div class="pill fees flex-row" :class="{ 'high-fees': fiatFees.isHigh }">
+                                        <LightningIcon v-if="fiatFees.isHigh" />
+                                        <FiatAmount :amount="fiatFees.total" :currency="selectedFiatCurrency" />
+                                        {{ $t('fees') }}
+                                    </div>
+                                </template>
+                            </SwapFeesTooltip>
+                            <Tooltip
+                                :styles="{ width: '28.75rem' }"
+                                preferredPosition="bottom left"
+                                :container="_self"
+                                class="limits-tooltip"
+                                :class="{ 'kyc-connected': kycUser }"
+                            >
+                                <template #trigger>
+                                    <div class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
+                                        <LimitIcon />
+                                        <template v-if="limits">
+                                            <FiatAmount
+                                                :amount="currentLimitFiat"
+                                                :currency="selectedFiatCurrency"
+                                                hideDecimals
+                                            />
+                                            <KycIcon v-if="kycUser" />
+                                        </template>
+                                        <template v-else>
+                                            <CircleSpinner />
+                                        </template>
+                                    </div>
+                                </template>
+                                <template v-if="limits && 'eur' in limits.current && limits.current.eur < Infinity">
+                                    <div class="price-breakdown">
+                                        <label>{{ $t('Initial Swap Limit') }}</label>
+                                        <FiatAmount :amount="100" currency="eur" hideDecimals />
+                                    </div>
+                                    <i18n class="explainer" path="{value} remaining" tag="p">
+                                        <template #value>
+                                            <FiatAmount :amount="currentLimitFiat" currency="eur" hideDecimals />
+                                        </template>
+                                    </i18n>
+                                    <div class="price-breakdown">
+                                        <label>{{ $t('After 72 hours') }}</label>
+                                        <FiatConvertedAmount
+                                            v-if="limits"
+                                            :amount="limits.monthly.luna"
+                                            roundDown
+                                            currency="nim"
+                                            :fiat="selectedFiatCurrency"
+                                            :max="oasisMaxAmountEur"
+                                        />
+                                        <span v-else>{{ $t('loading...') }}</span>
+                                    </div>
+                                    <div></div>
+                                    <p class="explainer">
+                                        {{
+                                            $t(
+                                                '72 hours after your first buy, '
+                                                    + 'your limit will be increased automatically.',
+                                            )
+                                        }}
+                                    </p>
                                 </template>
                                 <template v-else>
-                                    <CircleSpinner />
+                                    <div class="price-breakdown">
+                                        <label>{{ $t('30-day Limit') }}</label>
+                                        <FiatConvertedAmount
+                                            v-if="limits"
+                                            :amount="limits.monthly.luna"
+                                            roundDown
+                                            currency="nim"
+                                            :fiat="selectedFiatCurrency"
+                                            :max="oasisMaxAmountEur"
+                                        />
+                                        <span v-else>{{ $t('loading...') }}</span>
+                                    </div>
+                                    <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                        <template #value>
+                                            <FiatConvertedAmount
+                                                :amount="limits.remaining.luna"
+                                                roundDown
+                                                currency="nim"
+                                                :fiat="selectedFiatCurrency"
+                                                :max="oasisMaxAmountEur"
+                                            />
+                                        </template>
+                                    </i18n>
                                 </template>
-                            </div>
-                            <template v-if="limits && 'eur' in limits.current && limits.current.eur < Infinity">
-                                <div class="price-breakdown">
-                                    <label>{{ $t('Initial Swap Limit') }}</label>
-                                    <FiatAmount :amount="100" currency="eur" hideDecimals />
-                                </div>
-                                <i18n class="explainer" path="{value} remaining" tag="p">
-                                    <FiatAmount slot="value" :amount="currentLimitFiat" currency="eur" hideDecimals />
-                                </i18n>
-                                <div class="price-breakdown">
-                                    <label>{{ $t('After 72 hours') }}</label>
-                                    <FiatConvertedAmount
-                                        v-if="limits"
-                                        :amount="limits.monthly.luna"
-                                        roundDown
-                                        currency="nim"
-                                        :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"
-                                    />
-                                    <span v-else>{{ $t('loading...') }}</span>
-                                </div>
-                                <div></div>
-                                <p class="explainer">
-                                    {{
-                                        $t(
-                                            '72 hours after your first buy, '
-                                                + 'your limit will be increased automatically.',
-                                        )
-                                    }}
-                                </p>
-                            </template>
-                            <template v-else>
-                                <div class="price-breakdown">
-                                    <label>{{ $t('30-day Limit') }}</label>
-                                    <FiatConvertedAmount
-                                        v-if="limits"
-                                        :amount="limits.monthly.luna"
-                                        roundDown
-                                        currency="nim"
-                                        :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"
-                                    />
-                                    <span v-else>{{ $t('loading...') }}</span>
-                                </div>
-                                <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                                    <FiatConvertedAmount
-                                        slot="value"
-                                        :amount="limits.remaining.luna"
-                                        roundDown
-                                        currency="nim"
-                                        :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxAmountEur"
-                                    />
-                                </i18n>
-                            </template>
-                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
-                        </Tooltip>
-                    </div>
+                                <KycPrompt
+                                    v-if="$config.ten31Pass.enabled && !kycUser"
+                                    @click="kycOverlayOpened = true"
+                                />
+                            </Tooltip>
+                        </div>
+                    </template>
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
@@ -172,7 +190,9 @@
                                 placeholder="0.00"
                                 ref="eurAmountInput$"
                             >
-                                <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
+                                <template #suffix>
+                                    <span class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
+                                </template>
                             </AmountInput>
                         </div>
                         <span class="secondary-amount flex-row">
@@ -186,13 +206,15 @@
                                 v-model="cryptoAmount"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5"
                             >
-                                <span class="ticker" slot="suffix">
-                                    {{
-                                        activeCurrency === CryptoCurrency.BTC
-                                            ? btcUnit.ticker
-                                            : activeCurrency.toUpperCase()
-                                    }}
-                                </span>
+                                <template #suffix>
+                                    <span class="ticker">
+                                        {{
+                                            activeCurrency === CryptoCurrency.BTC
+                                                ? btcUnit.ticker
+                                                : activeCurrency.toUpperCase()
+                                        }}
+                                    </span>
+                                </template>
                             </AmountInput>
                         </span>
                     </section>
@@ -201,24 +223,18 @@
                         <template v-if="insufficientLimit">
                             <!-- TEMP: wording TBD -->
                             <i18n path="Max swappable amount is {amount}">
-                                <FiatAmount
-                                    slot="amount"
-                                    :amount="currentLimitFiat"
-                                    currency="eur"
-                                    hideDecimals
-                                /> </i18n
+                                <template #amount>
+                                    <FiatAmount :amount="currentLimitFiat" currency="eur" hideDecimals />
+                                </template> </i18n
                             ><br />
                             <a @click="buyMax">{{ $t('Buy max') }}</a>
                         </template>
                         <template v-else-if="isBelowOasisMinimum">
                             <!-- TEMP: wording TBD -->
                             <i18n path="Minimum buy amount is {amount}">
-                                <FiatAmount
-                                    slot="amount"
-                                    :amount="$config.oasis.minBuyAmount"
-                                    currency="eur"
-                                    hideDecimals
-                                /> </i18n
+                                <template #amount>
+                                    <FiatAmount :amount="$config.oasis.minBuyAmount" currency="eur" hideDecimals />
+                                </template> </i18n
                             ><br />
                             <a @click="buyMin">{{ $t('Set minimum') }}</a>
                         </template>
@@ -240,120 +256,114 @@
                         path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
                         tag="span"
                     >
-                        <span slot="text">{{ $t('Buy Crypto') }}</span>
-                        <span slot="Fastspot">
-                            <a href="https://fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
-                                >Fastspot</a
-                            >,
-                            <a href="https://go.fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
-                                >Fastspot GO</a
+                        <template #text>
+                            <span>{{ $t('Buy Crypto') }}</span>
+                        </template>
+                        <template #Fastspot>
+                            <span>
+                                <a href="https://fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
+                                    >Fastspot</a
+                                >,
+                                <a href="https://go.fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
+                                    >Fastspot GO</a
+                                >
+                            </span>
+                        </template>
+                        <template #FastspotGO>
+                            <a
+                                href="https://digital.ten31.com/oasis/terms"
+                                target="_blank"
+                                rel="noopener"
+                                class="nq-link"
+                                >OASIS</a
                             >
-                        </span>
-                        <a
-                            slot="FastspotGO"
-                            href="https://digital.ten31.com/oasis/terms"
-                            target="_blank"
-                            rel="noopener"
-                            class="nq-link"
-                            >OASIS</a
-                        >
+                        </template>
                     </i18n>
                     <i18n v-else path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                        <span slot="text">{{ $t('Buy Crypto') }}</span>
-                        <a
-                            slot="Fastspot"
-                            href="https://test.fastspot.io/terms"
-                            target="_blank"
-                            rel="noopener"
-                            class="nq-link"
-                            >Fastspot</a
-                        >
+                        <template #text>
+                            <span>{{ $t('Buy Crypto') }}</span>
+                        </template>
+                        <template #Fastspot>
+                            <a href="https://test.fastspot.io/terms" target="_blank" rel="noopener" class="nq-link"
+                                >Fastspot</a
+                            >
+                        </template>
                     </i18n>
                 </SendModalFooter>
                 <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
             </div>
         </transition>
 
-        <div v-if="!!swap" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem" class="flex-column">
-                <SwapAnimation
-                    :swapId="swap.id"
-                    :swapState="swap.state"
-                    :fromAsset="swap.from.asset"
-                    :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
-                    :toAsset="swap.to.asset"
-                    :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
-                    :nimAddress="activeAddressInfo.address"
-                    :error="swap.error"
-                    :errorAction="swap.errorAction"
-                    :manualFunding="true"
-                    :oasisLimitExceeded="oasisBuyLimitExceeded"
-                    @finished="finishSwap"
-                    @cancel="finishSwap"
-                >
-                    <SwapSepaFundingInstructions
-                        v-if="swap.fundingInstructions && swap.fundingInstructions.type === 'sepa'"
-                        slot="manual-funding-instructions"
-                        :amount="swap.fundingInstructions.amount"
-                        :name="swap.fundingInstructions.recipient.name"
-                        :iban="swap.fundingInstructions.recipient.iban"
-                        :bic="swap.fundingInstructions.recipient.bic"
-                        :reference="swap.fundingInstructions.purpose"
-                        :stateEnteredAt="swap.stateEnteredAt"
+        <template #overlay>
+            <div v-if="!!swap" class="page flex-column animation-overlay">
+                <PageBody style="padding: 0.75rem" class="flex-column">
+                    <SwapAnimation
+                        :swapId="swap.id"
+                        :swapState="swap.state"
+                        :fromAsset="swap.from.asset"
+                        :fromAmount="swap.from.amount + swap.from.fee"
+                        :fromAddress="swap.contracts[swap.from.asset].htlc.address"
+                        :toAsset="swap.to.asset"
+                        :toAmount="swap.to.amount - swap.to.fee"
+                        :toAddress="swap.contracts[swap.to.asset].htlc.address"
+                        :nimAddress="activeAddressInfo.address"
+                        :error="swap.error"
+                        :errorAction="swap.errorAction"
+                        :manualFunding="true"
+                        :oasisLimitExceeded="oasisBuyLimitExceeded"
+                        @finished="finishSwap"
                         @cancel="finishSwap"
-                        @paid="onPaid"
-                    />
-                    <button
-                        v-else
-                        slot="manual-funding-instructions"
-                        class="nq-button light-blue"
-                        @click="onPaid"
-                        @mousedown.prevent
                     >
-                        {{ $t('Simulate EUR payment') }}
-                    </button>
-                </SwapAnimation>
-            </PageBody>
-            <button
-                v-if="swap.state !== SwapState.CREATE_OUTGOING"
-                class="nq-button-s minimize-button top-right"
-                @click="onClose"
-                @mousedown.prevent
-            >
-                <MinimizeIcon />
-            </button>
-            <Timer
-                v-else
-                :startTime="Date.now()"
-                :endTime="swap.expires * 1000"
-                theme="white"
-                maxUnit="minute"
-                :tooltipProps="{
-                    preferredPosition: 'bottom left',
-                }"
-            />
-        </div>
-
-        <BuyCryptoBankCheckOverlay
-            slot="overlay"
-            v-else-if="page === Pages.BANK_CHECK"
-            @bank-selected="onBankSelected"
-        />
-
-        <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
-            <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
-            <PageBody class="page__address-list">
-                <AddressList
-                    embedded
-                    @address-selected="addressListOpened = false"
-                    :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"
+                        <template #manual-funding-instructions>
+                            <SwapSepaFundingInstructions
+                                v-if="swap.fundingInstructions && swap.fundingInstructions.type === 'sepa'"
+                                :amount="swap.fundingInstructions.amount"
+                                :name="swap.fundingInstructions.recipient.name"
+                                :iban="swap.fundingInstructions.recipient.iban"
+                                :bic="swap.fundingInstructions.recipient.bic"
+                                :reference="swap.fundingInstructions.purpose"
+                                :stateEnteredAt="swap.stateEnteredAt"
+                                @cancel="finishSwap"
+                                @paid="onPaid"
+                            />
+                            <button v-else class="nq-button light-blue" @click="onPaid" @mousedown.prevent>
+                                {{ $t('Simulate EUR payment') }}
+                            </button>
+                        </template>
+                    </SwapAnimation>
+                </PageBody>
+                <button
+                    v-if="swap.state !== SwapState.CREATE_OUTGOING"
+                    class="nq-button-s minimize-button top-right"
+                    @click="onClose"
+                    @mousedown.prevent
+                >
+                    <MinimizeIcon />
+                </button>
+                <Timer
+                    v-else
+                    :startTime="Date.now()"
+                    :endTime="swap.expires * 1000"
+                    theme="white"
+                    maxUnit="minute"
+                    :tooltipProps="{
+                        preferredPosition: 'bottom left',
+                    }"
                 />
-            </PageBody>
-        </div>
-
-        <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
+            </div>
+            <BuyCryptoBankCheckOverlay v-else-if="page === Pages.BANK_CHECK" @bank-selected="onBankSelected" />
+            <div v-else-if="addressListOpened" class="page flex-column address-list-overlay">
+                <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
+                <PageBody class="page__address-list">
+                    <AddressList
+                        embedded
+                        @address-selected="addressListOpened = false"
+                        :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"
+                    />
+                </PageBody>
+            </div>
+            <KycOverlay v-else-if="kycOverlayOpened" @connected="kycOverlayOpened = false" />
+        </template>
     </Modal>
 </template>
 

@@ -48,7 +48,7 @@
                 />
             </template>
         </transition>
-        <template slot="overlay">
+        <template #overlay>
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount" @selected="switchValidator" />
             <template v-else>
                 <!-- Keep mounted under StatusScreen so async operations can keep emitting events.

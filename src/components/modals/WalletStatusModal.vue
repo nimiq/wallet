@@ -2,9 +2,11 @@
     <Modal v-bind="$attrs" v-on="$listeners" class="wallet-status-modal">
         <PageHeader>
             {{ $t('How can we help?') }}
-            <p slot="more" class="nq-text">
-                {{ $t('Get answers straight from the blockchain, or from the people who know Nimiq best.') }}
-            </p>
+            <template #more>
+                <p class="nq-text">
+                    {{ $t('Get answers straight from the blockchain, or from the people who know Nimiq best.') }}
+                </p>
+            </template>
         </PageHeader>
 
         <PageBody class="flex-column">

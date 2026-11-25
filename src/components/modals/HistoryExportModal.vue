@@ -2,12 +2,14 @@
     <Modal class="history-export-modal">
         <PageHeader>
             {{ $t('Export your history') }}
-            <div v-if="type === 'address'" slot="more" class="subtitle">
-                {{ $t('Download all transactions of this address as a file, for tax reasons or other.') }}
-            </div>
-            <div v-if="type === 'account'" slot="more" class="subtitle">
-                {{ $t('Download all transactions of this account as a file, for tax reasons or other.') }}
-            </div>
+            <template #more>
+                <div v-if="type === 'address'" class="subtitle">
+                    {{ $t('Download all transactions of this address as a file, for tax reasons or other.') }}
+                </div>
+                <div v-if="type === 'account'" class="subtitle">
+                    {{ $t('Download all transactions of this account as a file, for tax reasons or other.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody>
             <ButtonGroup :options="formats" v-model="format" />

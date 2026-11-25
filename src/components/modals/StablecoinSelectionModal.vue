@@ -2,9 +2,11 @@
     <Modal ref="modal$" class="stablecoin-selection-modal">
         <PageHeader>
             {{ $t('Choose your stablecoin') }}
-            <div slot="more" class="subtitle">
-                {{ $t('Pick a stable coin for your wallet. You can always switch between the two.') }}
-            </div>
+            <template #more>
+                <div class="subtitle">
+                    {{ $t('Pick a stable coin for your wallet. You can always switch between the two.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <div class="argument-grid">

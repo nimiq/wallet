@@ -2,9 +2,11 @@
     <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="modal$">
         <PageHeader>
             {{ $t('Think value, not currency') }}
-            <p slot="more" class="nq-notice">
-                {{ $t('Use different cryptos for different things –\nwith the Nimiq Wallet and ease-of-use.') }}
-            </p>
+            <template #more>
+                <p class="nq-notice">
+                    {{ $t('Use different cryptos for different things –\nwith the Nimiq Wallet and ease-of-use.') }}
+                </p>
+            </template>
         </PageHeader>
 
         <PageBody class="think-features" :class="`highlight-${highlightedCurrency}`">
@@ -132,14 +134,15 @@
                         :styles="{ 'white-space': 'nowrap', padding: '0.75rem 1.25rem' }"
                         @click="setLanguage(lang.code)"
                     >
-                        <img
-                            slot="trigger"
-                            :src="languageFlagUrls[`../../assets/languages/${lang.code}.svg`]"
-                            class="flag"
-                            :class="{ active: settings$.language === lang.code }"
-                            :alt="`Flag-${lang.code.toUpperCase()}`"
-                            :style="`--index: ${i}`"
-                        />
+                        <template #trigger>
+                            <img
+                                :src="languageFlagUrls[`../../assets/languages/${lang.code}.svg`]"
+                                class="flag"
+                                :class="{ active: settings$.language === lang.code }"
+                                :alt="`Flag-${lang.code.toUpperCase()}`"
+                                :style="`--index: ${i}`"
+                            />
+                        </template>
                         {{ lang.name }}
                     </Tooltip>
                 </div>

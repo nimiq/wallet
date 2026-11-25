@@ -2,9 +2,11 @@
     <Modal class="disclaimer-modal">
         <PageHeader>
             {{ $t('Disclaimer') }}
-            <div slot="more" class="more nq-light-blue">
-                {{ $t('Always backup your Recovery Words, Password and Login Files.') }}
-            </div>
+            <template #more>
+                <div class="more nq-light-blue">
+                    {{ $t('Always backup your Recovery Words, Password and Login Files.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody>
             <p class="nq-text">

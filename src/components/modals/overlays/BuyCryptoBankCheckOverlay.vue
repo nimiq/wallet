@@ -2,9 +2,11 @@
     <div class="buy-crypto-bank-check-overlay flex-column">
         <PageHeader>
             {{ $t('Is your bank eligible?') }}
-            <div slot="more" class="header-notice">
-                {{ $t('You need a SEPA account that supports instant transactions.') }}
-            </div>
+            <template #more>
+                <div class="header-notice">
+                    {{ $t('You need a SEPA account that supports instant transactions.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-grow"></div>

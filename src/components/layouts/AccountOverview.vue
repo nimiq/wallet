@@ -82,17 +82,20 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button
-                        class="reset"
-                        slot="trigger"
-                        @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
-                        @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
-                        @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
-                    >
-                        <div class="inner-circle"><DoubleArrowIcon /></div>
-                    </button>
+                    <template #trigger>
+                        <button
+                            class="reset"
+                            @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
+                            @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
+                            @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
+                        >
+                            <div class="inner-circle"><DoubleArrowIcon /></div>
+                        </button>
+                    </template>
                     <i18n path="Swap NIM {arrowIcon} BTC">
-                        <LinkedDoubleArrowIcon slot="arrowIcon" />
+                        <template #arrowIcon>
+                            <LinkedDoubleArrowIcon />
+                        </template>
                     </i18n>
                 </Tooltip>
 
@@ -117,26 +120,29 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button
-                        class="reset"
-                        slot="trigger"
-                        :disabled="!stablecoin"
-                        @click="
-                            onSwapButtonPointerDown(
-                                $event,
-                                `${SwapAsset.NIM}-${
-                                    stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
-                                }`,
-                            )
-                        "
-                        @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
-                        @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
-                    >
-                        <div class="inner-circle"><DoubleArrowIcon /></div>
-                    </button>
+                    <template #trigger>
+                        <button
+                            class="reset"
+                            :disabled="!stablecoin"
+                            @click="
+                                onSwapButtonPointerDown(
+                                    $event,
+                                    `${SwapAsset.NIM}-${
+                                        stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
+                                    }`,
+                                )
+                            "
+                            @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
+                            @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
+                        >
+                            <div class="inner-circle"><DoubleArrowIcon /></div>
+                        </button>
+                    </template>
                     <i18n v-if="stablecoin" path="Swap NIM {arrowIcon} {ticker}">
-                        <LinkedDoubleArrowIcon slot="arrowIcon" />
-                        <template slot="ticker">{{ stablecoin.toUpperCase() }}</template>
+                        <template #arrowIcon>
+                            <LinkedDoubleArrowIcon />
+                        </template>
+                        <template #ticker>{{ stablecoin.toUpperCase() }}</template>
                     </i18n>
                     <template v-else>
                         {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
@@ -199,26 +205,29 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button
-                        class="reset"
-                        slot="trigger"
-                        :disabled="!stablecoin"
-                        @click="
-                            onSwapButtonPointerDown(
-                                $event,
-                                `${SwapAsset.BTC}-${
-                                    stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
-                                }`,
-                            )
-                        "
-                        @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
-                        @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
-                    >
-                        <div class="inner-circle"><DoubleArrowIcon /></div>
-                    </button>
+                    <template #trigger>
+                        <button
+                            class="reset"
+                            :disabled="!stablecoin"
+                            @click="
+                                onSwapButtonPointerDown(
+                                    $event,
+                                    `${SwapAsset.BTC}-${
+                                        stablecoin === CryptoCurrency.USDC ? SwapAsset.USDC_MATIC : SwapAsset.USDT_MATIC
+                                    }`,
+                                )
+                            "
+                            @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
+                            @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
+                        >
+                            <div class="inner-circle"><DoubleArrowIcon /></div>
+                        </button>
+                    </template>
                     <i18n v-if="stablecoin" path="Swap BTC {arrowIcon} {ticker}">
-                        <LinkedDoubleArrowIcon slot="arrowIcon" />
-                        <template slot="ticker">{{ stablecoin.toUpperCase() }}</template>
+                        <template #arrowIcon>
+                            <LinkedDoubleArrowIcon />
+                        </template>
+                        <template #ticker>{{ stablecoin.toUpperCase() }}</template>
                     </i18n>
                     <template v-else>
                         {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}

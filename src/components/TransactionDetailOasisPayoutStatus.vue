@@ -10,7 +10,9 @@
             <CircleSpinner v-if="isInstantPayout" />
             {{ $t('{currency} payout pending', { currency: data.asset }) }}
             <Tooltip v-if="!isInstantPayout" preferredPosition="bottom left">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <strong>{{ $t('Your payout is on its way') }}</strong>
                 <p class="explainer">{{ $t('This usually takes between one and two working days.') }}</p>
                 <p class="explainer">{{ $t('Use a SEPA Instant account to get payouts in minutes.') }}</p>
@@ -19,7 +21,9 @@
         <span v-else-if="data.htlc.settlement.status === SettlementStatus.DENIED" class="nq-orange flex-row">
             {{ $t('OASIS limit exceeded') }}
             <Tooltip preferredPosition="bottom left">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <strong>{{ $t('The limit on your IBAN has been reached') }}</strong>
                 <p class="explainer">
                     {{ $t('Your EUR will be transferred to your bank account as soon as new limit is available.') }}
@@ -29,7 +33,9 @@
         <span v-else-if="data.htlc.settlement.status === SettlementStatus.FAILED" class="nq-orange flex-row">
             {{ $t('{currency} could not be paid out', { currency: data.asset }) }}
             <Tooltip preferredPosition="bottom left">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <strong>{{ $t('Something went wrong with your transaction') }}</strong>
                 <p class="explainer">
                     {{ $t('Proceed to the troubleshooting page to find out what to do next.') }}

@@ -45,29 +45,30 @@
                 </template>
             </i18n>
 
-            <TransactionDetailOasisPayoutStatus
-                v-if="
-                    swapData
-                    && swapData.asset === SwapAsset.EUR
-                    && swapData.htlc
-                    && swapData.htlc.settlement
-                    && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED
-                "
-                slot="more"
-                :data="swapData"
-            />
-            <span v-else-if="transaction.state === TransactionState.FAILED" slot="more" class="nq-red failed flex-row">
-                <CrossIcon />
-                {{ $t('Partially reverted') }}
-            </span>
-            <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
-                    <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
-                </i18n>
-                <i18n v-else path="Sent at {dateAndTime}" :tag="false">
-                    <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
-                </i18n>
-            </span>
+            <template #more>
+                <TransactionDetailOasisPayoutStatus
+                    v-if="
+                        swapData
+                        && swapData.asset === SwapAsset.EUR
+                        && swapData.htlc
+                        && swapData.htlc.settlement
+                        && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                    "
+                    :data="swapData"
+                />
+                <span v-else-if="transaction.state === TransactionState.FAILED" class="nq-red failed flex-row">
+                    <CrossIcon />
+                    {{ $t('Partially reverted') }}
+                </span>
+                <span v-else class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
+                    <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
+                        <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
+                    </i18n>
+                    <i18n v-else path="Sent at {dateAndTime}" :tag="false">
+                        <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
+                    </i18n>
+                </span>
+            </template>
         </PageHeader>
         <PageBody class="flex-column" :class="transaction.state">
             <div class="flex-row sender-recipient">
@@ -147,7 +148,7 @@
                         class="fiat-amount"
                     >
                         <Tooltip>
-                            <template slot="trigger">
+                            <template #trigger>
                                 <FiatAmount
                                     :amount="
                                         swapData.amount / 100
@@ -181,7 +182,7 @@
                         </div>
                         <div v-else class="fiat-amount">
                             <Tooltip>
-                                <template slot="trigger">
+                                <template #trigger>
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
                                         :amount="(fiat.value / transaction.value) * txValue"
@@ -288,7 +289,9 @@
             <div class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <span v-if="transaction.blockHeight" class="block">
                     {{ $t('Block #{height}', { height: transaction.blockHeight }) }}
                 </span>

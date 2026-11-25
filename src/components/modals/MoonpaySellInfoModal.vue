@@ -29,13 +29,16 @@
                         <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                     </svg>
                     <i18n path="min {amount}" tag="span">
-                        <FiatAmount
-                            slot="amount"
-                            :amount="3.99"
-                            :currency="
-                                [FiatCurrency.EUR, FiatCurrency.GBP].includes(currency) ? currency : FiatCurrency.USD
-                            "
-                        />
+                        <template #amount>
+                            <FiatAmount
+                                :amount="3.99"
+                                :currency="
+                                    [FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                        ? currency
+                                        : FiatCurrency.USD
+                                "
+                            />
+                        </template>
                     </i18n>
                 </p>
                 <small>{{ $t('+ network fees') }}</small>

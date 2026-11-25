@@ -9,9 +9,11 @@
                     {{ $t('Enter your bank details') }}
                 </template>
             </MessageTransition>
-            <div slot="more" class="header-notice">
-                {{ $t('Without a SEPA instant bank account your money will take 1-3 business days to arrive.') }}
-            </div>
+            <template #more>
+                <div class="header-notice">
+                    {{ $t('Without a SEPA instant bank account your money will take 1-3 business days to arrive.') }}
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <MessageTransition :reverse="currentStep === Step.BANK_CHECK">

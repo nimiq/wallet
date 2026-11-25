@@ -10,11 +10,13 @@
                     {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
                 </p>
                 <CountrySelector @select="(c) => (country = c)">
-                    <div slot="trigger" class="pill flex-row">
-                        <CountryFlag v-if="country" :code="country.code" />
-                        <CircleSpinner v-else />
-                        <img src="../../assets/mini-arrow-down.svg" alt="open" />
-                    </div>
+                    <template #trigger>
+                        <div class="pill flex-row">
+                            <CountryFlag v-if="country" :code="country.code" />
+                            <CircleSpinner v-else />
+                            <img src="../../assets/mini-arrow-down.svg" alt="open" />
+                        </div>
+                    </template>
                 </CountrySelector>
             </header>
             <div class="featured-options flex-row">
@@ -32,15 +34,16 @@
                         <div>
                             1%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount
-                                    slot="amount"
-                                    :amount="3.0"
-                                    :currency="
-                                        [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                            ? fiatCurrency
-                                            : FiatCurrency.USD
-                                    "
-                                />
+                                <template #amount>
+                                    <FiatAmount
+                                        :amount="3.0"
+                                        :currency="
+                                            [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                                ? fiatCurrency
+                                                : FiatCurrency.USD
+                                        "
+                                    />
+                                </template>
                             </i18n>
                         </div>
 
@@ -52,15 +55,16 @@
                         <div>
                             4%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount
-                                    slot="amount"
-                                    :amount="3.5"
-                                    :currency="
-                                        [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                            ? fiatCurrency
-                                            : FiatCurrency.USD
-                                    "
-                                />
+                                <template #amount>
+                                    <FiatAmount
+                                        :amount="3.5"
+                                        :currency="
+                                            [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                                ? fiatCurrency
+                                                : FiatCurrency.USD
+                                        "
+                                    />
+                                </template>
                             </i18n>
                         </div>
 
@@ -74,15 +78,16 @@
                             <div>
                                 1.5%<br />
                                 <i18n path="min {amount}" tag="span" class="low">
-                                    <FiatAmount
-                                        slot="amount"
-                                        :amount="3.0"
-                                        :currency="
-                                            [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                                ? fiatCurrency
-                                                : FiatCurrency.USD
-                                        "
-                                    />
+                                    <template #amount>
+                                        <FiatAmount
+                                            :amount="3.0"
+                                            :currency="
+                                                [FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                                    ? fiatCurrency
+                                                    : FiatCurrency.USD
+                                            "
+                                        />
+                                    </template>
                                 </i18n>
                             </div>
                         </template>
@@ -113,7 +118,9 @@
                         <div>
                             1%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount" :amount="4.99" :currency="FiatCurrency.USD" />
+                                <template #amount>
+                                    <FiatAmount :amount="4.99" :currency="FiatCurrency.USD" />
+                                </template>
                             </i18n>
                         </div>
 
@@ -125,7 +132,9 @@
                         <div>
                             4.5%<br />
                             <i18n path="min {amount}" tag="span" class="low">
-                                <FiatAmount slot="amount" :amount="4.99" :currency="FiatCurrency.USD" />
+                                <template #amount>
+                                    <FiatAmount :amount="4.99" :currency="FiatCurrency.USD" />
+                                </template>
                             </i18n>
                         </div>
                     </div>

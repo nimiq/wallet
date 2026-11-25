@@ -62,54 +62,91 @@
             </PageBody>
         </div>
 
-        <div v-if="contactListOpened" slot="overlay" class="page flex-column">
-            <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
-            <PageBody class="page__contact-list">
-                <ContactBook @contact-selected="onContactSelected" />
-            </PageBody>
-        </div>
-
-        <div v-if="recipientDetailsOpened && recipientInfo" slot="overlay" class="page flex-column">
-            <PageBody class="page__recipient-overlay recipient-overlay flex-column">
-                <div class="spacing-top"></div>
-                <div class="flex-grow"></div>
-                <Identicon :address="recipientInfo.address" />
-                <LabelInput
-                    v-if="recipientInfo.type === RecipientType.CONTACT"
-                    v-model="recipientInfo.label"
-                    :placeholder="$t('Name this contact...')"
-                    ref="labelInput$"
-                />
-                <label v-else>{{ recipientInfo.label }}</label>
-                <AddressDisplay :address="recipientInfo.address" copyable />
-                <div class="flex-grow"></div>
-                <button
-                    class="nq-button light-blue"
-                    @click="
-                        recipientDetailsOpened = false;
+        <template #overlay>
+            <div v-if="contactListOpened" class="page flex-column">
+                <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
+                <PageBody class="page__contact-list">
+                    <ContactBook @contact-selected="onContactSelected" />
+                </PageBody>
+            </div>
+            <div v-if="recipientDetailsOpened && recipientInfo" class="page flex-column">
+                <PageBody class="page__recipient-overlay recipient-overlay flex-column">
+                    <div class="spacing-top"></div>
+                    <div class="flex-grow"></div>
+                    <Identicon :address="recipientInfo.address" />
+                    <LabelInput
+                        v-if="recipientInfo.type === RecipientType.CONTACT"
+                        v-model="recipientInfo.label"
+                        :placeholder="$t('Name this contact...')"
+                        ref="labelInput$"
+                    />
+                    <label v-else>{{ recipientInfo.label }}</label>
+                    <AddressDisplay :address="recipientInfo.address" copyable />
+                    <div class="flex-grow"></div>
+                    <button
+                        class="nq-button light-blue"
+                        @click="
+                            recipientDetailsOpened = false;
+                            page = Pages.AMOUNT_INPUT;
+                        "
+                        @mousedown.prevent
+                    >
+                        <template v-if="page === Pages.AMOUNT_INPUT">{{ $t('Done') }}</template>
+                        <template v-else>{{ $t('Set Amount') }}</template>
+                    </button>
+                </PageBody>
+            </div>
+            <transition name="fade">
+                <FlaggedAddressWarning
+                    v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                    :info="recipientInfo.flaggedInfo"
+                    :currency="CryptoCurrency.NIM"
+                    @abort="reset"
+                    @continue="
                         page = Pages.AMOUNT_INPUT;
+                        closeRecipientDetails();
                     "
-                    @mousedown.prevent
-                >
-                    <template v-if="page === Pages.AMOUNT_INPUT">{{ $t('Done') }}</template>
-                    <template v-else>{{ $t('Set Amount') }}</template>
-                </button>
-            </PageBody>
-        </div>
-
-        <transition name="fade" slot="overlay">
-            <FlaggedAddressWarning
-                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
-                :info="recipientInfo.flaggedInfo"
-                :currency="CryptoCurrency.NIM"
-                @abort="reset"
-                @continue="
-                    page = Pages.AMOUNT_INPUT;
-                    closeRecipientDetails();
-                "
-                class="page"
-            />
-        </transition>
+                    class="page"
+                />
+            </transition>
+            <div v-if="addressListOpened" class="page flex-column">
+                <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
+                <PageBody class="page__address-list">
+                    <AddressList embedded @address-selected="addressListOpened = false" :required-balance="1" />
+                </PageBody>
+            </div>
+            <div v-if="feeSelectionOpened" class="page flex-column">
+                <PageBody class="page__fee-selection fee-selection flex-column">
+                    <h1 class="nq-h1">{{ $t('Speed up your Transaction') }}</h1>
+                    <p class="nq-text">
+                        {{
+                            $t(
+                                'By adding a transaction fee, you can influence '
+                                    + 'how fast your transaction will be processed.',
+                            )
+                        }}
+                    </p>
+                    <SelectBar :options="feeOptions" :selectedValue="feePerByte" @changed="updateFee" />
+                    <CryptoAmount :amount="fee" :minDecimals="0" :maxDecimals="5" />
+                    <div class="flex-grow"></div>
+                    <button class="nq-button light-blue" @click="onCloseOverlay" @mousedown.prevent>
+                        {{ $t('Apply fee') }}
+                    </button>
+                </PageBody>
+            </div>
+            <div v-if="statusType !== 'none'" class="page">
+                <StatusScreen
+                    :title="statusTitle"
+                    :state="statusState"
+                    :message="statusMessage"
+                    :mainAction="$t('Retry')"
+                    :alternativeAction="$t('Edit transaction')"
+                    @main-action="onStatusMainAction"
+                    @alternative-action="onStatusAlternativeAction"
+                    lightBlue
+                />
+            </div>
+        </template>
 
         <div
             v-if="page === Pages.AMOUNT_INPUT && recipientInfo"
@@ -168,19 +205,20 @@
                             :disabled="gotRequestUriAmount"
                             ref="amountInput$"
                         >
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :activeCurrency="activeCurrency"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @fee-selection="feeSelectionOpened = true"
-                                @send-max="sendMax"
-                                @currency="(currency) => (activeCurrency = currency)"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :activeCurrency="activeCurrency"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @fee-selection="feeSelectionOpened = true"
+                                    @send-max="sendMax"
+                                    @currency="(currency) => (activeCurrency = currency)"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                         <AmountInput
                             v-else
@@ -188,20 +226,23 @@
                             :disabled="gotRequestUriAmount"
                             :decimals="fiatCurrencyInfo.decimals"
                         >
-                            <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :activeCurrency="activeCurrency"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @fee-selection="feeSelectionOpened = true"
-                                @send-max="sendMax"
-                                @currency="(currency) => (activeCurrency = currency)"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #prefix>
+                                <span class="tilde">~</span>
+                            </template>
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :activeCurrency="activeCurrency"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @fee-selection="feeSelectionOpened = true"
+                                    @send-max="sendMax"
+                                    @currency="(currency) => (activeCurrency = currency)"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                     </div>
 
@@ -235,46 +276,6 @@
             <SendModalFooter :assets="[CryptoCurrency.NIM]" :disabled="!canSend" @click="sign"
                 ><template #cta>{{ $t('Send {currency}', { currency: 'NIM' }) }}</template></SendModalFooter
             >
-        </div>
-
-        <div v-if="addressListOpened" slot="overlay" class="page flex-column">
-            <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
-            <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false" :required-balance="1" />
-            </PageBody>
-        </div>
-
-        <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
-            <PageBody class="page__fee-selection fee-selection flex-column">
-                <h1 class="nq-h1">{{ $t('Speed up your Transaction') }}</h1>
-                <p class="nq-text">
-                    {{
-                        $t(
-                            'By adding a transaction fee, you can influence '
-                                + 'how fast your transaction will be processed.',
-                        )
-                    }}
-                </p>
-                <SelectBar :options="feeOptions" :selectedValue="feePerByte" @changed="updateFee" />
-                <CryptoAmount :amount="fee" :minDecimals="0" :maxDecimals="5" />
-                <div class="flex-grow"></div>
-                <button class="nq-button light-blue" @click="onCloseOverlay" @mousedown.prevent>
-                    {{ $t('Apply fee') }}
-                </button>
-            </PageBody>
-        </div>
-
-        <div v-if="statusType !== 'none'" slot="overlay" class="page">
-            <StatusScreen
-                :title="statusTitle"
-                :state="statusState"
-                :message="statusMessage"
-                :mainAction="$t('Retry')"
-                :alternativeAction="$t('Edit transaction')"
-                @main-action="onStatusMainAction"
-                @alternative-action="onStatusAlternativeAction"
-                lightBlue
-            />
         </div>
     </Modal>
 </template>

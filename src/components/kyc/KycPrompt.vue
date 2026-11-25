@@ -9,7 +9,7 @@
             {{ $t('Swap more per 30 days.') }}
         </p>
         <i18n v-else tag="p" path="Swap up to {limit} per 30 days." class="explainer">
-            <template slot="limit">
+            <template #limit>
                 <FiatAmount :amount="kycLimits.monthly / 1e2" :currency="kycLimits.asset" hideDecimals />
             </template>
         </i18n>

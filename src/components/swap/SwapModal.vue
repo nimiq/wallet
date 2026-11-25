@@ -8,141 +8,159 @@
     >
         <PageHeader>
             {{ $t('Swap Currencies') }}
-            <div slot="more" class="flex-column header-more">
-                <div class="pair-selection flex-row">
-                    <ButtonGroup
-                        v-if="!isMobile"
-                        :options="leftButtonGroupOptions"
-                        :value="leftAsset"
-                        @input="setLeftAsset"
-                    />
-                    <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
-                        <option
-                            v-for="[key, option] in Object.entries(leftButtonGroupOptions)"
-                            :key="key"
-                            :value="key"
-                            :selected="key === leftAsset"
-                            :disabled="option.disabled"
+            <template #more>
+                <div class="flex-column header-more">
+                    <div class="pair-selection flex-row">
+                        <ButtonGroup
+                            v-if="!isMobile"
+                            :options="leftButtonGroupOptions"
+                            :value="leftAsset"
+                            @input="setLeftAsset"
+                        />
+                        <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
+                            <option
+                                v-for="[key, option] in Object.entries(leftButtonGroupOptions)"
+                                :key="key"
+                                :value="key"
+                                :selected="key === leftAsset"
+                                :disabled="option.disabled"
+                            >
+                                {{ option.label }}
+                            </option>
+                        </select>
+                        <SwapIcon />
+                        <ButtonGroup
+                            v-if="!isMobile"
+                            :options="rightButtonGroupOptions"
+                            :value="rightAsset"
+                            @input="setRightAsset"
+                        />
+                        <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
+                            <option
+                                v-for="[key, option] in Object.entries(rightButtonGroupOptions)"
+                                :key="key"
+                                :value="key"
+                                :selected="key === rightAsset"
+                                :disabled="option.disabled"
+                            >
+                                {{ option.label }}
+                            </option>
+                        </select>
+                        <Tooltip v-if="!stablecoin" class="stablecoin-tooltip" preferredPosition="bottom left">
+                            <template #trigger>
+                                <InfoCircleSmallIcon />
+                            </template>
+                            {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
+                        </Tooltip>
+                    </div>
+                    <div v-if="disabledSwap" class="swap-disabled-text">
+                        {{ $t('Swap not possible. Your balance is lower than the fee.') }}
+                    </div>
+                    <div v-else-if="swapIsNotSupported" class="swap-disabled-text">
+                        {{ $t('Swap not possible. Ledger accounts are not supported.') }}
+                    </div>
+                    <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row">
+                        <SwapFeesTooltip
+                            preferredPosition="bottom left"
+                            :nimFeeFiat="nimFeeFiat"
+                            :btcFeeFiat="btcFeeFiat"
+                            :usdcFeeFiat="usdcFeeFiat"
+                            :usdtFeeFiat="usdtFeeFiat"
+                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
+                            :currency="currency"
+                            :container="_self"
                         >
-                            {{ option.label }}
-                        </option>
-                    </select>
-                    <SwapIcon />
-                    <ButtonGroup
-                        v-if="!isMobile"
-                        :options="rightButtonGroupOptions"
-                        :value="rightAsset"
-                        @input="setRightAsset"
-                    />
-                    <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
-                        <option
-                            v-for="[key, option] in Object.entries(rightButtonGroupOptions)"
-                            :key="key"
-                            :value="key"
-                            :selected="key === rightAsset"
-                            :disabled="option.disabled"
-                        >
-                            {{ option.label }}
-                        </option>
-                    </select>
-                    <Tooltip v-if="!stablecoin" class="stablecoin-tooltip" preferredPosition="bottom left">
-                        <InfoCircleSmallIcon slot="trigger" />
-                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
-                    </Tooltip>
-                </div>
-                <div v-if="disabledSwap" class="swap-disabled-text">
-                    {{ $t('Swap not possible. Your balance is lower than the fee.') }}
-                </div>
-                <div v-else-if="swapIsNotSupported" class="swap-disabled-text">
-                    {{ $t('Swap not possible. Ledger accounts are not supported.') }}
-                </div>
-                <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row">
-                    <SwapFeesTooltip
-                        preferredPosition="bottom left"
-                        :nimFeeFiat="nimFeeFiat"
-                        :btcFeeFiat="btcFeeFiat"
-                        :usdcFeeFiat="usdcFeeFiat"
-                        :usdtFeeFiat="usdtFeeFiat"
-                        :serviceSwapFeeFiat="serviceSwapFeeFiat"
-                        :serviceSwapFeePercentage="serviceSwapFeePercentage"
-                        :currency="currency"
-                        :container="_self"
-                    >
-                        <div slot="trigger" class="flex-row" :class="{ 'high-fees': isHighRelativeFees }">
-                            <LightningIcon v-if="isHighRelativeFees" />
-                            <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
-                                <template #amount>
-                                    <FiatAmount :amount="fiatSmUnit" :hideDecimals="false" :currency="fiatCurrency" />
-                                </template>
-                            </i18n>
-                            <i18n v-else tag="span" path="{amount} fee" class="fee">
-                                <template #amount>
-                                    <FiatAmount :amount="totalFeeFiat" :hideDecimals="false" :currency="fiatCurrency" />
-                                </template>
-                            </i18n>
-                        </div>
+                            <template #trigger>
+                                <div class="flex-row" :class="{ 'high-fees': isHighRelativeFees }">
+                                    <LightningIcon v-if="isHighRelativeFees" />
+                                    <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
+                                        <template #amount>
+                                            <FiatAmount
+                                                :amount="fiatSmUnit"
+                                                :hideDecimals="false"
+                                                :currency="fiatCurrency"
+                                            />
+                                        </template>
+                                    </i18n>
+                                    <i18n v-else tag="span" path="{amount} fee" class="fee">
+                                        <template #amount>
+                                            <FiatAmount
+                                                :amount="totalFeeFiat"
+                                                :hideDecimals="false"
+                                                :currency="fiatCurrency"
+                                            />
+                                        </template>
+                                    </i18n>
+                                </div>
+                            </template>
 
-                        <div
-                            v-if="rightUnitsPerLeftCoin !== Infinity && rightUnitsPerLeftCoin !== -Infinity"
-                            slot="exchange-rate"
-                            class="exchange-rate"
+                            <template #exchange-rate>
+                                <div
+                                    v-if="rightUnitsPerLeftCoin !== Infinity && rightUnitsPerLeftCoin !== -Infinity"
+                                    class="exchange-rate"
+                                >
+                                    <span>
+                                        1 {{ assetToCurrency(leftAsset).toUpperCase() }} =
+                                        <Amount
+                                            :amount="Math.round(rightUnitsPerLeftCoin)"
+                                            :currency="assetToCurrency(rightAsset)"
+                                        />
+                                    </span>
+                                    <label>{{ $t('Exchange rate') }}</label>
+                                </div>
+                            </template>
+                        </SwapFeesTooltip>
+
+                        <strong class="dot">&middot;</strong>
+
+                        <Tooltip
+                            :styles="{ width: '28.75rem' }"
+                            preferredPosition="bottom left"
+                            :container="_self"
+                            class="limits-tooltip"
+                            :class="{ 'kyc-connected': kycUser }"
+                            ref="limitsTooltip$"
                         >
-                            <span>
-                                1 {{ assetToCurrency(leftAsset).toUpperCase() }} =
-                                <Amount
-                                    :amount="Math.round(rightUnitsPerLeftCoin)"
-                                    :currency="assetToCurrency(rightAsset)"
+                            <template #trigger>
+                                <div
+                                    class="limits flex-row"
+                                    :class="{
+                                        'limit-reached': isLimitReached,
+                                        'kyc-connected': kycUser,
+                                    }"
+                                >
+                                    <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals />
+                                    <KycIcon v-if="kycUser" />
+                                </div>
+                            </template>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount
+                                    v-if="limits"
+                                    :amount="limits.monthly.luna"
+                                    currency="nim"
+                                    roundDown
                                 />
-                            </span>
-                            <label>{{ $t('Exchange rate') }}</label>
-                        </div>
-                    </SwapFeesTooltip>
-
-                    <strong class="dot">&middot;</strong>
-
-                    <Tooltip
-                        :styles="{ width: '28.75rem' }"
-                        preferredPosition="bottom left"
-                        :container="_self"
-                        class="limits-tooltip"
-                        :class="{ 'kyc-connected': kycUser }"
-                        ref="limitsTooltip$"
-                    >
-                        <div
-                            slot="trigger"
-                            class="limits flex-row"
-                            :class="{
-                                'limit-reached': isLimitReached,
-                                'kyc-connected': kycUser,
-                            }"
-                        >
-                            <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals />
-                            <KycIcon v-if="kycUser" />
-                        </div>
-                        <div class="price-breakdown">
-                            <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits" :amount="limits.monthly.luna" currency="nim" roundDown />
-                            <span v-else>{{ $t('loading...') }}</span>
-                        </div>
-                        <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                            <FiatConvertedAmount
-                                slot="value"
-                                :amount="limits.remaining.luna"
-                                currency="nim"
-                                roundDown
-                            />
-                        </i18n>
-                        <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
-                            {{ $t('Settings') }}
-                        </router-link> -->
-                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
-                    </Tooltip>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
+                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                <template #value>
+                                    <FiatConvertedAmount :amount="limits.remaining.luna" currency="nim" roundDown />
+                                </template>
+                            </i18n>
+                            <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
+                                {{ $t('Settings') }}
+                            </router-link> -->
+                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
+                        </Tooltip>
+                    </div>
+                    <div v-else class="flex-row" :class="{ 'fees-limits-loading': feeIsLoading || !limits }">
+                        <CircleSpinner />
+                        {{ $t('Loading fees and limits') }}
+                    </div>
                 </div>
-                <div v-else class="flex-row" :class="{ 'fees-limits-loading': feeIsLoading || !limits }">
-                    <CircleSpinner />
-                    {{ $t('Loading fees and limits') }}
-                </div>
-            </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
             <SwapBalanceBar
@@ -180,11 +198,15 @@
                         :decimals="effectiveDecimals(leftAsset)"
                         preserveSign
                     >
-                        <span slot="suffix" class="ticker">
-                            {{
-                                leftAsset === SwapAsset.BTC ? btcUnit.ticker : assetToCurrency(leftAsset).toUpperCase()
-                            }}
-                        </span>
+                        <template #suffix>
+                            <span class="ticker">
+                                {{
+                                    leftAsset === SwapAsset.BTC
+                                        ? btcUnit.ticker
+                                        : assetToCurrency(leftAsset).toUpperCase()
+                                }}
+                            </span>
+                        </template>
                     </AmountInput>
                     <FiatConvertedAmount
                         :amount="Math.abs(wantLeft || getLeft)"
@@ -215,13 +237,15 @@
                         :decimals="effectiveDecimals(rightAsset)"
                         preserveSign
                     >
-                        <span slot="suffix" class="ticker">
-                            {{
-                                rightAsset === SwapAsset.BTC
-                                    ? btcUnit.ticker
-                                    : assetToCurrency(rightAsset).toUpperCase()
-                            }}
-                        </span>
+                        <template #suffix>
+                            <span class="ticker">
+                                {{
+                                    rightAsset === SwapAsset.BTC
+                                        ? btcUnit.ticker
+                                        : assetToCurrency(rightAsset).toUpperCase()
+                                }}
+                            </span>
+                        </template>
                     </AmountInput>
                     <FiatConvertedAmount
                         :amount="Math.abs(wantRight || getRight)"
@@ -246,73 +270,77 @@
                 path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
                 tag="span"
             >
-                <span slot="text">{{ $t('Confirm') }}</span>
-                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
-                    >Fastspot</a
-                >
-                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
-                    >Fastspot GO</a
-                >
+                <template #text>
+                    <span>{{ $t('Confirm') }}</span>
+                </template>
+                <template #Fastspot>
+                    <a href="https://fastspot.io/terms" class="nq-link" target="_blank" rel="noopener">Fastspot</a>
+                </template>
+                <template #FastspotGO>
+                    <a href="https://go.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
+                        >Fastspot GO</a
+                    >
+                </template>
             </i18n>
             <i18n v-else path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
-                <span slot="text">{{ $t('Confirm') }}</span>
-                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
-                    >Fastspot</a
-                >
+                <template #text>
+                    <span>{{ $t('Confirm') }}</span>
+                </template>
+                <template #Fastspot>
+                    <a href="https://test.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener">Fastspot</a>
+                </template>
             </i18n>
         </SendModalFooter>
         <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
 
-        <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem" class="flex-column">
-                <SwapAnimation
-                    :swapId="swap.id"
-                    :swapState="swap.state"
-                    :fromAsset="swap.from.asset"
-                    :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="
-                        'contract' in swap.contracts[swap.from.asset].htlc
-                            ? swap.contracts[swap.from.asset].htlc.contract
-                            : swap.contracts[swap.from.asset].htlc.address
-                    "
-                    :toAsset="swap.to.asset"
-                    :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="
-                        'contract' in swap.contracts[swap.to.asset].htlc
-                            ? swap.contracts[swap.to.asset].htlc.contract
-                            : swap.contracts[swap.to.asset].htlc.address
-                    "
-                    :nimAddress="activeAddressInfo.address"
-                    :error="swap.error && swap.error.split(' req={')[0]"
-                    :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
-                    :switchSides="swap.from.asset === rightAsset"
-                    :stateEnteredAt="swap.stateEnteredAt"
-                    :errorAction="swap.errorAction"
-                    @finished="finishSwap"
-                    @cancel="finishSwap"
-                />
-            </PageBody>
-            <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
-                <MinimizeIcon />
-            </button>
-        </div>
-
-        <div v-else-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
-            <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
-            <PageBody>
-                <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected" />
-            </PageBody>
-        </div>
-
-        <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
-
-        <WarningModal
-            v-else-if="stablecoinMaintenanceOverlayOpened"
-            slot="overlay"
-            embedded
-            v-bind="stablecoinSwapMaintenanceWarning()"
-            @close="stablecoinMaintenanceOverlayOpened = false"
-        />
+        <template #overlay>
+            <div v-if="swap" class="page flex-column animation-overlay">
+                <PageBody style="padding: 0.75rem" class="flex-column">
+                    <SwapAnimation
+                        :swapId="swap.id"
+                        :swapState="swap.state"
+                        :fromAsset="swap.from.asset"
+                        :fromAmount="swap.from.amount + swap.from.fee"
+                        :fromAddress="
+                            'contract' in swap.contracts[swap.from.asset].htlc
+                                ? swap.contracts[swap.from.asset].htlc.contract
+                                : swap.contracts[swap.from.asset].htlc.address
+                        "
+                        :toAsset="swap.to.asset"
+                        :toAmount="swap.to.amount - swap.to.fee"
+                        :toAddress="
+                            'contract' in swap.contracts[swap.to.asset].htlc
+                                ? swap.contracts[swap.to.asset].htlc.contract
+                                : swap.contracts[swap.to.asset].htlc.address
+                        "
+                        :nimAddress="activeAddressInfo.address"
+                        :error="swap.error && swap.error.split(' req={')[0]"
+                        :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
+                        :switchSides="swap.from.asset === rightAsset"
+                        :stateEnteredAt="swap.stateEnteredAt"
+                        :errorAction="swap.errorAction"
+                        @finished="finishSwap"
+                        @cancel="finishSwap"
+                    />
+                </PageBody>
+                <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
+                    <MinimizeIcon />
+                </button>
+            </div>
+            <div v-else-if="addressListOverlayOpened" class="page flex-column address-list-overlay">
+                <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
+                <PageBody>
+                    <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected" />
+                </PageBody>
+            </div>
+            <KycOverlay v-else-if="kycOverlayOpened" @connected="kycOverlayOpened = false" />
+            <WarningModal
+                v-else-if="stablecoinMaintenanceOverlayOpened"
+                embedded
+                v-bind="stablecoinSwapMaintenanceWarning()"
+                @close="stablecoinMaintenanceOverlayOpened = false"
+            />
+        </template>
     </Modal>
 </template>
 

@@ -15,7 +15,9 @@
             @select="selectCountry"
             ref="countrySelect"
         >
-            <li slot="info" class="info">{{ $t('More locations will be supported in the future.') }}</li>
+            <template #info>
+                <li class="info">{{ $t('More locations will be supported in the future.') }}</li>
+            </template>
         </CountrySelector>
         <ul
             class="bank-autocomplete"
@@ -74,7 +76,9 @@
                     :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }"
                 >
-                    <CircledQuestionMarkIcon @click.stop slot="trigger" />
+                    <template #trigger>
+                        <CircledQuestionMarkIcon @click.stop />
+                    </template>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
@@ -87,7 +91,9 @@
                     :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }"
                 >
-                    <AlertTriangleIcon @click.stop slot="trigger" />
+                    <template #trigger>
+                        <AlertTriangleIcon @click.stop />
+                    </template>
                     <template v-if="direction == 'outbound'">
                         <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
                         <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>

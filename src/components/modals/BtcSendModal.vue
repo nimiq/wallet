@@ -46,20 +46,21 @@
                             :decimals="btcUnit.decimals"
                             :disabled="gotRequestUriAmount"
                         >
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :currency="CryptoCurrency.BTC"
-                                :activeCurrency="btcUnit.ticker.toLowerCase()"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :feeOption="false"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @send-max="sendMax"
-                                @currency="onCurrencySelected"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :currency="CryptoCurrency.BTC"
+                                    :activeCurrency="btcUnit.ticker.toLowerCase()"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :feeOption="false"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @send-max="sendMax"
+                                    @currency="onCurrencySelected"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                         <AmountInput
                             v-else
@@ -67,21 +68,24 @@
                             :decimals="fiatCurrencyInfo.decimals"
                             :disabled="gotRequestUriAmount"
                         >
-                            <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu
-                                slot="suffix"
-                                class="ticker"
-                                :open="amountMenuOpened"
-                                :currency="CryptoCurrency.BTC"
-                                :activeCurrency="activeCurrency"
-                                :fiatCurrency="fiatCurrency"
-                                :otherFiatCurrencies="otherFiatCurrencies"
-                                :feeOption="false"
-                                :sendAllOption="!gotRequestUriAmount"
-                                @send-max="sendMax"
-                                @currency="onCurrencySelected"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
-                            />
+                            <template #prefix>
+                                <span class="tilde">~</span>
+                            </template>
+                            <template #suffix>
+                                <AmountMenu
+                                    class="ticker"
+                                    :open="amountMenuOpened"
+                                    :currency="CryptoCurrency.BTC"
+                                    :activeCurrency="activeCurrency"
+                                    :fiatCurrency="fiatCurrency"
+                                    :otherFiatCurrencies="otherFiatCurrencies"
+                                    :feeOption="false"
+                                    :sendAllOption="!gotRequestUriAmount"
+                                    @send-max="sendMax"
+                                    @currency="onCurrencySelected"
+                                    @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                                />
+                            </template>
                         </AmountInput>
                     </div>
 
@@ -114,7 +118,9 @@
                         >~<FiatConvertedAmount :amount="fee" :currency="CryptoCurrency.BTC"
                     /></span>
                     <Tooltip preferredPosition="top left" :styles="{ width: '222px' }">
-                        <InfoCircleSmallIcon slot="trigger" />
+                        <template #trigger>
+                            <InfoCircleSmallIcon />
+                        </template>
                         <span class="header">
                             {{ $t('Network fee: {sats} sat/vByte', { sats: feePerByte }) }}
                         </span>
@@ -133,7 +139,9 @@
                 </section>
 
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
-                    <InfoCircleSmallIcon slot="trigger" />
+                    <template #trigger>
+                        <InfoCircleSmallIcon />
+                    </template>
                     <p>
                         {{
                             $t(
@@ -151,29 +159,30 @@
             >
         </div>
 
-        <transition name="fade" slot="overlay">
-            <FlaggedAddressWarning
-                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
-                :info="recipientInfo.flaggedInfo"
-                :currency="CryptoCurrency.BTC"
-                @abort="reset"
-                @continue="recipientFlaggedAddressWarningOpened = false;"
-                class="page"
-            />
-        </transition>
-
-        <div v-if="statusScreenOpened" slot="overlay" class="page">
-            <StatusScreen
-                :title="statusTitle"
-                :state="statusState"
-                :message="statusMessage"
-                :mainAction="$t('Retry')"
-                :alternativeAction="$t('Edit transaction')"
-                @main-action="onStatusMainAction"
-                @alternative-action="onStatusAlternativeAction"
-                :lightBlue="true"
-            />
-        </div>
+        <template #overlay>
+            <transition name="fade">
+                <FlaggedAddressWarning
+                    v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                    :info="recipientInfo.flaggedInfo"
+                    :currency="CryptoCurrency.BTC"
+                    @abort="reset"
+                    @continue="recipientFlaggedAddressWarningOpened = false;"
+                    class="page"
+                />
+            </transition>
+            <div v-if="statusScreenOpened" class="page">
+                <StatusScreen
+                    :title="statusTitle"
+                    :state="statusState"
+                    :message="statusMessage"
+                    :mainAction="$t('Retry')"
+                    :alternativeAction="$t('Edit transaction')"
+                    @main-action="onStatusMainAction"
+                    @alternative-action="onStatusAlternativeAction"
+                    :lightBlue="true"
+                />
+            </div>
+        </template>
     </Modal>
 </template>
 

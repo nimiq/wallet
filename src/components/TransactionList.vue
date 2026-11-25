@@ -60,7 +60,9 @@
                         tag="p"
                         class="nq-text"
                     >
-                        <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
+                        <template #cashlink>
+                            <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
+                        </template>
                     </i18n>
                     <router-link to="buy" class="nq-button light-blue">
                         {{ $t('Buy NIM') }}

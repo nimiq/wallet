@@ -37,7 +37,9 @@
                             theme="inverse"
                             :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }"
                         >
-                            <ShieldIcon slot="trigger" variant="orange" />
+                            <template #trigger>
+                                <ShieldIcon variant="orange" />
+                            </template>
                             {{
                                 $t(
                                     'Sending yourself backup codes is convenient but only as secure as the '
@@ -63,7 +65,9 @@
                             theme="inverse"
                             :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }"
                         >
-                            <ShieldIcon slot="trigger" variant="green" />
+                            <template #trigger>
+                                <ShieldIcon variant="green" />
+                            </template>
                             {{ $t('Recovery words are the most secure way of backing up your account.') }}
                         </Tooltip>
                         <span>~10min</span>

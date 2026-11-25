@@ -6,7 +6,9 @@
     >
         <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive NIM') }}
-            <div slot="more">{{ $t('Share your address with the sender.') }}</div>
+            <template #more>
+                <div>{{ $t('Share your address with the sender.') }}</div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column address-page">
             <button
@@ -28,19 +30,10 @@
             </button>
         </PageBody>
 
-        <QrCodeOverlay
-            v-if="addressQrCodeOverlayOpened"
-            slot="overlay"
-            :address="activeAddressInfo.address"
-            currency="nim"
-        />
-
-        <PaymentLinkOverlay
-            slot="overlay"
-            v-if="receiveLinkOverlayOpened"
-            currency="nim"
-            :address="activeAddressInfo.address"
-        />
+        <template #overlay>
+            <QrCodeOverlay v-if="addressQrCodeOverlayOpened" :address="activeAddressInfo.address" currency="nim" />
+            <PaymentLinkOverlay v-if="receiveLinkOverlayOpened" currency="nim" :address="activeAddressInfo.address" />
+        </template>
     </Modal>
 </template>
 

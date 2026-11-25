@@ -1,8 +1,10 @@
 <template>
     <Tooltip :styles="{ width: '34.5rem' }" v-bind="$attrs" class="swap-fees-tooltip">
-        <slot name="trigger" slot="trigger">
-            <InfoCircleSmallIcon />
-        </slot>
+        <template #trigger>
+            <slot name="trigger">
+                <InfoCircleSmallIcon />
+            </slot>
+        </template>
         <template v-if="btcFeeFiat !== undefined">
             <div class="price-breakdown">
                 <label>{{ $t('BTC network fee') }}</label>
@@ -21,7 +23,9 @@
             <p v-if="oasisFeePercentage !== undefined" class="explainer">
                 {{ $t('{perc}% of swap value.', { perc: oasisFeePercentage }) }}
                 <i18n v-if="oasisMinFeeFiat" path="min {amount}" tag="span" class="capitalize">
-                    <FiatAmount slot="amount" :amount="oasisMinFeeFiat" :currency="currency" />
+                    <template #amount>
+                        <FiatAmount :amount="oasisMinFeeFiat" :currency="currency" />
+                    </template>
                 </i18n>
             </p>
         </template>

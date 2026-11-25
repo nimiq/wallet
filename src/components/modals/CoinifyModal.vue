@@ -2,9 +2,13 @@
     <Modal class="coinify-modal" emitClose @close="close">
         <header class="flex-row">
             <Tooltip preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger" />
+                <template #trigger>
+                    <InfoCircleSmallIcon />
+                </template>
                 <i18n path="This service is operated by {link}" tag="span">
-                    <a slot="link" href="https://coinify.com" target="_blank" rel="noopener">coinify.com</a>
+                    <template #link>
+                        <a href="https://coinify.com" target="_blank" rel="noopener">coinify.com</a>
+                    </template>
                 </i18n>
             </Tooltip>
             <img src="../../assets/exchanges/coinify-full.png" alt="Coinify Logo" />

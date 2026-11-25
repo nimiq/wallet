@@ -2,14 +2,16 @@
     <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="modal$">
         <PageHeader>
             {{ $t('Welcome to the new Nimiq') }}
-            <p slot="more">
-                {{
-                    $t(
-                        'Nimiq now runs on ‘Proof-of-Stake’. '
-                            + 'Enjoy the massive performance boost, energy-efficiency and staking.',
-                    )
-                }}
-            </p>
+            <template #more>
+                <p>
+                    {{
+                        $t(
+                            'Nimiq now runs on ‘Proof-of-Stake’. '
+                                + 'Enjoy the massive performance boost, energy-efficiency and staking.',
+                        )
+                    }}
+                </p>
+            </template>
         </PageHeader>
 
         <PageBody>

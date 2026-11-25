@@ -15,5 +15,7 @@ jobs:
           cache: true
       - name: Check formatting and lint
         run: vp check
+      - name: Test
+        run: vp test run
       - name: Build
         run: yarn build:ci

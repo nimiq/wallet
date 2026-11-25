@@ -54,3 +54,11 @@ The code is formatted by Oxfmt via `vp fmt`, configured in `vite.config.ts`. `vp
 ```
 yarn typecheck
 ```
+
+### Runs the tests
+
+```
+yarn test
+```
+
+The tests in `tests/` are run by Vitest via `vp test`, configured in `vite.config.ts`.

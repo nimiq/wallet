@@ -257,6 +257,9 @@ export default defineConfig(async ({ command, mode }) => {
         },
         lint: lintConfig,
         fmt: fmtConfig,
+        test: {
+            include: ['tests/**/*.test.ts'],
+        },
     };
 });
 

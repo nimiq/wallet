@@ -94,8 +94,9 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useI18n } from '@/lib/useI18n';
-import { RouteName, STAKING_QUERY_SHOW_VALIDATORS, useRouter } from '@/router';
+import { RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '@/router';
 import { StakingOperationType } from '../../lib/StakingUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore, Validator } from '../../stores/Staking';

@@ -71,8 +71,9 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useI18n } from '@/lib/useI18n';
-import { useRouter, RouteName } from '@/router';
+import { RouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { activatePolygon } from '../../hub';

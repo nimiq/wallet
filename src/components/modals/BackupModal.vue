@@ -86,8 +86,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { backup } from '../../hub';
-import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';

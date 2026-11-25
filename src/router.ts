@@ -1,5 +1,5 @@
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
-import Vue, { provide, inject } from 'vue';
+import Vue from 'vue';
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 
 import Config from 'config';
@@ -890,15 +890,3 @@ function parseActivationRedirect(route: Route) {
 }
 
 export default router;
-
-const RouterSymbol = Symbol('router');
-
-export function provideRouter(providedRouter: VueRouter) {
-    provide(RouterSymbol, providedRouter);
-}
-
-export function useRouter(): VueRouter {
-    const injectedRouter = inject(RouterSymbol) as VueRouter;
-    if (!injectedRouter) throw new Error('Router was not provided.');
-    return injectedRouter;
-}

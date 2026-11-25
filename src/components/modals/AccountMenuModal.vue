@@ -62,7 +62,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
-import { RouteName, useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName } from '@/router';
 import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
 
 import { useWindowSize } from '../../composables/useWindowSize';

@@ -154,10 +154,11 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { Languages } from '../../i18n/i18n-setup';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
-import { useRouter, RouteName } from '../../router';
+import { RouteName } from '../../router';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';

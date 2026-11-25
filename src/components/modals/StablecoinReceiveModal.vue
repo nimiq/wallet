@@ -47,7 +47,7 @@
 import { CryptoCurrency } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';

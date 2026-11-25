@@ -41,7 +41,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
-import { useRouter, RouteName } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { activateBitcoin } from '../../hub';

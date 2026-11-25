@@ -99,9 +99,9 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
 import * as Constants from '../../lib/Constants';
-import { useRouter } from '../../router';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useStakingStore } from '../../stores/Staking';

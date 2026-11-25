@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';

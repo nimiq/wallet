@@ -387,11 +387,11 @@ import {
 import { Bank } from '@nimiq/oasis-bank-list';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { getElectrumClient } from '@/electrum';
 import { setupSwap } from '@/hub';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { getNetworkClient } from '@/network';
-import { useRouter } from '@/router';
 import { useAccountStore } from '@/stores/Account';
 import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';

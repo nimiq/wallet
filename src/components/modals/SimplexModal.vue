@@ -72,7 +72,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';

@@ -206,7 +206,8 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, getCurrentInstance } from 'vue';
-import { RouteName, useRouter, getContextRouteName } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName, getContextRouteName } from '@/router';
 import AccountMenu from '../AccountMenu.vue';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AttentionDot from '../AttentionDot.vue';

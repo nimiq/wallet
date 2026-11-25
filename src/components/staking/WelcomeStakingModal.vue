@@ -181,7 +181,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useRouter, RouteName } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName } from '@/router';
 import {
     WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
     MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,

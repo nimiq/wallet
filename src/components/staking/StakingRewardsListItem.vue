@@ -76,7 +76,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
-import { useRouter, RouteName } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
 import { useMonthlyRewardFiatValue } from '../../composables/useMonthlyRewardFiatValue';
 import * as Constants from '../../lib/Constants';

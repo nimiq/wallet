@@ -115,7 +115,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import BlueLink from '../BlueLink.vue';
 import PageBody from '../PageBody.vue';
 import PageFooter from '../PageFooter.vue';

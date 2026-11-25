@@ -370,7 +370,8 @@ import {
 import { CurrencyInfo } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
-import { useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
+import { useRouter } from 'vue-router/composables';
+import { stablecoinSwapMaintenanceWarning } from '@/router';
 import CircleSpinner from '../CircleSpinner.vue';
 import FiatAmount from '../FiatAmount.vue';
 import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';

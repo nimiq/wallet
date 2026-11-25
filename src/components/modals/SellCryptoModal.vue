@@ -352,8 +352,8 @@ import {
 import { Bank } from '@nimiq/oasis-bank-list';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
-import { useRouter } from '@/router';
 import { useAddressStore } from '@/stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';

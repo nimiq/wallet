@@ -20,8 +20,9 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useConfig } from '@/composables/useConfig';
-import { useRouter, RouteName } from '@/router';
+import { RouteName } from '@/router';
 import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
 import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';

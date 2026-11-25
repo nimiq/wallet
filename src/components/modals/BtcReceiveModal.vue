@@ -137,9 +137,9 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
-import { useRouter } from '@/router';
 import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';

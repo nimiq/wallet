@@ -63,7 +63,7 @@ import { useConfig } from './composables/useConfig';
 import { useSwipes } from './composables/useSwipes';
 import { useWindowSize } from './composables/useWindowSize';
 import { ENV_MAIN } from './lib/Constants';
-import router, { provideRouter } from './router';
+import router from './router';
 import { useAccountStore } from './stores/Account';
 import { useNetworkStore } from './stores/Network';
 import { useSettingsStore } from './stores/Settings';
@@ -71,7 +71,6 @@ import { useSettingsStore } from './stores/Settings';
 export default defineComponent({
     name: 'app',
     setup() {
-        provideRouter(router);
         provideI18n(getCurrentInstance()!.proxy.$root);
 
         const { config } = useConfig();

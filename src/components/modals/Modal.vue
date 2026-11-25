@@ -25,8 +25,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
-import { useRouter } from '@/router';
 import { useSwipes } from '../../composables/useSwipes';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { pointerdown } from '../../directives/PointerEvents';

@@ -284,9 +284,10 @@
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount, defineAsyncComponent } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
-import { useRouter, RouteName } from '@/router';
+import { RouteName } from '@/router';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { createCashlink, sendTransaction } from '../../hub';

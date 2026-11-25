@@ -66,8 +66,9 @@ import {
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import type { Route } from 'vue-router';
+import { useRouter } from 'vue-router/composables';
 import { useI18n } from '@/lib/useI18n';
-import { useRouter, RouteName, getContextRouteName } from '@/router';
+import { RouteName, getContextRouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getPolygonClient, receiptToTransaction } from '../../ethers';

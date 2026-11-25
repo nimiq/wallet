@@ -10,8 +10,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { LocaleMessage } from 'vue-i18n';
+import { useRouter } from 'vue-router/composables';
 import { useI18n } from '@/lib/useI18n';
-import { RouteName, useRouter } from '@/router';
+import { RouteName } from '@/router';
 import BlueLink from './BlueLink.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import ArrowRightSmallIcon from './icons/ArrowRightSmallIcon.vue';

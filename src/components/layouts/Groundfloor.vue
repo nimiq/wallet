@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 
 export default defineComponent({
     setup() {

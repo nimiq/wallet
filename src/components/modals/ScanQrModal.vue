@@ -19,6 +19,7 @@ import {
 } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { useConfig } from '../../composables/useConfig';
 import { loadEthersLibrary } from '../../ethers';
 import {
@@ -26,7 +27,6 @@ import {
     validateAddressSync as validateBitcoinAddress,
 } from '../../lib/BitcoinTransactionUtils';
 import { ENV_MAIN } from '../../lib/Constants';
-import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import PageBody from '../PageBody.vue';

@@ -11,7 +11,8 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, watch, onMounted, ref } from 'vue';
-import { useRouter, RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '../../router';
+import { useRouter } from 'vue-router/composables';
+import { RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '../../router';
 import { useStakingStore } from '../../stores/Staking';
 import Modal from '../modals/Modal.vue';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';

@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { CreateElement, computed, defineComponent, ref } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import AlertTriangleIcon from '../icons/AlertTriangleIcon.vue';
 import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
 import PageBody from '../PageBody.vue';

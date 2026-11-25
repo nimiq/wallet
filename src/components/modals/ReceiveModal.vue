@@ -40,7 +40,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import { useAddressStore, AddressType } from '../../stores/Address';
 import AddressDisplay from '../AddressDisplay.vue';
 import QrCodeIcon from '../icons/QrCodeIcon.vue';

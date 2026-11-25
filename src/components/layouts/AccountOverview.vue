@@ -360,8 +360,9 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, watch, onActivated } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
-import { RouteName, useRouter } from '@/router';
+import { RouteName } from '@/router';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { backup, addAddress } from '../../hub';
 import { CryptoCurrency } from '../../lib/Constants';

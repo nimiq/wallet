@@ -449,9 +449,10 @@ import { BrowserDetection } from '@nimiq/utils';
 import Config from 'config';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
+import { useRouter } from 'vue-router/composables';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
-import { useRouter, RouteName } from '@/router';
+import { RouteName } from '@/router';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
 import { manageCashlink, refundSwap } from '../../hub';
 import {

@@ -21,7 +21,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
-import { useRouter } from '@/router';
+import { useRouter } from 'vue-router/composables';
 import MenuDotsIcon from './icons/MenuDotsIcon.vue';
 import Identicon from './Identicon.vue';
 

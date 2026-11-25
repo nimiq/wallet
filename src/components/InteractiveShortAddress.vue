@@ -67,6 +67,7 @@ export default defineComponent({
             default: true,
         },
     },
+    emits: ['show', 'hide', 'copy'],
     setup(props, context) {
         const tooltip$ = ref<Tooltip | null>(null);
         const copyable$ = ref<Copyable | null>(null);

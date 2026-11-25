@@ -43,6 +43,7 @@ export default defineComponent({
             default: '',
         },
     },
+    emits: ['input'],
     setup(props, context) {
         const { $t } = useI18n();
         const containerDiv = ref<HTMLDivElement | null>(null);

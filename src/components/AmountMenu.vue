@@ -89,6 +89,7 @@ export default defineComponent({
             default: true,
         },
     },
+    emits: ['fee-selection', 'send-max', 'currency'],
     setup(props) {
         const ticker = computed(() => {
             if (props.activeCurrency === 'mbtc') return 'mBTC';

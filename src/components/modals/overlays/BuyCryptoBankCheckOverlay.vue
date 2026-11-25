@@ -41,6 +41,7 @@ import PageFooter from '../../PageFooter.vue';
 import PageHeader from '../../PageHeader.vue';
 
 export default defineComponent({
+    emits: ['bank-selected'],
     setup() {
         const bankCheckInput$ = ref<BankCheckInput | null>(null);
         const bankName = ref('');

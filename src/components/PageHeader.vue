@@ -45,6 +45,7 @@ export default defineComponent({
             default: 1,
         },
     },
+    emits: ['back'],
     setup(props) {
         const progressSteps = computed(() => {
             const list = [];

@@ -293,6 +293,7 @@ const AddressInput = defineComponent({
         allowEthAddresses: Boolean,
         allowDomains: Boolean,
     },
+    emits: ['input', 'address', 'paste'],
     setup(props, context) {
         const root$ = ref<HTMLDivElement | null>(null);
         const textarea$ = ref<HTMLTextAreaElement | null>(null);

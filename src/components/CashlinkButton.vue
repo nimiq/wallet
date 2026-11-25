@@ -26,6 +26,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+    emits: ['toggle-unclaimed-cashlink-list'],
     setup() {
         return {};
     },

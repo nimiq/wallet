@@ -122,6 +122,7 @@ export default defineComponent({
             default: '',
         },
     },
+    emits: ['scroll'],
     setup(props, context) {
         const { $t, locale } = useI18n();
         const { addressInfo } = storeToRefs(usePolygonAddressStore());

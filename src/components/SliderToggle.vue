@@ -61,6 +61,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['input'],
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
 

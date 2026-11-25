@@ -65,6 +65,7 @@ import PageFooter from '../PageFooter.vue';
 import PageHeader from '../PageHeader.vue';
 
 export default defineComponent({
+    emits: ['connected'],
     setup(props, { emit }) {
         // Could be made into a prop when other providers are added
         const provider = KycProvider.TEN31PASS;

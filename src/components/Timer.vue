@@ -120,6 +120,7 @@ const Timer = defineComponent({
                 [undefined, 'second', 'minute', 'hour', 'day'].includes(value as string | undefined),
         },
     },
+    emits: ['end'],
     setup(props, context) {
         const { $t } = useI18n();
 

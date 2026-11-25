@@ -194,6 +194,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['change', 'onActiveAddressClick'],
     setup(props, context) {
         const { accountAddressInfos: addressInfos, activeAddressInfo } = storeToRefs(useAddressStore());
         const { selectAddress } = useAddressStore();

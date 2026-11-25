@@ -114,6 +114,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['close-unclaimed-cashlink-list', 'unclaimed-cashlink-count', 'scroll'],
     setup(props, context) {
         const { activeAddress, activeAddressInfo, transactionsForActiveAddress } = storeToRefs(useAddressStore());
         const { isFetchingTxHistory, fetchedAddresses } = storeToRefs(useNetworkStore());

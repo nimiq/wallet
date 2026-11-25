@@ -84,6 +84,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: [Events.ABORT, Events.CONTINUE],
     setup(props, { emit }) {
         const { width: windowWidth } = useWindowSize();
         const addressFormat = computed(() => {

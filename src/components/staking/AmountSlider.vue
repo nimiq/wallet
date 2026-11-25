@@ -126,6 +126,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['amount-staked', 'amount-chosen'],
     setup(props, context) {
         const { activeAddressInfo } = storeToRefs(useAddressStore());
 

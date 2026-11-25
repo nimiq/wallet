@@ -29,6 +29,7 @@ import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({
+    emits: ['close'],
     setup() {
         const { accountInfos } = storeToRefs(useAccountStore());
 

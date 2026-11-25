@@ -64,6 +64,7 @@ import ValidatorIcon from './ValidatorIcon.vue';
 // };
 
 export default defineComponent({
+    emits: ['next'],
     setup() {
         // const sortedIcons = computed(() => (useStakingStore().validatorsList.value
         // .filter((validator) => 'icon' in validator) as RegisteredValidator[])

@@ -23,6 +23,7 @@ export default defineComponent({
             validator: (theme: unknown) => ['dark', 'light', 'green'].includes(theme as string),
         },
     },
+    emits: ['close'],
     components: {
         CloseButton,
     },

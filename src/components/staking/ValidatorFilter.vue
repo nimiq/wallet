@@ -49,6 +49,7 @@ import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 import SliderToggle from '../SliderToggle.vue';
 
 export default defineComponent({
+    emits: ['changed', 'search'],
     setup(props, context) {
         const state = ref(FilterState.TRUST);
         const search$ = ref<HTMLInputElement>();

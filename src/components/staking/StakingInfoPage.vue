@@ -346,6 +346,7 @@ type Reward = {
 };
 
 export default defineComponent({
+    emits: ['selectValidator', 'adjust-stake', 'switch-validator', 'statusChange'],
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = storeToRefs(useAddressStore());

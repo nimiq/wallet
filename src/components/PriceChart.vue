@@ -57,6 +57,7 @@ export default defineComponent({
             validator: (range: any) => Object.values(TimeRange).includes(range),
         },
     },
+    emits: ['timespan'],
     setup(props) {
         const histories = ref<Record<TimeRange, Array<[/* timestamp */ number, /* price */ number]> | undefined>>({
             [TimeRange['24h']]: undefined,

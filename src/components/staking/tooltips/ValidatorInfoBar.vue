@@ -23,6 +23,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['click'],
     components: {
         ValidatorLabel,
         ValidatorReward,

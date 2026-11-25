@@ -23,6 +23,7 @@ const SelectBar = defineComponent({
         options: Array as () => SelectBarOption[],
         selectedValue: Number,
     },
+    emits: ['changed'],
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
 

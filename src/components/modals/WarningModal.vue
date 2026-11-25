@@ -102,6 +102,7 @@ const WarningModal = defineComponent({
             default: false,
         },
     },
+    emits: ['back', 'close'],
     setup(props, { emit }) {
         const router = useRouter();
         const modal$ = ref<Modal | null>(null);

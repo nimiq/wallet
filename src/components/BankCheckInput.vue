@@ -170,6 +170,7 @@ const BankCheckInput = defineComponent({
             required: true,
         },
     },
+    emits: ['input', 'bank-selected'],
     setup(props, context) {
         // Nested v-model pattern
         // https://zaengle.com/blog/using-v-model-on-nested-vue-components

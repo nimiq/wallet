@@ -20,6 +20,7 @@ import PageBody from '../PageBody.vue';
 import PageHeader from '../PageHeader.vue';
 
 export default defineComponent({
+    emits: ['selected'],
     setup(props, context) {
         const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());
         const { selectAddress } = useAddressStore();

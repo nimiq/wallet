@@ -86,6 +86,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['select-validator'],
     setup(props) {
         const { stakingEvents } = storeToRefs(useStakingStore());
         const { currency: preferredFiatCurrency } = storeToRefs(useFiatStore());

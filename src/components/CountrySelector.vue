@@ -67,6 +67,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['select', 'open', 'close'],
     setup(props, context) {
         const { $t } = useI18n();
         const isOpen = ref(false);

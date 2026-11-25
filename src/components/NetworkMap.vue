@@ -44,6 +44,7 @@ import NetworkMapPeerList from './NetworkMapPeerList.vue';
 import Tooltip from './Tooltip.vue';
 
 export default defineComponent({
+    emits: ['own-x-coordinate'],
     setup(props, context) {
         const container$ = ref<HTMLDivElement | null>(null);
         const network$ = ref<HTMLCanvasElement | null>(null);

@@ -22,6 +22,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['fee'],
     setup(props, context) {
         const { config } = useConfig();
         const delay = ref(12); // 2-4h

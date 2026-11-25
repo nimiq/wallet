@@ -59,6 +59,7 @@ export default defineComponent({
             default: true,
         },
     },
+    emits: ['click'],
     setup(props) {
         const { $t } = useI18n();
 

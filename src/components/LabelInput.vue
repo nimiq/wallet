@@ -42,6 +42,7 @@ const LabelInput = defineComponent({
             default: false,
         },
     },
+    emits: ['paste', 'input', 'changed'],
     setup(props, context) {
         const widthPlaceholder$ = ref<HTMLSpanElement | null>(null);
         const widthValue$ = ref<HTMLSpanElement | null>(null);

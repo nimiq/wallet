@@ -24,6 +24,7 @@ const Copyable = defineComponent({
          */
         text: String,
     },
+    emits: ['copy'],
     setup(props, context) {
         const root$ = ref<HTMLDivElement | null>(null);
         const tooltip$ = ref<HTMLDivElement | null>(null);

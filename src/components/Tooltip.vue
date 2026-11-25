@@ -123,6 +123,7 @@ const Tooltip = defineComponent({
          */
         styles: Object as () => Partial<CSSStyleDeclaration>,
     },
+    emits: ['hide', 'show', 'click'],
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
 

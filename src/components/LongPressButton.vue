@@ -40,6 +40,7 @@ export default defineComponent({
             default: 'light-blue',
         },
     },
+    emits: ['long-press'],
     setup(props, context) {
         const isPressed = ref(false);
         const showKeepPressingPrompt = ref(false);

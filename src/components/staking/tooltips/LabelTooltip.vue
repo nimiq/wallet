@@ -27,6 +27,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['click'],
     components: {
         ValidatorIcon,
         ShortAddress,

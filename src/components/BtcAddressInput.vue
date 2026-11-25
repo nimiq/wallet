@@ -65,6 +65,7 @@ const BtcAddressInput = defineComponent({
             default: false,
         },
     },
+    emits: ['scan', 'domain-address', 'address', 'input', 'paste'],
     setup(props, context) {
         const { $t } = useI18n();
         const { config } = useConfig();

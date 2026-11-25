@@ -177,6 +177,7 @@ export default defineComponent({
         alternativeAction: String,
         small: Boolean,
     },
+    emits: [Events.MAIN_ACTION, Events.ALTERNATIVE_ACTION],
     setup(props, context) {
         const currentStatus = ref('');
         const nextStatus = ref('');

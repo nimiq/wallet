@@ -32,6 +32,7 @@ import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 
 export default defineComponent({
+    emits: ['click'],
     setup(props, context) {
         const router = useRouter();
         const { activeAccountInfo } = storeToRefs(useAccountStore());

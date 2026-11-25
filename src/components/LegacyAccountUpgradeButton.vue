@@ -17,6 +17,7 @@ import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
+    emits: ['click'],
     setup(props, context) {
         const router = useRouter();
         const { accountInfos } = storeToRefs(useAccountStore());

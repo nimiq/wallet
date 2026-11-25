@@ -44,6 +44,7 @@ const BtcLabelInput = defineComponent({
             default: false,
         },
     },
+    emits: ['input'],
     setup(props, context) {
         // Nested v-model pattern
         // https://zaengle.com/blog/using-v-model-on-nested-vue-components

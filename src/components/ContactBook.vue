@@ -81,6 +81,7 @@ import LabelInput from './LabelInput.vue';
 import { RecipientType } from './modals/SendModal.vue';
 
 export default defineComponent({
+    emits: ['contact-selected'],
     setup() {
         const { contactsArray: contacts } = storeToRefs(useContactsStore());
         const { setContact } = useContactsStore();

@@ -39,6 +39,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['contact-list-opened', 'contact-selected'],
     components: {
         ContactsIcon,
         AvatarButton,

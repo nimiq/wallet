@@ -66,6 +66,7 @@ const Modal = defineComponent({
             default: true,
         },
     },
+    emits: ['close-overlay', 'close'],
     setup(props, context) {
         const router = useRouter();
 

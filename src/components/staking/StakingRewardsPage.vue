@@ -111,6 +111,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['back', 'show-validators', 'show-validator'],
     setup(props, context) {
         const { validators: validatorList, monthlyRewards, stakingEvents } = storeToRefs(useStakingStore());
         const { activeAddress, activeAddressInfo } = storeToRefs(useAddressStore());

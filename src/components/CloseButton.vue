@@ -9,6 +9,7 @@ import { defineComponent } from 'vue';
 import CloseIcon from './icons/CloseIcon.vue';
 
 export default defineComponent({
+    emits: ['click'],
     components: {
         CloseIcon,
     },

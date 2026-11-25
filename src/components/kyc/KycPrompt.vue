@@ -34,6 +34,7 @@ export default defineComponent({
             default: 'normal',
         },
     },
+    emits: ['click'],
     setup() {
         const { kycLimits } = storeToRefs(useKycStore());
         const { setKycLimits } = useKycStore();

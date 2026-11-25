@@ -95,6 +95,7 @@ import LabelInput from './LabelInput.vue';
 import { RecipientType } from './modals/StablecoinSendModal.vue';
 
 export default defineComponent({
+    emits: ['contact-selected'],
     setup() {
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
         const { contactsArray: contacts } = storeToRefs(

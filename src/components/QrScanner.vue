@@ -82,6 +82,7 @@ const QrScanner = defineComponent({
         },
         validate: Function as PropType<(scanResult: string) => boolean>,
     },
+    emits: ['error', 'cancel', 'result'],
     setup(props, context) {
         const root$ = ref<HTMLDivElement | null>(null);
         const video$ = ref<HTMLVideoElement | null>(null);

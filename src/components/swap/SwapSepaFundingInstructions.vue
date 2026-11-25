@@ -197,6 +197,7 @@ export default defineComponent({
             required: false,
         },
     },
+    emits: [Events.CANCEL, Events.PAID],
     setup(props, context) {
         const page = ref(Pages.PAYMENT_DETAILS);
 

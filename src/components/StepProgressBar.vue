@@ -24,6 +24,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['stepCompleted'],
     setup(props, { emit }) {
         const animationProgress = ref(0);
         const isFirstStepAnimated = ref(false);

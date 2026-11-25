@@ -101,6 +101,7 @@ enum Step {
 }
 
 export default defineComponent({
+    emits: ['bank-selected', 'details-entered'],
     setup(props, context) {
         const { bank, bankAccount } = storeToRefs(useBankStore());
 

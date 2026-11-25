@@ -61,6 +61,7 @@ const AmountInput = defineComponent({
             default: false,
         },
     },
+    emits: ['input', 'focus', 'blur'],
     setup(props, context) {
         const liveValue = ref('');
         const lastEmittedValue = ref(0);

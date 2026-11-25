@@ -100,6 +100,7 @@ import AmountSlider from './AmountSlider.vue';
 import StakingGraph from './StakingGraph.vue';
 
 export default defineComponent({
+    emits: ['back', 'selectValidator', 'statusChange', 'next'],
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = storeToRefs(useAddressStore());

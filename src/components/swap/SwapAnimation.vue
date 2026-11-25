@@ -718,6 +718,7 @@ export default defineComponent({
             required: false,
         },
     },
+    emits: ['cancel', 'error-action', 'finished'],
     setup(props, context) {
         const { $t } = useI18n();
 

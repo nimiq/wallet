@@ -60,6 +60,7 @@ export default defineComponent({
             required: true,
         },
     },
+    emits: ['input'],
     setup(props, { emit }) {
         const stablecoinSelector = Math.random().toString(36).substring(7);
         const pill$ = ref<HTMLElement | null>(null);

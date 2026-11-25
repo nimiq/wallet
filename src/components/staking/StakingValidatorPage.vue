@@ -59,6 +59,7 @@ export default defineComponent({
             default: true,
         },
     },
+    emits: ['back', 'selectValidator'],
     setup() {
         const { validatorsList } = storeToRefs(useStakingStore());
         const { config } = useConfig();

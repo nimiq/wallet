@@ -97,6 +97,7 @@ export default defineComponent({
             default: 0, // enables all addresses
         },
     },
+    emits: ['add-address', 'address-selected'],
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
         const { accountAddressInfos: addressInfos, activeAddress } = storeToRefs(useAddressStore());

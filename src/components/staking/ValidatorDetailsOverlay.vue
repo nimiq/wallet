@@ -102,6 +102,7 @@ export default defineComponent({
             default: false,
         },
     },
+    emits: ['back', 'next', 'statusChange', 'switch-validator'],
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = storeToRefs(useAddressStore());

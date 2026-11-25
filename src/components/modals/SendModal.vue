@@ -283,7 +283,7 @@
 <script lang="ts">
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
-import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
 import { useRouter, RouteName } from '@/router';
@@ -923,7 +923,8 @@ export default defineComponent({
         Identicon,
         LabelInput,
         AddressDisplay,
-        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
+        // load only on demand as rarely used
+        FlaggedAddressWarning: defineAsyncComponent(() => import('../FlaggedAddressWarning.vue')),
         IdenticonButton,
         TriangleDownIcon,
         AddressList,

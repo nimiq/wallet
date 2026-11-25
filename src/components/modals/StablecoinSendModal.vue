@@ -317,7 +317,7 @@
 import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { parseRequestLink, Currency, CurrencyInfo, EthereumChain } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect, defineAsyncComponent } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
 import { useRouter, RouteName } from '@/router';
@@ -1120,7 +1120,8 @@ export default defineComponent({
         LabelInput,
         LongPressButton,
         AddressDisplay,
-        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
+        // load only on demand as rarely used
+        FlaggedAddressWarning: defineAsyncComponent(() => import('../FlaggedAddressWarning.vue')),
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,

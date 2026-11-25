@@ -189,7 +189,17 @@
 <script lang="ts">
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
 import { storeToRefs } from 'pinia';
-import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
+import {
+    defineComponent,
+    ref,
+    watch,
+    watchEffect,
+    computed,
+    Ref,
+    onMounted,
+    onBeforeUnmount,
+    defineAsyncComponent,
+} from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useI18n } from '@/lib/useI18n';
 import { useRouter, RouteName } from '@/router';
@@ -736,7 +746,8 @@ export default defineComponent({
         Tooltip,
         InfoCircleSmallIcon,
         SendModalFooter,
-        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
+        // load only on demand as rarely used
+        FlaggedAddressWarning: defineAsyncComponent(() => import('../FlaggedAddressWarning.vue')),
         StatusScreen,
         DoubleInput,
     },

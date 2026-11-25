@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M20.53 8.15C19.38 3.2 15.43 1 11.05 1A9.98 9.98 0 001 10.9a9.93 9.93 0 007.47 9.57"

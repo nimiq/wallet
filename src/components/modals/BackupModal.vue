@@ -25,7 +25,7 @@
             <div class="options">
                 <button class="option-card reset" @click="startBackupCodes">
                     <div class="icon-row">
-                        <MessagesIcon class="option-icon" />
+                        <MessagesIcon />
                     </div>
                     <div class="content">
                         <h2>{{ $t('Send yourself two backup codes') }}</h2>
@@ -51,7 +51,7 @@
 
                 <button class="option-card reset" @click="startRecoveryWords">
                     <div class="icon-row">
-                        <WordsIcon class="option-icon" />
+                        <WordsIcon />
                     </div>
                     <div class="content">
                         <h2>{{ $t('Write down 24 recovery words') }}</h2>
@@ -247,12 +247,6 @@ export default defineComponent({
 
     .icon-row {
         margin-bottom: 2.5rem;
-    }
-
-    .option-icon {
-        color: white;
-        width: 4.75rem; // 38px
-        height: 4rem; // 32px
     }
 
     .content {

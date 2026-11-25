@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg
         class="nq-icon arrow-down-icon"
         fill="none"

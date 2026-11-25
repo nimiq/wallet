@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg class="bank-icon" width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M65.012 40.982c-4.408 17.682-22.315 28.438-39.999 24.03C7.339 60.605-3.422 42.698.989 25.021 5.394 7.339 23.3-3.42 40.979.988 58.66 5.395 69.42 23.304 65.011 40.982z"

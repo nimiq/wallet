@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg
         class="nq-icon circled-question-mark-icon"
         viewBox="0 0 18 18"

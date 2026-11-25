@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg
         class="messages-icon"
         xmlns="http://www.w3.org/2000/svg"

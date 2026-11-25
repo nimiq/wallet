@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" class="stop-sign-icon">
         <path
             fill="url(#a)"

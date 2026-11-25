@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg class="caret-right-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 16" width="9" height="16">
         <path
             d="M1 1l7 7-7 7"

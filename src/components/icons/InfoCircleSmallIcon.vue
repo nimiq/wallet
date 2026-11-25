@@ -1,14 +1,11 @@
-<template functional>
+<template>
     <svg
         class="nq-icon"
-        :class="[data.class, data.staticClass]"
-        :style="[data.style, data.staticStyle]"
         width="16"
         height="16"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
-        v-bind="data.attrs"
-        v-on="listeners"
+        v-on="$listeners"
     >
         <line
             x1="8"

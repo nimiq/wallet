@@ -1,4 +1,4 @@
-<template functional>
+<template>
     <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <g fill-rule="evenodd" clip-rule="evenodd">
             <path

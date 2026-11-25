@@ -47,7 +47,7 @@ export default defineComponent({
             type: String,
             required: true,
         },
-        value: {
+        modelValue: {
             type: String,
             default: '',
             required: true,
@@ -61,7 +61,8 @@ export default defineComponent({
             default: false,
         },
     },
-    emits: ['input'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue'],
     setup(props, context) {
         const { proxy: vm } = getCurrentInstance()!;
 
@@ -75,7 +76,7 @@ export default defineComponent({
         const noTransitions = ref(true);
 
         watch(
-            () => props.value,
+            () => props.modelValue,
             (value) => {
                 localValue.value = value;
             },
@@ -89,11 +90,11 @@ export default defineComponent({
             () => localValue.value,
             (value) => {
                 updateActiveBoxPosition();
-                context.emit('input', value);
+                context.emit('update:modelValue', value);
             },
         );
 
-        localValue.value = props.value;
+        localValue.value = props.modelValue;
         window.addEventListener('resize', updateActiveBoxPosition);
 
         // Watch for style changes associated with type changes and for UI changes when component gets enabled.

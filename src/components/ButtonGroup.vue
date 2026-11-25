@@ -34,17 +34,18 @@ export default defineComponent({
             type: Object as () => Record<string, { label: string; disabled?: boolean }>,
             required: true,
         },
-        value: {
+        modelValue: {
             type: String,
             required: true,
         },
     },
-    emits: ['input'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue'],
     setup(props, { emit }) {
         const randomName = Math.random().toString(36).substring(7);
         const pill$ = ref<HTMLElement | null>(null);
 
-        const innerKey = ref(props.value || Object.keys(props.options)[0]);
+        const innerKey = ref(props.modelValue || Object.keys(props.options)[0]);
 
         onMounted(() => {
             setPillPosition();
@@ -52,7 +53,7 @@ export default defineComponent({
 
         // Update inner when prop changes
         watch(
-            () => props.value,
+            () => props.modelValue,
             (key) => {
                 if (!key) return;
                 innerKey.value = key;
@@ -64,7 +65,7 @@ export default defineComponent({
         function setKey(key: string) {
             if (props.options[key].disabled) return;
             innerKey.value = key;
-            emit('input', key);
+            emit('update:modelValue', key);
             setPillPosition();
         }
 
@@ -79,7 +80,7 @@ export default defineComponent({
         }
 
         return {
-            initialActiveKey: props.value,
+            initialActiveKey: props.modelValue,
             innerKey,
             randomName,
             setKey,

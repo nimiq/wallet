@@ -28,9 +28,9 @@
                 <label v-if="!editing">{{ contact.label }}</label>
                 <LabelInput
                     v-else
-                    :value="contact.label"
+                    :modelValue="contact.label"
                     :placeholder="$t('Name your contact')"
-                    @input="onInput(contact.address, $event)"
+                    @update:modelValue="onInput(contact.address, $event)"
                 />
                 <div class="flex-grow"></div>
                 <InteractiveShortAddress

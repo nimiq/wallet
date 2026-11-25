@@ -27,7 +27,7 @@
                             :placeholder="$t('Enter recipient address...')"
                             :disabled="gotRequestUriRecipient"
                             @paste="(event, text) => parseRequestUri(text, event)"
-                            @input="resetRecipient"
+                            @update:modelValue="resetRecipient"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
                             @scan="$router.push({ name: RouteName.Scan })"

@@ -35,7 +35,7 @@ import LabelInput from './LabelInput.vue';
 
 const BtcLabelInput = defineComponent({
     props: {
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -44,15 +44,16 @@ const BtcLabelInput = defineComponent({
             default: false,
         },
     },
-    emits: ['input'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue'],
     setup(props, context) {
         // Nested v-model pattern
         // https://zaengle.com/blog/using-v-model-on-nested-vue-components
         // https://vue-composition-api-rfc.netlify.app/api.html#computed
         const localValue = computed({
-            get: () => props.value,
+            get: () => props.modelValue,
             set(value) {
-                context.emit('input', value);
+                context.emit('update:modelValue', value);
             },
         });
 

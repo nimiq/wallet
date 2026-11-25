@@ -157,7 +157,7 @@ function unicodeNormalize(s: string) {
 
 const BankCheckInput = defineComponent({
     props: {
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -170,15 +170,16 @@ const BankCheckInput = defineComponent({
             required: true,
         },
     },
-    emits: ['input', 'bank-selected'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue', 'bank-selected'],
     setup(props, context) {
         // Nested v-model pattern
         // https://zaengle.com/blog/using-v-model-on-nested-vue-components
         // https://vue-composition-api-rfc.netlify.app/api.html#computed
         const localValue = computed({
-            get: () => props.value,
+            get: () => props.modelValue,
             set(value) {
-                context.emit('input', value);
+                context.emit('update:modelValue', value);
             },
         });
         const normalizedLocalValue = computed(() =>

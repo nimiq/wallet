@@ -55,17 +55,18 @@ import UsdtIcon from './icons/UsdtIcon.vue';
 
 export default defineComponent({
     props: {
-        value: {
+        modelValue: {
             type: String,
             required: true,
         },
     },
-    emits: ['input'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue'],
     setup(props, { emit }) {
         const stablecoinSelector = Math.random().toString(36).substring(7);
         const pill$ = ref<HTMLElement | null>(null);
 
-        const innerKey = ref(props.value || 'usdc');
+        const innerKey = ref(props.modelValue || 'usdc');
 
         onMounted(() => {
             setPillPosition();
@@ -73,7 +74,7 @@ export default defineComponent({
 
         // Update inner when prop changes
         watch(
-            () => props.value,
+            () => props.modelValue,
             (key) => {
                 if (!key) return;
                 innerKey.value = key;
@@ -84,7 +85,7 @@ export default defineComponent({
 
         function setKey(key: string) {
             innerKey.value = key;
-            emit('input', key);
+            emit('update:modelValue', key);
             setPillPosition();
         }
 
@@ -99,7 +100,7 @@ export default defineComponent({
         }
 
         return {
-            initialActiveKey: props.value,
+            initialActiveKey: props.modelValue,
             innerKey,
             stablecoinSelector,
             setKey,

@@ -31,7 +31,7 @@ import { nextTick } from '@/lib/nextTick';
 
 const AmountInput = defineComponent({
     props: {
-        value: Number,
+        modelValue: Number,
         maxFontSize: {
             type: Number,
             default: 8,
@@ -61,7 +61,8 @@ const AmountInput = defineComponent({
             default: false,
         },
     },
-    emits: ['input', 'focus', 'blur'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue', 'focus', 'blur'],
     setup(props, context) {
         const liveValue = ref('');
         const lastEmittedValue = ref(0);
@@ -149,7 +150,7 @@ const AmountInput = defineComponent({
             target.value = liveValue.value;
 
             if (lastEmittedValue.value !== valueInLuna.value) {
-                context.emit('input', valueInLuna.value);
+                context.emit('update:modelValue', valueInLuna.value);
                 lastEmittedValue.value = valueInLuna.value;
             }
         }
@@ -160,7 +161,7 @@ const AmountInput = defineComponent({
         }
 
         watch(
-            () => props.value,
+            () => props.modelValue,
             (newValue: number | undefined) => {
                 if (newValue === valueInLuna.value) return;
                 lastEmittedValue.value = newValue || 0;

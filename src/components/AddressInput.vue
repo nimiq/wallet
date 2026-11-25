@@ -281,7 +281,7 @@ async function exportValue(value: string, parserFlags: ParserFlags): Promise<str
 const AddressInput = defineComponent({
     props: {
         // value that can be bound to via v-model
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -293,7 +293,8 @@ const AddressInput = defineComponent({
         allowEthAddresses: Boolean,
         allowDomains: Boolean,
     },
-    emits: ['input', 'address', 'paste'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue', 'address', 'paste'],
     setup(props, context) {
         const root$ = ref<HTMLDivElement | null>(null);
         const textarea$ = ref<HTMLTextAreaElement | null>(null);
@@ -359,7 +360,7 @@ const AddressInput = defineComponent({
             // might potentially change during this async method by a parallel invocation.
             const newValue = await exportValue(textarea$.value!.value, parserFlags.value);
             currentValue.value = newValue;
-            context.emit('input', newValue); // emit event compatible with v-model
+            context.emit('update:modelValue', newValue); // emit event compatible with v-model
 
             // Note: root$.value might be null here, if the component got destroyed during the async calls. In that
             // case, toggling the class is not needed anymore.
@@ -387,19 +388,19 @@ const AddressInput = defineComponent({
 
         async function onExternalValueChange() {
             // Note that external changes also happen if the parent component binds a v-model that feeds the values
-            // emitted via the 'input' event back to the value prop. However, the following check will result in an
-            // early return in these cases to avoid unnecessary processing.
+            // emitted via the 'update:modelValue' event back to the modelValue prop. However, the following check will
+            // result in an early return in these cases to avoid unnecessary processing.
             if (
                 stripWhitespace(currentValue.value)
                 // Call exportValue because currentValue is also exported / formatted.
-                === stripWhitespace(await exportValue(props.value, parserFlags.value))
+                === stripWhitespace(await exportValue(props.modelValue, parserFlags.value))
             ) {
                 return;
             }
 
             // could also be using format-input's parse and format helpers that preserve caret position but as we're
             // not interested in that, we calculate the formatted value manually
-            const parsedValue = props.value
+            const parsedValue = props.modelValue
                 .split('')
                 .reduce((parsed, char) => parsed + (parse(char, parsed, parserFlags.value) || ''), '');
             textarea$.value!.value = format(parsedValue, parserFlags.value).text; // moves caret to the end
@@ -469,7 +470,7 @@ const AddressInput = defineComponent({
             setTimeout(() => updateSelection());
         }
 
-        watch(() => props.value, onExternalValueChange);
+        watch(() => props.modelValue, onExternalValueChange);
 
         onMounted(() => {
             // trigger initial value change. Not using immediate watcher as it already fires before mounted.

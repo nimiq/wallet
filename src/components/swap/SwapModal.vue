@@ -14,8 +14,8 @@
                         <ButtonGroup
                             v-if="!isMobile"
                             :options="leftButtonGroupOptions"
-                            :value="leftAsset"
-                            @input="setLeftAsset"
+                            :modelValue="leftAsset"
+                            @update:modelValue="setLeftAsset"
                         />
                         <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
                             <option
@@ -32,8 +32,8 @@
                         <ButtonGroup
                             v-if="!isMobile"
                             :options="rightButtonGroupOptions"
-                            :value="rightAsset"
-                            @input="setRightAsset"
+                            :modelValue="rightAsset"
+                            @update:modelValue="setRightAsset"
                         />
                         <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
                             <option
@@ -185,9 +185,9 @@
                     "
                 >
                     <AmountInput
-                        :value="wantLeft || capDecimals(getLeft, leftAsset)"
+                        :modelValue="wantLeft || capDecimals(getLeft, leftAsset)"
                         @focus="onFocus(leftAsset, $event)"
-                        @input="onInput(leftAsset, $event)"
+                        @update:modelValue="onInput(leftAsset, $event)"
                         @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantLeft > 0 || getLeft > 0,
@@ -224,9 +224,9 @@
                     "
                 >
                     <AmountInput
-                        :value="wantRight || capDecimals(getRight, rightAsset)"
+                        :modelValue="wantRight || capDecimals(getRight, rightAsset)"
                         @focus="onFocus(rightAsset, $event)"
-                        @input="onInput(rightAsset, $event)"
+                        @update:modelValue="onInput(rightAsset, $event)"
                         @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantRight > 0 || getRight > 0,

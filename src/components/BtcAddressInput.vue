@@ -5,7 +5,7 @@
             :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
             :placeholder="placeholder"
             :disabled="disabled"
-            @input="onInput"
+            @update:modelValue="onInput"
             @paste="onPaste"
             ref="input$"
         />
@@ -56,7 +56,7 @@ const BtcAddressInput = defineComponent({
             type: String,
             required: false,
         },
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -65,7 +65,8 @@ const BtcAddressInput = defineComponent({
             default: false,
         },
     },
-    emits: ['scan', 'domain-address', 'address', 'input', 'paste'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['scan', 'domain-address', 'address', 'update:modelValue', 'paste'],
     setup(props, context) {
         const { $t } = useI18n();
         const { config } = useConfig();
@@ -161,7 +162,7 @@ const BtcAddressInput = defineComponent({
         }
 
         function onInput() {
-            context.emit('input', address.value);
+            context.emit('update:modelValue', address.value);
             onUpdate();
         }
 
@@ -187,9 +188,9 @@ const BtcAddressInput = defineComponent({
         }
 
         watch(
-            () => props.value,
+            () => props.modelValue,
             () => {
-                address.value = props.value;
+                address.value = props.modelValue;
                 onUpdate();
             },
             { immediate: true },

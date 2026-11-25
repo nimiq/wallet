@@ -16,9 +16,9 @@
             <input
                 ref="searchBarInput"
                 type="text"
-                :value="value"
+                :value="modelValue"
                 :placeholder="placeholderText"
-                @input="$emit('input', $event.target.value)"
+                @input="$emit('update:modelValue', $event.target.value)"
                 @focus="handleFocus"
                 @blur="handleBlur"
             />
@@ -38,12 +38,13 @@ import CrossCloseButton from './CrossCloseButton.vue';
 export default defineComponent({
     name: 'search-bar',
     props: {
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
     },
-    emits: ['input'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['update:modelValue'],
     setup(props, context) {
         const { $t } = useI18n();
         const containerDiv = ref<HTMLDivElement | null>(null);
@@ -76,7 +77,7 @@ export default defineComponent({
             isInputFocused.value = false;
         };
 
-        const inputValue = computed(() => props.value);
+        const inputValue = computed(() => props.modelValue);
 
         const isInputActive = computed(() => {
             // Only collapse if not focused and no text
@@ -85,7 +86,7 @@ export default defineComponent({
         });
 
         const handleClose = (e: Event) => {
-            context.emit('input', '');
+            context.emit('update:modelValue', '');
             // Prevent the search bar from losing or gaining focus when not intended
             e.stopImmediatePropagation();
         };

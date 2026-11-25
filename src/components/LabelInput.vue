@@ -28,7 +28,7 @@ import { nextTick } from '@/lib/nextTick';
 const LabelInput = defineComponent({
     props: {
         maxBytes: Number,
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -42,7 +42,8 @@ const LabelInput = defineComponent({
             default: false,
         },
     },
-    emits: ['paste', 'input', 'changed'],
+    model: { prop: 'modelValue', event: 'update:modelValue' },
+    emits: ['paste', 'update:modelValue', 'changed'],
     setup(props, context) {
         const widthPlaceholder$ = ref<HTMLSpanElement | null>(null);
         const widthValue$ = ref<HTMLSpanElement | null>(null);
@@ -66,7 +67,7 @@ const LabelInput = defineComponent({
                 }
                 lastValue = liveValue.value;
             }
-            context.emit('input', liveValue.value);
+            context.emit('update:modelValue', liveValue.value);
         }
 
         function onBlur() {
@@ -100,7 +101,7 @@ const LabelInput = defineComponent({
         }
 
         // Note: the order of these immediate watchers matters, as in the original class component.
-        watch(() => props.value, updateValue, { immediate: true });
+        watch(() => props.modelValue, updateValue, { immediate: true });
         watch(liveValue, updateWidth, { immediate: true });
 
         return {

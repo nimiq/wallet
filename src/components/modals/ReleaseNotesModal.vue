@@ -14,17 +14,17 @@
                     {{ new Date(release.date).toLocaleDateString() }} - {{ release.app }} {{ release.version }}
                 </summary>
                 <!-- <p class="nq-text">{{ release.message }}</p> -->
-                <VueMarkdown class="nq-text" :source="release.message" :breaks="false" />
+                <div class="nq-text" v-html="renderMarkdown(release.message)"></div>
             </details>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import VueMarkdown from '@adapttive/vue-markdown';
 import { defineComponent, onMounted, ref } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../../lib/Constants';
+import { renderMarkdown } from '../../lib/Markdown';
 import PageBody from '../PageBody.vue';
 import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
@@ -51,13 +51,13 @@ export default defineComponent({
 
         return {
             releases,
+            renderMarkdown,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
-        VueMarkdown,
     },
 });
 </script>

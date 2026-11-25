@@ -10,36 +10,12 @@ const paths = routerConfig.split('\n')
     .map(line => line.split('\'')[1]) // Take the string between the single quotation marks
     .filter(Boolean) // Remove empty lines
 
-const vueConfig = fs.readFileSync('vue.config.js', 'utf8')
-const vuePagesConfigStart = /(?<=pages:[^{]*){/.exec(vueConfig)?.index;
-if (vuePagesConfigStart !== undefined) {
-    // extract the pages config object by searching for the closing }
-    let vuePagesConfigEnd = vuePagesConfigStart
-    let openObjects = 0
-    do {
-        if (vueConfig[vuePagesConfigEnd] === '{') {
-            openObjects++
-        } else if (vueConfig[vuePagesConfigEnd] === '}') {
-            openObjects--
-        }
-        vuePagesConfigEnd++
-    } while (openObjects > 0 && vuePagesConfigEnd < vueConfig.length)
-    // convert the pages config to valid JSON
-    const vuePagesConfigJson = vueConfig.substring(vuePagesConfigStart, vuePagesConfigEnd)
-        .replace(/'/g, '"') // use " as string delimiters
-        .replace(/(?<=^\s*)[^\s"':]+(?=\s*:)/gm, '"$&"') // put parameter names in strings
-        .replace(/\s*\/\/.*$/gm, '') // remove comments
-        .replace(/,(?=\n\s*})/g, '') // remove comma after final parameter of an object
-    const vuePagesConfig = JSON.parse(vuePagesConfigJson)
-    paths.push(...Object.entries(vuePagesConfig)
-        .reduce((pages, [page, config]) => [
-            ...pages,
-            config.filename ? config.filename.replace('.html', '') : page,
-        ], [])
-        .filter(page => page !== 'index') // filter out index because it's already covered as root path /
-        .map(page => `/${page}`),
-    )
-}
+// Additional html pages besides index.html, which is already covered as root path /. These are the entry points of the
+// build, see build.rolldownOptions.input in vite.config.ts.
+paths.push(...fs.readdirSync('.')
+    .filter(file => file.endsWith('.html') && file !== 'index.html')
+    .map(file => `/${file.replace('.html', '')}`),
+)
 
 const pathRegexs = paths
     .map(path => `${pathToRegexp(path.replace('\\\\', '\\'), [])}`)

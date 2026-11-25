@@ -1,4 +1,4 @@
-/* eslint-disable quote-props,dot-notation */
+/* oxlint-disable eslint-js/quote-props, dot-notation */
 
 import { getBankCountryList } from '@nimiq/oasis-bank-list';
 

@@ -84,7 +84,7 @@ export default defineComponent({
 
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
                 // Run in parallel, without awaiting.
-                // eslint-disable-next-line import/extensions, import/no-unresolved
+                // oxlint-disable-next-line import/extensions, import/no-unresolved
                 import('bitcoinjs-lib/src/address').then(({
                     fromBase58Check: addressFromBase58Check,
                     fromBech32: addressFromBech32,

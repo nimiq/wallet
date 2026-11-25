@@ -1,121 +1,76 @@
-import path from 'node:path';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
-import { FlatCompat } from '@eslint/eslintrc';
-import stylistic from '@stylistic/eslint-plugin';
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
+// ESLint is only used for what Oxlint can not lint yet: the templates of Vue single file components, including their
+// accessibility, and rules which check the lines of entire Vue files. Everything else, including the scripts of the
+// components, is linted by Oxlint via vp lint, see the lint config in vite.config.ts.
+import tsParser from '@typescript-eslint/parser';
 import pluginVue from 'eslint-plugin-vue';
 import pluginVueA11y from 'eslint-plugin-vuejs-accessibility';
-import globals from 'globals';
 
-const require = createRequire(import.meta.url);
-const dirname = path.dirname(fileURLToPath(import.meta.url));
+const vueFiles = ['**/*.vue'];
 
-// The Airbnb config does not support flat configs yet, therefore it's loaded via the compatibility layer.
-const compat = new FlatCompat({ baseDirectory: dirname });
+// Rules of eslint-plugin-vue's vue2-essential config that Oxlint implements natively, and which are therefore linted by
+// Oxlint, see lint/presets.ts.
+const vueRulesLintedByOxlint = [
+    'vue/no-arrow-functions-in-watch',
+    'vue/no-async-in-computed-properties',
+    'vue/no-computed-properties-in-data',
+    'vue/no-dupe-keys',
+    'vue/no-export-in-script-setup',
+    'vue/no-reserved-component-names',
+    'vue/no-reserved-keys',
+    'vue/no-reserved-props',
+    'vue/no-shared-component-data',
+    'vue/no-side-effects-in-computed-properties',
+    'vue/require-prop-type-constructor',
+    'vue/require-render-return',
+    'vue/return-in-computed-property',
+    'vue/return-in-emits-validator',
+    'vue/valid-define-emits',
+    'vue/valid-define-props',
+    'vue/valid-next-tick',
+];
 
-const airbnbStyle = require('eslint-config-airbnb-base/rules/style');
-// Do not restrict usage of for...of
-const noRestrictedSyntax = airbnbStyle.rules['no-restricted-syntax']
-    .slice(1)
-    .filter((r) => r.selector !== 'ForOfStatement');
-
-export default defineConfigWithVueTs(
+export default [
     {
         // deployment-wallet/ is the checkout of the deployment repository, made by scripts/deploy.sh.
-        ignores: ['dist/', 'deployment-wallet/', 'public/', 'scripts/', 'types/', 'vue.config.js'],
+        ignores: ['dist/', 'deployment-wallet/', 'public/'],
     },
-    pluginVue.configs['flat/vue2-essential'],
-    ...compat.extends('airbnb-base'),
-    ...pluginVueA11y.configs['flat/recommended'],
-    vueTsConfigs.recommended,
+    ...[
+        ...pluginVue.configs['flat/vue2-essential'],
+        ...pluginVueA11y.configs['flat/recommended'],
+    ].map((config) => ({ ...config, files: vueFiles })),
     {
-        // Equivalent of the former @vue/eslint-config-airbnb, which adapted the Airbnb config to Vue CLI projects.
-        settings: {
-            'import/resolver': {
-                node: {},
-                webpack: { config: require.resolve('@vue/cli-service/webpack.config.js') },
-            },
-            'import/extensions': ['.js', '.jsx', '.mjs', '.ts', '.tsx'],
-        },
-        rules: {
-            'import/extensions': ['error', 'always', {
-                js: 'never',
-                mjs: 'never',
-                jsx: 'never',
-                ts: 'never',
-                tsx: 'never',
-            }],
-            'vuejs-accessibility/no-onchange': 'off',
-        },
-    },
-    {
-        plugins: {
-            '@stylistic': stylistic,
+        files: vueFiles,
+        linterOptions: {
+            // Disable directives in the scripts are typically meant for Oxlint.
+            reportUnusedDisableDirectives: 'off',
         },
         languageOptions: {
             ecmaVersion: 2020,
             parserOptions: {
-                // Set by the Airbnb config's Node.js environment. Not applicable to ES modules, and breaks the
-                // resolution of variables in Vue templates, for example of v-for.
-                ecmaFeatures: { globalReturn: false },
-            },
-            globals: {
-                ...globals.browser,
-                ...globals.es2015,
+                parser: tsParser,
             },
         },
         rules: {
-            'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-            'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-            'function-paren-newline': 'off',
-            indent: ['error', 4, { SwitchCase: 1 }],
+            ...Object.fromEntries(vueRulesLintedByOxlint.map((rule) => [rule, 'off'])),
+            // Rules which check the lines of the entire file, including the templates and styles. Oxlint, which only
+            // lints the scripts of Vue files, applies them to all other files.
+            'eol-last': ['error', 'always'],
+            'linebreak-style': ['error', 'unix'],
             'max-len': ['error', 120],
-            'no-underscore-dangle': 'off',
-            'no-param-reassign': 'off',
-            'no-plusplus': 'off',
-            'no-continue': 'off',
-            'no-confusing-arrow': 'off',
-            'no-floating-decimal': 'off',
-            'no-return-assign': 'off',
-            'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
-            'import/prefer-default-export': 'off',
-            'import/no-cycle': 'off',
-            'implicit-arrow-linebreak': 'off',
-            'object-curly-newline': ['error', { ObjectPattern: { multiline: true } }],
-            'prefer-const': ['error', { destructuring: 'all' }],
-            'no-nested-ternary': 'off',
-            'no-restricted-syntax': ['error', ...noRestrictedSyntax],
-
+            'no-irregular-whitespace': 'error',
+            'no-mixed-spaces-and-tabs': 'error',
+            'no-multiple-empty-lines': ['error', { max: 1, maxBOF: 0, maxEOF: 0 }],
+            'no-tabs': 'error',
+            'no-trailing-spaces': ['error', { skipBlankLines: false, ignoreComments: false }],
+            'unicode-bom': ['error', 'never'],
+            'vue/multi-word-component-names': 'off',
+            'vuejs-accessibility/no-onchange': 'off',
             'vuejs-accessibility/click-events-have-key-events': 'off',
             // Added to the recommended rules in eslint-plugin-vuejs-accessibility 2. Disabled for now, as fixing the
             // existing violations requires changes to the markup and interactions of the affected components.
             'vuejs-accessibility/no-static-element-interactions': 'off',
             'vuejs-accessibility/form-control-has-label': 'off',
             'vuejs-accessibility/label-has-for': 'off',
-            'vue/multi-word-component-names': 'off',
-
-            '@stylistic/member-delimiter-style': ['error', {
-                overrides: { typeLiteral: { multiline: { delimiter: 'comma' }, singleline: { delimiter: 'comma' } } },
-            }],
-            '@typescript-eslint/no-explicit-any': 'off',
-            // As in typescript-eslint's recommended config before version 8.
-            '@typescript-eslint/no-unused-vars': ['warn', { caughtErrors: 'none' }],
-            '@typescript-eslint/no-non-null-assertion': 'off',
-            // Do not require explicit function return value typings
-            '@typescript-eslint/explicit-module-boundary-types': 'off',
-
-            'no-useless-constructor': 'off',
-            '@typescript-eslint/no-useless-constructor': 'error',
-
-            'no-shadow': 'off',
-            '@typescript-eslint/no-shadow': 'error',
-
-            'no-use-before-define': 'off',
-            '@typescript-eslint/no-use-before-define': 'off',
-
-            // False positives that are checked by TS
-            'no-redeclare': 'off',
         },
     },
     {
@@ -124,32 +79,4 @@ export default defineConfigWithVueTs(
             'max-len': 'off',
         },
     },
-    {
-        files: ['src/lib/NetworkMap.ts'],
-        rules: {
-            'max-classes-per-file': 'off',
-        },
-    },
-    {
-        files: ['**/shims-tsx.d.ts'],
-        rules: {
-            '@typescript-eslint/no-empty-object-type': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
-            '@typescript-eslint/no-unused-vars': 'off',
-        },
-    },
-    {
-        // In plain CommonJS modules, `import foo = require('foo')` can't be used instead.
-        files: ['**/*.js', '**/*.cjs'],
-        rules: {
-            '@typescript-eslint/no-require-imports': 'off',
-        },
-    },
-    {
-        files: ['*.js', '*.mjs'],
-        rules: {
-            // Configuration files at the project root can use the dev dependencies.
-            'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-        },
-    },
-);
+];

@@ -39,7 +39,7 @@ export default {
     albatrossWatchtower: {
         endpoint: 'https://watchtower.pos.nimiq-testnet.com',
         username: 'nimiq',
-        password: ALBATROSS_WATCHTOWER_PASSWORD_LOCAL, // injected in vue.config.js
+        password: ALBATROSS_WATCHTOWER_PASSWORD_LOCAL, // injected in vite.config.ts
     },
 
     polygon: {
@@ -52,9 +52,9 @@ export default {
             swaps: false,
         },
         networkId: 80002,
-        rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vue.config.js
+        rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vite.config.ts
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
-        // eslint-disable-next-line max-len
+        // oxlint-disable-next-line eslint-js/max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdc_bridged: {
             /** @deprecated */
@@ -122,7 +122,7 @@ export default {
     },
 
     unstoppableDomains: {
-        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vue.config.js.
+        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vite.config.ts.
         ethereumRpcEndpoint: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY_LOCAL}`,
     },
 

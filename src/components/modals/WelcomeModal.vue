@@ -81,7 +81,7 @@
                         :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
                         @click="setLanguage(lang.code)"
                     >
-                        <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
+                        <img slot="trigger" :src="languageFlagUrls[`../../assets/languages/${lang.code}.svg`]"
                             class="flag" :class="{'active': settings$.language === lang.code}"
                             :alt="`Flag-${lang.code.toUpperCase()}`" :style="`--index: ${i}`">
                         {{ lang.name }}
@@ -106,6 +106,12 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useRouter, RouteName } from '../../router';
+
+const languageFlagUrls = import.meta.glob<string>('../../assets/languages/*.svg', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+});
 
 export default defineComponent({
     setup() {
@@ -185,6 +191,7 @@ export default defineComponent({
             goToBackup,
             closeModal,
             Languages,
+            languageFlagUrls,
             settings$,
             setLanguage,
             isMobile,

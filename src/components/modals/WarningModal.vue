@@ -139,9 +139,9 @@ export default WarningModal;
  * of the modal for the feature which is currently unavailable, for example:
  *
  * const SwapModal = () => areSwapsUnderMaintenance()
- *     ? import(/* webpackChunkName: "warning-modal" *\/ './components/modals/WarningModal.vue')
+ *     ? import('./components/modals/WarningModal.vue')
  *         .then(({ createWarningModal }) => createWarningModal(() => ({ title: i18n.t('...') as string })))
- *     : import(/* webpackChunkName: "swap-modal" *\/ './components/swap/SwapModal.vue');
+ *     : import('./components/swap/SwapModal.vue');
  *
  * Only ever import this via a dynamic import as in the example; a static import would pull the modal into the main
  * bundle. The props are passed as a factory, such that translations are only evaluated at render time, and re-evaluated

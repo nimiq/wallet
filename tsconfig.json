@@ -12,16 +12,16 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "noImplicitOverride": true,
-    "baseUrl": ".",
+    "skipLibCheck": true,
     "types": [
-      "webpack-env"
+      "vite-plus/client"
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "config": [
-        "src/config/config.local.ts"
+        "./src/config/config.local.ts"
       ]
     },
     "lib": [

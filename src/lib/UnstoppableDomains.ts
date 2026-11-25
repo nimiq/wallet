@@ -5,7 +5,7 @@ import { ENV_MAIN } from './Constants';
 let importPromise: Promise<typeof Resolution> | undefined;
 let cachedResolver: Resolution | undefined;
 
-// eslint-disable-next-line max-len
+// oxlint-disable-next-line eslint-js/max-len
 // https://docs.unstoppabledomains.com/send-and-receive-crypto-payments/resolution-libraries#supported-domains-for-resolution-libraries
 // without ENS (those require extra dependencies)
 const SUPPORTED_TLDS = [

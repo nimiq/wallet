@@ -551,7 +551,7 @@ export default defineComponent({
                                 addSettlementData(htlc.hash.value, swapData);
 
                                 htlc = await swapHandler.awaitIncomingConfirmation((tx) => {
-                                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                                    // oxlint-disable-next-line @typescript-eslint/no-shadow
                                     const htlc = tx as OasisHtlc<HtlcStatus.SETTLED>;
 
                                     updateSwap({

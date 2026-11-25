@@ -59,11 +59,11 @@ async function loadSdk() {
     const [core, relay, viem] = await Promise.all([
         // The package's subpath exports are not supported by the eslint import resolver
         // eslint-disable-next-line import/no-unresolved, import/extensions
-        import(/* webpackChunkName: "gasless-sdk" */ '@nimiq/gasless-sdk/core'),
+        import('@nimiq/gasless-sdk/core'),
         // eslint-disable-next-line import/no-unresolved, import/extensions
-        import(/* webpackChunkName: "gasless-sdk" */ '@nimiq/gasless-sdk/relay'),
+        import('@nimiq/gasless-sdk/relay'),
         // eslint-disable-next-line import/no-unresolved, import/extensions
-        import(/* webpackChunkName: "gasless-sdk" */ '@nimiq/gasless-sdk/viem'),
+        import('@nimiq/gasless-sdk/viem'),
     ]);
     return { core, relay, viem };
 }
@@ -176,7 +176,7 @@ let viemClient: Client | null = null;
 /** A viem client for the SDK's outcome check, on top of the Wallet's ethers provider. */
 async function getViemClient(): Promise<Client> {
     if (viemClient) return viemClient;
-    const { createClient, custom } = await import(/* webpackChunkName: "gasless-sdk" */ 'viem');
+    const { createClient, custom } = await import('viem');
     viemClient = createClient({
         transport: custom({
             async request({ method, params }) {

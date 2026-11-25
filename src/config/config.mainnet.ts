@@ -49,7 +49,7 @@ export default {
     albatrossWatchtower: {
         endpoint: 'https://aegis.watchtower.nimiq.systems',
         username: 'watchtower',
-        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // injected in vue.config.js
+        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // injected in vite.config.ts
     },
 
     polygon: {
@@ -62,7 +62,7 @@ export default {
             swaps: true,
         },
         networkId: 137,
-        rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
+        rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vite.config.ts
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
         usdc_bridged: {
             tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -113,7 +113,7 @@ export default {
     },
 
     unstoppableDomains: {
-        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vue.config.js.
+        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vite.config.ts.
         ethereumRpcEndpoint: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY_MAINNET}`,
     },
 

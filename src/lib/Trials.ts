@@ -42,12 +42,12 @@ export async function enableTrial(password: string): Promise<boolean> {
         return false;
     }
 
-    /* eslint-disable quote-props */
+    /* oxlint-disable eslint-js/quote-props */
     const trialToEnable = {
         'a3c06b88640ae4a5344a94238aa12746b032634bba1431163137129fe6ee1230': Trial.OASIS2,
         'd8082502f1f6cf61125f9d87b1a848590a5c56aa593abcb59f5d3225afdfc8b0': Trial.TEN31Pass,
     }[hash];
-    /* eslint-enable quote-props */
+    /* oxlint-enable eslint-js/quote-props */
 
     if (!trialToEnable) return false;
 

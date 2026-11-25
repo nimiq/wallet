@@ -6,7 +6,7 @@
     </svg>
 
     <img v-else class="country-flag"
-        :src="require(`../assets/flags/square/flag-${code.toUpperCase()}.svg`)"
+        :src="flagUrls[`../assets/flags/square/flag-${code.toUpperCase()}.svg`]"
         loading="lazy"
         :alt="code"/>
 </template>
@@ -14,12 +14,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+const flagUrls = import.meta.glob<string>('../assets/flags/square/flag-*.svg', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+});
+
 export default defineComponent({
     props: {
         code: {
             type: String,
             default: 'all',
         },
+    },
+    setup() {
+        return { flagUrls };
     },
 });
 </script>

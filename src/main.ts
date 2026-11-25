@@ -40,9 +40,9 @@ import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import '@/scss/themes.scss';
 
-// Set asset path relative to the public path defined in vue.config.json,
-// see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}img/`);
+// Set asset path relative to the base path defined in vite.config.ts,
+// see https://vite.dev/guide/env-and-mode.html#built-in-constants
+setVueComponentsAssetPath(`${import.meta.env.BASE_URL}js/`, `${import.meta.env.BASE_URL}img/`);
 
 Vue.config.productionTip = false;
 

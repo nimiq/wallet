@@ -28,8 +28,7 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
         resolver = resolve;
     });
 
-    const { GenesisConfig, ElectrumClient: Client } = await import(
-        /* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
+    const { GenesisConfig, ElectrumClient: Client } = await import('@nimiq/electrum-client');
 
     GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
 

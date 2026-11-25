@@ -37,6 +37,9 @@ export const Languages = [{
 //     name: 'Türkçe',
 }];
 
+// Language files are loaded lazily, each as a separate chunk.
+const languageFiles = import.meta.glob<{ default: VueI18n.LocaleMessageObject }>('./*.po');
+
 const DEFAULT_LANGUAGE = 'en';
 const SUPPORTED_LANGUAGES = Languages.map((lang) => lang.code);
 const loadedLanguage: string[] = []; // our default language that is preloaded, if any
@@ -47,7 +50,7 @@ export const i18n = new VueI18n({
     silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
     i18n.missing = () => ''; // trick to not show numbers instead of string before language is loaded
 }
 
@@ -76,7 +79,7 @@ export async function loadLanguage(lang: string): Promise<string> {
     }
 
     // If the language hasn't been loaded yet
-    const messages = await import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`);
+    const messages = await languageFiles[`./${lang}.po`]();
     i18n.setLocaleMessage(lang, messages.default);
     loadedLanguage.push(lang);
     return setI18nLanguage(lang);

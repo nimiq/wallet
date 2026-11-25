@@ -8,12 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
-    - uses: actions/cache@v6
+    # Sets up Node.js and Vite+, and installs the dependencies with the package manager defined in package.json.
+    - uses: voidzero-dev/setup-vp@v1.21.2
       with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-    - name: Install modules
-      run: yarn
+        node-version: '24'
+        cache: true
     - name: Lint
       run: yarn lint
     - name: Build

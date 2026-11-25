@@ -1239,7 +1239,7 @@ export default defineComponent({
         });
 
         // watch([myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat], (prices) => {
-        //     // eslint-disable-next-line @typescript-eslint/no-shadow
+        //     // oxlint-disable-next-line @typescript-eslint/no-shadow
         //     const [myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat] = prices;
         //     console.log({ myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat });
         // });

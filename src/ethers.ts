@@ -32,7 +32,7 @@ import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useAccountSettingsStore } from './stores/AccountSettings';
 
 export async function loadEthersLibrary() {
-    return import(/* webpackChunkName: "ethers-js" */ 'ethers');
+    return import('ethers');
 }
 
 export interface PolygonClient {
@@ -105,7 +105,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         );
     } else if (rpcEndpoint.substring(0, 2) === 'ws') {
         // No need to optimize this import as it's the ethers-js chunk which is already loaded via loadEthersLibrary.
-        const SturdyWebsocket = (await import(/* webpackChunkName: "ethers-js" */ 'sturdy-websocket')).default;
+        const SturdyWebsocket = (await import('sturdy-websocket')).default;
         const socket = new SturdyWebsocket(rpcEndpoint, {
             debug: true,
         });
@@ -633,7 +633,7 @@ export async function launchPolygon() {
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
             const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
 
-            /* eslint-disable max-len */
+            /* oxlint-disable eslint-js/max-len */
             while (blockHeight > earliestHeightToCheck && (
                 balance.gt(0)
                 || nonce > 0
@@ -849,7 +849,7 @@ export async function launchPolygon() {
                     usdcTransactionsStore.addTransactions(transactions);
                 });
             } // End while loop
-            /* eslint-enable max-len */
+            /* oxlint-enable eslint-js/max-len */
 
             console.debug('Bridged USDC Sync end', {
                 balance: balance.toNumber() / 1e6,
@@ -924,7 +924,7 @@ export async function launchPolygon() {
 
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
 
-            /* eslint-disable max-len */
+            /* oxlint-disable eslint-js/max-len */
             while (blockHeight > earliestHeightToCheck && (
                 balance.gt(0)
                 || nonce > 0
@@ -1106,7 +1106,7 @@ export async function launchPolygon() {
                     usdcTransactionsStore.addTransactions(transactions);
                 });
             } // End while loop
-            /* eslint-enable max-len */
+            /* oxlint-enable eslint-js/max-len */
 
             console.debug('Native USDC Sync end', {
                 balance: balance.toNumber() / 1e6,
@@ -1195,7 +1195,7 @@ export async function launchPolygon() {
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
             const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
 
-            /* eslint-disable max-len */
+            /* oxlint-disable eslint-js/max-len */
             while (blockHeight > earliestHeightToCheck && (
                 balance.gt(0)
                 || nonce > 0
@@ -1370,7 +1370,7 @@ export async function launchPolygon() {
                     usdtTransactionsStore.addTransactions(transactions);
                 });
             } // End while loop
-            /* eslint-enable max-len */
+            /* oxlint-enable eslint-js/max-len */
 
             console.debug('Bridged USDT Sync end', {
                 balance: balance.toNumber() / 1e6,

@@ -17,55 +17,55 @@ import { AccountType, useAccountStore } from './stores/Account';
 import { CryptoCurrency } from './lib/Constants';
 
 // Main views
-const SettingsLayout = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
+const SettingsLayout = () => import('./components/layouts/Settings.vue');
 const NetworkLayout = () =>
-    import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
+    import('./components/layouts/Network.vue');
 
 // Modals
 const AccountMenuModal = () =>
-    import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
+    import('./components/modals/AccountMenuModal.vue');
 const BackupModal = () =>
-    import(/* webpackChunkName: "backup-modal" */ './components/modals/BackupModal.vue');
+    import('./components/modals/BackupModal.vue');
 const HistoryExportModal = () =>
-    import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
-const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
-const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
+    import('./components/modals/HistoryExportModal.vue');
+const SendModal = () => import('./components/modals/SendModal.vue');
+const ReceiveModal = () => import('./components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
-    import(/* webpackChunkName: "address-selector-modal" */ './components/modals/AddressSelectorModal.vue');
+    import('./components/modals/AddressSelectorModal.vue');
 const TransactionModal = () =>
-    import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
+    import('./components/modals/TransactionModal.vue');
 const BuyOptionsModal = () =>
-    import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
-const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+    import('./components/modals/BuyOptionsModal.vue');
+const ScanQrModal = () => import('./components/modals/ScanQrModal.vue');
 const WelcomeModal = () =>
-    import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
+    import('./components/modals/WelcomeModal.vue');
 const WelcomeStakingModal = () =>
-    import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
+    import('./components/staking/WelcomeStakingModal.vue');
 const MigrationWelcomeModal = () =>
-    import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
+    import('./components/modals/MigrationWelcomeModal.vue');
 const MultisigAnnouncementModal = () =>
-    import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
+    import('./components/modals/MultisigAnnouncementModal.vue');
 const DisclaimerModal = () =>
-    import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
+    import('./components/modals/DisclaimerModal.vue');
 const ReleaseNotesModal = () =>
-    import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
+    import('./components/modals/ReleaseNotesModal.vue');
 const StablecoinSelectionModal = () =>
-    import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
+    import('./components/modals/StablecoinSelectionModal.vue');
 const WalletStatusModal = () =>
-    import(/* webpackChunkName: "wallet-status-modal" */ './components/modals/WalletStatusModal.vue');
+    import('./components/modals/WalletStatusModal.vue');
 
 // Bitcoin Modals
 const BtcActivationModal = () =>
-    import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
-const BtcSendModal = () => import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
+    import('./components/modals/BtcActivationModal.vue');
+const BtcSendModal = () => import('./components/modals/BtcSendModal.vue');
 const BtcReceiveModal = () =>
-    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
+    import('./components/modals/BtcReceiveModal.vue');
 const BtcTransactionModal = () =>
-    import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
+    import('./components/modals/BtcTransactionModal.vue');
 
 // Stablecoin Modals
 const PolygonActivationModal = () =>
-    import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
+    import('./components/modals/PolygonActivationModal.vue');
 export function gasAbstractionMaintenanceWarning(): WarningModalProps {
     return {
         icon: 'warning',
@@ -79,30 +79,30 @@ export function gasAbstractionMaintenanceWarning(): WarningModalProps {
     };
 }
 const GasAbstractionMaintenanceModal = () =>
-    import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+    import('./components/modals/WarningModal.vue')
         .then(({ createWarningModal }) => createWarningModal(gasAbstractionMaintenanceWarning));
 const StablecoinSendModal = () => (Config.polygon.maintenance.transfers
     ? GasAbstractionMaintenanceModal()
-    : import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue'));
+    : import('./components/modals/StablecoinSendModal.vue'));
 const StablecoinReceiveModal = () => (Config.polygon.maintenance.transfers
     ? GasAbstractionMaintenanceModal()
-    : import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue'));
+    : import('./components/modals/StablecoinReceiveModal.vue'));
 const UsdcTransactionModal = () =>
-    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
+    import('./components/modals/UsdcTransactionModal.vue');
 const UsdtTransactionModal = () =>
-    import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
+    import('./components/modals/UsdtTransactionModal.vue');
 const UsdtAddedModal = () =>
-    import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
+    import('./components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
 const SwapModal = () => (areSwapsUnderMaintenance()
-    ? import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+    ? import('./components/modals/WarningModal.vue')
         .then(({ createWarningModal }) => createWarningModal(() => ({
             title: i18n.t('Swaps are under maintenance') as string,
             message: i18n.t('Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance '
                 + 'is completed.') as string,
         })))
-    : import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
+    : import('./components/swap/SwapModal.vue'));
 export function stablecoinSwapMaintenanceWarning(): WarningModalProps {
     return {
         icon: 'warning',
@@ -116,29 +116,29 @@ export function stablecoinSwapMaintenanceWarning(): WarningModalProps {
     };
 }
 const StablecoinSwapMaintenanceModal = () =>
-    import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+    import('./components/modals/WarningModal.vue')
         .then(({ createWarningModal }) => createWarningModal(stablecoinSwapMaintenanceWarning));
 const BuyCryptoModal = () =>
-    import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
+    import('./components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
-    import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
+    import('./components/modals/SellCryptoModal.vue');
 
 const MoonpayModal = () =>
-    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
+    import('./components/modals/MoonpayModal.vue');
 const MoonpaySellInfoModal = () =>
-    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpaySellInfoModal.vue');
+    import('./components/modals/MoonpaySellInfoModal.vue');
 const SimplexModal = () =>
-    import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
+    import('./components/modals/SimplexModal.vue');
 const CoinifyModal = () =>
-    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifyModal.vue');
+    import('./components/modals/CoinifyModal.vue');
 const CoinifySellInfoModal = () =>
-    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifySellInfoModal.vue');
+    import('./components/modals/CoinifySellInfoModal.vue');
 
 // Staking Modals
 const StakingModal = () =>
-    import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
+    import('./components/staking/StakingModal.vue');
 const ValidatorDetailsModal = () =>
-    import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
+    import('./components/staking/ValidatorDetailsModal.vue');
 
 Vue.use(VueRouter);
 
@@ -746,9 +746,9 @@ if (!window.history.state) {
     // Only return to the initial url if it's not on the root route, i.e. if another view or modal is supposed to be
     // opened. If it is on the root route, we don't add a second history entry for the root route, we do however close
     // the sidebar, if it's open, by stripping the sidebar parameter, and keep it closed.
-    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== process.env.BASE_URL;
+    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== import.meta.env.BASE_URL;
     const rootUrl = new URL(initialUrl);
-    rootUrl.pathname = process.env.BASE_URL!;
+    rootUrl.pathname = import.meta.env.BASE_URL;
     if (shouldReturnToInitialUrl) {
         // Can clear params and hash entirely as they're preserved in the initialUrl.
         rootUrl.search = '';
@@ -766,7 +766,7 @@ if (!window.history.state) {
 
 const router = new VueRouter({
     mode: 'history',
-    base: process.env.BASE_URL,
+    base: import.meta.env.BASE_URL,
     routes,
 });
 

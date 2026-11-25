@@ -740,7 +740,7 @@ msgstr "Получение Cashlink"
 
 #: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink from {address}"
-msgstr "Cashlink c {адрес} "
+msgstr "Cashlink c {address} "
 
 #: src/lib/DataFormatting.ts:15
 msgid "Cashlink Funding"
@@ -748,7 +748,7 @@ msgstr "Создание Cashlink"
 
 #: src/components/modals/TransactionModal.vue:49
 msgid "Cashlink to {address}"
-msgstr "Cashlink на {адрес}"
+msgstr "Cashlink на {address}"
 
 #: src/components/modals/AccountMenuModal.vue:25
 msgid "Change password"

@@ -49,7 +49,7 @@
                             <label v-if="bic" class="nq-label bic">{{ bic }}</label>
                         </div>
                         <div class="line flex-row">
-                            <strong>{{ iban | formatIntoGroups(4, ' ') }}</strong>
+                            <strong>{{ formatIntoGroups(iban, 4, ' ') }}</strong>
                         </div>
                     </Copyable>
                 </div>
@@ -60,7 +60,7 @@
                             <strong class="nq-orange nq-label">{{ $t('Required') }}</strong>
                         </div>
                         <div class="line flex-row">
-                            <strong class="reference">{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
+                            <strong class="reference">{{ formatIntoGroups(reference, 4, ' ', 1) }}</strong>
                         </div>
                     </Copyable>
                 </div>
@@ -165,6 +165,23 @@ export enum Events {
     PAID = 'paid',
 }
 
+function formatIntoGroups(text: string, groupSize: number, separator: string, firstGroupSize?: number) {
+    let firstGroup = '';
+    if (firstGroupSize) {
+        firstGroup = text.substr(0, firstGroupSize);
+        text = text.substr(firstGroupSize);
+    }
+    text = text.replace(new RegExp(`.{${groupSize}}`, 'g'), `$&${separator}`);
+    if (firstGroup) {
+        text = `${firstGroup}${separator}${text}`;
+    }
+    // Remove separator behind last group
+    if (text.substring(text.length - separator.length) === separator) {
+        text = text.substr(0, text.length - separator.length);
+    }
+    return text;
+}
+
 export default defineComponent({
     props: {
         amount: Number,
@@ -236,25 +253,8 @@ export default defineComponent({
             showCancelConfirmation,
             OASIS_EUR_DETECTION_DELAY,
             takesLongerThanUsual,
+            formatIntoGroups,
         };
-    },
-    filters: {
-        formatIntoGroups(text: string, groupSize: number, separator: string, firstGroupSize?: number) {
-            let firstGroup = '';
-            if (firstGroupSize) {
-                firstGroup = text.substr(0, firstGroupSize);
-                text = text.substr(firstGroupSize);
-            }
-            text = text.replace(new RegExp(`.{${groupSize}}`, 'g'), `$&${separator}`);
-            if (firstGroup) {
-                text = `${firstGroup}${separator}${text}`;
-            }
-            // Remove separator behind last group
-            if (text.substring(text.length - separator.length) === separator) {
-                text = text.substr(0, text.length - separator.length);
-            }
-            return text;
-        },
     },
     components: {
         Copyable,

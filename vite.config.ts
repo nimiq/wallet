@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite-plus';
 import { defineConfig, loadEnv } from 'vite-plus';
+import type { OxfmtConfig } from 'vite-plus/fmt';
 import type { OxlintConfig } from 'vite-plus/lint';
 import vue from '@vitejs/plugin-vue2';
 import wasm from 'vite-plugin-wasm';
@@ -237,16 +238,35 @@ export default defineConfig(async ({ command, mode }) => {
             port: 8081,
         },
         lint: lintConfig,
-        check: {
-            // The code is not formatted with Oxfmt (vp fmt) yet, but its style is checked by the linters.
-            fmt: false,
-        },
+        fmt: fmtConfig,
     };
 });
 
 /**
- * Oxlint config for vp lint and vp check. Templates of Vue single file components are additionally linted by ESLint,
- * see eslint.config.mjs.
+ * Oxfmt config for vp fmt and vp check, close to the code style formerly enforced by the airbnb ESLint config.
+ */
+const fmtConfig: OxfmtConfig = {
+    printWidth: 120,
+    tabWidth: 4,
+    singleQuote: true,
+    trailingComma: 'all',
+    experimentalOperatorPosition: 'start',
+    sortPackageJson: false,
+    // Replaces the import/order rule of the airbnb ESLint config. Imports separated by blank lines are sorted
+    // separately, which allows to keep groups and modules that have to be imported first, like ./pinia in main.ts.
+    sortImports: { partitionByNewline: true, newlinesBetween: false },
+    // deployment-wallet/ is the checkout of the deployment repository, made by scripts/deploy.sh.
+    ignorePatterns: ['dist/**', 'deployment-wallet/**', 'public/**'],
+    overrides: [{
+        // Keep the common indentation of configuration and documentation files.
+        files: ['**/*.json', '**/*.md', '**/*.toml', '**/*.yml', '**/*.yaml'],
+        options: { tabWidth: 2 },
+    }],
+};
+
+/**
+ * Oxlint config for vp lint and vp check. Oxlint only lints the scripts of Vue single file components, not their
+ * templates.
  */
 const lintConfig: OxlintConfig = {
     // Only enable the configured rules.
@@ -255,7 +275,6 @@ const lintConfig: OxlintConfig = {
         correctness: 'off',
     },
     jsPlugins: [
-        '@stylistic/eslint-plugin',
         // The name `import` is reserved for Oxlint's native implementation.
         { name: 'import-js', specifier: 'eslint-plugin-import' },
         './lint/eslint-core-rules.mjs',
@@ -293,21 +312,13 @@ const lintConfig: OxlintConfig = {
         // Errors in production builds, see the verify script in package.json.
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-        'eslint-js/function-paren-newline': 'off',
-        'eslint-js/indent': ['error', 4, { SwitchCase: 1 }],
-        'eslint-js/max-len': ['error', 120],
         'no-underscore-dangle': 'off',
         'no-param-reassign': 'off',
         'no-plusplus': 'off',
         'no-continue': 'off',
-        'eslint-js/no-confusing-arrow': 'off',
-        'eslint-js/no-floating-decimal': 'off',
         'no-return-assign': 'off',
-        'eslint-js/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
         'import/prefer-default-export': 'off',
         'import/no-cycle': 'off',
-        'eslint-js/implicit-arrow-linebreak': 'off',
-        'eslint-js/object-curly-newline': ['error', { ObjectPattern: { multiline: true } }],
         'eslint-js/prefer-const': ['error', { destructuring: 'all' }],
         'no-nested-ternary': 'off',
         // Do not restrict usage of for...of
@@ -318,9 +329,6 @@ const lintConfig: OxlintConfig = {
                 .filter((restriction) => typeof restriction === 'object' && restriction.selector !== 'ForOfStatement'),
         ],
 
-        '@stylistic/member-delimiter-style': ['error', {
-            overrides: { typeLiteral: { multiline: { delimiter: 'comma' }, singleline: { delimiter: 'comma' } } },
-        }],
         'typescript/no-explicit-any': 'off',
         // As in typescript-eslint's recommended config before version 8.
         'typescript/no-unused-vars': ['warn', { caughtErrors: 'none' }],
@@ -340,22 +348,6 @@ const lintConfig: OxlintConfig = {
             rules: typescriptRecommendedTypeScriptFileRules,
         },
         {
-            // Oxlint only lints the scripts of Vue files. Rules which check the lines of the entire file are therefore
-            // applied by ESLint, including the templates and styles, see eslint.config.mjs.
-            files: ['**/*.vue'],
-            rules: {
-                'eslint-js/eol-last': 'off',
-                'eslint-js/linebreak-style': 'off',
-                'eslint-js/max-len': 'off',
-                'eslint-js/no-mixed-spaces-and-tabs': 'off',
-                'eslint-js/no-multiple-empty-lines': 'off',
-                'eslint-js/no-tabs': 'off',
-                'eslint-js/no-trailing-spaces': 'off',
-                'no-irregular-whitespace': 'off',
-                'unicode-bom': 'off',
-            },
-        },
-        {
             files: ['src/lib/NetworkMap.ts'],
             rules: {
                 'max-classes-per-file': 'off',
@@ -371,7 +363,7 @@ const lintConfig: OxlintConfig = {
         {
             // Configuration files at the project root can use the dev dependencies. They're listed explicitly, as a
             // pattern like *.ts matches files in all directories in Oxlint, not only at the project root.
-            files: ['eslint.config.mjs', 'vite.config.ts', 'lint/**'],
+            files: ['vite.config.ts', 'lint/**'],
             rules: {
                 'import-js/no-extraneous-dependencies': ['error', { devDependencies: true }],
             },

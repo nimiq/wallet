@@ -8,15 +8,12 @@
         </PageHeader>
         <PageBody>
             <p class="nq-text">
-                <!-- eslint-disable-next-line max-len -->
                 {{ $t('Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are not "hosted wallets". You do not create a hosted account or give Nimiq your funds to hold onto. You hold your keys that control the funds at your account addresses on your device. Nimiq only makes it easy for you, through a browser, to create, save, and access your information and interact with the blockchain.') }}
             </p>
             <p class="nq-text">
-                <!-- eslint-disable-next-line max-len -->
                 {{ $t('Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development.') }}
             </p>
             <p class="nq-text">
-                <!-- eslint-disable-next-line max-len -->
                 {{ $t('All translations are for information purposes only. The English text is the controlling version.') }}
             </p>
         </PageBody>

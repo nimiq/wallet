@@ -2,11 +2,9 @@
     <div class="fee-selector flex-row">
         <SpeedGauge :speed="speed"/>
         <div class="flex-grow"></div>
-        <!-- eslint-disable max-len -->
         <button class="reset" @click="delay = 36" :class="{'active': delay === 36}">{{ $t('6h+') }}</button>
         <button class="reset" @click="delay = 12" :class="{'active': delay === 12}">{{ $t('2-4h') }}</button>
         <button class="reset" @click="delay = 1"  :class="{'active': delay === 1}" >{{ $t('15m') }}</button>
-        <!-- eslint-enable max-len -->
         <div class="flex-grow"></div>
     </div>
 </template>

@@ -13,7 +13,7 @@ jobs:
       with:
         node-version: '24'
         cache: true
-    - name: Lint
-      run: yarn lint
+    - name: Check formatting and lint
+      run: vp check
     - name: Build
       run: yarn build:ci

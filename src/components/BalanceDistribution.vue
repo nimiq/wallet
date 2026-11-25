@@ -1,5 +1,4 @@
 <template>
-    <!-- eslint-disable vuejs-accessibility/mouse-events-have-key-events, vue/no-parsing-error -->
     <div class="balance-distribution">
         <transition-group tag="svg" ref="svg$" xmlns="http://www.w3.org/2000/svg"
             :width="SVG_SIZE"

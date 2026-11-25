@@ -1,14 +1,15 @@
 // Ports of the ESLint configs this project formerly used, for Oxlint as used by vp lint. Rules are mapped to Oxlint's
-// native rules where available. Rules that Oxlint does not implement, like ESLint's formatting rules, are provided by
+// native rules where available. Rules that Oxlint does not implement, or not equivalently, are provided by
 // ./eslint-core-rules.mjs (prefixed eslint-js/) and eslint-plugin-import (prefixed import-js/), via Oxlint's support
 // for ESLint plugins (jsPlugins).
-// Rules on Vue templates are not supported by Oxlint and remain linted by ESLint, see eslint.config.mjs.
+// Rules on Vue templates are not supported by Oxlint and are not linted.
 //
 // Rules of the original configs that are not ported:
 // - global-require: deprecated Node.js rule, not applicable to ES modules
 // - import/no-named-as-default-member: Oxlint's implementation does not support the import/ignore setting, and
 //   eslint-plugin-import's implementation requires an ESLint parser API that Oxlint does not provide
 // - import/no-unresolved: unresolved imports are reported by TypeScript and the build
+// - import/order: imports are sorted by Oxfmt via vp fmt instead, see the sortImports option in vite.config.ts
 // - lines-around-directive: deprecated in ESLint, not implemented by Oxlint
 // - no-buffer-constructor: deprecated Node.js rule
 // - no-dupe-args: duplicate parameter names are syntax errors in ES modules
@@ -19,13 +20,15 @@
 // - no-return-await: deprecated in ESLint, not implemented by Oxlint
 // - no-spaced-func: deprecated alias of func-call-spacing
 // - strict: not applicable to ES modules
+// - formatting rules, deprecated in ESLint, like indent, max-len, quotes and semi: the code is formatted by Oxfmt via
+//   vp fmt instead, see the fmt config in vite.config.ts
 
 import type { OxlintConfig } from 'vite-plus/lint';
 
 type LintRules = NonNullable<OxlintConfig['rules']>;
 
 /**
- * The rules of eslint-config-airbnb-base 15.
+ * The rules of eslint-config-airbnb-base 15, except for its formatting rules.
  */
 export const airbnbBaseRules: LintRules = {
     'array-callback-return': ['error', { allowImplicit: true }],
@@ -291,134 +294,8 @@ export const airbnbBaseRules: LintRules = {
     'valid-typeof': ['error', { requireStringLiterals: true }],
     'vars-on-top': 'error',
     yoda: 'error',
-    'eslint-js/array-bracket-spacing': ['error', 'never'],
-    'eslint-js/arrow-parens': ['error', 'always'],
-    'eslint-js/arrow-spacing': ['error', { before: true, after: true }],
-    'eslint-js/block-spacing': ['error', 'always'],
-    'eslint-js/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     'eslint-js/camelcase': ['error', { properties: 'never', ignoreDestructuring: false }],
-    'eslint-js/comma-dangle': [
-        'error',
-        {
-            arrays: 'always-multiline',
-            objects: 'always-multiline',
-            imports: 'always-multiline',
-            exports: 'always-multiline',
-            functions: 'always-multiline',
-        },
-    ],
-    'eslint-js/comma-spacing': ['error', { before: false, after: true }],
-    'eslint-js/comma-style': [
-        'error',
-        'last',
-        {
-            exceptions: {
-                ArrayExpression: false,
-                ArrayPattern: false,
-                ArrowFunctionExpression: false,
-                CallExpression: false,
-                FunctionDeclaration: false,
-                FunctionExpression: false,
-                ImportDeclaration: false,
-                ObjectExpression: false,
-                ObjectPattern: false,
-                VariableDeclaration: false,
-                NewExpression: false,
-            },
-        },
-    ],
-    'eslint-js/computed-property-spacing': ['error', 'never'],
-    'eslint-js/dot-location': ['error', 'property'],
-    'eslint-js/eol-last': ['error', 'always'],
-    'eslint-js/func-call-spacing': ['error', 'never'],
-    'eslint-js/function-call-argument-newline': ['error', 'consistent'],
-    'eslint-js/function-paren-newline': ['error', 'multiline-arguments'],
-    'eslint-js/generator-star-spacing': ['error', { before: false, after: true }],
-    'eslint-js/implicit-arrow-linebreak': ['error', 'beside'],
-    'eslint-js/indent': [
-        'error',
-        2,
-        {
-            SwitchCase: 1,
-            VariableDeclarator: 1,
-            outerIIFEBody: 1,
-            FunctionDeclaration: { parameters: 1, body: 1 },
-            FunctionExpression: { parameters: 1, body: 1 },
-            CallExpression: { arguments: 1 },
-            ArrayExpression: 1,
-            ObjectExpression: 1,
-            ImportDeclaration: 1,
-            flatTernaryExpressions: false,
-            ignoredNodes: [
-                'JSXElement',
-                'JSXElement > *',
-                'JSXAttribute',
-                'JSXIdentifier',
-                'JSXNamespacedName',
-                'JSXMemberExpression',
-                'JSXSpreadAttribute',
-                'JSXExpressionContainer',
-                'JSXOpeningElement',
-                'JSXClosingElement',
-                'JSXFragment',
-                'JSXOpeningFragment',
-                'JSXClosingFragment',
-                'JSXText',
-                'JSXEmptyExpression',
-                'JSXSpreadChild',
-            ],
-            ignoreComments: false,
-        },
-    ],
-    'eslint-js/key-spacing': ['error', { beforeColon: false, afterColon: true }],
-    'eslint-js/keyword-spacing': [
-        'error',
-        {
-            before: true,
-            after: true,
-            overrides: { return: { after: true }, throw: { after: true }, case: { after: true } },
-        },
-    ],
-    'eslint-js/linebreak-style': ['error', 'unix'],
-    'eslint-js/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: false }],
-    'eslint-js/max-len': [
-        'error',
-        100,
-        2,
-        {
-            ignoreUrls: true,
-            ignoreComments: false,
-            ignoreRegExpLiterals: true,
-            ignoreStrings: true,
-            ignoreTemplateLiterals: true,
-        },
-    ],
-    'eslint-js/new-parens': 'error',
-    'eslint-js/newline-per-chained-call': ['error', { ignoreChainWithDepth: 4 }],
-    'eslint-js/no-confusing-arrow': ['error', { allowParens: true }],
-    'eslint-js/no-extra-semi': 'error',
-    'eslint-js/no-floating-decimal': 'error',
     'eslint-js/no-inner-declarations': 'error',
-    'eslint-js/no-mixed-operators': [
-        'error',
-        {
-            groups: [
-                ['%', '**'],
-                ['%', '+'],
-                ['%', '-'],
-                ['%', '*'],
-                ['%', '/'],
-                ['/', '*'],
-                ['&', '|', '<<', '>>', '>>>'],
-                ['==', '!=', '===', '!=='],
-                ['&&', '||'],
-            ],
-            allowSamePrecedence: false,
-        },
-    ],
-    'eslint-js/no-mixed-spaces-and-tabs': 'error',
-    'eslint-js/no-multi-spaces': ['error', { ignoreEOLComments: false }],
-    'eslint-js/no-multiple-empty-lines': ['error', { max: 1, maxBOF: 0, maxEOF: 0 }],
     'eslint-js/no-restricted-syntax': [
         'error',
         {
@@ -444,54 +321,8 @@ export const airbnbBaseRules: LintRules = {
                 + 'and optimize.',
         },
     ],
-    'eslint-js/no-tabs': 'error',
-    'eslint-js/no-trailing-spaces': ['error', { skipBlankLines: false, ignoreComments: false }],
     'eslint-js/no-undef-init': 'error',
-    'eslint-js/no-whitespace-before-property': 'error',
-    'eslint-js/nonblock-statement-body-position': ['error', 'beside', { overrides: {} }],
-    'eslint-js/object-curly-newline': [
-        'error',
-        {
-            ObjectExpression: { minProperties: 4, multiline: true, consistent: true },
-            ObjectPattern: { minProperties: 4, multiline: true, consistent: true },
-            ImportDeclaration: { minProperties: 4, multiline: true, consistent: true },
-            ExportDeclaration: { minProperties: 4, multiline: true, consistent: true },
-        },
-    ],
-    'eslint-js/object-curly-spacing': ['error', 'always'],
-    'eslint-js/object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
-    'eslint-js/one-var-declaration-per-line': ['error', 'always'],
-    'eslint-js/operator-linebreak': ['error', 'before', { overrides: { '=': 'none' } }],
-    'eslint-js/padded-blocks': [
-        'error',
-        { blocks: 'never', classes: 'never', switches: 'never' },
-        { allowSingleLineBlocks: true },
-    ],
     'eslint-js/prefer-const': ['error', { destructuring: 'any', ignoreReadBeforeAssign: true }],
-    'eslint-js/quote-props': ['error', 'as-needed', { keywords: false, unnecessary: true, numbers: false }],
-    'eslint-js/quotes': ['error', 'single', { avoidEscape: true }],
-    'eslint-js/rest-spread-spacing': ['error', 'never'],
-    'eslint-js/semi': ['error', 'always'],
-    'eslint-js/semi-spacing': ['error', { before: false, after: true }],
-    'eslint-js/semi-style': ['error', 'last'],
-    'eslint-js/space-before-blocks': 'error',
-    'eslint-js/space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
-    'eslint-js/space-in-parens': ['error', 'never'],
-    'eslint-js/space-infix-ops': 'error',
-    'eslint-js/space-unary-ops': ['error', { words: true, nonwords: false, overrides: {} }],
-    'eslint-js/spaced-comment': [
-        'error',
-        'always',
-        {
-            line: { exceptions: ['-', '+'], markers: ['=', '!', '/'] },
-            block: { exceptions: ['-', '+'], markers: ['=', '!', ':', '::'], balanced: true },
-        },
-    ],
-    'eslint-js/switch-colon-spacing': ['error', { after: true, before: false }],
-    'eslint-js/template-curly-spacing': 'error',
-    'eslint-js/template-tag-spacing': ['error', 'never'],
-    'eslint-js/wrap-iife': ['error', 'outside', { functionPrototypeMethods: false }],
-    'eslint-js/yield-star-spacing': ['error', 'after'],
     'import/export': 'error',
     'import/extensions': ['error', 'ignorePackages', { js: 'never', mjs: 'never', jsx: 'never' }],
     'import/first': 'error',
@@ -541,14 +372,13 @@ export const airbnbBaseRules: LintRules = {
     'import-js/no-import-module-exports': ['error', { exceptions: [] }],
     'import-js/no-relative-packages': 'error',
     'import-js/no-useless-path-segments': ['error', { commonjs: true }],
-    'import-js/order': ['error', { groups: [['builtin', 'external', 'internal']] }],
     'typescript/consistent-return': 'error',
     'typescript/dot-notation': ['error', { allowKeywords: true }],
 };
 
 /**
- * The rules of eslint-plugin-vue's vue2-essential config which Oxlint implements natively. The other rules, which
- * apply to templates, are linted by ESLint.
+ * The rules of eslint-plugin-vue's vue2-essential config which Oxlint implements natively. The other rules apply to
+ * templates, which Oxlint does not lint.
  */
 export const vue2EssentialScriptRules: LintRules = {
     'vue/no-arrow-functions-in-watch': 'error',

@@ -156,18 +156,15 @@ export default defineComponent({
             }
             if (score > ScoreThresholds.GOOD) {
                 return i18n.t(
-                    // eslint-disable-next-line max-len
                     'This pool controls a large share of the total stake.\nSupport the network by staking with a smaller pool.',
                 );
             }
             if (score > ScoreThresholds.FAIR) {
                 return i18n.t(
-                    // eslint-disable-next-line max-len
                     'This pool controls an almost critical share of the total stake.\nChoose a smaller pool to improve the network’s security.',
                 );
             }
             return i18n.t(
-                // eslint-disable-next-line max-len
                 'Do not stake with this pool!\nIt controls a critical share of the total stake, making it a potential threat to the network.',
             );
         });

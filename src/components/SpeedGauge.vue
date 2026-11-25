@@ -1,5 +1,4 @@
 <template>
-    <!-- eslint-disable max-len -->
     <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="speed-gauge">
         <path d="M12 0a12 12 0 110 24 12 12 0 010-24zM4.67 18.8a15.84 15.84 0 0114.66 0 10 10 0 10-14.66 0z"/> <!-- housing -->
         <path d="M5.5 11.25H4a.75.75 0 100 1.5h1.5a.75.75 0 100-1.5z"/> <!-- 1/5 -->
@@ -12,7 +11,6 @@
             <path d="M21.02 13.07a.5.5 0 00-.38-.49c-.78-.2-7.64-1.93-8.7-1.94a2.39 2.39 0 00-2.4 2.38 2.42 2.42 0 002.37 2.4c1.07 0 7.95-1.67 8.73-1.86a.5.5 0 00.38-.49z" class="needle" :style="`transform: rotate(${rotation}deg)`"/>
         </g>
     </svg>
-    <!-- eslint-enable max-len -->
 </template>
 
 <script lang="ts">

@@ -139,7 +139,6 @@
                 {{ $t('Buy NIM on a crypto exchange:') }}
             </p>
             <div class="exchange-logos flex-row" :class="{'only-option': !isCreditCardAvailable}">
-                <!-- eslint-disable max-len -->
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
                 </a>
@@ -158,7 +157,6 @@
                 <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/coinspot.svg" alt="CoinSpot">
                 </a>
-                <!-- eslint-enable max-len -->
             </div>
         </PageBody>
     </Modal>

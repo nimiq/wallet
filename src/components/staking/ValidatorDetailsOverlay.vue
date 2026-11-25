@@ -25,7 +25,6 @@
                         </span>
                     </div>
                     <p class="description">
-                        <!-- eslint-disable-next-line max-len -->
                         {{ $t('Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee.') }}
                     </p>
                 </div>
@@ -43,7 +42,6 @@
                     {{ $t('{poolName} Website', { poolName: validator.name }) }}
                 </BlueLink>
                 <p class="disclaimer">
-                    <!-- eslint-disable-next-line max-len -->
                     {{ $t('The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq.') }}
                 </p>
             </PageBody>

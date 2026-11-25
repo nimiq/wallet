@@ -9,7 +9,6 @@
 
         <PageBody class="think-features" :class="`highlight-${highlightedCurrency}`">
             <div class="circles-area">
-                <!-- eslint-disable max-len -->
                 <svg class="circle circle-nim" width="89" height="89" viewBox="0 0 89 89" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M87.7 55.3A44.5 44.5 0 1 1 1.3 33.7a44.5 44.5 0 0 1 86.4 21.6Z" fill="#E9B213"/>
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M65.6 56.9a1 1 0 0 0 0-1.6l-13-8.7a1 1 0 0 0-1.4.8v5c0 .6-.5 1-1 1H34a1 1 0 0 0-1 1v3.3c0 .5.4 1 1 1h16.3c.5 0 1 .4 1 1v5a1 1 0 0 0 1.5.8l13-8.6ZM23.6 37.8a1 1 0 0 0 0 1.6l13 8.7a1 1 0 0 0 1.5-.8v-4.7c0-.6.4-1 1-1h10.2c.5 0 1-.4 1-1v-3.8c0-.6-.5-1-1-1H39.1a1 1 0 0 1-1-1V30a1 1 0 0 0-1.5-.8l-13 8.6Z" fill="#fff"/>
@@ -24,7 +23,6 @@
                     <path d="M74.5 149a74.5 74.5 0 1 0 0-149 74.5 74.5 0 0 0 0 149Z" fill="#2775CA"/>
                     <path d="M58.2 65.1h-7.5c-.7 0-1.3.6-1.3 1.3v23c0 .7.6 1.3 1.3 1.3h7.5c.7 0 1.3-.6 1.3-1.3v-23c0-.7-.6-1.3-1.3-1.3ZM78.3 65.1h-7.6c-.6 0-1.2.6-1.2 1.3v23c0 .7.6 1.3 1.2 1.3h7.6c.7 0 1.2-.6 1.2-1.3v-23c0-.7-.5-1.3-1.2-1.3ZM98.3 65.1h-7.5c-.7 0-1.2.6-1.2 1.3v23c0 .7.5 1.3 1.2 1.3h7.5c.7 0 1.3-.6 1.3-1.3v-23c0-.7-.6-1.3-1.3-1.3ZM102.3 97.1H47c-1 0-2 .4-2.7 1.1a3.9 3.9 0 0 0 0 5.4c.7.8 1.7 1.2 2.7 1.2h55.2c1 0 2-.4 2.6-1.2a3.9 3.9 0 0 0 0-5.4 3.7 3.7 0 0 0-2.6-1.1ZM105.7 54.9 76.7 40a5 5 0 0 0-4.4 0l-29 14.8c-.5.2-1 .7-1.1 1.2a2.6 2.6 0 0 0 .7 3c.4.4 1 .6 1.5.6h60.2c.6 0 1.1-.2 1.6-.5a2.6 2.6 0 0 0 .7-3.1c-.3-.5-.7-1-1.2-1.2Z" fill="#fff"/>
                 </svg>
-                <!-- eslint-enable max-len -->
 
                 <p class="attribute attribute-nim nq-gold">{{ $t('Performance') }}</p>
                 <p class="attribute attribute-btc nq-orange">{{ $t('Security') }}</p>

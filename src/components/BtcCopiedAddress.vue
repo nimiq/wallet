@@ -3,7 +3,6 @@
         <div class="flex-column">
             <div class="label-input-wrapper flex-row">
                 <Avatar :label="addressInfo.label" />
-                <!-- eslint-disable-next-line eslint-disable-line vue/no-mutating-props -->
                 <LabelInput v-model="addressInfo.label"
                     ref="labelInput$"
                     :placeholder="$t('Label the sender')"

@@ -123,7 +123,6 @@
         </transition>
 
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
-            <!-- eslint-disable max-len -->
             <Tooltip class="left" :class="assetToCurrency(leftAsset)"
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
@@ -277,7 +276,6 @@
                     </BlueLink>
                 </template>
             </Tooltip>
-            <!-- eslint-enable max-len -->
         </div>
 
         <div class="nq-card-footer">

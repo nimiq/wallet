@@ -33,8 +33,15 @@ yarn lint
 yarn lint:fix
 ```
 
-Linting is done by Oxlint via `vp lint`, configured in `vite.config.ts`. The templates of Vue components are
-additionally linted by ESLint, configured in `eslint.config.mjs`.
+Linting is done by Oxlint via `vp lint`, configured in `vite.config.ts`. Oxlint lints the scripts of Vue components,
+not their templates.
+
+### Formats files
+```
+yarn format
+```
+
+The code is formatted by Oxfmt via `vp fmt`, configured in `vite.config.ts`. `vp check` checks the formatting and lints.
 
 ### Type checks
 ```

@@ -11,7 +11,6 @@
         <PageBody>
             <div class="features">
                 <div class="feature">
-                    <!-- eslint-disable max-len -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="55" height="56" viewBox="0 0 55 56" fill="none">
                         <path fill-rule="evenodd" clip-rule="evenodd"
                             d="M27.5417 0.683594C12.4549 0.683594 0.224609 12.9139 0.224609 28.0007C0.224609 43.0875 12.4549 55.3177 27.5417 55.3177C42.6285 55.3177 54.8588 43.0875 54.8588 28.0007C54.8588 12.9139 42.6285 0.683594 27.5417 0.683594ZM28.3209 14.1101L17.1767 29.2666C16.7819 29.8036 17.1653 30.5615 17.8319 30.5615H25.4292V42.1619C25.4292 42.9473 26.4323 43.2764 26.8975 42.6436L38.0418 27.4871C38.4366 26.9501 38.0532 26.1922 37.3866 26.1922H29.7893V14.5918C29.7893 13.8064 28.7862 13.4773 28.3209 14.1101Z"
@@ -25,12 +24,10 @@
                             </radialGradient>
                         </defs>
                     </svg>
-                    <!-- eslint-enable max-len -->
                     <p>{{ $t('Almost instant transactions') }}</p>
                 </div>
 
                 <div class="feature">
-                    <!-- eslint-disable max-len -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56" fill="none">
                         <rect y="0.683594" width="56" height="54.6341" rx="27.3171"
                             fill="url(#paint0_radial_6834_51187)" />
@@ -60,12 +57,10 @@
                             </radialGradient>
                         </defs>
                     </svg>
-                    <!-- eslint-enable max-len -->
                     <p>{{ $t('Super eco-friendly') }}</p>
                 </div>
 
                 <div class="feature">
-                    <!-- eslint-disable max-len -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="57" height="56" viewBox="0 0 57 56" fill="none">
                         <path
                             d="M0.501953 28.0007C0.501953 12.9139 12.7322 0.683594 27.819 0.683594H29.1849C44.2717 0.683594 56.502 12.9139 56.502 28.0007C56.502 43.0875 44.2717 55.3177 29.1849 55.3177H27.819C12.7322 55.3177 0.501953 43.0875 0.501953 28.0007Z"
@@ -90,7 +85,6 @@
                             </radialGradient>
                         </defs>
                     </svg>
-                    <!-- eslint-enable max-len -->
                     <p>{{ $t('Earn new NIM by staking') }}</p>
                 </div>
             </div>

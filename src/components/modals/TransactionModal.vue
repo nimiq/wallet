@@ -637,28 +637,28 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
-        const showRefundButton = computed(() => !isIncoming.value
-            && (
-                ( // funded but not redeemed htlc which is now expired
-                    swapInfo.value?.in?.asset === SwapAsset.NIM
-                    && swapInfo.value.in.htlc && (
-                        ('timeoutMs' in swapInfo.value.in.htlc && swapInfo.value.in.htlc.timeoutMs <= Date.now())
-                        || (
-                            'timeoutBlockHeight' in swapInfo.value.in.htlc
-                            // @ts-expect-error PoW field
-                            && swapInfo.value.in.htlc.timeoutBlockHeight <= blockHeight.value
-                        )
+        const showRefundButton = computed(() => {
+            if (isIncoming.value) return false;
+            // funded but not redeemed htlc which is now expired
+            const isExpiredHtlc = swapInfo.value?.in?.asset === SwapAsset.NIM
+                && swapInfo.value.in.htlc
+                && (
+                    ('timeoutMs' in swapInfo.value.in.htlc && swapInfo.value.in.htlc.timeoutMs <= Date.now())
+                    || (
+                        'timeoutBlockHeight' in swapInfo.value.in.htlc
+                        // @ts-expect-error PoW field
+                        && swapInfo.value.in.htlc.timeoutBlockHeight <= blockHeight.value
                     )
-                    && !swapInfo.value.out
-                ) || ( // funded but not redeemed htlc proxy (no actual htlc had been created)
-                    isSwapProxy.value
-                    && !relatedTx.value
-                    && transaction.value.state === TransactionState.CONFIRMED
-                    // consider proxy "expired" after 15 blocks
-                    && transaction.value.blockHeight! <= blockHeight.value - 15
                 )
-            ),
-        );
+                && !swapInfo.value.out;
+            if (isExpiredHtlc) return true;
+            // funded but not redeemed htlc proxy (no actual htlc had been created)
+            return isSwapProxy.value
+                && !relatedTx.value
+                && transaction.value.state === TransactionState.CONFIRMED
+                // consider proxy "expired" after 15 blocks
+                && transaction.value.blockHeight! <= blockHeight.value - 15;
+        });
 
         const blockExplorerLink = computed(() =>
             explorerTxLink(CryptoCurrency.NIM, transaction.value.transactionHash));

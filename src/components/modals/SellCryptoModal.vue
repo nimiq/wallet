@@ -129,7 +129,6 @@
                                     }}</button>
                                     <div v-if="amountMenuOpened" class="menu flex-column">
                                         <button class="reset flex-row" @click="sellMax">
-                                            <!-- eslint-disable-next-line max-len -->
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25"/><path class="cls-1" d="M12.25,9.3l-4-4-4,4"/><line class="cls-1" x1="3.25" y1="1.25" x2="13.25" y2="1.25"/></g></svg>
                                             {{ $t('Sell max') }}
                                         </button>

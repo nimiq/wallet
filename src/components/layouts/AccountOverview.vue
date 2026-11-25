@@ -1008,11 +1008,9 @@ export default defineComponent({
         align-items: center;
         pointer-events: all;
 
-        transition: {
-            property: height, width;
-            duration: var(--transition-duration);
-            timing-function: var(--nimiq-ease);
-        };
+        transition-property: height, width;
+        transition-duration: var(--transition-duration);
+        transition-timing-function: var(--nimiq-ease);
 
         * {
             pointer-events: none;

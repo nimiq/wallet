@@ -84,7 +84,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 @use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;

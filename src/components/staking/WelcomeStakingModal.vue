@@ -178,7 +178,6 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import { useRouter, RouteName } from '@/router';
 import {
@@ -186,6 +185,9 @@ import {
     MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
 import Modal from '../modals/Modal.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 
 export default defineComponent({
     name: 'WelcomeStakingModal',

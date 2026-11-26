@@ -1,5 +1,5 @@
 <template>
-    <Amount
+    <CryptoAmount
         v-if="typeof amount === 'number'"
         :decimals="displayedDecimals"
         :amount="amount"
@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import { Amount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
 import { calculateDisplayedDecimals } from '../lib/NumberFormatting';
 import { useSettingsStore } from '../stores/Settings';
+import CryptoAmount from './CryptoAmount.vue';
 
 export default defineComponent({
     props: {
@@ -57,7 +57,7 @@ export default defineComponent({
         };
     },
     components: {
-        Amount,
+        CryptoAmount,
     },
 });
 </script>

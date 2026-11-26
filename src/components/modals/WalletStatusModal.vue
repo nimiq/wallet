@@ -38,9 +38,12 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, ViewIcon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
+import ArrowRightSmallIcon from '../icons/ArrowRightSmallIcon.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
+import ViewIcon from '../icons/ViewIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

@@ -445,19 +445,6 @@ import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { BrowserDetection } from '@nimiq/utils';
-import {
-    PageHeader,
-    PageBody,
-    Identicon,
-    ArrowRightIcon,
-    AddressDisplay,
-    FiatAmount,
-    Tooltip,
-    InfoCircleSmallIcon,
-    CircleSpinner,
-    CashlinkSmallIcon,
-    CrossIcon,
-} from '@nimiq/vue-components';
 import Config from 'config';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
@@ -488,20 +475,31 @@ import { SwapNimData } from '../../stores/Swaps';
 import { useTransactionsStore, TransactionState, toMs } from '../../stores/Transactions';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
+import AddressDisplay from '../AddressDisplay.vue';
 import Amount from '../Amount.vue';
 // import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ArrowRightIcon from '../icons/ArrowRightIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import CashlinkSmallIcon from '../icons/CashlinkSmallIcon.vue';
+import CrossIcon from '../icons/CrossIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
+import Identicon from '../Identicon.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import Modal from './Modal.vue';
 

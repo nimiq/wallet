@@ -1,5 +1,4 @@
 import { Cookie } from '@nimiq/utils';
-import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
@@ -82,8 +81,6 @@ export async function loadLanguage(lang: string): Promise<string> {
     if (!SUPPORTED_LANGUAGES.includes(lang)) {
         lang = DEFAULT_LANGUAGE;
     }
-
-    VueComponentsI18n.setLanguage(lang);
 
     // If the language was already loaded
     if (loadedLanguage.includes(lang)) {

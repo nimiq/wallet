@@ -21,10 +21,10 @@
 
 <script lang="ts">
 import { getUserLimits } from '@nimiq/fastspot-api';
-import { FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
 import { useKycStore } from '../../stores/Kyc';
+import FiatAmount from '../FiatAmount.vue';
 import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({

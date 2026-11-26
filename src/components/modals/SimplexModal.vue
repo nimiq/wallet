@@ -66,7 +66,6 @@
 </template>
 
 <script lang="ts">
-import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
 import { useRouter } from '@/router';
@@ -79,7 +78,12 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useSettingsStore } from '../../stores/Settings';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import Identicon from '../Identicon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import ResizingCopyable from '../ResizingCopyable.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 
 declare global {

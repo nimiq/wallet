@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts">
-import { FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -38,6 +37,7 @@ import { useFiatStore } from '../stores/Fiat';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useStakingStore } from '../stores/Staking';
+import FiatAmount from './FiatAmount.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 

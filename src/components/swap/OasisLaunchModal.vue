@@ -34,11 +34,12 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageFooter } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import BlueLink from '../BlueLink.vue';
 import StarIcon from '../icons/StarIcon.vue';
 import Modal from '../modals/Modal.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
 
 const LOCAL_STORAGE_KEY = 'oasis-launch-modal-shown';
 

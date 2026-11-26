@@ -23,13 +23,14 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
 import { useRouter } from '@/router';
 import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import AddressList from '../AddressList.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export default defineComponent({

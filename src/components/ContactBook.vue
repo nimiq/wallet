@@ -69,14 +69,15 @@
 </template>
 
 <script lang="ts">
-import { Identicon, LabelInput } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref } from 'vue';
 import { useAddressStore, AddressType } from '../stores/Address';
 import { useContactsStore } from '../stores/Contacts';
 import AddressListItem from './AddressListItem.vue';
 import TrashIcon from './icons/TrashIcon.vue';
+import Identicon from './Identicon.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import LabelInput from './LabelInput.vue';
 import { RecipientType } from './modals/SendModal.vue';
 
 export default defineComponent({

@@ -128,13 +128,17 @@
 
 <script lang="ts">
 import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT, loadBankList } from '@nimiq/oasis-bank-list';
-import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
-import { defineComponent, computed, ref, watch, onMounted } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, type Ref } from 'vue';
 import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 import CountrySelector from './CountrySelector.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
+import CaretRightSmallIcon from './icons/CaretRightSmallIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
+import LabelInput from './LabelInput.vue';
+import Tooltip from './Tooltip.vue';
 
 type CountryInfo = {
     name: string;
@@ -176,7 +180,7 @@ const BankCheckInput = defineComponent({
 
         const bankSearchInput$ = ref<LabelInput | null>(null);
         const bankAutocomplete$ = ref<HTMLUListElement | null>(null);
-        const tooltips$ = ref<Array<Tooltip>>([]);
+        const tooltips$ = ref([]) as Ref<Tooltip[]>;
 
         const selectedBankIndex = ref(0);
         const currentCountry = ref<CountryInfo | null>(null);

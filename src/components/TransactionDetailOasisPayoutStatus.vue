@@ -41,9 +41,11 @@
 
 <script lang="ts">
 import { SettlementStatus } from '@nimiq/oasis-api';
-import { CircleSpinner, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { computed, defineComponent } from 'vue';
 import { SwapEurData } from '../stores/Swaps';
+import CircleSpinner from './CircleSpinner.vue';
+import InfoCircleSmallIcon from './icons/InfoCircleSmallIcon.vue';
+import Tooltip from './Tooltip.vue';
 
 export default defineComponent({
     props: {

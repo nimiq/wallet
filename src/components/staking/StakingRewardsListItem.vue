@@ -74,7 +74,6 @@
 </template>
 
 <script lang="ts">
-import { FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { useRouter, RouteName } from '@/router';
@@ -83,6 +82,7 @@ import { useMonthlyRewardFiatValue } from '../../composables/useMonthlyRewardFia
 import * as Constants from '../../lib/Constants';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../../lib/StakingUtils';
 import Amount from '../Amount.vue';
+import FiatAmount from '../FiatAmount.vue';
 import TextShimmer from './TextShimmer.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 

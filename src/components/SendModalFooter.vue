@@ -30,7 +30,6 @@
 </template>
 
 <script lang="ts">
-import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from '@/lib/useI18n';
@@ -38,7 +37,10 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useNetworkStore } from '../stores/Network';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
+import CircleSpinner from './CircleSpinner.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import MessageTransition from './MessageTransition.vue';
+import PageFooter from './PageFooter.vue';
 
 export default defineComponent({
     props: {

@@ -19,12 +19,13 @@
 </template>
 
 <script lang="ts">
-import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import Config from 'config';
 import { defineComponent, ref, Ref } from 'vue';
 import { LocaleMessage } from 'vue-i18n';
 import { ENV_MAIN } from '@/lib/Constants';
 import { useI18n } from '@/lib/useI18n';
+import CircleSpinner from './CircleSpinner.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 
 type FaucetInfoResponse = {
     network: 'test' | 'main';

@@ -149,7 +149,6 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -161,6 +160,10 @@ import { useSettingsStore } from '../../stores/Settings';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 
 const languageFlagUrls = import.meta.glob<string>('../../assets/languages/*.svg', {

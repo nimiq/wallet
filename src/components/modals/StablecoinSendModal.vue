@@ -313,17 +313,6 @@
 <script lang="ts">
 import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { parseRequestLink, Currency, CurrencyInfo, EthereumChain } from '@nimiq/utils';
-import {
-    AddressDisplay,
-    AddressInput,
-    LabelInput,
-    LongPressButton,
-    PageHeader,
-    PageBody,
-    ScanQrCodeIcon,
-    FiatAmount,
-    CircleSpinner,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -355,10 +344,19 @@ import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
+import AddressDisplay from '../AddressDisplay.vue';
+import AddressInput from '../AddressInput.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ScanQrCodeIcon from '../icons/ScanQrCodeIcon.vue';
+import LabelInput from '../LabelInput.vue';
+import LongPressButton from '../LongPressButton.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import SendModalFooter from '../SendModalFooter.vue';

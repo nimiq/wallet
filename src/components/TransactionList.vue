@@ -84,7 +84,6 @@
 </template>
 
 <script lang="ts">
-import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref, Ref, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import TransactionListItem from '@/components/TransactionListItem.vue';
@@ -95,7 +94,9 @@ import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { useAddressStore } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
+import CircleSpinner from './CircleSpinner.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
 import StakingRewardsListItem from './staking/StakingRewardsListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';

@@ -451,17 +451,6 @@ import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
-import {
-    PageHeader,
-    PageBody,
-    ArrowRightIcon,
-    FiatAmount,
-    Tooltip,
-    InfoCircleSmallIcon,
-    CircleSpinner,
-    CrossIcon,
-    Identicon,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -490,15 +479,24 @@ import Amount from '../Amount.vue';
 import Avatar from '../Avatar.vue';
 // import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ArrowRightIcon from '../icons/ArrowRightIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import CrossIcon from '../icons/CrossIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
+import Identicon from '../Identicon.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import Modal from './Modal.vue';
 

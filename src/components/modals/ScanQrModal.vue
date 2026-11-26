@@ -17,7 +17,6 @@ import {
     Currency,
     EthereumChain,
 } from '@nimiq/utils';
-import { PageBody, QrScanner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
 import { useConfig } from '../../composables/useConfig';
@@ -30,6 +29,8 @@ import { ENV_MAIN } from '../../lib/Constants';
 import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import PageBody from '../PageBody.vue';
+import QrScanner from '../QrScanner.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

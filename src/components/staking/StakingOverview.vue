@@ -97,7 +97,6 @@
 </template>
 
 <script lang="ts">
-import { FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
@@ -107,6 +106,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useStakingStore } from '../../stores/Staking';
 import Amount from '../Amount.vue';
+import FiatAmount from '../FiatAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';

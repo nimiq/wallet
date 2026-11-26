@@ -88,7 +88,6 @@
 </template>
 
 <script lang="ts">
-import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
 import { getElectrumClient } from '@/electrum';
@@ -103,7 +102,9 @@ import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useNetworkStore } from '../../stores/Network';
 import { useSettingsStore } from '../../stores/Settings';
 import AttentionDot from '../AttentionDot.vue';
+import CircleSpinner from '../CircleSpinner.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import InfoCircleIcon from '../icons/InfoCircleIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
 import NetworkMap from '../NetworkMap.vue';

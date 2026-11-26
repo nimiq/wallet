@@ -90,29 +90,27 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import {
-    CircleSpinner,
-    AlertTriangleIcon,
-    CashlinkXSmallIcon,
-    Identicon,
-    FiatAmount,
-    CrossIcon,
-} from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS, STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
 import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import Amount from './Amount.vue';
+import CircleSpinner from './CircleSpinner.vue';
+import FiatAmount from './FiatAmount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import CashlinkXSmallIcon from './icons/CashlinkXSmallIcon.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 import StakingIcon from './icons/Staking/StakingIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
+import Identicon from './Identicon.vue';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({

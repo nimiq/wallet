@@ -32,9 +32,9 @@
 </template>
 
 <script lang="ts">
-import { PageBody } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import { MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

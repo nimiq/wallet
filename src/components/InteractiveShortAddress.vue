@@ -37,9 +37,10 @@
 </template>
 
 <script lang="ts">
-import { Copyable, Tooltip } from '@nimiq/vue-components';
 import Vue, { defineComponent, computed, ref } from 'vue';
+import Copyable from './Copyable.vue';
 import ShortAddress from './ShortAddress.vue';
+import Tooltip, { TooltipThemes } from './Tooltip.vue';
 
 export default defineComponent({
     props: {
@@ -58,7 +59,7 @@ export default defineComponent({
             default: 'bottom right',
             validator: (val: string) => /^(?:top|bottom)(?: (?:left|right))?$/.test(val),
         },
-        tooltipTheme: String as () => Tooltip.Themes,
+        tooltipTheme: String as () => TooltipThemes,
         // Because the address in the tooltip is typically much longer than the short address, offset the tooltip
         // position by default.
         offsetTooltipPosition: {

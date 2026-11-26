@@ -68,7 +68,6 @@
 
 <script lang="ts">
 import { createRequestLink, CurrencyInfo, GeneralRequestLinkOptions, NimiqRequestLinkType } from '@nimiq/utils';
-import { PageHeader, PageBody, QrCode, Copyable } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, watch, watchEffect } from 'vue';
 import { useSettingsStore } from '@/stores/Settings';
@@ -76,7 +75,11 @@ import { CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../../lib/Constants'
 import { useFiatStore } from '../../../stores/Fiat';
 import AmountInput from '../../AmountInput.vue';
 import AmountMenu from '../../AmountMenu.vue';
+import Copyable from '../../Copyable.vue';
 import FiatConvertedAmount from '../../FiatConvertedAmount.vue';
+import PageBody from '../../PageBody.vue';
+import PageHeader from '../../PageHeader.vue';
+import QrCode from '../../QrCode.vue';
 
 export default defineComponent({
     props: {

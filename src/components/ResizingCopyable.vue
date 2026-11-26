@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import { Copyable } from '@nimiq/vue-components';
 import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
+import Copyable from './Copyable.vue';
 
 export default defineComponent({
     props: {

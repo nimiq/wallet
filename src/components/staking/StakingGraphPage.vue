@@ -59,7 +59,7 @@
                         {{ $t('Unlock at any time. Your NIM will be available within ~24 hours.') }}
                     </div>
                     <div class="disclaimer unstake-disclaimer" v-else>
-                        <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
+                        <CryptoAmount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
                         {{ $t('will be available within ~24 hours.') }}
                     </div>
                 </MessageTransition>
@@ -69,9 +69,14 @@
 </template>
 
 <script lang="ts">
-import { InfoCircleSmallIcon, Amount, CircleSpinner, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import CryptoAmount from '../CryptoAmount.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 
 import { useI18n } from '@/lib/useI18n';
 import { sendStaking } from '../../hub';
@@ -290,7 +295,7 @@ export default defineComponent({
         ValidatorInfoBar,
         StakingGraph,
         AmountSlider,
-        Amount,
+        CryptoAmount,
         Tooltip,
         InfoCircleSmallIcon,
         CircleSpinner,

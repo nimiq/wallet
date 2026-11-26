@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { ArrowRightSmallIcon } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
+import ArrowRightSmallIcon from './icons/ArrowRightSmallIcon.vue';
 
 export default defineComponent({
     components: {

@@ -1568,7 +1568,7 @@
     "@nimiq/utils" "^0.11.7"
     big-integer "^1.6.52"
 
-"@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":
+"@nimiq/iqons@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@nimiq/iqons/-/iqons-1.6.0.tgz#29829c57f1fbdf53f228146162579db4602017db"
   integrity sha512-M1g/rFVmOoucgIPvb5cxOPz1GVUslBj5wz1YYZbLVS9FP4FrWoKUlnd3gQd4bfl4DIz3wT6QgEnI1gUgQ/QKQQ==
@@ -1604,7 +1604,7 @@
   resolved "https://registry.yarnpkg.com/@nimiq/rpc/-/rpc-0.4.1.tgz#d5df1e426793afcdd8c407a2968442bbee874dbd"
   integrity sha512-aQigD21o7S1+J9kfWBA9sDPjtQ+K1keL02eahc6UjSL/+9SVMY+zetSDdjq6d4zNBLRnVayjw0G2hc/yKUMZ0Q==
 
-"@nimiq/style@^0.8.2", "@nimiq/style@^0.8.5":
+"@nimiq/style@^0.8.2":
   version "0.8.5"
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.5.tgz#36a8bd8f58d55ee3e8ea5b249e51a116638e3b90"
   integrity sha512-il2+hrodQ7iL4ARPwfGmGvrEYgtMHAoQSbcyapxEQEG7vDYj5r+ssuhKB+oYmdRUxA1/HvyGDnWG3XenKvQyIA==
@@ -1627,28 +1627,6 @@
   integrity sha512-AcXDfaVIaDrqIiOg4QTLVenBkDlluYCpmoZ4ERPXmsqKGcYOBRAXZNFw+rFJm7T1RMygkONGsveZ5mgQNi9WcA==
   dependencies:
     big-integer "^1.6.44"
-
-"@nimiq/utils@^0.9.1":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.3.tgz#db402c8f42bb16dee8e5500c617cff18e1497960"
-  integrity sha512-g/9FpoNcJmU737TRQsNdU5/OGoXnc1UwunJBF/TGw4bx4cQ/pbYO7k0nsZ4RGUFn0jiy9xlxYH+yH1mvSY7+nQ==
-  dependencies:
-    big-integer "^1.6.44"
-
-"@nimiq/vue-components@https://github.com/nimiq/vue-components#build/albatross":
-  version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#ec287f7fc90a9233dbfab21dfbd9492f4b4b6afc"
-  dependencies:
-    "@nimiq/iqons" "^1.6.0"
-    "@nimiq/style" "^0.8.5"
-    "@nimiq/utils" "^0.9.1"
-    big-integer "^1.6.44"
-    input-format "^0.2.8"
-    js-sha3 "^0.8.0"
-    qr-creator "^1.0.0"
-    qr-scanner "^1.4.2"
-    vue "^2.6.11"
-    vue-property-decorator "^8.4.0"
 
 "@noble/ciphers@^1.3.0":
   version "1.3.0"
@@ -6792,11 +6770,6 @@ vue-chartjs@^5.3.4:
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-5.3.4.tgz#9a0f102a56504824674d01d35eece40e2f6b186c"
   integrity sha512-x3Fqob8RQvrTdssfi9ecsCzEkFOd8JPmNwSkSQzdfKj/uBsRJs/Y88cZcZIEcPsTVfMGwMo4MOoihoDG2DoE/g==
 
-vue-class-component@^7.1.0:
-  version "7.2.6"
-  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.6.tgz#8471e037b8e4762f5a464686e19e5afc708502e4"
-  integrity sha512-+eaQXVrAm/LldalI272PpDe3+i4mPis0ORiMYxF6Ae4hyuCh15W8Idet7wPUEs4N4YptgFHGys4UrgNQOMyO6w==
-
 vue-demi@^0.14.10:
   version "0.14.10"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.10.tgz#afc78de3d6f9e11bf78c55e8510ee12814522f04"
@@ -6816,13 +6789,6 @@ vue-observe-visibility@^0.4.4:
   version "0.4.6"
   resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-0.4.6.tgz#878cb8ebcf3078e40807af29774e97105ebd519e"
   integrity sha512-xo0CEVdkjSjhJoDdLSvoZoQrw/H2BlzB5jrCBKGZNXN2zdZgMuZ9BKrxXDjNP2AxlcCoKc8OahI3F3r3JGLv2Q==
-
-vue-property-decorator@^8.4.0:
-  version "8.5.1"
-  resolved "https://registry.yarnpkg.com/vue-property-decorator/-/vue-property-decorator-8.5.1.tgz#571a91cf8d2b507f537d79bf8275af3184572fff"
-  integrity sha512-O6OUN2OMsYTGPvgFtXeBU3jPnX5ffQ9V4I1WfxFQ6dqz6cOUbR3Usou7kgFpfiXDvV7dJQSFcJ5yUPgOtPPm1Q==
-  dependencies:
-    vue-class-component "^7.1.0"
 
 vue-resize@^0.4.5:
   version "0.4.5"
@@ -6850,7 +6816,7 @@ vue-tsc@^2.2.12:
     vue-observe-visibility "^0.4.4"
     vue-resize "^0.4.5"
 
-vue@^2.6.11, vue@^2.7.16:
+vue@^2.7.16:
   version "2.7.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.7.16.tgz#98c60de9def99c0e3da8dae59b304ead43b967c9"
   integrity sha512-4gCtFXaAA3zYZdTp5s4Hl2sozuySsgz4jy1EnpBHNfpMa9dK1ZCG7viqBPCwXtmgc8nHqUsAu3G4gtmXkkY3Sw==

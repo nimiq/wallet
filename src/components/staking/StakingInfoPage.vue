@@ -300,17 +300,15 @@
 </template>
 
 <script lang="ts">
-import {
-    ArrowRightSmallIcon,
-    CircleSpinner,
-    FiatAmount,
-    PageBody,
-    PageFooter,
-    PageHeader,
-    Tooltip,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
+import ArrowRightSmallIcon from '../icons/ArrowRightSmallIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 
 import { useWindowSize } from '@/composables/useWindowSize';
 import { useI18n } from '@/lib/useI18n';

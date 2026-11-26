@@ -375,7 +375,6 @@ import {
     SepaClearingInstruction,
 } from '@nimiq/oasis-api';
 import { Bank } from '@nimiq/oasis-bank-list';
-import { PageHeader, PageBody, Tooltip, FiatAmount, Timer, CircleSpinner } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { getElectrumClient } from '@/electrum';
@@ -413,6 +412,8 @@ import { useKycStore } from '../../stores/Kyc';
 import AddressList from '../AddressList.vue';
 import AmountInput from '../AmountInput.vue';
 import BankIconButton from '../BankIconButton.vue';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
@@ -422,10 +423,14 @@ import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import MessageTransition from '../MessageTransition.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import SendModalFooter from '../SendModalFooter.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
+import Timer from '../Timer.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 

@@ -78,15 +78,6 @@
 </template>
 
 <script lang="ts">
-import {
-    PageHeader,
-    PageBody,
-    Identicon,
-    ArrowRightIcon,
-    AddressDisplay,
-    FiatAmount,
-    Tooltip,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed } from 'vue';
 import { useMonthlyRewardFiatValue } from '@/composables/useMonthlyRewardFiatValue';
@@ -94,7 +85,14 @@ import { FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUtils';
 import { useAddressStore } from '@/stores/Address';
 import { useStakingStore } from '@/stores/Staking';
+import AddressDisplay from '../AddressDisplay.vue';
 import Amount from '../Amount.vue';
+import FiatAmount from '../FiatAmount.vue';
+import ArrowRightIcon from '../icons/ArrowRightIcon.vue';
+import Identicon from '../Identicon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 import TextShimmer from './TextShimmer.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ValidatorIconStack from './ValidatorIconStack.vue';

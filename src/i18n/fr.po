@@ -860,6 +860,26 @@ msgstr "Cliquez pour plus d'informations"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 
+#: src/components/QrScanner.vue:31
+msgid ""
+"Click on {icon} and go to\n"
+"Settings > Site Settings > Camera"
+msgstr ""
+"Cliquez sur {icon} et allez dans\n"
+"Paramètres > Paramètres de site > Appareil photo"
+
+#: src/components/QrScanner.vue:56
+msgid "Click on {icon} in the URL bar."
+msgstr "Cliquez sur {icon} dans la bar d'adresse."
+
+#: src/components/QrScanner.vue:49
+msgid ""
+"Click on {safari} and go to\n"
+"Settings for this Website > Camera"
+msgstr ""
+"Cliquez sur {safari} et rendez-vous dans \n"
+"Paramètres pour ce site > Caméra"
+
 #: src/components/layouts/AddressOverview.vue:293
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
@@ -978,6 +998,10 @@ msgstr "Conversion d'USDC.e en USDC"
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr "{amount1} USDC.e convertis en {amount2} USDC"
 
+#: src/components/Copyable.vue:5
+msgid "Copied"
+msgstr "Copié"
+
 #: src/components/modals/SimplexModal.vue:49
 msgid ""
 "Copy\n"
@@ -1075,6 +1099,14 @@ msgstr ""
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
 msgstr "Dataset : {name}"
+
+#: src/components/Timer.vue:240
+msgid "day"
+msgstr "jour"
+
+#: src/components/Timer.vue:243
+msgid "days"
+msgstr "jours"
 
 #: src/lib/StakingUtils.ts:78
 msgid "Deactivate validator"
@@ -1495,6 +1527,10 @@ msgstr ""
 "Réalisez une vérification pour des limites plus élevées en vous "
 "authentifiant auprès de {provider}. Voici les conditions requises :"
 
+#: src/components/PageHeader.vue:16
+msgid "Go back"
+msgstr "Retour"
+
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1507,6 +1543,10 @@ msgstr "Compris"
 #: src/components/modals/MigrationWelcomeModal.vue:89
 msgid "Got it!"
 msgstr "Compris !"
+
+#: src/components/QrScanner.vue:43
+msgid "Grant camera access when asked."
+msgstr "Accordez l'accès à la caméra lorsque cela vous est demandé."
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
@@ -1543,6 +1583,14 @@ msgstr "Transparence accrue et respect des réglementations."
 #: src/components/staking/StakingRewardsPage.vue:62
 msgid "Historic value"
 msgstr "Valeur historique"
+
+#: src/components/Timer.vue:234
+msgid "hour"
+msgstr "heure"
+
+#: src/components/Timer.vue:237
+msgid "hours"
+msgstr "heures"
 
 #: src/components/modals/WalletStatusModal.vue:4
 msgid "How can we help?"
@@ -1712,6 +1760,10 @@ msgstr "Il est recommandé d'annuler la transaction."
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "Vous pouvez maintenant fermer votre Wallet en toute sécurité"
+
+#: src/components/LongPressButton.vue:22
+msgid "Keep pressing…"
+msgstr "Keep pressing…"
 
 #: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
@@ -1884,6 +1936,14 @@ msgstr "min {amount}"
 msgid "Minimum buy amount is {amount}"
 msgstr "Le montant minimum à swap est {amount}"
 
+#: src/components/Timer.vue:228
+msgid "minute"
+msgstr "minute"
+
+#: src/components/Timer.vue:231
+msgid "minutes"
+msgstr "minutes"
+
 #: src/components/kyc/KycOverlay.vue:19
 msgid "Mobile phone"
 msgstr "Numéro de mobile"
@@ -1934,6 +1994,11 @@ msgstr "Nommez ce contact..."
 #: src/components/modals/BtcSendModal.vue:17
 msgid "Name this recipient..."
 msgstr "Nommez ce destinataire..."
+
+#: src/components/LabelInput.vue:11
+#: src/components/LabelInput.vue:4
+msgid "Name your address"
+msgstr "Nommez votre adresse"
 
 #: src/components/ContactBook.vue:28 src/components/UsdcContactBook.vue:35
 msgid "Name your contact"
@@ -2547,6 +2612,14 @@ msgstr "Rechercher des transactions"
 #: src/components/SearchBar.vue:46
 msgid "Search transactions by contact, address, etc."
 msgstr "Rechercher des transactions via vos contacts, adresses, etc..."
+
+#: src/components/Timer.vue:222
+msgid "second"
+msgstr "seconde"
+
+#: src/components/Timer.vue:225
+msgid "seconds"
+msgstr "secondes"
 
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
@@ -3175,6 +3248,10 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr "La banque traite votre transaction."
 
+#: src/components/QrScanner.vue:60
+msgid "the camera icon"
+msgstr "l'icône de caméra"
+
 #: src/lib/swap/utils/BuyUtils.ts:90 src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
@@ -3356,6 +3433,10 @@ msgstr "Cela peut prendre jusqu'à {min} minutes."
 msgid "This month"
 msgstr "Ce mois-ci"
 
+#: src/components/Timer.vue:60
+msgid "This offer expires in {timer}."
+msgstr "Cette offre expire dans {timer}."
+
 #: src/components/staking/ValidatorScoreDetails.vue:158
 msgid ""
 "This pool controls a large share of the total stake.\n"
@@ -3517,6 +3598,10 @@ msgstr "Tapez pour rechercher..."
 #: src/components/staking/ValidatorsListOverlay.vue:43
 msgid "unavailable"
 msgstr "indisponible"
+
+#: src/components/QrScanner.vue:26
+msgid "Unblock the camera for this website to scan QR codes."
+msgstr "Débloquez la caméra pour ce site de façon à scanner les QR codes."
 
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
@@ -3913,6 +3998,10 @@ msgid ""
 msgstr ""
 "Votre navigateur ne prend pas en charge les fenêtres pop-up Keyguard ou bien"
 " celles-ci sont désactivées dans les paramètres."
+
+#: src/components/QrScanner.vue:22
+msgid "Your device does not have an accessible camera."
+msgstr "Votre appareil n'a pas de caméra accessible."
 
 #: src/components/swap/SwapAnimation.vue:119
 #: src/components/TransactionDetailOasisPayoutStatus.vue:20

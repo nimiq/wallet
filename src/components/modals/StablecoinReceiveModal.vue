@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import { CryptoCurrency } from '@nimiq/utils';
-import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
@@ -55,8 +54,11 @@ import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
+import QrCode from '../QrCode.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export default defineComponent({

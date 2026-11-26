@@ -30,11 +30,13 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { computed, defineComponent, onMounted, ref } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { RouteName } from '@/router';
 import BankCheckInput from '../../BankCheckInput.vue';
+import PageBody from '../../PageBody.vue';
+import PageFooter from '../../PageFooter.vue';
+import PageHeader from '../../PageHeader.vue';
 
 export default defineComponent({
     setup() {

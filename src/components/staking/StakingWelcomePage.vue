@@ -42,14 +42,16 @@
 </template>
 
 <script lang="ts">
-import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, onMounted } from 'vue';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_DEV } from '../../lib/Constants';
 import { getNetworkClient, updateValidators } from '../../network';
 import { useStakingStore } from '../../stores/Staking';
+import HexagonIcon from '../icons/HexagonIcon.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 
 // const progression = (i:number, n:number) => {

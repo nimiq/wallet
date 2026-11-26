@@ -39,7 +39,6 @@
 </template>
 
 <script lang="ts">
-import { PageBody } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref } from 'vue';
 import { useRouter, RouteName } from '@/router';
@@ -49,6 +48,7 @@ import { activateBitcoin } from '../../hub';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import PageBody from '../PageBody.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

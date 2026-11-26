@@ -50,15 +50,17 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
 import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useFiatStore } from '../../stores/Fiat';
+import FiatAmount from '../FiatAmount.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

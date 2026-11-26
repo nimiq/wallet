@@ -340,10 +340,15 @@ import {
     SignedBtcTransaction,
 } from '@nimiq/hub-api';
 import { CurrencyInfo } from '@nimiq/utils';
-import { PageHeader, PageBody, Tooltip, FiatAmount, CircleSpinner, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
+import CircleSpinner from '../CircleSpinner.vue';
+import FiatAmount from '../FiatAmount.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import Tooltip from '../Tooltip.vue';
 
 import { useI18n } from '@/lib/useI18n';
 import { useConfig } from '../../composables/useConfig';

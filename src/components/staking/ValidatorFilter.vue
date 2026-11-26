@@ -41,12 +41,12 @@
 </template>
 
 <script lang="ts">
-import { SliderToggle } from '@nimiq/vue-components';
 import { defineComponent, watch, ref } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
+import SliderToggle from '../SliderToggle.vue';
 
 export default defineComponent({
     setup(props, context) {

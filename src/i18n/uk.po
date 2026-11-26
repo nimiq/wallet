@@ -838,6 +838,26 @@ msgstr "Натисніть для отримання додаткової інф
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Натисніть ‘Усунення несправностей’, щоб дізнатися більше."
 
+#: src/components/QrScanner.vue:31
+msgid ""
+"Click on {icon} and go to\n"
+"Settings > Site Settings > Camera"
+msgstr ""
+"Натисніть на {icon} і перейдіть до\n"
+"Налаштування > Налаштування сайту > Камера"
+
+#: src/components/QrScanner.vue:56
+msgid "Click on {icon} in the URL bar."
+msgstr "Натисніть на {icon} у рядку URL."
+
+#: src/components/QrScanner.vue:49
+msgid ""
+"Click on {safari} and go to\n"
+"Settings for this Website > Camera"
+msgstr ""
+"Натисніть на {safari} і перейдіть до\n"
+"Налаштування для цього веб-сайту > Камера"
+
 #: src/components/layouts/AddressOverview.vue:293
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
@@ -956,6 +976,10 @@ msgstr ""
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
 
+#: src/components/Copyable.vue:5
+msgid "Copied"
+msgstr "Скопійовано"
+
 #: src/components/modals/SimplexModal.vue:49
 msgid ""
 "Copy\n"
@@ -1049,6 +1073,14 @@ msgstr ""
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
 msgstr ""
+
+#: src/components/Timer.vue:240
+msgid "day"
+msgstr "день"
+
+#: src/components/Timer.vue:243
+msgid "days"
+msgstr "днів"
 
 #: src/lib/StakingUtils.ts:78
 msgid "Deactivate validator"
@@ -1459,6 +1491,10 @@ msgid ""
 msgstr ""
 "Пройдіть автентифікацію в {provider}, щоб підвищити ліміти. Ось вимоги:"
 
+#: src/components/PageHeader.vue:16
+msgid "Go back"
+msgstr "Назад"
+
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1471,6 +1507,10 @@ msgstr "Зрозуміло"
 #: src/components/modals/MigrationWelcomeModal.vue:89
 msgid "Got it!"
 msgstr "Зрозуміло!"
+
+#: src/components/QrScanner.vue:43
+msgid "Grant camera access when asked."
+msgstr "Надайте доступ до камери, коли попросять."
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid ""
@@ -1507,6 +1547,14 @@ msgstr ""
 #: src/components/staking/StakingRewardsPage.vue:62
 msgid "Historic value"
 msgstr "Історична сума"
+
+#: src/components/Timer.vue:234
+msgid "hour"
+msgstr "година"
+
+#: src/components/Timer.vue:237
+msgid "hours"
+msgstr "годин"
 
 #: src/components/modals/WalletStatusModal.vue:4
 msgid "How can we help?"
@@ -1675,6 +1723,10 @@ msgstr ""
 msgid "It's safe to close your wallet now"
 msgstr "Тепер можна закрити веб-оглядач"
 
+#: src/components/LongPressButton.vue:22
+msgid "Keep pressing…"
+msgstr "Keep pressing…"
+
 #: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr "Keyguard режим"
@@ -1839,6 +1891,14 @@ msgstr "мін {amount}"
 msgid "Minimum buy amount is {amount}"
 msgstr "Мінімальна сума обміну {amount}"
 
+#: src/components/Timer.vue:228
+msgid "minute"
+msgstr "хвилина"
+
+#: src/components/Timer.vue:231
+msgid "minutes"
+msgstr "хвилин"
+
 #: src/components/kyc/KycOverlay.vue:19
 msgid "Mobile phone"
 msgstr "Мобільний телефон"
@@ -1885,6 +1945,11 @@ msgstr "Вкажіть ім'я контакту..."
 #: src/components/modals/BtcSendModal.vue:17
 msgid "Name this recipient..."
 msgstr "Вкажіть ім'я відправника..."
+
+#: src/components/LabelInput.vue:11
+#: src/components/LabelInput.vue:4
+msgid "Name your address"
+msgstr "Назвіть вашу адресу"
 
 #: src/components/ContactBook.vue:28 src/components/UsdcContactBook.vue:35
 msgid "Name your contact"
@@ -2467,6 +2532,14 @@ msgstr "Пошук переказів"
 #: src/components/SearchBar.vue:46
 msgid "Search transactions by contact, address, etc."
 msgstr "Пошук переказів за контактами, адресами, тощо."
+
+#: src/components/Timer.vue:222
+msgid "second"
+msgstr "секунда"
+
+#: src/components/Timer.vue:225
+msgid "seconds"
+msgstr "секунд"
 
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
@@ -3061,6 +3134,10 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr "Банк обробляє вашу операцію."
 
+#: src/components/QrScanner.vue:60
+msgid "the camera icon"
+msgstr "значок камери"
+
 #: src/lib/swap/utils/BuyUtils.ts:90 src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
@@ -3221,6 +3298,10 @@ msgstr "Це може зайняти до {min} хвилин."
 msgid "This month"
 msgstr "Цього місяця"
 
+#: src/components/Timer.vue:60
+msgid "This offer expires in {timer}."
+msgstr "Термін дії цієї пропозиції закінчується через {timer}."
+
 #: src/components/staking/ValidatorScoreDetails.vue:158
 msgid ""
 "This pool controls a large share of the total stake.\n"
@@ -3377,6 +3458,10 @@ msgstr ""
 #: src/components/staking/ValidatorsListOverlay.vue:43
 msgid "unavailable"
 msgstr ""
+
+#: src/components/QrScanner.vue:26
+msgid "Unblock the camera for this website to scan QR codes."
+msgstr "Розблокуйте камеру для цього веб-сайту, щоб сканувати QR-коди."
 
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
@@ -3755,6 +3840,10 @@ msgid ""
 msgstr ""
 "Ваш веб-оглядач не підтримує Keyguard спливаючі вікна, або вони вимкнені в "
 "налаштуваннях."
+
+#: src/components/QrScanner.vue:22
+msgid "Your device does not have an accessible camera."
+msgstr "Ваш пристрій не має доступної камери."
 
 #: src/components/swap/SwapAnimation.vue:119
 #: src/components/TransactionDetailOasisPayoutStatus.vue:20

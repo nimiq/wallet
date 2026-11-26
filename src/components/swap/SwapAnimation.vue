@@ -582,15 +582,6 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import {
-    CheckmarkIcon,
-    Identicon,
-    Tooltip,
-    FiatAmount,
-    StopwatchIcon,
-    Copyable,
-    CloseButton,
-} from '@nimiq/vue-components';
 import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import { useI18n } from '@/lib/useI18n';
 import { getColorClass } from '../../lib/AddressColor';
@@ -600,11 +591,18 @@ import { formatDuration } from '../../lib/Time';
 import { SwapState, SwapErrorAction } from '../../stores/Swaps';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
+import CloseButton from '../CloseButton.vue';
+import Copyable from '../Copyable.vue';
+import FiatAmount from '../FiatAmount.vue';
+import CheckmarkIcon from '../icons/CheckmarkIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import OverflowingCup from '../icons/OverflowingCup.vue';
+import StopwatchIcon from '../icons/StopwatchIcon.vue';
+import Identicon from '../Identicon.vue';
 import MessageTransition from '../MessageTransition.vue';
 import ShortAddress from '../ShortAddress.vue';
+import Tooltip from '../Tooltip.vue';
 import BankSvg from './animation/bank.svg';
 import BitcoinSvg from './animation/bitcoin.svg';
 import UsdcSvg from './animation/usdc.svg';

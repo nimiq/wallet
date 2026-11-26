@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { CryptoCurrency } from '@nimiq/utils';
-import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, onMounted, onUnmounted } from 'vue';
 import router from '@/router';
@@ -34,6 +33,8 @@ import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { useFiatStore } from '@/stores/Fiat';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { useConfig } from '../../composables/useConfig';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal from './Modal.vue';
 
 export default defineComponent({

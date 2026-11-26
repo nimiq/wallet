@@ -28,7 +28,6 @@ j
 </template>
 
 <script lang="ts">
-import { Tooltip } from '@nimiq/vue-components';
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import NetworkMap, {
     NodeHexagon,
@@ -42,6 +41,7 @@ import NetworkMap, {
 import { getNetworkClient } from '../network';
 import { Peer, useNetworkStore } from '../stores/Network';
 import NetworkMapPeerList from './NetworkMapPeerList.vue';
+import Tooltip from './Tooltip.vue';
 
 export default defineComponent({
     setup(props, context) {

@@ -2,7 +2,6 @@
 import VuePortal from '@linusborg/vue-simple-portal';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import { init as initOasisApi } from '@nimiq/oasis-api';
-import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import Vue, { watch, watchEffect } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
@@ -37,13 +36,8 @@ import { useSettingsStore } from './stores/Settings';
 import './lib/AddressBook';
 
 import '@nimiq/style/nimiq-style.min.css';
-import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import '@/scss/themes.scss';
-
-// Set asset path relative to the base path defined in vite.config.ts,
-// see https://vite.dev/guide/env-and-mode.html#built-in-constants
-setVueComponentsAssetPath(`${import.meta.env.BASE_URL}js/`, `${import.meta.env.BASE_URL}img/`);
 
 Vue.config.productionTip = false;
 

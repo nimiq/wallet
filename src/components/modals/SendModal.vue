@@ -209,7 +209,7 @@
                         <span v-if="activeCurrency === CryptoCurrency.NIM" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" />
                             <span v-if="fee">
-                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="5" /> {{ $t('fee') }}
+                                +<CryptoAmount :amount="fee" :minDecimals="0" :maxDecimals="5" /> {{ $t('fee') }}
                             </span>
                         </span>
                         <span v-else key="nim-amount">
@@ -256,7 +256,7 @@
                     }}
                 </p>
                 <SelectBar :options="feeOptions" :selectedValue="feePerByte" @changed="updateFee" />
-                <Amount :amount="fee" :minDecimals="0" :maxDecimals="5" />
+                <CryptoAmount :amount="fee" :minDecimals="0" :maxDecimals="5" />
                 <div class="flex-grow"></div>
                 <button class="nq-button light-blue" @click="onCloseOverlay" @mousedown.prevent>
                     {{ $t('Apply fee') }}
@@ -281,17 +281,6 @@
 
 <script lang="ts">
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
-import {
-    PageHeader,
-    PageBody,
-    AddressInput,
-    ScanQrCodeIcon,
-    Identicon,
-    LabelInput,
-    AddressDisplay,
-    SelectBar,
-    Amount,
-} from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -311,14 +300,23 @@ import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
 import { useFiatStore } from '../../stores/Fiat';
 import { useNetworkStore } from '../../stores/Network';
+import AddressDisplay from '../AddressDisplay.vue';
+import AddressInput from '../AddressInput.vue';
 import AddressList from '../AddressList.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import ContactBook from '../ContactBook.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
+import CryptoAmount from '../CryptoAmount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ScanQrCodeIcon from '../icons/ScanQrCodeIcon.vue';
 import TriangleDownIcon from '../icons/TriangleDownIcon.vue';
+import Identicon from '../Identicon.vue';
 import IdenticonButton from '../IdenticonButton.vue';
+import LabelInput from '../LabelInput.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
+import SelectBar, { type SelectBarOption } from '../SelectBar.vue';
 import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
@@ -550,7 +548,7 @@ export default defineComponent({
         const amountMenuOpened = ref(false);
         const feeSelectionOpened = ref(false);
 
-        const feeOptions: SelectBar.SelectBarOption[] = [
+        const feeOptions: SelectBarOption[] = [
             {
                 color: 'nq-light-blue-bg',
                 get text() {
@@ -932,7 +930,7 @@ export default defineComponent({
         AmountMenu,
         FiatConvertedAmount,
         SelectBar,
-        Amount,
+        CryptoAmount,
         SendModalFooter,
         StatusScreen,
     },

@@ -81,7 +81,6 @@
 
 <script lang="ts">
 import { CryptoCurrency } from '@nimiq/utils';
-import { LabelInput } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, computed, ref } from 'vue';
 import { useAccountStore } from '../stores/Account';
@@ -92,6 +91,7 @@ import { useUsdtContactsStore } from '../stores/UsdtContacts';
 import Avatar from './Avatar.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import LabelInput from './LabelInput.vue';
 import { RecipientType } from './modals/StablecoinSendModal.vue';
 
 export default defineComponent({

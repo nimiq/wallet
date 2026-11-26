@@ -28,10 +28,12 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import { useWindowSize } from '../../../composables/useWindowSize';
 import InteractiveShortAddress from '../../InteractiveShortAddress.vue';
+import PageBody from '../../PageBody.vue';
+import PageHeader from '../../PageHeader.vue';
+import QrCode from '../../QrCode.vue';
 
 export default defineComponent({
     props: {

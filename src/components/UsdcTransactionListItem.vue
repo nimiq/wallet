@@ -87,7 +87,6 @@
 
 <script lang="ts">
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { CircleSpinner, AlertTriangleIcon, Identicon, FiatAmount, CrossIcon } from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import { useConfig } from '../composables/useConfig';
 import { useFormattedDate } from '../composables/useFormattedDate';
@@ -97,12 +96,17 @@ import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { Transaction, TransactionState } from '../stores/UsdcTransactions';
 import Amount from './Amount.vue';
 import Avatar from './Avatar.vue';
+import CircleSpinner from './CircleSpinner.vue';
+import FiatAmount from './FiatAmount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
+import Identicon from './Identicon.vue';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({

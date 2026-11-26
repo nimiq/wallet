@@ -79,7 +79,6 @@
 
 <script lang="ts">
 import { Bank } from '@nimiq/oasis-bank-list';
-import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import IBAN from 'iban';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -88,7 +87,11 @@ import { BankAccount, useBankStore } from '@/stores/Bank';
 import BankCheckInput from '../../BankCheckInput.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
+import LabelInput from '../../LabelInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
+import PageBody from '../../PageBody.vue';
+import PageFooter from '../../PageFooter.vue';
+import PageHeader from '../../PageHeader.vue';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',

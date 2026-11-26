@@ -32,7 +32,6 @@
 </template>
 
 <script lang="ts">
-import { Identicon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
@@ -40,6 +39,7 @@ import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import TriangleDownIcon from './icons/TriangleDownIcon.vue';
+import Identicon from './Identicon.vue';
 
 export default defineComponent({
     props: {

@@ -45,8 +45,8 @@
 </template>
 
 <script lang="ts">
-import { HexagonIcon } from '@nimiq/vue-components';
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
+import HexagonIcon from './icons/HexagonIcon.vue';
 
 export enum LoadingListType {
     TRANSACTION,

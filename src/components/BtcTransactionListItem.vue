@@ -88,7 +88,6 @@
 <script lang="ts">
 import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { CircleSpinner, AlertTriangleIcon, FiatAmount, CrossIcon, Identicon } from '@nimiq/vue-components';
 import { defineComponent, computed } from 'vue';
 import { useBtcTransactionInfo } from '../composables/useBtcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
@@ -96,12 +95,17 @@ import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { Transaction } from '../stores/BtcTransactions';
 import Amount from './Amount.vue';
 import Avatar from './Avatar.vue';
+import CircleSpinner from './CircleSpinner.vue';
+import FiatAmount from './FiatAmount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import AlertTriangleIcon from './icons/AlertTriangleIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
+import CrossIcon from './icons/CrossIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
+import Identicon from './Identicon.vue';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({

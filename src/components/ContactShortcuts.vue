@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import { ContactsIcon } from '@nimiq/vue-components';
 import { defineComponent } from 'vue';
+import ContactsIcon from './icons/ContactsIcon.vue';
 import IdenticonButton from './IdenticonButton.vue';
 
 export default defineComponent({

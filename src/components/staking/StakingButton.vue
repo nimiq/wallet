@@ -44,7 +44,6 @@
 </template>
 
 <script lang="ts">
-import { Tooltip } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter, RouteName } from '@/router';
@@ -54,6 +53,7 @@ import { MIN_STAKE } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import Tooltip from '../Tooltip.vue';
 
 export default defineComponent({
     props: {

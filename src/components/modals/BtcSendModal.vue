@@ -179,7 +179,6 @@
 
 <script lang="ts">
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
-import { PageHeader, PageBody, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { storeToRefs } from 'pinia';
 import { defineComponent, ref, watch, watchEffect, computed, Ref, onMounted, onBeforeUnmount } from 'vue';
 import { nextTick } from '@/lib/nextTick';
@@ -204,8 +203,12 @@ import BtcLabelInput from '../BtcLabelInput.vue';
 import DoubleInput from '../DoubleInput.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import InfoCircleSmallIcon from '../icons/InfoCircleSmallIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageHeader from '../PageHeader.vue';
 import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import Tooltip from '../Tooltip.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {

@@ -35,13 +35,16 @@
 </template>
 
 <script lang="ts">
-import { PageBody, PageHeader, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import CaretRightSmallIcon from '../icons/CaretRightSmallIcon.vue';
+import PageBody from '../PageBody.vue';
+import PageFooter from '../PageFooter.vue';
+import PageHeader from '../PageHeader.vue';
 import StablecoinSelector from '../StablecoinSelector.vue';
 import Modal from './Modal.vue';
 

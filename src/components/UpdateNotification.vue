@@ -1,37 +1,42 @@
 <template>
-    <BottomOverlay v-if="isShown"
-        theme="green" class="update-notification flex-row"
-        :class="{'hide-close-button': applyingWalletUpdate}"
+    <BottomOverlay
+        v-if="isShown"
+        theme="green"
+        class="update-notification flex-row"
+        :class="{ 'hide-close-button': applyingWalletUpdate }"
         @close="isShown = false"
     >
         {{ $t('An update to the Wallet is available.') }}
-        <router-link :to="{name: `${$route.name}-release-notes`}" class="nq-link">
+        <router-link :to="{ name: `${$route.name}-release-notes` }" class="nq-link">
             {{ $t('Release Notes') }}
         </router-link>
         <div class="flex-grow"></div>
-        <CircleSpinner v-if="applyingWalletUpdate"/>
-        <button v-else
-            class="nq-button-s inverse"
-            @click="applyWalletUpdate" @mousedown.prevent
-        >{{ $t('Update now') }}</button>
+        <CircleSpinner v-if="applyingWalletUpdate" />
+        <button v-else class="nq-button-s inverse" @click="applyWalletUpdate" @mousedown.prevent>
+            {{ $t('Update now') }}
+        </button>
     </BottomOverlay>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
-import { useSettingsStore } from '../stores/Settings';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch } from 'vue';
 import { updateServiceWorker } from '../registerServiceWorker';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     setup() {
         const isShown = ref(false);
 
         const { updateAvailable } = storeToRefs(useSettingsStore());
-        watch(updateAvailable, (isAvailable) => {
-            if (isAvailable) isShown.value = true;
-        }, { immediate: true });
+        watch(
+            updateAvailable,
+            (isAvailable) => {
+                if (isAvailable) isShown.value = true;
+            },
+            { immediate: true },
+        );
 
         const applyingWalletUpdate = ref(false);
 
@@ -78,8 +83,12 @@ export default defineComponent({
     }
 
     bottom: max(2rem, env(safe-area-inset-bottom));
-    @media (max-width: 912px) { bottom: max(1.5rem, env(safe-area-inset-bottom)); }
-    @media (max-width: 450px) { bottom: 0; }
+    @media (max-width: 912px) {
+        bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+    @media (max-width: 450px) {
+        bottom: 0;
+    }
 }
 
 .nq-link {

@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* oxlint-disable eslint-js/max-len */
 
 export const USDC_BRIDGED_TOKEN_CONTRACT_ABI = [
     // 'event Approval(address indexed owner, address indexed spender, uint256 value)',

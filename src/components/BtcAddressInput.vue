@@ -1,6 +1,7 @@
 <template>
     <div class="btc-address-input" :class="{ invalid }">
-        <LabelInput v-model="address"
+        <LabelInput
+            v-model="address"
             :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
             :placeholder="placeholder"
             :disabled="disabled"
@@ -10,15 +11,16 @@
         />
         <transition name="fade">
             <button v-if="!address.length && !disabled" class="reset scan-qr-button" @click="$emit('scan')">
-                <ScanQrCodeIcon/>
+                <ScanQrCodeIcon />
             </button>
         </transition>
-        <span class="notice"
+        <span
+            class="notice"
             :class="{
-                'resolving': isResolvingUnstoppableDomain,
+                resolving: isResolvingUnstoppableDomain,
                 'nq-orange': resolverError || invalid,
             }"
-            :style="{'opacity': invalid || isResolvingUnstoppableDomain ? 1 : 0}"
+            :style="{ opacity: invalid || isResolvingUnstoppableDomain ? 1 : 0 }"
         >
             <template v-if="isResolvingUnstoppableDomain">
                 {{ $t('Resolving Unstoppable Domain...') }}
@@ -34,18 +36,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
-import { useI18n } from '@/lib/useI18n';
+import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import { ENV_MAIN } from '../lib/Constants';
+import { useI18n } from '@/lib/useI18n';
+import { useConfig } from '../composables/useConfig';
 import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
+import { ENV_MAIN } from '../lib/Constants';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../lib/UnstoppableDomains';
-import { useConfig } from '../composables/useConfig';
 
 const BtcAddressInput = defineComponent({
     props: {
@@ -92,7 +94,7 @@ const BtcAddressInput = defineComponent({
                 try {
                     const resolvedAddress = await resolveUnstoppableDomain(domain, ticker);
                     const normalizedAddress = resolvedAddress && normalizeAddress(resolvedAddress);
-                    if (normalizedAddress && await validateAddress(normalizedAddress)) {
+                    if (normalizedAddress && (await validateAddress(normalizedAddress))) {
                         context.emit('domain-address', domain, normalizedAddress);
                         invalid.value = false;
                     } else {
@@ -134,7 +136,8 @@ const BtcAddressInput = defineComponent({
 
             if (!inputPadding) {
                 inputPadding = parseInt(
-                    window.getComputedStyle(input$.value.$el.children[2])
+                    window
+                        .getComputedStyle(input$.value.$el.children[2])
                         .getPropertyValue('padding-left')
                         .replace('px', ''),
                     10,
@@ -145,7 +148,7 @@ const BtcAddressInput = defineComponent({
             await nextTick();
 
             const width = input$.value.$el.children[1].clientWidth;
-            const maxWidth = input$.value.$el.children[2].clientWidth - (inputPadding / 2);
+            const maxWidth = input$.value.$el.children[2].clientWidth - inputPadding / 2;
 
             inputFontSizeScaleFactor.value = Math.max(Math.min(maxWidth / width, 1), 0.7);
         }
@@ -181,10 +184,14 @@ const BtcAddressInput = defineComponent({
             context.emit('paste', event, pastedData);
         }
 
-        watch(() => props.value, () => {
-            address.value = props.value;
-            onUpdate();
-        }, { immediate: true });
+        watch(
+            () => props.value,
+            () => {
+                address.value = props.value;
+                onUpdate();
+            },
+            { immediate: true },
+        );
 
         return {
             focus, // exposed for use from other components
@@ -211,63 +218,64 @@ export default BtcAddressInput;
 </script>
 
 <style lang="scss" scoped>
-    .btc-address-input {
-        text-align: center;
-        position: relative;
-    }
+.btc-address-input {
+    text-align: center;
+    position: relative;
+}
 
-    .label-input {
-        font-family: 'Fira Mono', monospace;
+.label-input {
+    font-family: 'Fira Mono', monospace;
 
-        ::v-deep input {
-            width: 100% !important;
-            padding: 1.75rem 2rem;
-            line-height: 2.5rem;
+    ::v-deep input {
+        width: 100% !important;
+        padding: 1.75rem 2rem;
+        line-height: 2.5rem;
 
-            &::placeholder {
-                font-size: var(--body-size);
-                font-weight: 600;
-                font-family: Muli, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu,
-                    Cantarell, "Helvetica Neue", sans-serif;
-            }
-
-            .invalid & {
-                --border-color: rgba(252, 135, 2, 0.4);
-                color: var(--nimiq-orange);
-            }
+        &::placeholder {
+            font-size: var(--body-size);
+            font-weight: 600;
+            font-family:
+                Muli, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+                'Helvetica Neue', sans-serif;
         }
 
-        ::v-deep .width-finder {
-            padding: 0 2rem;
+        .invalid & {
+            --border-color: rgba(252, 135, 2, 0.4);
+            color: var(--nimiq-orange);
         }
     }
 
-    .scan-qr-button {
-        position: absolute;
-        right: 1.25rem;
-        top: 1.25rem;
-        font-size: 3.5rem;
-        opacity: 0.4;
-
-        transition: opacity var(--attr-duration) var(--nimiq-ease);
-
-        &:hover,
-        &:focus {
-            opacity: 0.6;
-        }
+    ::v-deep .width-finder {
+        padding: 0 2rem;
     }
+}
 
-    .notice {
-        display: block;
-        margin-top: 0.75rem;
-        opacity: 0;
-        font-weight: 600;
+.scan-qr-button {
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+    font-size: 3.5rem;
+    opacity: 0.4;
 
-        transition: opacity 0.3s var(--nimiq-ease);
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
 
-        &.resolving {
-            font-size: var(--small-size);
-            opacity: 0.5 !important;
-        }
+    &:hover,
+    &:focus {
+        opacity: 0.6;
     }
+}
+
+.notice {
+    display: block;
+    margin-top: 0.75rem;
+    opacity: 0;
+    font-weight: 600;
+
+    transition: opacity 0.3s var(--nimiq-ease);
+
+    &.resolving {
+        font-size: var(--small-size);
+        opacity: 0.5 !important;
+    }
+}
 </style>

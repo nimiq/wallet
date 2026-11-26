@@ -1,14 +1,14 @@
-import { defineStore } from 'pinia';
 import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
-import { useAddressStore } from './Address';
-import { useAccountSettingsStore } from './AccountSettings';
+import { defineStore } from 'pinia';
 import { CryptoCurrency } from '../lib/Constants';
+import { useAccountSettingsStore } from './AccountSettings';
+import { useAddressStore } from './Address';
 
 export type AccountState = {
-    accountInfos: {[id: string]: AccountInfo},
-    activeAccountId: string | null,
-    activeCurrency: CryptoCurrency,
-}
+    accountInfos: { [id: string]: AccountInfo };
+    activeAccountId: string | null;
+    activeCurrency: CryptoCurrency;
+};
 
 // Reconstruct AccountType enum by typescript declaration merging of enum values and enum type
 const { AccountType } = HubApi; // AccountType enum values
@@ -19,23 +19,22 @@ export type AccountInfo = Omit<
     Account,
     'accountId' | 'type' | 'contracts' | 'addresses' | 'uid' | 'requestType' | 'polygonAddresses'
 > & {
-    id: string,
-    type: AccountType,
-    addresses: string[],
-    uid?: string,
-    polygonAddresses?: string[],
-}
+    id: string;
+    type: AccountType;
+    addresses: string[];
+    uid?: string;
+    polygonAddresses?: string[];
+};
 
 export const useAccountStore = defineStore('accounts', {
-    state: () => ({
-        accountInfos: {},
-        activeAccountId: null,
-        activeCurrency: CryptoCurrency.NIM,
-    } as AccountState),
+    state: () =>
+        ({
+            accountInfos: {},
+            activeAccountId: null,
+            activeCurrency: CryptoCurrency.NIM,
+        }) as AccountState,
     getters: {
-        activeAccountInfo: (state) => state.activeAccountId
-            ? state.accountInfos[state.activeAccountId]
-            : null,
+        activeAccountInfo: (state) => (state.activeAccountId ? state.accountInfos[state.activeAccountId] : null),
         accountNimAddresses(): string[] {
             return this.activeAccountInfo?.addresses || [];
         },
@@ -84,7 +83,7 @@ export const useAccountStore = defineStore('accounts', {
             if (selectIt) this.selectAccount(accountInfo.id);
         },
         setAccountInfos(accountInfos: AccountInfo[]) {
-            const newAccountInfos: {[id: string]: AccountInfo} = {};
+            const newAccountInfos: { [id: string]: AccountInfo } = {};
 
             for (const accountInfo of accountInfos) {
                 newAccountInfos[accountInfo.id] = accountInfo;

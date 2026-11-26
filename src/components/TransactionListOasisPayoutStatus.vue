@@ -1,7 +1,12 @@
 <template>
     <span v-if="data.htlc && data.htlc.settlement" class="oasis-payout-status">
-        <span v-if="data.htlc.settlement.status === SettlementStatus.PENDING
-            || data.htlc.settlement.status === SettlementStatus.ACCEPTED" class="nq-light-blue">
+        <span
+            v-if="
+                data.htlc.settlement.status === SettlementStatus.PENDING
+                || data.htlc.settlement.status === SettlementStatus.ACCEPTED
+            "
+            class="nq-light-blue"
+        >
             {{ $t('{currency} payout pending', { currency: data.asset }) }}
         </span>
         <span v-if="data.htlc.settlement.status === SettlementStatus.DENIED" class="nq-orange">
@@ -14,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { defineComponent } from 'vue';
 import { SwapEurData } from '../stores/Swaps';
 
 export default defineComponent({
@@ -33,6 +38,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -470,11 +470,6 @@ fi
 # Get up-to-date EBA RT1 bank list (disabled while OASIS is not available)
 # yarn utils:getBankList
 
-# Get up-to-date browsers support list from caniuse.
-# The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.
-echo -e "${CYAN}Updating browsers support list...${NC}"
-run_command "npx update-browserslist-db@latest" "Failed to update browsers list"
-
 # Build Nginx path allowlist
 echo -e "${CYAN}Building Nginx path allowlist...${NC}"
 run_command "yarn utils:makeNginxAllowlist" "Failed to build Nginx allowlist"

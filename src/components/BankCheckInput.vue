@@ -1,59 +1,80 @@
 <template>
     <div class="bank-check-input" :class="{ disabled }" @keydown="onKeyDown">
-        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="bankSearchInput$"/>
-        <CountrySelector :countryCodes="SEPA_COUNTRY_CODES" includeAllOption
+        <LabelInput
+            v-bind="$attrs"
+            v-on="$listeners"
+            v-model="localValue"
+            :disabled="disabled"
+            ref="bankSearchInput$"
+        />
+        <CountrySelector
+            :countryCodes="SEPA_COUNTRY_CODES"
+            includeAllOption
             @open="countryDropdownOpened = true"
             @close="countryDropdownOpened = false"
             @select="selectCountry"
-            ref="countrySelect">
+            ref="countrySelect"
+        >
             <li slot="info" class="info">{{ $t('More locations will be supported in the future.') }}</li>
         </CountrySelector>
-        <ul class="bank-autocomplete" ref="bankAutocomplete$"
+        <ul
+            class="bank-autocomplete"
+            ref="bankAutocomplete$"
             v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2 && !countryDropdownOpened"
             :class="{ scroll: isScrollable }"
         >
-            <li class="bank"
-                v-for="(bank, index) in visibleBanks" :key="index"
+            <li
+                class="bank"
+                v-for="(bank, index) in visibleBanks"
+                :key="index"
                 :class="{ selected: bankToConfirm || selectedBankIndex === index }"
                 :disabled="getBankSupport(bank) === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
-                @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
-                @focusin="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
+                @mouseenter="
+                    selectedBankIndex = index;
+                    bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show();
+                "
+                @focusin="
+                    selectedBankIndex = index;
+                    bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show();
+                "
                 @mouseleave="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
                 @focusout="bank.tooltip && bank.tooltip.isShown && bank.tooltip.hide()"
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
-                <BankIcon v-if="getBankSupport(bank) !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <BankIcon v-if="getBankSupport(bank) !== SEPA_INSTANT_SUPPORT.NONE" />
                 <ForbiddenIcon v-else />
 
                 <div class="flex-column">
-                    <span v-if="shouldHighlightMatch(bank.name)">{{
-                        getMatchPrefix(bank.name)
-                        }}<strong>{{
-                            getMatch(bank.name)
-                        }}</strong>{{
-                        getMatchSuffix(bank.name)
-                    }}</span>
+                    <span v-if="shouldHighlightMatch(bank.name)"
+                        >{{ getMatchPrefix(bank.name) }}<strong>{{ getMatch(bank.name) }}</strong
+                        >{{ getMatchSuffix(bank.name) }}</span
+                    >
                     <span v-else>{{ bank.name }}</span>
 
                     <div class="bic">{{ bank.BIC }}</div>
                 </div>
 
-                <button v-if="bankToConfirm" class="reset cancel-bank" @click.stop="bankToConfirm = null" >
-                    <CrossIcon/>
+                <button v-if="bankToConfirm" class="reset cancel-bank" @click.stop="bankToConfirm = null">
+                    <CrossIcon />
                 </button>
-                <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)"/>
+                <CaretRightSmallIcon
+                    class="caret-right-small-icon"
+                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)"
+                />
                 <Tooltip
-                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.PARTIAL)
-                        || checkBankSupport(bank, SEPA_INSTANT_SUPPORT.UNKNOWN)"
+                    v-else-if="
+                        checkBankSupport(bank, SEPA_INSTANT_SUPPORT.PARTIAL)
+                        || checkBankSupport(bank, SEPA_INSTANT_SUPPORT.UNKNOWN)
+                    "
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
                     :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
-                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <CircledQuestionMarkIcon @click.stop slot="trigger"/>
+                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }"
+                >
+                    <CircledQuestionMarkIcon @click.stop slot="trigger" />
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
@@ -64,13 +85,20 @@
                     theme="inverse"
                     ref="tooltips$"
                     :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
-                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
-                    <AlertTriangleIcon @click.stop slot="trigger"/>
+                    :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }"
+                >
+                    <AlertTriangleIcon @click.stop slot="trigger" />
                     <template v-if="direction == 'outbound'">
                         <p>{{ $t('Without an individual IBAN, refunds are impossible!') }}</p>
                         <p>{{ $t('{bankName} offers generic and individual IBANs.', { bankName: bank.name }) }}</p>
-                        <p>{{ $t('In case of any issues, like exceeded limits or insufficient amounts, '
-                            + 'the automatic refunds will only work for individual IBAN addresses.') }}</p>
+                        <p>
+                            {{
+                                $t(
+                                    'In case of any issues, like exceeded limits or insufficient amounts, '
+                                        + 'the automatic refunds will only work for individual IBAN addresses.',
+                                )
+                            }}
+                        </p>
                     </template>
                     <template v-else>
                         <p>{{ $t('Don’t use a generic IBAN!') }}</p>
@@ -99,19 +127,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from 'vue';
-import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
 import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT, loadBankList } from '@nimiq/oasis-bank-list';
+import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
+import { SEPA_COUNTRY_CODES } from '../lib/Countries';
+import CountrySelector from './CountrySelector.vue';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
-import CountrySelector from './CountrySelector.vue';
-import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 
 type CountryInfo = {
-    name: string,
-    code: string,
-}
+    name: string;
+    code: string;
+};
 
 function unicodeNormalize(s: string) {
     return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -138,14 +166,12 @@ const BankCheckInput = defineComponent({
         // https://vue-composition-api-rfc.netlify.app/api.html#computed
         const localValue = computed({
             get: () => props.value,
-            set(value) { context.emit('input', value); },
+            set(value) {
+                context.emit('input', value);
+            },
         });
         const normalizedLocalValue = computed(() =>
-            unicodeNormalize(localValue.value
-                .replace(/ä/g, 'ae')
-                .replace(/ö/g, 'oe')
-                .replace(/ü/g, 'ue'),
-            ),
+            unicodeNormalize(localValue.value.replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue')),
         );
 
         const bankSearchInput$ = ref<LabelInput | null>(null);
@@ -159,12 +185,12 @@ const BankCheckInput = defineComponent({
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-        const bankToConfirm = ref<Bank & { tooltip: undefined } | null>(null);
+        const bankToConfirm = ref<(Bank & { tooltip: undefined }) | null>(null);
 
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
         onMounted(() => {
-            loadBankList().then((BANKS: Bank[]) => banks.value = BANKS);
+            loadBankList().then((BANKS: Bank[]) => (banks.value = BANKS));
         });
 
         function focus() {
@@ -185,45 +211,47 @@ const BankCheckInput = defineComponent({
 
             const rgx = RegExp(normalizedLocalValue.value, 'i');
 
-            return Object.values(availableBanks.value).filter((bank) => {
-                const normalizedBankName = unicodeNormalize(bank.name);
+            return Object.values(availableBanks.value)
+                .filter((bank) => {
+                    const normalizedBankName = unicodeNormalize(bank.name);
 
-                const matchName = (normalizedBankName && rgx.test(normalizedBankName));
-                const matchBIC = (bank.BIC && rgx.test(bank.BIC));
+                    const matchName = normalizedBankName && rgx.test(normalizedBankName);
+                    const matchBIC = bank.BIC && rgx.test(bank.BIC);
 
-                if (bank.BIC && bank.BIC.length === 8) {
-                    const rgxBankBIC = RegExp(`${bank.BIC}[\\w]{0,3}`, 'i');
-                    const partiallyMatchBIC = rgxBankBIC.test(normalizedLocalValue.value);
+                    if (bank.BIC && bank.BIC.length === 8) {
+                        const rgxBankBIC = RegExp(`${bank.BIC}[\\w]{0,3}`, 'i');
+                        const partiallyMatchBIC = rgxBankBIC.test(normalizedLocalValue.value);
 
-                    return matchName || matchBIC || partiallyMatchBIC;
-                }
+                        return matchName || matchBIC || partiallyMatchBIC;
+                    }
 
-                return matchName || matchBIC;
-            }).sort((a, b) => {
-                const aStartWithSearchTerm = unicodeNormalize(a.name).toLowerCase()
-                    .startsWith(normalizedLocalValue.value.toLowerCase());
-                const bStartWithSearchTerm = unicodeNormalize(b.name).toLowerCase()
-                    .startsWith(normalizedLocalValue.value.toLowerCase());
+                    return matchName || matchBIC;
+                })
+                .sort((a, b) => {
+                    const aStartWithSearchTerm = unicodeNormalize(a.name)
+                        .toLowerCase()
+                        .startsWith(normalizedLocalValue.value.toLowerCase());
+                    const bStartWithSearchTerm = unicodeNormalize(b.name)
+                        .toLowerCase()
+                        .startsWith(normalizedLocalValue.value.toLowerCase());
 
-                if (aStartWithSearchTerm && !bStartWithSearchTerm) return -1;
-                if (!aStartWithSearchTerm && bStartWithSearchTerm) return 1;
+                    if (aStartWithSearchTerm && !bStartWithSearchTerm) return -1;
+                    if (!aStartWithSearchTerm && bStartWithSearchTerm) return 1;
 
-                if (a.name.length < b.name.length) return -1;
-                if (b.name.length < a.name.length) return 1;
+                    if (a.name.length < b.name.length) return -1;
+                    if (b.name.length < a.name.length) return 1;
 
-                return intlCollator.compare(a.name, b.name);
-            });
+                    return intlCollator.compare(a.name, b.name);
+                });
         });
 
         /* List of banks displayed to the user. */
         const visibleBanks = computed(() => {
             if (bankToConfirm.value) return [bankToConfirm.value];
 
-            const b: (Bank & { tooltip?: Tooltip })[] = [...(
-                isScrollable.value
-                    ? matchingBanks.value
-                    : matchingBanks.value.slice(0, 3)
-            )];
+            const b: (Bank & { tooltip?: Tooltip })[] = [
+                ...(isScrollable.value ? matchingBanks.value : matchingBanks.value.slice(0, 3)),
+            ];
 
             if (tooltips$.value.length === 0) return b;
 
@@ -239,57 +267,73 @@ const BankCheckInput = defineComponent({
 
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
-            matchingBanks.value.some(
-                (bank: Bank) => !checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)),
+            matchingBanks.value.some((bank: Bank) => !checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)),
         );
 
         /* Reset the selectedBankIndex to 0 on text input */
-        watch(localValue, () => {
-            selectedBankIndex.value = 0;
-            bankToConfirm.value = null;
-        }, { immediate: true });
+        watch(
+            localValue,
+            () => {
+                selectedBankIndex.value = 0;
+                bankToConfirm.value = null;
+            },
+            { immediate: true },
+        );
 
         /* Show bank tooltip when a bank is selected and if the tooltip is accessible */
-        watch(selectedBankIndex, () => {
-            if (visibleBanks.value[selectedBankIndex.value]?.tooltip?.isShown) return;
+        watch(
+            selectedBankIndex,
+            () => {
+                if (visibleBanks.value[selectedBankIndex.value]?.tooltip?.isShown) return;
 
-            visibleBanks.value.forEach((bank, index) => {
-                if (index !== selectedBankIndex.value && bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
-                if (index === selectedBankIndex.value && bank.tooltip && !bank.tooltip.isShown) bank.tooltip.show();
-            });
-        }, { immediate: true });
+                visibleBanks.value.forEach((bank, index) => {
+                    if (index !== selectedBankIndex.value && bank.tooltip && bank.tooltip.isShown) bank.tooltip.hide();
+                    if (index === selectedBankIndex.value && bank.tooltip && !bank.tooltip.isShown) bank.tooltip.show();
+                });
+            },
+            { immediate: true },
+        );
 
         /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
-        watch(countryDropdownOpened, (newBool, oldBool) => {
-            if (!newBool && oldBool) { // onClose
-                if (bankSearchInput$.value) {
-                    bankSearchInput$.value.focus();
+        watch(
+            countryDropdownOpened,
+            (newBool, oldBool) => {
+                if (!newBool && oldBool) {
+                    // onClose
+                    if (bankSearchInput$.value) {
+                        bankSearchInput$.value.focus();
+                    }
                 }
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
 
-        watch([localValue, countryDropdownOpened], () => isScrollable.value = false, { immediate: true });
+        watch([localValue, countryDropdownOpened], () => (isScrollable.value = false), { immediate: true });
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if ((!matchingBanks.value || !bankAutocomplete$.value) && (!countryDropdownOpened.value)) return;
+            if ((!matchingBanks.value || !bankAutocomplete$.value) && !countryDropdownOpened.value) return;
             const oldBankIndex = selectedBankIndex.value;
 
-            if (countryDropdownOpened.value) { // country list
+            if (countryDropdownOpened.value) {
+                // country list
                 // Ignore
-            } else { // bank list
+            } else {
+                // bank list
                 switch (event.key) {
                     case 'ArrowDown':
                         event.preventDefault();
-                        selectedBankIndex.value = Math.max(0, Math.min(
-                            visibleBanks.value.length - 1, selectedBankIndex.value + 1),
+                        selectedBankIndex.value = Math.max(
+                            0,
+                            Math.min(visibleBanks.value.length - 1, selectedBankIndex.value + 1),
                         );
                         break;
 
                     case 'ArrowUp':
                         event.preventDefault();
-                        selectedBankIndex.value = Math.max(0, Math.min(
-                            visibleBanks.value.length - 1, selectedBankIndex.value - 1),
+                        selectedBankIndex.value = Math.max(
+                            0,
+                            Math.min(visibleBanks.value.length - 1, selectedBankIndex.value - 1),
                         );
                         break;
 
@@ -345,10 +389,7 @@ const BankCheckInput = defineComponent({
          * it will return `true` for `FULL` and `NONE` support.
          * To check for the higher support capability please use the `getBankSupport` function.
          */
-        function checkBankSupport(
-            bank: Bank,
-            instantSupportType: SEPA_INSTANT_SUPPORT,
-        ): boolean {
+        function checkBankSupport(bank: Bank, instantSupportType: SEPA_INSTANT_SUPPORT): boolean {
             return Object.values(BANK_NETWORK).some(
                 (network) => bank.support[network] && bank.support[network]![props.direction] === instantSupportType,
             );
@@ -490,10 +531,11 @@ export default BankCheckInput;
 
             &::placeholder {
                 transition: color 200ms var(--nimiq-ease);
-                mask: linear-gradient(90deg,
+                mask: linear-gradient(
+                    90deg,
                     white,
                     white calc(100% - 5rem),
-                    rgba(255,255,255, 0) calc(100% - .25rem),
+                    rgba(255, 255, 255, 0) calc(100% - 0.25rem)
                 );
             }
 
@@ -523,7 +565,7 @@ export default BankCheckInput;
 
     .info {
         font-size: var(--small-size) !important;
-        color: rgba(white, .5);
+        color: rgba(white, 0.5);
         padding-bottom: 2.5rem !important;
     }
 }
@@ -537,8 +579,8 @@ export default BankCheckInput;
 
     width: 42.5rem;
     margin: 0;
-    margin-top: -.25rem;
-    padding: .5rem;
+    margin-top: -0.25rem;
+    padding: 0.5rem;
 
     position: absolute;
     z-index: 4;
@@ -572,11 +614,11 @@ export default BankCheckInput;
         height: 7rem;
         overflow: visible;
 
-        background-color: rgba(#FFFFFF, 0);
+        background-color: rgba(#ffffff, 0);
         transition: background-color 200ms var(--nimiq-ease);
 
         &:not(:last-child) {
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
         }
 
         &[disabled] {
@@ -587,7 +629,7 @@ export default BankCheckInput;
         &:not([disabled]) {
             &:hover,
             &.selected {
-                background-color: rgba(#FFFFFF, .12);
+                background-color: rgba(#ffffff, 0.12);
 
                 .caret-right-small-icon {
                     opacity: 1;
@@ -601,11 +643,7 @@ export default BankCheckInput;
             white-space: nowrap;
             overflow: hidden;
 
-            mask: linear-gradient(90deg,
-                white,
-                white calc(100% - 5rem),
-                rgba(255,255,255, 0) calc(100% - .5rem),
-            );
+            mask: linear-gradient(90deg, white, white calc(100% - 5rem), rgba(255, 255, 255, 0) calc(100% - 0.5rem));
 
             transition: transform 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
@@ -634,7 +672,7 @@ export default BankCheckInput;
             }
 
             .bic {
-                opacity: .5;
+                opacity: 0.5;
             }
         }
 
@@ -672,7 +710,7 @@ export default BankCheckInput;
             p:not(:first-child) {
                 color: var(--text-60);
                 margin-top: 0;
-                margin-bottom: .5rem;
+                margin-bottom: 0.5rem;
                 font-size: var(--small-size);
             }
 
@@ -704,12 +742,12 @@ export default BankCheckInput;
         margin-bottom: 1.75rem;
 
         a {
-            opacity: .5;
+            opacity: 0.5;
             cursor: pointer;
 
             &:hover,
             &:focus {
-                opacity: .75;
+                opacity: 0.75;
             }
         }
     }
@@ -761,7 +799,8 @@ export default BankCheckInput;
     }
 }
 
-@media (max-width: 450px) { // Vue-components breakpoint
+@media (max-width: 450px) {
+    // Vue-components breakpoint
     .bank-check-input {
         width: 90%;
     }
@@ -775,7 +814,7 @@ export default BankCheckInput;
             }
 
             .bic {
-                opacity: .5;
+                opacity: 0.5;
             }
         }
     }
@@ -788,9 +827,8 @@ export default BankCheckInput;
         }
 
         .bic {
-            opacity: .5;
+            opacity: 0.5;
         }
     }
 }
-
 </style>

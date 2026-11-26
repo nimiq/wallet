@@ -13,20 +13,19 @@
                 <FiatAmount :amount="kycLimits.monthly / 1e2" :currency="kycLimits.asset" hideDecimals />
             </template>
         </i18n>
-        <button
-            class="nq-button-pill inverse nq-purple"
-            @mousedown.prevent @click="$emit('click')"
-        >{{ $t('Get started') }}</button>
+        <button class="nq-button-pill inverse nq-purple" @mousedown.prevent @click="$emit('click')">
+            {{ $t('Get started') }}
+        </button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { getUserLimits } from '@nimiq/fastspot-api';
 import { FiatAmount } from '@nimiq/vue-components';
-import KycIcon from '../icons/KycIcon.vue';
+import { storeToRefs } from 'pinia';
+import { defineComponent } from 'vue';
 import { useKycStore } from '../../stores/Kyc';
+import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({
     props: {
@@ -40,10 +39,9 @@ export default defineComponent({
         const { setKycLimits } = useKycStore();
 
         if (!kycLimits.value) {
-            getUserLimits(
-                '00000000-0000-0000-0000-000000000000',
-                '00000000-0000-0000-0000-000000000000',
-            ).then(setKycLimits);
+            getUserLimits('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000').then(
+                setKycLimits,
+            );
         }
 
         return {

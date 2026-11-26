@@ -2,28 +2,28 @@ import { ValidationUtils } from '@nimiq/utils';
 import { useConfig } from '@/composables/useConfig';
 
 type StartUnstakeInput = {
-    stakerAddress: string,
-    inactiveStakeTxHash: string,
-    retireTx: string,
-    unstakeTx: string,
+    stakerAddress: string;
+    inactiveStakeTxHash: string;
+    retireTx: string;
+    unstakeTx: string;
 };
 
 type StartSwitchValidatorInput = {
-    stakerAddress: string,
-    deactivationTxHash: string,
-    updateStakerTx: string,
+    stakerAddress: string;
+    deactivationTxHash: string;
+    updateStakerTx: string;
 };
 
 export type WatchtowerOperationKind = 'unstake' | 'switch';
 export type WatchtowerJobStatus = 'pending' | 'confirmed' | 'failed';
 export type WatchtowerJob = {
-    id: string,
-    kind: WatchtowerOperationKind,
-    stakerAddress: string,
-    status: WatchtowerJobStatus,
+    id: string;
+    kind: WatchtowerOperationKind;
+    stakerAddress: string;
+    status: WatchtowerJobStatus;
     // Height carried by the status of the failed transaction, else of the last one; it dates a failed
     // job, so a stale one is not taken for the current payout.
-    atHeight?: number,
+    atHeight?: number;
 };
 
 // The list endpoints answer with at most this many jobs, newest first (MAX_RETURN_ENTRIES in
@@ -38,13 +38,13 @@ const OPERATION_PATHS: Record<WatchtowerOperationKind, string> = {
 // Serde's externally tagged enum: a unit variant is its bare name (`"Valid"`), any other variant a
 // one-key object (`{ "Pending": 5 }`, `{ "Sent": [5, 2] }`).
 type RawStatus = string | Record<string, unknown>;
-type RawTransaction = { hash?: string, status?: RawStatus };
+type RawTransaction = { hash?: string; status?: RawStatus };
 type RawJob = {
-    id: string,
-    staker_address: string,
-    retire_transaction?: RawTransaction,
-    unstake_transaction?: RawTransaction,
-    update_transaction?: RawTransaction,
+    id: string;
+    staker_address: string;
+    retire_transaction?: RawTransaction;
+    unstake_transaction?: RawTransaction;
+    update_transaction?: RawTransaction;
 };
 
 function toBasicAuth(username: string, password: string): string {
@@ -58,13 +58,21 @@ function strip0x(hex: string | undefined): string | undefined {
 }
 
 function getWatchtowerEndpoint(): string | null {
-    const { config: { albatrossWatchtower: { endpoint } } } = useConfig();
+    const {
+        config: {
+            albatrossWatchtower: { endpoint },
+        },
+    } = useConfig();
     return endpoint.replace(/\/$/, '') || null;
 }
 
 function buildAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = { Accept: 'application/json' };
-    const { config: { albatrossWatchtower: { username, password } } } = useConfig();
+    const {
+        config: {
+            albatrossWatchtower: { username, password },
+        },
+    } = useConfig();
     if (username && password) headers.Authorization = toBasicAuth(username, password);
     return headers;
 }
@@ -106,7 +114,9 @@ async function postToWatchtower<T extends object>(path: string, body: T): Promis
         try {
             const data = await response.json();
             message = data?.message || JSON.stringify(data);
-        } catch (_) { /* ignore */ }
+        } catch (_) {
+            /* ignore */
+        }
         // eslint-disable-next-line no-console
         console.error('watchtower: HTTP error', response.status, message);
         throw new Error(`HTTP ${response.status}: ${message}`);
@@ -136,7 +146,7 @@ async function getFromWatchtower<T>(path: string): Promise<T | null> {
 }
 
 // `Sent` carries `[height, retries]`, the other variants a bare height, `Valid` nothing.
-function parseStatus(status: RawStatus | undefined): { variant?: string, height?: number } {
+function parseStatus(status: RawStatus | undefined): { variant?: string; height?: number } {
     if (typeof status === 'string') return { variant: status };
     if (!status) return {};
     const [variant] = Object.keys(status);
@@ -156,15 +166,17 @@ function aggregateStatus(transactions: (RawTransaction | undefined)[]): Pick<Wat
 }
 
 function isRawJob(raw: unknown): raw is RawJob {
-    return !!raw && typeof raw === 'object'
+    return (
+        !!raw
+        && typeof raw === 'object'
         && typeof (raw as RawJob).id === 'string'
-        && typeof (raw as RawJob).staker_address === 'string';
+        && typeof (raw as RawJob).staker_address === 'string'
+    );
 }
 
 function parseJob(kind: WatchtowerOperationKind, raw: RawJob): WatchtowerJob {
-    const transactions = kind === 'unstake'
-        ? [raw.retire_transaction, raw.unstake_transaction]
-        : [raw.update_transaction];
+    const transactions =
+        kind === 'unstake' ? [raw.retire_transaction, raw.unstake_transaction] : [raw.update_transaction];
     return {
         id: raw.id,
         kind,
@@ -178,7 +190,7 @@ export async function fetchWatchtowerJob(kind: WatchtowerOperationKind, id: stri
     return isRawJob(raw) ? parseJob(kind, raw) : null;
 }
 
-type JobLists = { jobs: WatchtowerJob[], complete: boolean };
+type JobLists = { jobs: WatchtowerJob[]; complete: boolean };
 
 // Several stakers of one account get their snapshots in the same burst; one download serves them all.
 let jobListsInFlight: Promise<JobLists | null> | null = null;
@@ -198,7 +210,9 @@ async function fetchJobLists(): Promise<JobLists | null> {
                 ],
                 complete: unstakeList.length < WATCHTOWER_LIST_CAP && switchList.length < WATCHTOWER_LIST_CAP,
             };
-        })().finally(() => { jobListsInFlight = null; });
+        })().finally(() => {
+            jobListsInFlight = null;
+        });
     }
     return jobListsInFlight;
 }

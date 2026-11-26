@@ -1,16 +1,28 @@
 <template>
-<div class="button-group">
-    <template v-for="[key, option] of Object.entries(options)">
-        <input type="radio" :name="randomName" :id="`${randomName}-${key}`" :key="`${key}-input`"
-            @click="() => setKey(key)" @mousedown.prevent :disabled="option.disabled === true"
-            :checked="innerKey === key" />
-        <label :for="`${randomName}-${key}`" :key="`${key}-label`" :tabindex="option.disabled !== true && '0'"
-            @keyup.enter="() => setKey(key)" :class="{ active: innerKey === key, disabled: option.disabled === true }" >
-            {{ option.label }}
-        </label>
-    </template>
-    <div class="pill" ref="pill$"></div>
-</div>
+    <div class="button-group">
+        <template v-for="[key, option] of Object.entries(options)">
+            <input
+                type="radio"
+                :name="randomName"
+                :id="`${randomName}-${key}`"
+                :key="`${key}-input`"
+                @click="() => setKey(key)"
+                @mousedown.prevent
+                :disabled="option.disabled === true"
+                :checked="innerKey === key"
+            />
+            <label
+                :for="`${randomName}-${key}`"
+                :key="`${key}-label`"
+                :tabindex="option.disabled !== true && '0'"
+                @keyup.enter="() => setKey(key)"
+                :class="{ active: innerKey === key, disabled: option.disabled === true }"
+            >
+                {{ option.label }}
+            </label>
+        </template>
+        <div class="pill" ref="pill$"></div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -19,7 +31,7 @@ import { defineComponent, onMounted, ref, watch } from 'vue';
 export default defineComponent({
     props: {
         options: {
-            type: Object as () => Record<string, { label: string, disabled?: boolean}>,
+            type: Object as () => Record<string, { label: string; disabled?: boolean }>,
             required: true,
         },
         value: {
@@ -38,11 +50,15 @@ export default defineComponent({
         });
 
         // Update inner when prop changes
-        watch(() => props.value, (key) => {
-            if (!key) return;
-            innerKey.value = key;
-            setPillPosition();
-        }, { immediate: true, flush: 'post' });
+        watch(
+            () => props.value,
+            (key) => {
+                if (!key) return;
+                innerKey.value = key;
+                setPillPosition();
+            },
+            { immediate: true, flush: 'post' },
+        );
 
         function setKey(key: string) {
             if (props.options[key].disabled) return;
@@ -53,8 +69,9 @@ export default defineComponent({
 
         function setPillPosition() {
             if (!pill$.value) return;
-            const selectedLabel = document
-                .querySelector(`label[for="${randomName}-${innerKey.value}"]`) as HTMLLabelElement;
+            const selectedLabel = document.querySelector(
+                `label[for="${randomName}-${innerKey.value}"]`,
+            ) as HTMLLabelElement;
             if (!selectedLabel) return;
             pill$.value!.style.left = `${selectedLabel.offsetLeft}px`;
             pill$.value!.style.width = `${selectedLabel.offsetWidth}px`;
@@ -78,8 +95,7 @@ export default defineComponent({
     width: max-content;
     display: flex;
     align-items: center;
-    background: linear-gradient(0deg,
-        nimiq-blue(0.06), nimiq-blue(0.06)), #FFFFFF;
+    background: linear-gradient(0deg, nimiq-blue(0.06), nimiq-blue(0.06)), #ffffff;
     padding: 0.25rem;
     border-radius: 5rem;
     box-shadow: 0 0 0 1px nimiq-blue(0.03);
@@ -97,7 +113,7 @@ export default defineComponent({
         font-weight: bold;
         transition: color 300ms var(--nimiq-ease);
 
-       &:not(.active) {
+        &:not(.active) {
             color: nimiq-blue(0.5);
 
             &:not(.disabled):before {
@@ -134,7 +150,9 @@ export default defineComponent({
         border-radius: 999px;
         position: absolute;
         z-index: 1;
-        transition: left 300ms var(--nimiq-ease), width 200ms var(--nimiq-ease);
+        transition:
+            left 300ms var(--nimiq-ease),
+            width 200ms var(--nimiq-ease);
     }
 }
 </style>

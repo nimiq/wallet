@@ -33,10 +33,10 @@ function supplyAtTime(currentTime: number): number {
         throw new Error('currentTime must be greater or equal to genesisTime');
     }
 
-    return (TOTAL_SUPPLY - ((TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t)));
+    return TOTAL_SUPPLY - (TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t);
 }
 
-/* eslint-disable max-len */
+/* oxlint-disable eslint-js/max-len */
 /**
  * Adapted `exp_by_squaring_iterative` from
  * https://en.wikipedia.org/w/index.php?title=Exponentiation_by_squaring&amp%3Boldid=1229001691&useskin=vector#With_constant_auxiliary_memory

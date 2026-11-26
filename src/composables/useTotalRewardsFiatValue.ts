@@ -1,20 +1,15 @@
-import { ref, computed, watch, Ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { ref, computed, watch, Ref } from 'vue';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '@/lib/StakingUtils';
 import { useFiatStore } from '@/stores/Fiat';
 import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
-import {
-    CryptoCurrency,
-    FiatCurrency,
-    FIAT_API_PROVIDER_TX_HISTORY,
-    FIAT_PRICE_UNAVAILABLE,
-} from '@/lib/Constants';
-import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '@/lib/StakingUtils';
 
 /**
  * Type for monthly rewards map
  */
-export type MonthlyRewardsMap = Map<string, { total: number, validators: string[] }>;
+export type MonthlyRewardsMap = Map<string, { total: number; validators: string[] }>;
 
 /**
  * Composable for calculating total fiat value of all staking rewards across all months
@@ -31,10 +26,11 @@ export function useTotalRewardsFiatValue(
     const { currency: preferredFiatCurrency, exchangeRates } = storeToRefs(useFiatStore());
     const stakingStore = useStakingStore();
 
-    const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
-        preferredFiatCurrency.value,
-        FIAT_API_PROVIDER_TX_HISTORY,
-    ) ? preferredFiatCurrency.value : FiatCurrency.USD);
+    const fiatCurrency = computed(() =>
+        isHistorySupportedFiatCurrency(preferredFiatCurrency.value, FIAT_API_PROVIDER_TX_HISTORY)
+            ? preferredFiatCurrency.value
+            : FiatCurrency.USD,
+    );
 
     const totalRewardsFiatValue = ref<number | typeof FIAT_PRICE_UNAVAILABLE | undefined>(undefined);
 
@@ -51,7 +47,7 @@ export function useTotalRewardsFiatValue(
 
         // Collect only timestamps for months that don't have cached values
         const allTimestamps: number[] = [];
-        const monthTimestampMap = new Map<string, { isCurrentMonth: boolean, timestamp?: number, cached?: boolean }>();
+        const monthTimestampMap = new Map<string, { isCurrentMonth: boolean; timestamp?: number; cached?: boolean }>();
 
         for (const [monthKey] of monthlyRewards.value.entries()) {
             const { isCurrentMonth } = isCurrentMonthAndYear(monthKey);
@@ -131,12 +127,16 @@ export function useTotalRewardsFiatValue(
     };
 
     // Recalculate when relevant data changes
-    watch([
-        () => monthlyRewards.value.size,
-        fiatCurrency,
-        stakingEvents, // Watch stakingEvents to detect when it changes from null to loaded
-        exchangeRates, // Watch exchange rates for real-time updates
-    ], calculateTotalRewardsFiatValue, { immediate: true });
+    watch(
+        [
+            () => monthlyRewards.value.size,
+            fiatCurrency,
+            stakingEvents, // Watch stakingEvents to detect when it changes from null to loaded
+            exchangeRates, // Watch exchange rates for real-time updates
+        ],
+        calculateTotalRewardsFiatValue,
+        { immediate: true },
+    );
 
     return {
         totalRewardsFiatValue,

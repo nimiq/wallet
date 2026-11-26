@@ -1,35 +1,35 @@
 /* eslint-disable max-classes-per-file */
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
+import type { Store, StateTree } from 'pinia';
 import idbReady from 'safari-14-idb-fix';
 import { set } from 'vue';
 import type { WatchOptionsBase } from 'vue';
-import type { Store, StateTree } from 'pinia';
-import { useTransactionsStore } from './stores/Transactions';
-import { useAddressStore } from './stores/Address';
-import { useAccountStore } from './stores/Account';
-import { useSettingsStore } from './stores/Settings';
-import { useAccountSettingsStore } from './stores/AccountSettings';
-import { useContactsStore } from './stores/Contacts';
-import { useFiatStore, guessUserCurrency } from './stores/Fiat';
-import { useProxyStore } from './stores/Proxy';
-import { useBtcAddressStore } from './stores/BtcAddress';
-import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { useBtcLabelsStore } from './stores/BtcLabels';
-import { usePolygonAddressStore } from './stores/PolygonAddress';
-import { useUsdcContactsStore } from './stores/UsdcContacts';
-import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
-import { useUsdtContactsStore } from './stores/UsdtContacts';
-import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
-import { useSwapsStore } from './stores/Swaps';
-import { useGaslessPaymentsStore } from './stores/GaslessPayments';
-import { useBankStore } from './stores/Bank';
-import { useKycStore } from './stores/Kyc';
-import { useStakingStore } from './stores/Staking';
 import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
 import { ENV_TEST, ENV_DEV } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
+import { useAccountStore } from './stores/Account';
+import { useAccountSettingsStore } from './stores/AccountSettings';
+import { useAddressStore } from './stores/Address';
+import { useBankStore } from './stores/Bank';
+import { useBtcAddressStore } from './stores/BtcAddress';
+import { useBtcLabelsStore } from './stores/BtcLabels';
+import { useBtcTransactionsStore } from './stores/BtcTransactions';
+import { useContactsStore } from './stores/Contacts';
+import { useFiatStore, guessUserCurrency } from './stores/Fiat';
+import { useGaslessPaymentsStore } from './stores/GaslessPayments';
+import { useKycStore } from './stores/Kyc';
+import { usePolygonAddressStore } from './stores/PolygonAddress';
+import { useProxyStore } from './stores/Proxy';
+import { useSettingsStore } from './stores/Settings';
+import { useStakingStore } from './stores/Staking';
+import { useSwapsStore } from './stores/Swaps';
+import { useTransactionsStore } from './stores/Transactions';
+import { useUsdcContactsStore } from './stores/UsdcContacts';
+import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
+import { useUsdtContactsStore } from './stores/UsdtContacts';
+import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -82,7 +82,7 @@ class IndexedDBStorage {
             return await idbSet(key, value);
         } catch (error) {
             // TODO: Handle quota-errors with a user notification
-            const message = error instanceof Error ? error.message : error as string;
+            const message = error instanceof Error ? error.message : (error as string);
 
             if (this.lastError !== message) {
                 this.lastError = message;
@@ -111,7 +111,7 @@ class LocalStorageStorage {
             return localStorage.setItem(key, JSON.stringify(value));
         } catch (error) {
             // TODO: Handle quota-errors with a user notification
-            const message = error instanceof Error ? error.message : error as string;
+            const message = error instanceof Error ? error.message : (error as string);
 
             if (this.lastError !== message) {
                 this.lastError = message;
@@ -183,13 +183,16 @@ export async function initStorage() {
             // to the Hub Onboarding if there are no accounts present. However, the accounts are fetched in syncFromHub
             // which is only started after the storages are initialized (see main.ts), and involves loading the Hub
             // iframe, such that we can expect the geo ip check to resolve before that.
-            useGeoIp().locate().then((location) => {
-                if (!location.country) return;
-                useFiatStore().$state.currency = guessUserCurrency(location.country);
-            }).catch((error) => {
-                // eslint-disable-next-line no-console
-                console.debug(`Failed to locate user for fiat currency: ${error.message || error}`);
-            });
+            useGeoIp()
+                .locate()
+                .then((location) => {
+                    if (!location.country) return;
+                    useFiatStore().$state.currency = guessUserCurrency(location.country);
+                })
+                .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.debug(`Failed to locate user for fiat currency: ${error.message || error}`);
+                });
         }),
         initStoreStore(useSwapsStore(), StorageKeys.SWAPS),
         initStoreStore(useGaslessPaymentsStore(), StorageKeys.GASLESSPAYMENTS),
@@ -239,17 +242,23 @@ export async function initStorage() {
             StorageKeys.POLYGONADDRESSINFOS,
             (state) => state, // this is the default, but we still provide it for ts type inference
             ({ addressInfos }) => {
-                const mapped = Object.entries(addressInfos).map(([id, ai]) => [id, {
-                    address: ai.address,
-                    // Map old properties to new properties
-                    // @ts-expect-error Old property no longer typed
-                    balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance ?? null,
-                    // @ts-expect-error Old property no longer typed
-                    balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance ?? null,
-                    balanceUsdtBridged: ai.balanceUsdtBridged ?? null,
-                    // @ts-expect-error Old property no longer typed
-                    pol: ai.pol ?? ai.matic ?? null,
-                }] as [string, typeof ai]);
+                const mapped = Object.entries(addressInfos).map(
+                    ([id, ai]) =>
+                        [
+                            id,
+                            {
+                                address: ai.address,
+                                // Map old properties to new properties
+                                // @ts-expect-error Old property no longer typed
+                                balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance ?? null,
+                                // @ts-expect-error Old property no longer typed
+                                balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance ?? null,
+                                balanceUsdtBridged: ai.balanceUsdtBridged ?? null,
+                                // @ts-expect-error Old property no longer typed
+                                pol: ai.pol ?? ai.matic ?? null,
+                            },
+                        ] as [string, typeof ai],
+                );
                 return {
                     addressInfos: Object.fromEntries(mapped),
                 };
@@ -297,10 +306,7 @@ export async function initStorage() {
                 // Convert Record<string, Array> back to Record<string, Map> after deserialization
                 cachedMonthlyRewardsByAddress: Object.fromEntries(
                     Object.entries(storedStakingState.cachedMonthlyRewardsByAddress || {}).map(
-                        ([address, rewardsArray]) => [
-                            address,
-                            new Map(rewardsArray as Array<[string, any]>),
-                        ],
+                        ([address, rewardsArray]) => [address, new Map(rewardsArray as Array<[string, any]>)],
                     ),
                 ) as Record<string, Map<string, any>>,
                 // Reset non-persisted state
@@ -324,8 +330,9 @@ export async function initStorage() {
     if (isTestnet && storedTestnetVersion !== currentTestnetVersion) {
         // Outdated data is data later than the new genesis block's height, which is the height to which the testnet was
         // reset via the new genesis block.
-        const hasOutdatedTransaction = Object.values(transactionsStore.$state.transactions).some((transaction) =>
-            (transaction.blockHeight || transaction.validityStartHeight) > currentGenesis.height);
+        const hasOutdatedTransaction = Object.values(transactionsStore.$state.transactions).some(
+            (transaction) => (transaction.blockHeight || transaction.validityStartHeight) > currentGenesis.height,
+        );
 
         if (hasOutdatedTransaction) {
             // While it would be sufficient to only delete data since the new genesis block height, we clear all storage
@@ -371,10 +378,9 @@ async function initStoreStore<State extends StateTree, StoredState>(
         // Write state back to storage on changes. Sync flush, to persist every change immediately, and because pinia
         // pauses subscriptions with the default flush after $patch calls, until the next tick. The cast is necessary
         // because pinia's types pick up Vue 2.7's options API WatchOptions, which do not include flush.
-        store.$subscribe(
-            () => Storage.set(storageKey, writeTransform(store.$state as State)),
-            { flush: 'sync' } as WatchOptionsBase & { detached?: boolean },
-        ),
+        store.$subscribe(() => Storage.set(storageKey, writeTransform(store.$state as State)), {
+            flush: 'sync',
+        } as WatchOptionsBase & { detached?: boolean }),
     );
     return storedState;
 }
@@ -391,8 +397,10 @@ function mergeReactively(target: Record<string, any>, patch: Record<string, any>
 }
 
 function isPlainObject(value: unknown): value is Record<string, any> {
-    return Object.prototype.toString.call(value) === '[object Object]'
-        && typeof (value as { toJSON?: unknown }).toJSON !== 'function';
+    return (
+        Object.prototype.toString.call(value) === '[object Object]'
+        && typeof (value as { toJSON?: unknown }).toJSON !== 'function'
+    );
 }
 
 export async function clearStorage(): Promise<boolean> {

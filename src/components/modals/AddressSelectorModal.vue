@@ -2,13 +2,13 @@
     <Modal>
         <PageHeader>
             <template v-if="name === 'send'">
-                {{ $t("Choose a Sender")}}
+                {{ $t('Choose a Sender') }}
             </template>
             <template v-else-if="name === 'receive'">
-                {{ $t("Choose a Recipient")}}
+                {{ $t('Choose a Recipient') }}
             </template>
             <template v-else>
-                {{ $t("Choose an Address")}}
+                {{ $t('Choose an Address') }}
             </template>
         </PageHeader>
         <PageBody>
@@ -24,13 +24,13 @@
 
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
-import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { defineComponent } from 'vue';
 import { useRouter } from '@/router';
-import Modal, { disableNextModalTransition } from './Modal.vue';
-import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import AddressList from '../AddressList.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export default defineComponent({
     setup() {

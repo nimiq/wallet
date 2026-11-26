@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import { defineStore } from 'pinia';
 import type { TransferRequest, TransferVersion } from '@nimiq/gasless-sdk/core';
+import { defineStore } from 'pinia';
+import Vue from 'vue';
 
 /**
  * Gasless USDC/USDT0 payments whose outcome is not final yet.

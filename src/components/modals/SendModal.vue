@@ -1,10 +1,13 @@
 <template>
-    <Modal :showOverlay="contactListOpened
-        || recipientDetailsOpened
-        || recipientFlaggedAddressWarningOpened
-        || addressListOpened
-        || feeSelectionOpened
-        || statusType !== 'none'"
+    <Modal
+        :showOverlay="
+            contactListOpened
+            || recipientDetailsOpened
+            || recipientFlaggedAddressWarningOpened
+            || addressListOpened
+            || feeSelectionOpened
+            || statusType !== 'none'
+        "
         :closeButtonInverse="recipientFlaggedAddressWarningOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
@@ -28,13 +31,15 @@
                         :allowDomains="true"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
-                        ref="addressInput$"/>
-                    <span class="notice"
+                        ref="addressInput$"
+                    />
+                    <span
+                        class="notice"
                         :class="{
-                            'resolving': isResolvingUnstoppableDomain,
+                            resolving: isResolvingUnstoppableDomain,
                             'nq-orange': resolverError,
                         }"
-                        :style="{'opacity': isResolvingUnstoppableDomain || resolverError ? 1 : 0}"
+                        :style="{ opacity: isResolvingUnstoppableDomain || resolverError ? 1 : 0 }"
                     >
                         <template v-if="isResolvingUnstoppableDomain">
                             {{ $t('Resolving Unstoppable Domain...') }}
@@ -42,9 +47,7 @@
                         <template v-else-if="resolverError">
                             {{ resolverError }}
                         </template>
-                        <template v-else>
-                            &nbsp;
-                        </template>
+                        <template v-else> &nbsp; </template>
                     </span>
                 </section>
                 <section class="cashlink-section">
@@ -54,7 +57,7 @@
                     </button>
                 </section>
                 <button class="reset scan-qr-button" @click="$router.push({ name: RouteName.Scan })">
-                    <ScanQrCodeIcon/>
+                    <ScanQrCodeIcon />
                 </button>
             </PageBody>
         </div>
@@ -62,7 +65,7 @@
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
             <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
             <PageBody class="page__contact-list">
-                <ContactBook @contact-selected="onContactSelected"/>
+                <ContactBook @contact-selected="onContactSelected" />
             </PageBody>
         </div>
 
@@ -70,18 +73,22 @@
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <div class="flex-grow"></div>
-                <Identicon :address="recipientInfo.address"/>
+                <Identicon :address="recipientInfo.address" />
                 <LabelInput
                     v-if="recipientInfo.type === RecipientType.CONTACT"
                     v-model="recipientInfo.label"
                     :placeholder="$t('Name this contact...')"
-                    ref="labelInput$"/>
+                    ref="labelInput$"
+                />
                 <label v-else>{{ recipientInfo.label }}</label>
-                <AddressDisplay :address="recipientInfo.address" copyable/>
+                <AddressDisplay :address="recipientInfo.address" copyable />
                 <div class="flex-grow"></div>
                 <button
                     class="nq-button light-blue"
-                    @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
+                    @click="
+                        recipientDetailsOpened = false;
+                        page = Pages.AMOUNT_INPUT;
+                    "
                     @mousedown.prevent
                 >
                     <template v-if="page === Pages.AMOUNT_INPUT">{{ $t('Done') }}</template>
@@ -96,28 +103,41 @@
                 :info="recipientInfo.flaggedInfo"
                 :currency="CryptoCurrency.NIM"
                 @abort="reset"
-                @continue="page = Pages.AMOUNT_INPUT; closeRecipientDetails();"
+                @continue="
+                    page = Pages.AMOUNT_INPUT;
+                    closeRecipientDetails();
+                "
                 class="page"
             />
         </transition>
 
         <div
-            v-if="page === Pages.AMOUNT_INPUT && recipientInfo" class="page flex-column"
-            :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
+            v-if="page === Pages.AMOUNT_INPUT && recipientInfo"
+            class="page flex-column"
+            :key="Pages.AMOUNT_INPUT"
+            @click="amountMenuOpened = false"
         >
             <PageHeader
                 :backArrow="!gotRequestUriRecipient"
-                @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
-            >{{ $t('Set Amount') }}</PageHeader>
+                @back="
+                    page = Pages.RECIPIENT_INPUT;
+                    resetRecipient();
+                "
+                >{{ $t('Set Amount') }}</PageHeader
+            >
             <PageBody class="page__amount-input flex-column">
                 <section class="identicon-section flex-row">
-                    <button class="reset identicon-stack flex-column" @click="addressListOpened = true" :class="{
-                        'triangle-indented': backgroundAddresses.length === 1,
-                    }">
-                        <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-                        <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
-                        <Identicon class="primary" :address="activeAddressInfo.address"/>
-                        <TriangleDownIcon v-if="backgroundAddresses.length"/>
+                    <button
+                        class="reset identicon-stack flex-column"
+                        @click="addressListOpened = true"
+                        :class="{
+                            'triangle-indented': backgroundAddresses.length === 1,
+                        }"
+                    >
+                        <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]" />
+                        <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]" />
+                        <Identicon class="primary" :address="activeAddressInfo.address" />
+                        <TriangleDownIcon v-if="backgroundAddresses.length" />
                         <label>{{ activeAddressInfo.label }}</label>
                     </button>
                     <div class="separator-wrapper">
@@ -126,7 +146,8 @@
                     <IdenticonButton
                         :address="recipientInfo.address"
                         :label="recipientInfo.label"
-                        @click="recipientDetailsOpened = true"/>
+                        @click="recipientDetailsOpened = true"
+                    />
                 </section>
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
@@ -138,12 +159,18 @@
                 <section
                     v-if="isValidRecipient"
                     class="amount-section"
-                    :class="{'insufficient-balance': maxSendableAmount < amount}"
+                    :class="{ 'insufficient-balance': maxSendableAmount < amount }"
                 >
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.NIM}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount"
-                            :disabled="gotRequestUriAmount" ref="amountInput$">
-                            <AmountMenu slot="suffix" class="ticker"
+                    <div class="flex-row amount-row" :class="{ estimate: activeCurrency !== CryptoCurrency.NIM }">
+                        <AmountInput
+                            v-if="activeCurrency === CryptoCurrency.NIM"
+                            v-model="amount"
+                            :disabled="gotRequestUriAmount"
+                            ref="amountInput$"
+                        >
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -151,13 +178,20 @@
                                 :sendAllOption="!gotRequestUriAmount"
                                 @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @currency="(currency) => (activeCurrency = currency)"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount" :disabled="gotRequestUriAmount"
-                            :decimals="fiatCurrencyInfo.decimals">
+                        <AmountInput
+                            v-else
+                            v-model="fiatAmount"
+                            :disabled="gotRequestUriAmount"
+                            :decimals="fiatCurrencyInfo.decimals"
+                        >
                             <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="ticker"
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
@@ -165,16 +199,17 @@
                                 :sendAllOption="!gotRequestUriAmount"
                                 @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @currency="(currency) => (activeCurrency = currency)"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === CryptoCurrency.NIM" key="fiat-amount">
-                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
+                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" />
                             <span v-if="fee">
-                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/> {{ $t('fee') }}
+                                +<Amount :amount="fee" :minDecimals="0" :maxDecimals="5" /> {{ $t('fee') }}
                             </span>
                         </span>
                         <span v-else key="nim-amount">
@@ -197,17 +232,15 @@
                     />
                 </section>
             </PageBody>
-            <SendModalFooter
-                :assets="[CryptoCurrency.NIM]"
-                :disabled="!canSend"
-                @click="sign"
-            ><template #cta>{{ $t('Send {currency}', { currency: 'NIM' }) }}</template></SendModalFooter>
+            <SendModalFooter :assets="[CryptoCurrency.NIM]" :disabled="!canSend" @click="sign"
+                ><template #cta>{{ $t('Send {currency}', { currency: 'NIM' }) }}</template></SendModalFooter
+            >
         </div>
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false" :required-balance="1"/>
+                <AddressList embedded @address-selected="addressListOpened = false" :required-balance="1" />
             </PageBody>
         </div>
 
@@ -215,15 +248,15 @@
             <PageBody class="page__fee-selection fee-selection flex-column">
                 <h1 class="nq-h1">{{ $t('Speed up your Transaction') }}</h1>
                 <p class="nq-text">
-                    {{ $t('By adding a transaction fee, you can influence ' +
-                    'how fast your transaction will be processed.') }}
+                    {{
+                        $t(
+                            'By adding a transaction fee, you can influence '
+                                + 'how fast your transaction will be processed.',
+                        )
+                    }}
                 </p>
-                <SelectBar
-                    :options="feeOptions"
-                    :selectedValue="feePerByte"
-                    @changed="updateFee"
-                />
-                <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
+                <SelectBar :options="feeOptions" :selectedValue="feePerByte" @changed="updateFee" />
+                <Amount :amount="fee" :minDecimals="0" :maxDecimals="5" />
                 <div class="flex-grow"></div>
                 <button class="nq-button light-blue" @click="onCloseOverlay" @mousedown.prevent>
                     {{ $t('Apply fee') }}
@@ -247,8 +280,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
-import { storeToRefs } from 'pinia';
+import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import {
     PageHeader,
     PageBody,
@@ -260,35 +292,36 @@ import {
     SelectBar,
     Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
-import { useRouter, RouteName } from '@/router';
-import { useI18n } from '@/lib/useI18n';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch, watchEffect, computed, Ref, onBeforeUnmount } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import Modal, { disableNextModalTransition } from './Modal.vue';
-import ContactShortcuts from '../ContactShortcuts.vue';
-import ContactBook from '../ContactBook.vue';
-import IdenticonButton from '../IdenticonButton.vue';
-import TriangleDownIcon from '../icons/TriangleDownIcon.vue';
-import AddressList from '../AddressList.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import SendModalFooter from '../SendModalFooter.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { useContactsStore } from '../../stores/Contacts';
-import { useAddressStore } from '../../stores/Address';
-import { useNetworkStore } from '../../stores/Network';
-import { useFiatStore } from '../../stores/Fiat';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
-import { createCashlink, sendTransaction } from '../../hub';
-import { useWindowSize } from '../../composables/useWindowSize';
+import { useI18n } from '@/lib/useI18n';
+import { useRouter, RouteName } from '@/router';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { createCashlink, sendTransaction } from '../../hub';
 import { i18n } from '../../i18n/i18n-setup';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
+import { reportToSentry } from '../../lib/Sentry';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
-import { reportToSentry } from '../../lib/Sentry';
+import { useAddressStore } from '../../stores/Address';
+import { useContactsStore } from '../../stores/Contacts';
+import { useFiatStore } from '../../stores/Fiat';
+import { useNetworkStore } from '../../stores/Network';
+import AddressList from '../AddressList.vue';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
+import ContactBook from '../ContactBook.vue';
+import ContactShortcuts from '../ContactShortcuts.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import TriangleDownIcon from '../icons/TriangleDownIcon.vue';
+import IdenticonButton from '../IdenticonButton.vue';
+import SendModalFooter from '../SendModalFooter.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     CONTACT,
@@ -344,10 +377,10 @@ export default defineComponent({
         }
 
         const recipientInfo = ref<{
-            address: string,
-            label: string,
-            type: RecipientType,
-            flaggedInfo: FlaggedAddressInfo | null,
+            address: string;
+            label: string;
+            type: RecipientType;
+            flaggedInfo: FlaggedAddressInfo | null;
         } | null>(null);
         const recipientDetailsOpened = ref(false);
         const recipientFlaggedAddressWarningOpened = ref(false);
@@ -374,7 +407,7 @@ export default defineComponent({
         const hasOwnAddresses = computed(() => addressInfos.value.length - 1 > 0);
 
         const contactListOpened = ref(false);
-        function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
+        function onContactSelected(contact: { address: string; label: string }, type = RecipientType.CONTACT) {
             updateRecipientInfo(contact.address, contact.label, type, null);
             contactListOpened.value = false;
             page.value = Pages.AMOUNT_INPUT;
@@ -383,35 +416,39 @@ export default defineComponent({
         const addressInputValue = ref(''); // Used for resetting the address input
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
-        watch(addressInputValue, async (address) => {
-            resolverError.value = '';
+        watch(
+            addressInputValue,
+            async (address) => {
+                resolverError.value = '';
 
-            // Detect unstoppable domains
-            if (isValidUnstoppableDomain(address)) {
-                isResolvingUnstoppableDomain.value = true;
-                const domain = address;
-                const ticker = 'NIM';
-                try {
-                    const resolvedAddress = await resolveUnstoppableDomain(domain, ticker);
-                    const normalizedAddress = resolvedAddress && ValidationUtils.normalizeAddress(resolvedAddress);
-                    if (normalizedAddress && ValidationUtils.isValidAddress(normalizedAddress)) {
-                        const label = getLabel.value(normalizedAddress);
-                        if (!label) setContact(normalizedAddress, domain);
-                        updateRecipientInfo(normalizedAddress, label || domain, RecipientType.CONTACT, null);
-                        page.value = Pages.AMOUNT_INPUT;
-                    } else {
-                        resolverError.value = $t('Domain does not resolve to a valid address') as string;
+                // Detect unstoppable domains
+                if (isValidUnstoppableDomain(address)) {
+                    isResolvingUnstoppableDomain.value = true;
+                    const domain = address;
+                    const ticker = 'NIM';
+                    try {
+                        const resolvedAddress = await resolveUnstoppableDomain(domain, ticker);
+                        const normalizedAddress = resolvedAddress && ValidationUtils.normalizeAddress(resolvedAddress);
+                        if (normalizedAddress && ValidationUtils.isValidAddress(normalizedAddress)) {
+                            const label = getLabel.value(normalizedAddress);
+                            if (!label) setContact(normalizedAddress, domain);
+                            updateRecipientInfo(normalizedAddress, label || domain, RecipientType.CONTACT, null);
+                            page.value = Pages.AMOUNT_INPUT;
+                        } else {
+                            resolverError.value = $t('Domain does not resolve to a valid address') as string;
+                        }
+                    } catch (e) {
+                        console.debug(e); // eslint-disable-line no-console
+                        let message = e instanceof Error ? e.message : String(e);
+                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                        resolverError.value = message;
+                    } finally {
+                        isResolvingUnstoppableDomain.value = false;
                     }
-                } catch (e) {
-                    console.debug(e); // eslint-disable-line no-console
-                    let message = e instanceof Error ? e.message : String(e);
-                    message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
-                    resolverError.value = message;
-                } finally {
-                    isResolvingUnstoppableDomain.value = false;
                 }
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
 
         function onAddressEntered(address: string) {
             if (address === recipientInfo.value?.address) return; // ignore double invocations, e.g. on blur after input
@@ -472,8 +509,10 @@ export default defineComponent({
         }
 
         function closeRecipientDetails() {
-            if (page.value === Pages.RECIPIENT_INPUT
-                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)) {
+            if (
+                page.value === Pages.RECIPIENT_INPUT
+                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)
+            ) {
                 resetRecipient();
             }
             recipientDetailsOpened.value = false;
@@ -484,7 +523,8 @@ export default defineComponent({
             createCashlink(activeAddressInfo.value!.address, activeAddressInfo.value!.balance || undefined);
         }
 
-        const backgroundAddresses = computed(() => { // eslint-disable-line arrow-body-style
+        // eslint-disable-next-line arrow-body-style
+        const backgroundAddresses = computed(() => {
             // TODO: Order by last used?
             return addressInfos.value
                 .slice(0, 3)
@@ -499,31 +539,43 @@ export default defineComponent({
         const feePerByte = ref(0);
         const message = ref('');
 
-        const fee = computed(() => message.value
-            ? feePerByte.value * (166 + Utf8Tools.stringToUtf8ByteArray(message.value).byteLength)
-            : feePerByte.value * 138);
+        const fee = computed(() =>
+            message.value
+                ? feePerByte.value * (166 + Utf8Tools.stringToUtf8ByteArray(message.value).byteLength)
+                : feePerByte.value * 138,
+        );
 
         const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0) - fee.value, 0));
 
         const amountMenuOpened = ref(false);
         const feeSelectionOpened = ref(false);
 
-        const feeOptions: SelectBar.SelectBarOption[] = [{
-            color: 'nq-light-blue-bg',
-            get text() { return i18n.t('free') as string; },
-            value: 0,
-            index: 0,
-        }, {
-            color: 'nq-green-bg',
-            get text() { return i18n.t('standard') as string; },
-            value: 1,
-            index: 1,
-        }, {
-            color: 'nq-gold-bg',
-            get text() { return i18n.t('express') as string; },
-            value: 2,
-            index: 2,
-        }];
+        const feeOptions: SelectBar.SelectBarOption[] = [
+            {
+                color: 'nq-light-blue-bg',
+                get text() {
+                    return i18n.t('free') as string;
+                },
+                value: 0,
+                index: 0,
+            },
+            {
+                color: 'nq-green-bg',
+                get text() {
+                    return i18n.t('standard') as string;
+                },
+                value: 1,
+                index: 1,
+            },
+            {
+                color: 'nq-gold-bg',
+                get text() {
+                    return i18n.t('express') as string;
+                },
+                value: 2,
+                index: 2,
+            },
+        ];
 
         const activeCurrency = ref<CryptoCurrency.NIM | FiatCurrency>(CryptoCurrency.NIM);
         const fiatAmount = ref(0);
@@ -541,29 +593,33 @@ export default defineComponent({
 
         const fiatToNimDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e5);
 
-        watch(activeCurrency, (currency) => {
-            if (currency === CryptoCurrency.NIM) {
-                fiatAmount.value = 0;
-                return;
-            }
+        watch(
+            activeCurrency,
+            (currency) => {
+                if (currency === CryptoCurrency.NIM) {
+                    fiatAmount.value = 0;
+                    return;
+                }
 
-            // Fiat store already has all exchange rates for all supported fiat currencies
-            // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
-        }, { immediate: true });
+                // Fiat store already has all exchange rates for all supported fiat currencies
+                // TODO: What to do when exchange rates are not yet populated?
+                fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
+            },
+            { immediate: true },
+        );
 
         watchEffect(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
-                fiatAmount.value
-                / exchangeRates.value.nim[activeCurrency.value]!
-                / fiatToNimDecimalRatio.value);
+                fiatAmount.value / exchangeRates.value.nim[activeCurrency.value]! / fiatToNimDecimalRatio.value,
+            );
         });
 
         async function sendMax() {
             if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.NIM) {
-                fiatAmount.value = maxSendableAmount.value
+                fiatAmount.value =
+                    maxSendableAmount.value
                     * fiat$.exchangeRates.nim[activeCurrency.value]!
                     * fiatToNimDecimalRatio.value;
             }
@@ -581,11 +637,12 @@ export default defineComponent({
 
         const hasHeight = computed(() => !!height.value);
 
-        const canSend = computed(() =>
-            consensus.value === 'established'
-            && hasHeight.value
-            && !!amount.value
-            && amount.value <= maxSendableAmount.value,
+        const canSend = computed(
+            () =>
+                consensus.value === 'established'
+                && hasHeight.value
+                && !!amount.value
+                && amount.value <= maxSendableAmount.value,
         );
 
         /**
@@ -645,29 +702,37 @@ export default defineComponent({
             element$.value.focus();
         }
 
-        watch(page, (currentPage) => {
-            if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
-            } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInput$);
-            }
-        }, { immediate: true });
-
-        watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
-            if (warningOpened) {
-                if (document.activeElement && 'blur' in document.activeElement) {
-                    (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+        watch(
+            page,
+            (currentPage) => {
+                if (currentPage === Pages.RECIPIENT_INPUT) {
+                    focus(addressInput$);
+                } else if (currentPage === Pages.AMOUNT_INPUT) {
+                    focus(amountInput$);
                 }
-                return;
-            }
-            if (detailsOpened) {
-                focus(labelInput$);
-            } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
-            } else {
-                focus(amountInput$);
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
+
+        watch(
+            [recipientDetailsOpened, recipientFlaggedAddressWarningOpened],
+            ([detailsOpened, warningOpened]) => {
+                if (warningOpened) {
+                    if (document.activeElement && 'blur' in document.activeElement) {
+                        (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+                    }
+                    return;
+                }
+                if (detailsOpened) {
+                    focus(labelInput$);
+                } else if (page.value === Pages.RECIPIENT_INPUT) {
+                    focus(addressInput$);
+                } else {
+                    focus(amountInput$);
+                }
+            },
+            { immediate: true },
+        );
 
         /**
          * Status Screen
@@ -712,13 +777,13 @@ export default defineComponent({
                 statusType.value = 'signing';
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientInfo.value!.label
-                    ? $t('Sent {nim} NIM to {name}', {
-                        nim: amount.value / 1e5,
-                        name: recipientInfo.value!.label,
-                    }) as string
-                    : $t('Sent {nim} NIM', {
-                        nim: amount.value / 1e5,
-                    }) as string;
+                    ? ($t('Sent {nim} NIM to {name}', {
+                          nim: amount.value / 1e5,
+                          name: recipientInfo.value!.label,
+                      }) as string)
+                    : ($t('Sent {nim} NIM', {
+                          nim: amount.value / 1e5,
+                      }) as string);
 
                 // Close modal
                 successCloseTimeout = window.setTimeout(() => {
@@ -875,7 +940,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .send-modal {
     .page {
@@ -920,7 +985,7 @@ export default defineComponent({
     }
 
     .page__amount-input {
-        padding-bottom: .75rem;
+        padding-bottom: 0.75rem;
 
         button {
             flex-shrink: 0;
@@ -951,11 +1016,13 @@ export default defineComponent({
         .notice {
             margin-top: -3.5rem;
             font-size: var(--small-size);
-            transition: opacity .3s var(--nimiq-ease), margin-top .3s var(--nimiq-ease);
+            transition:
+                opacity 0.3s var(--nimiq-ease),
+                margin-top 0.3s var(--nimiq-ease);
 
             &.resolving {
                 font-weight: 600;
-                opacity: .5 !important;
+                opacity: 0.5 !important;
             }
         }
 
@@ -1056,7 +1123,7 @@ export default defineComponent({
             position: relative;
             flex-grow: 1;
             overflow: hidden;
-            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
             .separator {
                 height: 100%;
@@ -1069,8 +1136,12 @@ export default defineComponent({
                 animation: separatorSliding 2.2s infinite;
 
                 @keyframes separatorSliding {
-                    0% { transform: translateX(0) }
-                    100% { transform: translateX(300%) }
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(300%);
+                    }
                 }
             }
         }
@@ -1146,7 +1217,7 @@ export default defineComponent({
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
     }
 
@@ -1201,7 +1272,7 @@ export default defineComponent({
         }
 
         .secondary-amount {
-            padding: 0 .5rem; // for fixing a visual glitch in iOS Safari 16.5 which cuts off the text
+            padding: 0 0.5rem; // for fixing a visual glitch in iOS Safari 16.5 which cuts off the text
             font-weight: 600;
             color: var(--text-50);
 
@@ -1252,8 +1323,9 @@ export default defineComponent({
     .send-modal-footer {
         padding: 0 3rem 2rem;
 
-        @media (max-width: 450px) { // Breakpoint of .page-body padding
-            padding: .75rem 1rem 2rem;
+        @media (max-width: 450px) {
+            // Breakpoint of .page-body padding
+            padding: 0.75rem 1rem 2rem;
         }
 
         ::v-deep .footer-notice {
@@ -1284,7 +1356,8 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full Mobile Breakpoint
         .status-screen {
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;

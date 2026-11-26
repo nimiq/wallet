@@ -1,5 +1,5 @@
-import { reactive, UnwrapNestedRefs } from 'vue';
 import Config from 'config';
+import { reactive, UnwrapNestedRefs } from 'vue';
 
 let reactiveConfig: UnwrapNestedRefs<typeof Config> | null = null;
 

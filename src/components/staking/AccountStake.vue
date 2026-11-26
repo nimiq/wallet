@@ -1,16 +1,16 @@
 <template>
     <div class="account-stake flex-row" title="Account stake">
         <TwoLeafStakingIcon />
-        <Amount :amount="totalAccountStake" :currency="CryptoCurrency.NIM" value-mask/>
+        <Amount :amount="totalAccountStake" :currency="CryptoCurrency.NIM" value-mask />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
-import Amount from '../Amount.vue';
-import { useStakingStore } from '../../stores/Staking';
+import { defineComponent } from 'vue';
 import { CryptoCurrency } from '../../lib/Constants';
+import { useStakingStore } from '../../stores/Staking';
+import Amount from '../Amount.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
@@ -53,7 +53,8 @@ export default defineComponent({
     font-weight: bold;
 }
 
-@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+@media (max-width: 960px) and (min-width: 701px) {
+    // Tablet breakpoint
     .nq-label {
         display: none;
     }

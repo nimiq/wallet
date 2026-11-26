@@ -3,21 +3,28 @@
         <div ref="list$" class="list flex-column">
             <div class="scroll-mask top"></div>
             <button
-                v-for="addressInfo in (showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2))"
+                v-for="addressInfo in showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2)"
                 :key="addressInfo.address"
                 class="reset contact-button flex-row"
                 @click="$emit('contact-selected', addressInfo, RecipientType.OWN_ADDRESS)"
                 :tabindex="0"
             >
-                <Avatar :label="addressInfo.label"/>
+                <Avatar :label="addressInfo.label" />
                 <label>{{ addressInfo.label }}</label>
                 <div class="flex-grow"></div>
-                <InteractiveShortAddress :address="addressInfo.address" tooltipPosition="top right"
-                    :tooltipContainer="list$ ? { $el: list$ } : null" :offsetTooltipPosition="false"/>
+                <InteractiveShortAddress
+                    :address="addressInfo.address"
+                    tooltipPosition="top right"
+                    :tooltipContainer="list$ ? { $el: list$ } : null"
+                    :offsetTooltipPosition="false"
+                />
             </button>
-            <button v-if="ownAddressInfos.length > 2 && !showAllOwnAddresses"
+            <button
+                v-if="ownAddressInfos.length > 2 && !showAllOwnAddresses"
                 class="nq-button-s show-own-addresses-button"
-                @click="showAllOwnAddresses = true" @mousedown.prevent>
+                @click="showAllOwnAddresses = true"
+                @mousedown.prevent
+            >
                 {{ $t('Show all my addresses') }}
             </button>
             <div v-if="ownAddressInfos.length" class="separator"></div>
@@ -28,31 +35,43 @@
                 @click="!editing && $emit('contact-selected', contact, RecipientType.CONTACT)"
                 :tabindex="editing ? -1 : 0"
             >
-                <Avatar :label="contact.label"/>
+                <Avatar :label="contact.label" />
                 <label v-if="!editing">{{ contact.label }}</label>
-                <LabelInput v-else
+                <LabelInput
+                    v-else
                     :value="contact.label"
                     :placeholder="$t('Name your contact')"
-                    @input="onInput(contact.address, $event)"/>
+                    @input="onInput(contact.address, $event)"
+                />
                 <div class="flex-grow"></div>
-                <InteractiveShortAddress :address="contact.address" tooltipPosition="top right"
-                    :tooltipContainer="list$ ? { $el: list$ } : null" :offsetTooltipPosition="false"/>
+                <InteractiveShortAddress
+                    :address="contact.address"
+                    tooltipPosition="top right"
+                    :tooltipContainer="list$ ? { $el: list$ } : null"
+                    :offsetTooltipPosition="false"
+                />
                 <button v-if="editing" class="reset delete-button" @click="setContact(contact.address, '')">
-                    <TrashIcon/>
+                    <TrashIcon />
                 </button>
             </button>
             <div class="scroll-mask bottom"></div>
         </div>
         <template v-if="contacts.length">
-            <button v-if="!editing"
+            <button
+                v-if="!editing"
                 class="nq-button-s edit-button"
-                @click="editing = true" @mousedown.prevent key="edit"
+                @click="editing = true"
+                @mousedown.prevent
+                key="edit"
             >
                 {{ $t('Edit contacts') }}
             </button>
-            <button v-else
+            <button
+                v-else
                 class="nq-button-pill light-blue edit-button"
-                @click="editing = false" @mousedown.prevent key="done"
+                @click="editing = false"
+                @mousedown.prevent
+                key="done"
             >
                 {{ $t('Done') }}
             </button>
@@ -61,48 +80,52 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { LabelInput } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
-import Avatar from './Avatar.vue';
-import InteractiveShortAddress from './InteractiveShortAddress.vue';
-import TrashIcon from './icons/TrashIcon.vue';
-import { RecipientType } from './modals/StablecoinSendModal.vue';
-import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { useUsdtContactsStore } from '../stores/UsdtContacts';
-import { PolygonAddressInfo, usePolygonAddressStore } from '../stores/PolygonAddress';
+import { LabelInput } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref } from 'vue';
 import { useAccountStore } from '../stores/Account';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { PolygonAddressInfo, usePolygonAddressStore } from '../stores/PolygonAddress';
+import { useUsdcContactsStore } from '../stores/UsdcContacts';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
+import Avatar from './Avatar.vue';
+import TrashIcon from './icons/TrashIcon.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
+import { RecipientType } from './modals/StablecoinSendModal.vue';
 
 export default defineComponent({
     setup() {
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
-        const { contactsArray: contacts } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore());
-        const { setContact } = stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore();
+        const { contactsArray: contacts } = storeToRefs(
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore(),
+        );
+        const { setContact } =
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore();
 
         const { addressInfo: activeAddressInfo } = storeToRefs(usePolygonAddressStore());
         const { $state: $polygonAddresses } = usePolygonAddressStore();
 
         type LabeledPolygonAddressInfo = PolygonAddressInfo & {
-            label: string,
+            label: string;
         };
 
         const { accountInfos } = storeToRefs(useAccountStore());
 
         const list$ = ref<HTMLDivElement | null>(null);
 
-        const ownAddressInfos = computed(() => Object.values($polygonAddresses.addressInfos)
-            .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value?.address)
-            .map((addressInfo) => ({
-                ...addressInfo,
-                label: Object.values(accountInfos.value).find((accountInfo) =>
-                    accountInfo.polygonAddresses?.includes(addressInfo.address))!.label,
-            } as LabeledPolygonAddressInfo)),
+        const ownAddressInfos = computed(() =>
+            Object.values($polygonAddresses.addressInfos)
+                .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value?.address)
+                .map(
+                    (addressInfo) =>
+                        ({
+                            ...addressInfo,
+                            label: Object.values(accountInfos.value).find((accountInfo) =>
+                                accountInfo.polygonAddresses?.includes(addressInfo.address),
+                            )!.label,
+                        }) as LabeledPolygonAddressInfo,
+                ),
         );
 
         const showAllOwnAddresses = ref(false);
@@ -277,7 +300,8 @@ export default defineComponent({
     align-self: center;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .contact-button {
         background: none !important;
 

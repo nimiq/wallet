@@ -1,11 +1,12 @@
 <template>
     <div class="flagged-address-warning flex-column">
         <PageBody class="flex-column nq-orange-bg">
-            <AlertTriangleIcon class="alert-triangle-icon"/>
+            <AlertTriangleIcon class="alert-triangle-icon" />
             <label>{{ $t('Flagged Address') }}</label>
 
-            <AddressDisplay v-if="addressFormat !== 'plain'" :address="info.address" :format="addressFormat" copyable/>
-            <InteractiveShortAddress v-else
+            <AddressDisplay v-if="addressFormat !== 'plain'" :address="info.address" :format="addressFormat" copyable />
+            <InteractiveShortAddress
+                v-else
                 :address="info.address"
                 :displayedCharacters="20"
                 tooltipPosition="bottom"
@@ -15,22 +16,29 @@
             />
 
             <p class="info nq-text nq-notice">
-                {{ $t('It\'s recommendable to abort the transaction.') }}
+                {{ $t("It's recommendable to abort the transaction.") }}
                 {{
                     info.type === 'malicious'
                         ? $t('Your {currency} would most likely be stolen.', { currency: currency.toUpperCase() })
                         : ''
                 }}
-                <Tooltip :container="_self" theme="inverse" autoWidth :margin="{
-                    left: Math.min(40, .1 * windowWidth),
-                    right: Math.min(40, .1 * windowWidth),
-                }">
-                    <template #trigger><InfoCircleSmallIcon/></template>
+                <Tooltip
+                    :container="_self"
+                    theme="inverse"
+                    autoWidth
+                    :margin="{
+                        left: Math.min(40, 0.1 * windowWidth),
+                        right: Math.min(40, 0.1 * windowWidth),
+                    }"
+                >
+                    <template #trigger><InfoCircleSmallIcon /></template>
                     <p>{{ $t('Flagged as: {type}', { type: translatedType }) }}</p>
                     <p>{{ $t('Dataset: {name}', { name: info.dataset }) }}</p>
-                    <p class="privacy-note">{{
-                        $t('Addresses are checked locally on your device and are not sent to an external service.')
-                    }}</p>
+                    <p class="privacy-note">
+                        {{
+                            $t('Addresses are checked locally on your device and are not sent to an external service.')
+                        }}
+                    </p>
                 </Tooltip>
             </p>
 
@@ -41,12 +49,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { PageBody, AddressDisplay, Tooltip, AlertTriangleIcon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
-import { i18n } from '../i18n/i18n-setup';
-import { useWindowSize } from '../composables/useWindowSize';
+import { PageBody, AddressDisplay, Tooltip, AlertTriangleIcon, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { defineComponent, computed } from 'vue';
 import type { FlaggedAddressInfo } from '../composables/useFlaggedAddressCheck';
+import { useWindowSize } from '../composables/useWindowSize';
+import { i18n } from '../i18n/i18n-setup';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 
 export enum Events {
@@ -59,8 +67,13 @@ export default defineComponent({
         info: {
             type: Object as () => FlaggedAddressInfo,
             required: true,
-            validator: (info: unknown) => typeof info === 'object' && !!info && 'address' in info && 'type' in info
-                && 'dataset' in info && 'chain' in info,
+            validator: (info: unknown) =>
+                typeof info === 'object'
+                && !!info
+                && 'address' in info
+                && 'type' in info
+                && 'dataset' in info
+                && 'chain' in info,
         },
         currency: {
             type: String as () => CryptoCurrency,
@@ -71,14 +84,20 @@ export default defineComponent({
         const { width: windowWidth } = useWindowSize();
         const addressFormat = computed(() => {
             switch (props.info.chain) {
-                case CryptoCurrency.NIM: return 'nimiq';
-                case 'evm': return 'ethereum';
-                default: return 'plain';
+                case CryptoCurrency.NIM:
+                    return 'nimiq';
+                case 'evm':
+                    return 'ethereum';
+                default:
+                    return 'plain';
             }
         });
-        const translatedType = computed(() => ({
-            malicious: i18n.t('malicious'),
-        }[props.info.type]));
+        const translatedType = computed(
+            () =>
+                ({
+                    malicious: i18n.t('malicious'),
+                })[props.info.type],
+        );
 
         function emitAbort() {
             emit(Events.ABORT);
@@ -108,7 +127,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../scss/variables.scss" as *;
+@use '../scss/variables.scss' as *;
 
 .flagged-address-warning {
     contain: size layout style paint;
@@ -116,10 +135,10 @@ export default defineComponent({
 }
 
 .page-body {
-    margin: .75rem;
+    margin: 0.75rem;
     padding-top: 7rem;
     padding-bottom: 2rem;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     flex-grow: 1;
     justify-content: flex-start;
     align-items: center;
@@ -144,12 +163,12 @@ label {
     contain: layout style; // not paint because Copied tooltip overflows
     padding: 0.5rem;
     margin-bottom: 3.5rem;
-    color: rgba(255, 255, 255, .6);
+    color: rgba(255, 255, 255, 0.6);
 
     &:hover,
     &:focus,
     &.copied {
-        color: rgba(255, 255, 255, .8) !important;
+        color: rgba(255, 255, 255, 0.8) !important;
     }
 
     ::v-deep .copyable {
@@ -162,7 +181,7 @@ label {
     }
 
     ::v-deep .chunk {
-        margin: .75rem 0;
+        margin: 0.75rem 0;
     }
 
     ::v-deep .short-address {
@@ -188,8 +207,8 @@ label {
     .tooltip {
         contain: size layout style; // not paint because tooltip box overflows
         contain-intrinsic-size: 1em;
-        margin-left: .25rem;
-        margin-bottom: -.25rem;
+        margin-left: 0.25rem;
+        margin-bottom: -0.25rem;
         text-align: left;
 
         p {
@@ -211,15 +230,16 @@ label {
     font-weight: 600;
     font-size: var(--link-size);
     color: white;
-    transition: opacity .3s var(--nimiq-ease);
-    opacity: .4;
+    transition: opacity 0.3s var(--nimiq-ease);
+    opacity: 0.4;
 
     &:hover {
-        opacity: .8;
+        opacity: 0.8;
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .page-body {
         padding-top: 5rem;
     }

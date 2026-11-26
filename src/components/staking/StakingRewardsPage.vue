@@ -22,20 +22,23 @@
                     </template>
                     <template v-else>
                         <div class="identicon" @click="onValidatorClick">
-                            <ValidatorIcon :validator="
-                                validatorList[monthlyReward.validators[0]]
-                                || { address: monthlyReward.validators[0] }
-                            "/>
+                            <ValidatorIcon
+                                :validator="
+                                    validatorList[monthlyReward.validators[0]] || {
+                                        address: monthlyReward.validators[0],
+                                    }
+                                "
+                            />
                         </div>
                         <span class="label">{{ validatorName }}</span>
-                        <AddressDisplay :address="monthlyReward.validators[0]" copyable/>
+                        <AddressDisplay :address="monthlyReward.validators[0]" copyable />
                     </template>
                 </div>
-                <ArrowRightIcon class="arrow"/>
+                <ArrowRightIcon class="arrow" />
                 <div class="recipient address-info flex-column">
-                    <Identicon :address="activeAddress"/>
+                    <Identicon :address="activeAddress" />
                     <span class="label">{{ myLabel }}</span>
-                    <AddressDisplay :address="activeAddress" copyable/>
+                    <AddressDisplay :address="activeAddress" copyable />
                 </div>
             </div>
 
@@ -54,15 +57,16 @@
                     <div v-else class="fiat-amount">
                         <Tooltip>
                             <template slot="trigger">
-                                <FiatAmount
-                                    :amount="fiatHistoricValue"
-                                    :currency="fiatHistoricCurrency"
-                                    value-mask/>
+                                <FiatAmount :amount="fiatHistoricValue" :currency="fiatHistoricCurrency" value-mask />
                             </template>
                             <span>{{ $t('Historic value') }}</span>
                             <p class="explainer">
-                                {{ $t('This historic value is based on an average of cross-exchange prices.'
-                                    + ' It might vary due to market volatility and liquidity.') }}
+                                {{
+                                    $t(
+                                        'This historic value is based on an average of cross-exchange prices.'
+                                            + ' It might vary due to market volatility and liquidity.',
+                                    )
+                                }}
                             </p>
                         </Tooltip>
                     </div>
@@ -74,8 +78,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import {
     PageHeader,
     PageBody,
@@ -85,18 +87,17 @@ import {
     FiatAmount,
     Tooltip,
 } from '@nimiq/vue-components';
-import { FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
-import {
-    isCurrentMonthAndStakingOngoing,
-    getMonthLabel,
-} from '@/lib/StakingUtils';
-import { useStakingStore } from '@/stores/Staking';
-import { useAddressStore } from '@/stores/Address';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { useMonthlyRewardFiatValue } from '@/composables/useMonthlyRewardFiatValue';
-import ValidatorIcon from './ValidatorIcon.vue';
-import ValidatorIconStack from './ValidatorIconStack.vue';
+import { FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUtils';
+import { useAddressStore } from '@/stores/Address';
+import { useStakingStore } from '@/stores/Staking';
 import Amount from '../Amount.vue';
 import TextShimmer from './TextShimmer.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
+import ValidatorIconStack from './ValidatorIconStack.vue';
 
 export default defineComponent({
     name: 'staking-rewards-page',
@@ -134,14 +135,12 @@ export default defineComponent({
         // Get all validator objects for this month's rewards
         const validatorObjects = computed(() => {
             if (!monthlyReward.value || !monthlyReward.value.validators.length) return [];
-            return monthlyReward.value.validators.map((validatorAddress) =>
-                validatorList.value[validatorAddress] || { address: validatorAddress },
+            return monthlyReward.value.validators.map(
+                (validatorAddress) => validatorList.value[validatorAddress] || { address: validatorAddress },
             );
         });
 
-        const hasMultipleValidators = computed(() =>
-            monthlyReward.value && monthlyReward.value.validators.length > 1,
-        );
+        const hasMultipleValidators = computed(() => monthlyReward.value && monthlyReward.value.validators.length > 1);
 
         const validatorName = computed(() => {
             if (!monthlyReward.value || !monthlyReward.value.validators.length) return '';
@@ -195,8 +194,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
-@use "../../scss/mixins.scss" as *;
+@use '../../scss/variables.scss' as *;
+@use '../../scss/mixins.scss' as *;
 @use '../../scss/functions.scss' as *;
 
 .staking-rewards-page {
@@ -211,7 +210,7 @@ export default defineComponent({
         white-space: nowrap;
         overflow: hidden;
         margin-bottom: 1rem;
-        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 4rem), rgba(255, 255, 255, 0));
     }
 
     span {
@@ -265,14 +264,19 @@ export default defineComponent({
     .sender & {
         cursor: pointer;
 
-        &:hover { transform: scale(1.05) }
+        &:hover {
+            transform: scale(1.05);
+        }
     }
 
-    > .identicon, > .validator-icon {
+    > .identicon,
+    > .validator-icon {
         margin: 0;
     }
 
-    svg, img, .validator-icon {
+    svg,
+    img,
+    .validator-icon {
         width: 100%;
         height: 100%;
         --size: 100%;
@@ -292,13 +296,13 @@ export default defineComponent({
 
     &.multiple-validators {
         white-space: pre-line;
-        margin-top: .5rem;
+        margin-top: 0.5rem;
     }
 
     &:not(.multiple-validators) {
         margin: 2rem 0 1rem;
         white-space: nowrap;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
     }
 }
 
@@ -308,7 +312,7 @@ export default defineComponent({
 }
 
 .nq-input-s:not(:focus):not(:hover) {
-    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
+    mask: linear-gradient(90deg, white, white calc(100% - 4rem), rgba(255, 255, 255, 0) calc(100% - 1rem));
 }
 
 .address-display {
@@ -379,7 +383,7 @@ export default defineComponent({
 
                 &::after {
                     top: -1.5rem;
-                    background: #211B43;
+                    background: #211b43;
                 }
             }
 
@@ -388,7 +392,7 @@ export default defineComponent({
                 transform: translate(-10rem, -1.5rem);
             }
 
-            ::v-deep [value-mask]::after{
+            ::v-deep [value-mask]::after {
                 margin-right: 0;
             }
         }
@@ -468,7 +472,7 @@ export default defineComponent({
 @media (max-width: $mobileBreakpoint) {
     .page-header {
         ::v-deep .nq-h1 {
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
     }
 

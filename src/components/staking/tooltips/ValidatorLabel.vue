@@ -2,15 +2,15 @@
     <div class="validator-label flex-row">
         <ValidatorIcon :validator="validator" />
         <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
-        <ShortAddress v-else :address="validator.address"/>
+        <ShortAddress v-else :address="validator.address" />
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Validator } from '../../../stores/Staking';
-import ValidatorIcon from '../ValidatorIcon.vue';
 import ShortAddress from '../../ShortAddress.vue';
+import ValidatorIcon from '../ValidatorIcon.vue';
 
 export default defineComponent({
     props: {
@@ -24,7 +24,6 @@ export default defineComponent({
         ShortAddress,
     },
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -32,9 +31,9 @@ export default defineComponent({
     align-items: center;
 
     .validator-icon {
-        height:100%;
+        height: 100%;
         margin-top: 0.125rem;
-        margin-right: .375rem;
+        margin-right: 0.375rem;
         width: auto;
     }
 }

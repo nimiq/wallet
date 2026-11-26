@@ -4,15 +4,15 @@ import { register } from 'register-service-worker';
 
 export const serviceWorkerHasUpdate = new Promise<true>((resolve) => {
     if (!navigator || !navigator.serviceWorker) return;
-    if (process.env.NODE_ENV !== 'production') return;
+    if (!import.meta.env.PROD) return;
 
     let updateInterval: number;
 
-    register(`${process.env.BASE_URL}service-worker.js`, {
+    register(`${import.meta.env.BASE_URL}service-worker.js`, {
         ready(registration) {
             console.log(
                 'App is being served from cache by a service worker.\n'
-                + 'For more details, visit https://goo.gl/AFskqB',
+                    + 'For more details, visit https://goo.gl/AFskqB',
             );
 
             // Check for a Wallet update every 1 hour
@@ -60,7 +60,7 @@ export async function updateServiceWorker() {
         isReloading = true;
         console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!');
         // Must wait to reload to give cache enough time to be updated
-        setTimeout(() => window.location.href = window.location.origin, 1500);
+        setTimeout(() => (window.location.href = window.location.origin), 1500);
     });
 
     // Sending this message to the waiting service-worker activates it,
@@ -76,6 +76,6 @@ if (navigator.serviceWorker) {
         isReloading = true;
         console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!');
         // Must wait to reload to give cache enough time to be updated
-        setTimeout(() => window.location.href = window.location.origin, 1500);
+        setTimeout(() => (window.location.href = window.location.origin), 1500);
     });
 }

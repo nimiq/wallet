@@ -1,20 +1,20 @@
+import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
+import { SignedTransaction } from '@nimiq/hub-api';
+import { storeToRefs } from 'pinia';
 /* eslint-disable no-console */
 import { ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { SignedTransaction } from '@nimiq/hub-api';
-import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
-import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, TransactionState, Transaction } from './stores/Transactions';
-import { useNetworkStore } from './stores/Network';
-import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent } from './stores/Staking';
+import { usePolicy } from './composables/usePolicy';
+import { i18n } from './i18n/i18n-setup';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
-import { usePolicy } from './composables/usePolicy';
-import { i18n } from './i18n/i18n-setup';
+import { useAddressStore } from './stores/Address';
+import { useNetworkStore } from './stores/Network';
+import { useProxyStore } from './stores/Proxy';
+import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent } from './stores/Staking';
+import { useTransactionsStore, TransactionState, Transaction } from './stores/Transactions';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -27,18 +27,20 @@ let clientStartTimestamp: number | undefined;
 export async function getNetworkClient() {
     const { config } = useConfig();
 
-    clientPromise = clientPromise || (async () => {
-        // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
-        // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
-        const { ClientConfiguration, Client } = await import('@nimiq/core');
-        const clientConfig = new ClientConfiguration();
-        clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
-        clientConfig.seedNodes(config.nimiqSeeds);
-        clientConfig.syncMode('pico');
-        clientConfig.logLevel('debug');
-        clientStartTimestamp = Date.now();
-        return Client.create(clientConfig.build());
-    })();
+    clientPromise =
+        clientPromise
+        || (async () => {
+            // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
+            // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
+            const { ClientConfiguration, Client } = await import('@nimiq/core');
+            const clientConfig = new ClientConfiguration();
+            clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
+            clientConfig.seedNodes(config.nimiqSeeds);
+            clientConfig.syncMode('pico');
+            clientConfig.logLevel('debug');
+            clientStartTimestamp = Date.now();
+            return Client.create(clientConfig.build());
+        })();
 
     return clientPromise;
 }
@@ -53,8 +55,9 @@ export function nimiqNetworkNotice(): string | null {
 
 export function getValidityStartHeight(): number {
     if (nimiqNetworkNotice()) {
-        throw new Error(i18n.t('Not connected to the Nimiq network yet. '
-            + 'Wait until it is connected and try again.') as string);
+        throw new Error(
+            i18n.t('Not connected to the Nimiq network yet. Wait until it is connected and try again.') as string,
+        );
     }
     return useNetworkStore().$state.height;
 }
@@ -144,9 +147,7 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const accounts = await retry(() => client.getAccounts(addresses)).catch(reportFor('getAccounts'));
         if (!accounts) return;
-        const newBalances: Balances = new Map(
-            accounts.map((account, i) => [addresses[i], account.balance]),
-        );
+        const newBalances: Balances = new Map(accounts.map((account, i) => [addresses[i], account.balance]));
 
         for (const [address, newBalance] of newBalances) {
             if (balances.get(address) === newBalance) {
@@ -192,35 +193,41 @@ export async function launchNetwork() {
     }
 
     let currentFetchAddress: string | null = null;
-    watch([() => addressStore.activeAddress], ([activeAddress]) => {
-        if (!activeAddress) return;
-        currentFetchAddress = activeAddress;
-        const fetchAddress = activeAddress; // Capture for closure
-        const { config } = useConfig();
-        const endpoint = config.staking.stakeEventsEndpoint;
-        // TODO fetch only the data we're missing
-        // eslint-disable-next-line prefer-template
-        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'))
-            // from genesis to now
-            + `?from=${config.staking.genesis.date.toISOString()}&to=${new Date().toISOString()}`;
-        retry(
-            () => fetch(url)
-                .then((res) => res.json())
-                .then((data) => {
-                    if (!data || typeof data !== 'object' || !Array.isArray(data.groups)) {
-                        // caught below
-                        throw new Error('Invalid staking events');
-                    }
-                    const events: AggregatedRestakingEvent[] = data.groups;
-                    // Only update if this is still the active address
-                    if (fetchAddress === currentFetchAddress) {
-                        useStakingStore().setStakingEvents(activeAddress, events);
-                        console.log('Got aggregated restaking events for', activeAddress, events);
-                    }
-                }),
-            { maxRetries: 3 },
-        ).catch(reportFor('fetch(aggregated restaking events)'));
-    }, { immediate: true });
+    watch(
+        [() => addressStore.activeAddress],
+        ([activeAddress]) => {
+            if (!activeAddress) return;
+            currentFetchAddress = activeAddress;
+            const fetchAddress = activeAddress; // Capture for closure
+            const { config } = useConfig();
+            const endpoint = config.staking.stakeEventsEndpoint;
+            // TODO fetch only the data we're missing
+            const url =
+                // eslint-disable-next-line prefer-template
+                endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'))
+                // from genesis to now
+                + `?from=${config.staking.genesis.date.toISOString()}&to=${new Date().toISOString()}`;
+            retry(
+                () =>
+                    fetch(url)
+                        .then((res) => res.json())
+                        .then((data) => {
+                            if (!data || typeof data !== 'object' || !Array.isArray(data.groups)) {
+                                // caught below
+                                throw new Error('Invalid staking events');
+                            }
+                            const events: AggregatedRestakingEvent[] = data.groups;
+                            // Only update if this is still the active address
+                            if (fetchAddress === currentFetchAddress) {
+                                useStakingStore().setStakingEvents(activeAddress, events);
+                                console.log('Got aggregated restaking events for', activeAddress, events);
+                            }
+                        }),
+                { maxRetries: 3 },
+            ).catch(reportFor('fetch(aggregated restaking events)'));
+        },
+        { immediate: true },
+    );
 
     function forgetBalances(addresses: string[]) {
         for (const address of addresses) {
@@ -273,17 +280,20 @@ export async function launchNetwork() {
             const headBlock = await client.getHeadBlock().catch(reportFor('getHeadBlock'));
             // Ignore this event if the consensus changed again in the meantime.
             if (consensusChangeId !== consensusChangeCount) return;
-            patchNetworkStore(headBlock
-                ? { consensus, height: headBlock.height, timestamp: headBlock.timestamp }
-                : { consensus });
+            patchNetworkStore(
+                headBlock ? { consensus, height: headBlock.height, timestamp: headBlock.timestamp } : { consensus },
+            );
 
             stakingStore.syncWatchtowerOperations();
-            const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
-                if (fetching === 0) {
-                    txHistoryWasInvalidatedSinceLastConsensus = false;
-                    stop();
-                }
-            });
+            const stop = watch(
+                () => network$.fetchingTxHistory,
+                (fetching) => {
+                    if (fetching === 0) {
+                        txHistoryWasInvalidatedSinceLastConsensus = false;
+                        stop();
+                    }
+                },
+            );
             networkWasReconnectedSinceLastConsensus = false;
         } else {
             network$.consensus = consensus;
@@ -376,8 +386,9 @@ export async function launchNetwork() {
     (async () => {
         const { config } = useConfig();
         const url = `${config.staking.validatorsApiBase}${config.staking.validatorsPath}?only-known=true`;
-        const apiValidators = await retry(() => fetch(url))
-            .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        const apiValidators = (await retry(() => fetch(url))
+            .then((res) => res.json())
+            .catch(() => [])) as ApiValidator[];
         stakingStore.setApiValidators(apiValidators);
     })();
 
@@ -427,190 +438,208 @@ export async function launchNetwork() {
 
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
-    watch(() => addressStore.accountAddressInfos, () => {
-        const newAddresses: string[] = [];
-        const removedAddresses = new Set(subscribedAddresses);
+    watch(
+        () => addressStore.accountAddressInfos,
+        () => {
+            const newAddresses: string[] = [];
+            const removedAddresses = new Set(subscribedAddresses);
 
-        for (const address of Object.keys(addressStore.$state.addressInfos)) {
-            if (subscribedAddresses.has(address)) {
-                removedAddresses.delete(address);
-                continue;
-            }
-
-            subscribedAddresses.add(address);
-            newAddresses.push(address);
-        }
-
-        if (removedAddresses.size) {
-            for (const removedAddress of removedAddresses) {
-                subscribedAddresses.delete(removedAddress);
-                removeFetchedAddress(removedAddress);
-            }
-            // Let the network forget the balances of the removed addresses,
-            // so that they are reported as new again at re-login.
-            forgetBalances([...removedAddresses]);
-        }
-
-        if (!newAddresses.length) return;
-
-        console.debug('Subscribing addresses', newAddresses);
-        subscribe(newAddresses, /* isProxy */ false);
-    }, { immediate: true });
-
-    watch([() => addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
-        const address = activeAddress as string | null;
-        if (!address || fetchedAddresses.value.includes(address)) return;
-        addFetchedAddress(address);
-
-        console.debug('Scheduling transaction fetch for', address);
-
-        const knownTxDetails = addressStore.transactionsForActiveAddress;
-        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
-        //        (even when cross-account transactions are already present)
-        // const lastConfirmedHeight = knownTxDetails
-        //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
-        //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-
-        network$.fetchingTxHistory++;
-
-        if ((trigger as number) > 0) updateBalances([address]);
-
-        await client.waitForConsensusEstablished();
-        const { config } = useConfig();
-
-        let limit = 5; // This will be doubled to 10 in the first loop iteration
-        let lastFetchedTxLength = limit;
-        let startAt: string | undefined;
-
-        while (lastFetchedTxLength === limit) {
-            // Double the limit until 100
-            limit = Math.min(100, limit * 2);
-
-            try {
-                // Determine list of known transactions to pass in
-                const knownTxStartIndex = startAt
-                    // eslint-disable-next-line no-loop-func
-                    ? knownTxDetails.findIndex((tx) => tx.transactionHash === startAt) || 0
-                    : 0;
-                const knownTxs = knownTxDetails.slice(knownTxStartIndex, knownTxStartIndex + limit);
-                console.info('Fetching transaction history for', address, knownTxs);
-
-                // eslint-disable-next-line no-await-in-loop
-                const txDetails = await retry(
-                    // eslint-disable-next-line no-loop-func
-                    () => client.getTransactionsByAddress(
-                        address,
-                        /* lastConfirmedHeight - 10 */ undefined,
-                        knownTxs,
-                        startAt,
-                        limit,
-                        // Reduce number of required history peers in the testnet
-                        /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
-                    ),
-                );
-
-                // getTransactionsByAddress returns unfound (i.e. they were outside the limit) known txs as well,
-                // so we need to filter them out to determine the number of new transactions
-                const knownTxsHashes = new Set(knownTxs.map((tx) => tx.transactionHash));
-                const newTxDetails = txDetails.filter((tx) => !knownTxsHashes.has(tx.transactionHash));
-
-                console.info('Got transaction history for', address, txDetails);
-
-                lastFetchedTxLength = newTxDetails.length;
-                if (newTxDetails.length > 0 && newTxDetails[lastFetchedTxLength - 1].blockHeight) {
-                    startAt = newTxDetails[lastFetchedTxLength - 1].transactionHash;
+            for (const address of Object.keys(addressStore.$state.addressInfos)) {
+                if (subscribedAddresses.has(address)) {
+                    removedAddresses.delete(address);
+                    continue;
                 }
 
-                // Here we still add all returned transactions to the store, because
-                // 1. It doesn't hurt
-                // 2. Some known transactions might have an updated state
-                transactionsStore.addTransactions(txDetails);
-            } catch (error) {
-                reportFor('getTransactionsByAddress')(error as Error);
-                removeFetchedAddress(address);
-            }
-        }
-        network$.fetchingTxHistory--;
-    }, { immediate: true });
-
-    // Fetch transactions for proxies
-    const proxyStore = useProxyStore();
-    watch(() => proxyStore.networkTrigger, () => {
-        const newProxies: string[] = [];
-        const addressesToSubscribe: string[] = [];
-        for (const proxyAddress of proxyStore.allProxies) {
-            if (!seenProxies.has(proxyAddress)) {
-                // For new addresses the tx history and if required subscribing is handled below
-                seenProxies.add(proxyAddress);
-                newProxies.push(proxyAddress);
-                continue;
+                subscribedAddresses.add(address);
+                newAddresses.push(address);
             }
 
-            // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
-            if (
-                !subscribedProxies.has(proxyAddress)
-                && proxyStore.$state.funded.includes(proxyAddress)
-                && proxyStore.$state.claimed.includes(proxyAddress)
-            ) {
-                subscribedProxies.add(proxyAddress);
-                addressesToSubscribe.push(proxyAddress);
+            if (removedAddresses.size) {
+                for (const removedAddress of removedAddresses) {
+                    subscribedAddresses.delete(removedAddress);
+                    removeFetchedAddress(removedAddress);
+                }
+                // Let the network forget the balances of the removed addresses,
+                // so that they are reported as new again at re-login.
+                forgetBalances([...removedAddresses]);
             }
-        }
-        if (addressesToSubscribe.length) subscribe(addressesToSubscribe, /* isProxy */ true);
-        if (!newProxies.length) return;
 
-        console.debug(`Fetching history for ${newProxies.length} proxies`);
+            if (!newAddresses.length) return;
 
-        for (const proxyAddress of newProxies) {
-            const knownTxDetails = Object.values(transactionsStore.$state.transactions)
-                .filter((tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress);
+            console.debug('Subscribing addresses', newAddresses);
+            subscribe(newAddresses, /* isProxy */ false);
+        },
+        { immediate: true },
+    );
+
+    watch(
+        [() => addressStore.activeAddress, txFetchTrigger],
+        async ([activeAddress, trigger]) => {
+            const address = activeAddress as string | null;
+            if (!address || fetchedAddresses.value.includes(address)) return;
+            addFetchedAddress(address);
+
+            console.debug('Scheduling transaction fetch for', address);
+
+            const knownTxDetails = addressStore.transactionsForActiveAddress;
+            // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
+            //        (even when cross-account transactions are already present)
+            // const lastConfirmedHeight = knownTxDetails
+            //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
+            //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
 
             network$.fetchingTxHistory++;
 
-            client.waitForConsensusEstablished()
-                .then(() => {
-                    console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
-                    const { config } = useConfig();
-                    return retry(() => client.getTransactionsByAddress(
-                        proxyAddress,
-                        /* sinceBlockHeight */ 0,
-                        knownTxDetails,
-                        /* startAt */ undefined,
-                        /* limit */ undefined,
-                        // Reduce number of required history peers in the testnet
-                        /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
-                    ));
-                })
-                .then((txDetails) => {
-                    if (
-                        proxyStore.$state.funded.includes(proxyAddress)
-                        && !subscribedProxies.has(proxyAddress)
-                        && !txDetails.find((tx) => tx.sender === proxyAddress
-                            && tx.state === TransactionState.CONFIRMED)
-                    ) {
-                        // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
-                        // subscribe for updates.
-                        // If we were triggered by a funding transaction, we have to subscribe in any case because we
-                        // don't know when and to where the proxy will be claimed. If we were triggered by a claimed
-                        // transaction and don't know the funding transaction yet wait with subscribing until the second
-                        // pass to see whether we actually have to subscribe (which is for example not the case if
-                        // funding and claiming are both from/to addresses that are subscribed anyways; see
-                        // needToSubscribe in ProxyDetection).
-                        // If the funding tx has not been known so far, it will be added to the transaction store below
-                        // which in turn runs the ProxyDetection again and triggers the network and this watcher again
-                        // for the second pass if needed.
-                        subscribedProxies.add(proxyAddress);
-                        subscribe([proxyAddress], /* isProxy */ true);
+            if ((trigger as number) > 0) updateBalances([address]);
+
+            await client.waitForConsensusEstablished();
+            const { config } = useConfig();
+
+            let limit = 5; // This will be doubled to 10 in the first loop iteration
+            let lastFetchedTxLength = limit;
+            let startAt: string | undefined;
+
+            while (lastFetchedTxLength === limit) {
+                // Double the limit until 100
+                limit = Math.min(100, limit * 2);
+
+                try {
+                    // Determine list of known transactions to pass in
+                    const knownTxStartIndex = startAt
+                        ? // eslint-disable-next-line no-loop-func
+                          knownTxDetails.findIndex((tx) => tx.transactionHash === startAt) || 0
+                        : 0;
+                    const knownTxs = knownTxDetails.slice(knownTxStartIndex, knownTxStartIndex + limit);
+                    console.info('Fetching transaction history for', address, knownTxs);
+
+                    // eslint-disable-next-line no-await-in-loop
+                    const txDetails = await retry(
+                        // eslint-disable-next-line no-loop-func
+                        () =>
+                            client.getTransactionsByAddress(
+                                address,
+                                /* lastConfirmedHeight - 10 */ undefined,
+                                knownTxs,
+                                startAt,
+                                limit,
+                                // Reduce number of required history peers in the testnet
+                                /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
+                            ),
+                    );
+
+                    // getTransactionsByAddress returns unfound (i.e. they were outside the limit) known txs as well,
+                    // so we need to filter them out to determine the number of new transactions
+                    const knownTxsHashes = new Set(knownTxs.map((tx) => tx.transactionHash));
+                    const newTxDetails = txDetails.filter((tx) => !knownTxsHashes.has(tx.transactionHash));
+
+                    console.info('Got transaction history for', address, txDetails);
+
+                    lastFetchedTxLength = newTxDetails.length;
+                    if (newTxDetails.length > 0 && newTxDetails[lastFetchedTxLength - 1].blockHeight) {
+                        startAt = newTxDetails[lastFetchedTxLength - 1].transactionHash;
                     }
+
+                    // Here we still add all returned transactions to the store, because
+                    // 1. It doesn't hurt
+                    // 2. Some known transactions might have an updated state
                     transactionsStore.addTransactions(txDetails);
-                })
-                .catch((error) => {
-                    reportFor('getTransactionsByAddress')(error);
-                    seenProxies.delete(proxyAddress);
-                })
-                .then(() => network$.fetchingTxHistory--);
-        }
-    }, { immediate: true });
+                } catch (error) {
+                    reportFor('getTransactionsByAddress')(error as Error);
+                    removeFetchedAddress(address);
+                }
+            }
+            network$.fetchingTxHistory--;
+        },
+        { immediate: true },
+    );
+
+    // Fetch transactions for proxies
+    const proxyStore = useProxyStore();
+    watch(
+        () => proxyStore.networkTrigger,
+        () => {
+            const newProxies: string[] = [];
+            const addressesToSubscribe: string[] = [];
+            for (const proxyAddress of proxyStore.allProxies) {
+                if (!seenProxies.has(proxyAddress)) {
+                    // For new addresses the tx history and if required subscribing is handled below
+                    seenProxies.add(proxyAddress);
+                    newProxies.push(proxyAddress);
+                    continue;
+                }
+
+                // If we didn't subscribe in the first pass, subscribe on second pass if needed, see below.
+                if (
+                    !subscribedProxies.has(proxyAddress)
+                    && proxyStore.$state.funded.includes(proxyAddress)
+                    && proxyStore.$state.claimed.includes(proxyAddress)
+                ) {
+                    subscribedProxies.add(proxyAddress);
+                    addressesToSubscribe.push(proxyAddress);
+                }
+            }
+            if (addressesToSubscribe.length) subscribe(addressesToSubscribe, /* isProxy */ true);
+            if (!newProxies.length) return;
+
+            console.debug(`Fetching history for ${newProxies.length} proxies`);
+
+            for (const proxyAddress of newProxies) {
+                const knownTxDetails = Object.values(transactionsStore.$state.transactions).filter(
+                    (tx) => tx.sender === proxyAddress || tx.recipient === proxyAddress,
+                );
+
+                network$.fetchingTxHistory++;
+
+                client
+                    .waitForConsensusEstablished()
+                    .then(() => {
+                        console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
+                        const { config } = useConfig();
+                        return retry(() =>
+                            client.getTransactionsByAddress(
+                                proxyAddress,
+                                /* sinceBlockHeight */ 0,
+                                knownTxDetails,
+                                /* startAt */ undefined,
+                                /* limit */ undefined,
+                                // Reduce number of required history peers in the testnet
+                                /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
+                            ),
+                        );
+                    })
+                    .then((txDetails) => {
+                        if (
+                            proxyStore.$state.funded.includes(proxyAddress)
+                            && !subscribedProxies.has(proxyAddress)
+                            && !txDetails.find(
+                                (tx) => tx.sender === proxyAddress && tx.state === TransactionState.CONFIRMED,
+                            )
+                        ) {
+                            // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
+                            // subscribe for updates.
+                            // If we were triggered by a funding transaction, we have to subscribe in any case because we
+                            // don't know when and to where the proxy will be claimed. If we were triggered by a claimed
+                            // transaction and don't know the funding transaction yet wait with subscribing until the second
+                            // pass to see whether we actually have to subscribe (which is for example not the case if
+                            // funding and claiming are both from/to addresses that are subscribed anyways; see
+                            // needToSubscribe in ProxyDetection).
+                            // If the funding tx has not been known so far, it will be added to the transaction store below
+                            // which in turn runs the ProxyDetection again and triggers the network and this watcher again
+                            // for the second pass if needed.
+                            subscribedProxies.add(proxyAddress);
+                            subscribe([proxyAddress], /* isProxy */ true);
+                        }
+                        transactionsStore.addTransactions(txDetails);
+                    })
+                    .catch((error) => {
+                        reportFor('getTransactionsByAddress')(error);
+                        seenProxies.delete(proxyAddress);
+                    })
+                    .then(() => network$.fetchingTxHistory--);
+            }
+        },
+        { immediate: true },
+    );
 }
 
 export async function sendTransaction(tx: SignedTransaction | string) {
@@ -623,21 +652,21 @@ export async function sendTransaction(tx: SignedTransaction | string) {
 export async function waitForTransactionConfirmation(
     txHash: string,
     options?: Partial<{
-        timeout: number,
+        timeout: number;
         /** Wait for macro-block confirmation, not just micro-block inclusion. */
-        requireConfirmed: boolean,
+        requireConfirmed: boolean;
     }>,
 ): Promise<void> {
     const { timeout, requireConfirmed } = { timeout: 120000, requireConfirmed: false, ...options };
     const transactionsStore = useTransactionsStore();
     const networkStore = useNetworkStore();
 
-    const isIncluded = (tx: Transaction | undefined): boolean => !!tx && (
-        tx.state === TransactionState.INCLUDED
-        || tx.state === TransactionState.CONFIRMED
-        // @ts-expect-error MINED is not included in the types for PoS transactions
-        || tx.state === TransactionState.MINED
-    );
+    const isIncluded = (tx: Transaction | undefined): boolean =>
+        !!tx
+        && (tx.state === TransactionState.INCLUDED
+            || tx.state === TransactionState.CONFIRMED
+            // @ts-expect-error MINED is not included in the types for PoS transactions
+            || tx.state === TransactionState.MINED);
 
     if (!requireConfirmed) {
         if (isIncluded(transactionsStore.$state.transactions[txHash])) return;
@@ -696,7 +725,10 @@ export async function waitForTransactionConfirmation(
     await new Promise<void>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
             console.warn('waitForTransactionConfirmation: timeout', {
-                txHash, blockHeight: tx.blockHeight, macroTarget, height: networkStore.$state.height,
+                txHash,
+                blockHeight: tx.blockHeight,
+                macroTarget,
+                height: networkStore.$state.height,
             });
             stop();
             reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
@@ -714,10 +746,13 @@ export async function waitForTransactionConfirmation(
     });
 }
 
-async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Partial<{
-    baseDelay: number,
-    maxRetries: number,
-}>): Promise<T> {
+async function retry<T>(
+    func: (...args: any[]) => T | Promise<T>,
+    options?: Partial<{
+        baseDelay: number;
+        maxRetries: number;
+    }>,
+): Promise<T> {
     const defaults = {
         baseDelay: 500,
         maxRetries: 10,
@@ -739,7 +774,10 @@ async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Part
 
             // Wait an increasing amount of time before trying again
             const delay = baseDelay * i;
-            await new Promise((resolve) => { setTimeout(resolve, delay); }); // eslint-disable-line no-await-in-loop
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise((resolve) => {
+                setTimeout(resolve, delay);
+            });
         }
     }
 }

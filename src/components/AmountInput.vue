@@ -1,22 +1,26 @@
 <template>
-    <div class="amount-input" :class="{'has-value': liveValue.length > 0, 'focussed': isFocussed}">
-        <slot name="prefix"/>
+    <div class="amount-input" :class="{ 'has-value': liveValue.length > 0, focussed: isFocussed }">
+        <slot name="prefix" />
         <form class="label-input" @submit.prevent ref="fullWidth$">
             <span class="width-finder width-placeholder" ref="widthPlaceholder$">{{ placeholder }}</span>
-            <div v-if="maxFontSize" class="full-width" :class="{'width-finder': maxWidth > 0}">Width</div>
+            <div v-if="maxFontSize" class="full-width" :class="{ 'width-finder': maxWidth > 0 }">Width</div>
             <span class="width-finder width-value" ref="widthValue$">{{ liveValue || '' }}</span>
-            <input type="text" inputmode="decimal" class="nq-input" :class="{ vanishing }"
+            <input
+                type="text"
+                inputmode="decimal"
+                class="nq-input"
+                :class="{ vanishing }"
                 :placeholder="placeholder"
-                :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
+                :style="{ width: `${width}px`, fontSize: `${fontSize}rem` }"
                 :value="liveValue"
                 :disabled="disabled"
                 @input="onInput"
                 @focus="onToggleFocus(true)"
                 @blur="onToggleFocus(false)"
                 ref="input$"
-            >
+            />
         </form>
-        <slot v-if="$slots.suffix" name="suffix"/>
+        <slot v-if="$slots.suffix" name="suffix" />
         <span v-else class="ticker">NIM</span>
     </div>
 </template>
@@ -92,7 +96,7 @@ const AmountInput = defineComponent({
             const fontSizeFactor = Math.min(1.0, Math.max(maxWidth.value / valueWidth, 1 / props.maxFontSize));
 
             fontSize.value = fontSizeFactor * props.maxFontSize;
-            width.value = (liveValue.value ? (fontSizeFactor === 1 ? valueWidth : maxWidth.value) : placeholderWidth);
+            width.value = liveValue.value ? (fontSizeFactor === 1 ? valueWidth : maxWidth.value) : placeholderWidth;
         }
 
         watch(liveValue, updateWidth, { immediate: true });
@@ -116,7 +120,7 @@ const AmountInput = defineComponent({
                 // regExpResult[2] contains the whole integers
                 // regExpResult[3] contains the decimal point and decimals
                 return [
-                    props.preserveSign ? (regExpResult[1] || '+') : '',
+                    props.preserveSign ? regExpResult[1] || '+' : '',
                     regExpResult[2] || (regExpResult[3] ? '0' : ''),
                     regExpResult[3] || '',
                 ].join('');
@@ -154,19 +158,27 @@ const AmountInput = defineComponent({
             context.emit(_isFocussed ? 'focus' : 'blur', input$.value);
         }
 
-        watch(() => props.value, (newValue: number | undefined) => {
-            if (newValue === valueInLuna.value) return;
-            lastEmittedValue.value = newValue || 0;
-            updateValue(newValue ? String(newValue / 10 ** props.decimals) : '');
-        }, { immediate: true });
+        watch(
+            () => props.value,
+            (newValue: number | undefined) => {
+                if (newValue === valueInLuna.value) return;
+                lastEmittedValue.value = newValue || 0;
+                updateValue(newValue ? String(newValue / 10 ** props.decimals) : '');
+            },
+            { immediate: true },
+        );
 
-        watch(() => props.max, (newMax: number | undefined) => {
-            // Disabling a max value, or setting it higher than the current value, has no effect on
-            // the current value, but will take effect only on the next input.
-            if (!newMax || newMax >= valueInLuna.value) return;
+        watch(
+            () => props.max,
+            (newMax: number | undefined) => {
+                // Disabling a max value, or setting it higher than the current value, has no effect on
+                // the current value, but will take effect only on the next input.
+                if (!newMax || newMax >= valueInLuna.value) return;
 
-            onInput({ target: input$.value as EventTarget });
-        }, { immediate: true });
+                onInput({ target: input$.value as EventTarget });
+            },
+            { immediate: true },
+        );
 
         return {
             focus, // exposed for use from other components
@@ -215,7 +227,10 @@ input {
     padding: 0 0.25rem;
     max-width: 100%;
     text-align: center;
-    transition: box-shadow 0.2s var(--nimiq-ease), width 50ms ease-out, color 0.2s var(--nimiq-ease);
+    transition:
+        box-shadow 0.2s var(--nimiq-ease),
+        width 50ms ease-out,
+        color 0.2s var(--nimiq-ease);
 
     &:not(:disabled):hover {
         --border-color: rgba(5, 130, 202, 0.2);
@@ -241,7 +256,7 @@ input {
         display: flex;
 
         &:has(:disabled) ~ .ticker {
-           margin-left: -.5rem;
+            margin-left: -0.5rem;
         }
     }
 

@@ -7,27 +7,27 @@
     --bg-secondary: var(--nimiq-blue); /* Sidebar */
 
     --text-100: #{nimiq-blue(1)};
-    --text-80:  #{nimiq-blue(0.8)};
-    --text-70:  #{nimiq-blue(0.7)};
-    --text-60:  #{nimiq-blue(0.6)};
-    --text-50:  #{nimiq-blue(0.5)};
-    --text-40:  #{nimiq-blue(0.4)};
-    --text-35:  #{nimiq-blue(0.35)};
-    --text-30:  #{nimiq-blue(0.3)};
-    --text-25:  #{nimiq-blue(0.25)};
-    --text-22:  #{nimiq-blue(0.22)};
-    --text-20:  #{nimiq-blue(0.2)};
-    --text-16:  #{nimiq-blue(0.16)};
-    --text-14:  #{nimiq-blue(0.14)};
-    --text-12:  #{nimiq-blue(0.12)};
-    --text-10:  #{nimiq-blue(0.1)};
-    --text-6:   #{nimiq-blue(0.06)};
+    --text-80: #{nimiq-blue(0.8)};
+    --text-70: #{nimiq-blue(0.7)};
+    --text-60: #{nimiq-blue(0.6)};
+    --text-50: #{nimiq-blue(0.5)};
+    --text-40: #{nimiq-blue(0.4)};
+    --text-35: #{nimiq-blue(0.35)};
+    --text-30: #{nimiq-blue(0.3)};
+    --text-25: #{nimiq-blue(0.25)};
+    --text-22: #{nimiq-blue(0.22)};
+    --text-20: #{nimiq-blue(0.2)};
+    --text-16: #{nimiq-blue(0.16)};
+    --text-14: #{nimiq-blue(0.14)};
+    --text-12: #{nimiq-blue(0.12)};
+    --text-10: #{nimiq-blue(0.1)};
+    --text-6: #{nimiq-blue(0.06)};
 
     --bg-card: var(--bg-primary);
     --light-blue-40: rgba(5, 130, 202, 0.4); /* Based on Nimiq Light Blue */
 
-    --bitcoin-orange: #F7931A;
-    --usdc-blue: #2775CA;
+    --bitcoin-orange: #f7931a;
+    --usdc-blue: #2775ca;
     --usdt-green: #009393;
 }
 
@@ -80,7 +80,7 @@ button.reset:disabled {
     margin-right: -0.107em;
 }
 
-.nq-label:not([class*="-bg"]) {
+.nq-label:not([class*='-bg']) {
     color: var(--text-40);
 }
 
@@ -138,10 +138,13 @@ button.reset:disabled {
     purple-bg-darkened: from hsl(241, 33%, 39%) to hsl(262, 35%, 39%)
     */
     --nimiq-purple-darkened: hsl(262, 35%, 37%);
-    --nimiq-purple-bg-darkened: radial-gradient(100% 100% at bottom right, hsl(241, 33%, 37%), var(--nimiq-purple-darkened));
+    --nimiq-purple-bg-darkened: radial-gradient(
+        100% 100% at bottom right,
+        hsl(241, 33%, 37%),
+        var(--nimiq-purple-darkened)
+    );
     background-image: var(--nimiq-purple-bg-darkened);
 }
-
 
 /* Font Sizes */
 
@@ -185,7 +188,8 @@ button.reset:disabled {
     font-size: var(--small-button-size);
 }
 
-@media (max-width: $halfMobileBreakpoint) { /* Half mobile breakpoint */
+@media (max-width: $halfMobileBreakpoint) {
+    /* Half mobile breakpoint */
     :root {
         --body-size: 1.875rem;
         --small-size: 1.625rem;
@@ -208,10 +212,16 @@ button.reset:disabled {
     }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     text-wrap: pretty;
 }
 
-p, li {
+p,
+li {
     text-wrap: balance;
 }

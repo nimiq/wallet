@@ -1,7 +1,7 @@
 <template>
     <button class="reset bank-icon-button flex-column" v-on="$listeners">
-        <BankIcon/>
-        <TriangleDownIcon/>
+        <BankIcon />
+        <TriangleDownIcon />
         <label>{{ bankName || '' }}</label>
     </button>
 </template>
@@ -61,7 +61,7 @@ export default defineComponent({
         overflow: hidden;
         width: 100%;
         cursor: inherit;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
     }
 }
 </style>

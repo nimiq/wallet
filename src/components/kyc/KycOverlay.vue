@@ -5,10 +5,12 @@
             {{ $t('Raise your limits') }}
             <template #more>
                 <div class="intro">
-                    {{ $t(
-                        'Get verified for higher limits by authenticating with {provider}. These are the requirements:',
-                        { provider },
-                    ) }}
+                    {{
+                        $t(
+                            'Get verified for higher limits by authenticating with {provider}. These are the requirements:',
+                            { provider },
+                        )
+                    }}
                 </div>
             </template>
         </PageHeader>
@@ -32,13 +34,18 @@
             <button v-if="isInOasisProTrial" class="nq-button light-blue" @click="connect">
                 {{ $t('Connect to {provider}', { provider }) }}
             </button>
-            <a v-else href="https://t.me/OASISProPrivateTesting" target="_blank" rel="noopener"
+            <a
+                v-else
+                href="https://t.me/OASISProPrivateTesting"
+                target="_blank"
+                rel="noopener"
                 class="nq-button light-blue"
-            >Join Private Testing</a>
+                >Join Private Testing</a
+            >
             <i18n tag="div" path="{provider} is provided by {companyLogo}" class="provider-info">
                 <template #provider>{{ provider }}</template>
                 <template #companyLogo>
-                    <img v-if="provider === KycProvider.TEN31PASS" class="logo-ten31" alt="TEN31 Bank logo">
+                    <img v-if="provider === KycProvider.TEN31PASS" class="logo-ten31" alt="TEN31 Bank logo" />
                 </template>
             </i18n>
         </PageFooter>
@@ -46,14 +53,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
-import KycIcon from '../icons/KycIcon.vue';
-import { KycProvider } from '../../stores/Kyc';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { connectKyc } from '../../lib/KycConnection';
-import { useSettingsStore } from '../../stores/Settings';
 import { Trial } from '../../lib/Trials';
+import { KycProvider } from '../../stores/Kyc';
+import { useSettingsStore } from '../../stores/Settings';
+import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({
     setup(props, { emit }) {
@@ -84,7 +91,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 @use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
@@ -105,7 +111,7 @@ export default defineComponent({
 }
 
 .intro {
-    margin: .75rem auto 0;
+    margin: 0.75rem auto 0;
     line-height: 1.4;
 }
 
@@ -123,7 +129,7 @@ export default defineComponent({
     li {
         display: flex;
         position: relative;
-        width: calc((100% - 2 * /* gap + box-shadow */ 2.125rem) / 3); // 3 columns
+        width: calc((100% - 2 * 2.125rem) / 3 /* gap + box-shadow */); // 3 columns
         max-width: 17rem;
         padding: 0 1rem 4rem;
         border-radius: 0.75rem;
@@ -132,9 +138,10 @@ export default defineComponent({
         box-shadow: 0 0 0 1.5px var(--text-20);
         list-style: none;
 
-        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) {
+            // Full mobile breakpoint
             & {
-                width: calc((100% - 1 * /* gap + box-shadow */ 2.125rem) / 2); // 2 columns
+                width: calc((100% - 1 * 2.125rem) / 2 /* gap + box-shadow */); // 2 columns
             }
 
             &.requirement-mobile-phone {
@@ -159,7 +166,7 @@ export default defineComponent({
 
     .icon-authenticator-app {
         content: url('data:image/svg+xml,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M26.6 3.31a8 8 0 0 1 10.48 7.6v7.86a1.46 1.46 0 1 0 2.92 0V10.9A10.9 10.9 0 0 0 25.7.54a1.46 1.46 0 1 0 .9 2.77ZM37.22 26.04a1.46 1.46 0 1 0-2.16-1.94 7.99 7.99 0 0 1-13.94-5.33V10.9c0-1.96.72-3.86 2.03-5.32a1.46 1.46 0 1 0-2.17-1.95c-1.79 2-2.78 4.59-2.77 7.27v7.87a10.9 10.9 0 0 0 19.02 7.27Z" fill="%23604C8B"/><path d="M25.83 18.77a1.46 1.46 0 0 0-2.91 0 6.18 6.18 0 1 0 12.36 0V10.9a6.18 6.18 0 1 0-12.36 0v2.36a1.46 1.46 0 0 0 2.91 0V10.9a3.26 3.26 0 1 1 6.53 0v7.87a3.26 3.26 0 1 1-6.53 0Z" fill="%23604C8B"/><path d="M30.55 17.99v-4.73a1.46 1.46 0 0 0-2.91 0V18a1.46 1.46 0 1 0 2.91 0ZM26.6 3.31a8 8 0 0 1 10.48 7.6v7.86a1.46 1.46 0 1 0 2.92 0V10.9A10.9 10.9 0 0 0 25.7.54a1.46 1.46 0 1 0 .9 2.77Z" fill="%23604C8B"/><path d="M37.22 26.04a1.46 1.46 0 1 0-2.16-1.94 7.99 7.99 0 0 1-13.94-5.33V10.9c0-1.96.72-3.86 2.03-5.32a1.46 1.46 0 1 0-2.17-1.95c-1.79 2-2.78 4.59-2.77 7.27v7.87a10.9 10.9 0 0 0 19.02 7.27Z" fill="%23604C8B"/><path d="M25.83 18.77a1.46 1.46 0 0 0-2.91 0 6.18 6.18 0 1 0 12.36 0V10.9a6.18 6.18 0 1 0-12.36 0v2.36a1.46 1.46 0 0 0 2.91 0V10.9a3.26 3.26 0 1 1 6.53 0v7.87a3.26 3.26 0 1 1-6.53 0Z" fill="%23604C8B"/><path d="M23.67 31.67a.42.42 0 0 0-.4.28.73.73 0 0 1-.07.17.83.83 0 0 1-.7.39H4.17a.83.83 0 0 1-.84-.84V5.83A.83.83 0 0 1 4.17 5h11.7a.41.41 0 0 0 .38-.24 14.25 14.25 0 0 1 2.24-3.35c.22-.24.46-.46.72-.66a.42.42 0 0 0-.24-.75H5a5 5 0 0 0-5 5v30a5 5 0 0 0 5 5h16.67a5 5 0 0 0 5-5v-2.92a.42.42 0 0 0-.42-.41h-2.58ZM30.55 17.99v-4.73a1.46 1.46 0 0 0-2.91 0V18a1.46 1.46 0 1 0 2.91 0Z" fill="%23604C8B"/></svg>');
-        object-position: calc(50% + .5rem) calc(50% - .125rem);
+        object-position: calc(50% + 0.5rem) calc(50% - 0.125rem);
     }
 
     div {
@@ -191,7 +198,7 @@ export default defineComponent({
         font-size: 1.75rem;
         font-weight: 600;
         text-align: center;
-        color: nimiq-blue(.45);
+        color: nimiq-blue(0.45);
     }
 
     .logo-ten31 {
@@ -199,7 +206,7 @@ export default defineComponent({
         display: inline-block;
         height: 1em;
         vertical-align: top;
-        opacity: .35;
+        opacity: 0.35;
     }
 }
 </style>

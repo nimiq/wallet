@@ -18,26 +18,27 @@
         @show="$emit('show')"
         @hide="$emit('hide')"
         class="interactive-short-address"
-        :class="[tooltipHorizontalPosition, {
-            'is-copyable': copyable,
-            'offset-tooltip-position': offsetTooltipPosition,
-         }]">
+        :class="[
+            tooltipHorizontalPosition,
+            {
+                'is-copyable': copyable,
+                'offset-tooltip-position': offsetTooltipPosition,
+            },
+        ]"
+    >
         <template #trigger>
-            <Copyable v-if="copyable"
-                ref="copyable$"
-                :text="address"
-                @copy="onCopy">
-                <ShortAddress :address="address" :displayedCharacters="displayedCharacters"/>
+            <Copyable v-if="copyable" ref="copyable$" :text="address" @copy="onCopy">
+                <ShortAddress :address="address" :displayedCharacters="displayedCharacters" />
             </Copyable>
-            <ShortAddress v-else :address="address" :displayedCharacters="displayedCharacters"/>
+            <ShortAddress v-else :address="address" :displayedCharacters="displayedCharacters" />
         </template>
         <template #default>{{ address }}</template>
     </Tooltip>
 </template>
 
 <script lang="ts">
-import Vue, { defineComponent, computed, ref } from 'vue';
 import { Copyable, Tooltip } from '@nimiq/vue-components';
+import Vue, { defineComponent, computed, ref } from 'vue';
 import ShortAddress from './ShortAddress.vue';
 
 export default defineComponent({
@@ -167,8 +168,8 @@ export default defineComponent({
         font-family: 'Fira Mono', monospace;
         font-weight: normal;
         white-space: nowrap;
-        letter-spacing: -.02em;
-        word-spacing: -.2em;
+        letter-spacing: -0.02em;
+        word-spacing: -0.2em;
     }
 
     &.offset-tooltip-position {
@@ -194,21 +195,21 @@ export default defineComponent({
     }
 
     &:not(.is-copyable) .trigger {
-        padding: .5rem .75rem; // Have a similar size as with Copyable's padding.
+        padding: 0.5rem 0.75rem; // Have a similar size as with Copyable's padding.
         line-height: 1.25;
     }
 }
 
 .copyable {
-    padding: .5rem .75rem;
+    padding: 0.5rem 0.75rem;
     line-height: 1.25;
 }
 
 .short-address {
     font-size: var(--body-size);
-    opacity: .5;
+    opacity: 0.5;
     pointer-events: none;
-    transition: opacity .3s var(--nimiq-ease);
+    transition: opacity 0.3s var(--nimiq-ease);
 
     // Full opacity if the parent Tooltip .trigger or Copyable is hovered, focused or copied.
     :is(.trigger, .copyable):is(:hover, :focus, :focus-within, .copied) > & {

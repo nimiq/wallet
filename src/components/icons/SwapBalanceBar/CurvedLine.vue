@@ -6,12 +6,7 @@
         :viewBox="`0 0 ${localWidth} ${height}`"
         :class="direction"
     >
-        <path
-            stroke="#1F2348"
-            stroke-width="1.5"
-            opacity=".24"
-            :d="d"
-        />
+        <path stroke="#1F2348" stroke-width="1.5" opacity=".24" :d="d" />
     </svg>
 </template>
 
@@ -35,7 +30,7 @@ export default defineComponent({
             validator: (direction: string) => ['right', 'left'].includes(direction),
         },
     },
-    setup: (props/* ,  context */) => {
+    setup: (props /* ,  context */) => {
         const minWidth = 2;
         const localWidth = computed(() => {
             if (props.width <= minWidth) {
@@ -45,33 +40,18 @@ export default defineComponent({
             return Math.round(props.width);
         });
         const angleSize = computed(() => Math.max(8, Math.min(12, Math.sqrt(localWidth.value))));
-        const y = computed(() =>
-            Math.round(
-                Math.max(3,
-                    Math.min(10,
-                        angleSize.value - (props.width / 10),
-                    ),
-                ),
-            ),
-        );
-        const x = computed(() =>
-            Math.round(
-                Math.max(0,
-                    Math.min(12,
-                        angleSize.value - (props.width / 10),
-                    ),
-                ),
-            ),
-        );
+        const y = computed(() => Math.round(Math.max(3, Math.min(10, angleSize.value - props.width / 10))));
+        const x = computed(() => Math.round(Math.max(0, Math.min(12, angleSize.value - props.width / 10))));
 
-        const d = computed(() => `
+        const d = computed(
+            () => `
             M 1 1
             v 1
             s
                 0 ${angleSize.value - y.value}
                 ${angleSize.value - x.value} ${angleSize.value}
             S
-                ${Math.round(props.width) - (((angleSize.value - x.value) * 2) + 1)}
+                ${Math.round(props.width) - ((angleSize.value - x.value) * 2 + 1)}
                     ${props.height - (angleSize.value + y.value + 3)}
                 ${Math.round(props.width) - (angleSize.value + 1) + x.value}
                     ${props.height - (angleSize.value + 3)}
@@ -79,7 +59,8 @@ export default defineComponent({
                 ${angleSize.value - x.value} ${angleSize.value}
                 ${angleSize.value - x.value} ${angleSize.value}
             v 1
-        `);
+        `,
+        );
 
         return {
             localWidth,
@@ -90,7 +71,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 svg,
 svg path {
     overflow: visible;
@@ -106,5 +86,4 @@ svg path {
     transition-duration: 100ms;
     transition-property: d, viewBox;
 }
-
 </style>

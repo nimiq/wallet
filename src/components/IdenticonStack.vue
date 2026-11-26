@@ -1,28 +1,29 @@
 <template>
-    <button class="reset identicon-stack flex-column" v-on="$listeners" :class="{
-        interactive,
-        'triangle-indented': (!hasBitcoinAddresses && backgroundAddresses.length === 1)
-            || (hasBitcoinAddresses && backgroundAddresses.length === 0)
-            || (activeCurrency === CryptoCurrency.BTC && backgroundAddresses.length === 1),
-    }">
-        <Identicon class="secondary"
-            v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
+    <button
+        class="reset identicon-stack flex-column"
+        v-on="$listeners"
+        :class="{
+            interactive,
+            'triangle-indented':
+                (!hasBitcoinAddresses && backgroundAddresses.length === 1)
+                || (hasBitcoinAddresses && backgroundAddresses.length === 0)
+                || (activeCurrency === CryptoCurrency.BTC && backgroundAddresses.length === 1),
+        }"
+    >
+        <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]" />
 
-        <BitcoinIcon class="secondary"
-            v-if="hasBitcoinAddresses && $config.enableBitcoin && activeCurrency !== CryptoCurrency.BTC" />
+        <BitcoinIcon
+            class="secondary"
+            v-if="hasBitcoinAddresses && $config.enableBitcoin && activeCurrency !== CryptoCurrency.BTC"
+        />
 
-        <Identicon class="secondary"
-            v-else-if="backgroundAddresses[1]"
-            :address="backgroundAddresses[1]"/>
+        <Identicon class="secondary" v-else-if="backgroundAddresses[1]" :address="backgroundAddresses[1]" />
 
-        <Identicon class="primary"
-            v-if="activeCurrency === CryptoCurrency.NIM"
-            :address="activeAddressInfo.address"/>
+        <Identicon class="primary" v-if="activeCurrency === CryptoCurrency.NIM" :address="activeAddressInfo.address" />
 
-        <BitcoinIcon class="primary"
-            v-else-if="activeCurrency === CryptoCurrency.BTC" />
+        <BitcoinIcon class="primary" v-else-if="activeCurrency === CryptoCurrency.BTC" />
 
-        <TriangleDownIcon v-if="backgroundAddresses.length || hasBitcoinAddresses"/>
+        <TriangleDownIcon v-if="backgroundAddresses.length || hasBitcoinAddresses" />
 
         <label>
             {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
@@ -32,8 +33,8 @@
 
 <script lang="ts">
 import { Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
@@ -54,8 +55,11 @@ export default defineComponent({
         const backgroundAddresses = computed(() =>
             addressInfos.value
                 .slice(0, 3)
-                .filter((addressInfo) => activeCurrency.value !== CryptoCurrency.NIM
-                    || addressInfo.address !== activeAddressInfo.value!.address)
+                .filter(
+                    (addressInfo) =>
+                        activeCurrency.value !== CryptoCurrency.NIM
+                        || addressInfo.address !== activeAddressInfo.value!.address,
+                )
                 .slice(0, 2)
                 .map((addressInfo) => addressInfo.address),
         );
@@ -92,7 +96,7 @@ export default defineComponent({
         overflow: hidden;
         width: 100%;
         cursor: inherit;
-        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
     }
 
     svg.bitcoin {

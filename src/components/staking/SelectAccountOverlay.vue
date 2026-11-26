@@ -1,7 +1,7 @@
 <template>
     <div class="select-account-overlay flex-column">
         <PageHeader>
-            {{ $t("Choose an Address")}}
+            {{ $t('Choose an Address') }}
         </PageHeader>
         <PageBody class="flex-column">
             <AddressList embedded :requiredBalance="1" @address-selected="selectAddress" />
@@ -10,12 +10,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { useAddressStore } from '../../stores/Address';
-import { useAccountStore } from '../../stores/Account';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { CryptoCurrency } from '../../lib/Constants';
+import { useAccountStore } from '../../stores/Account';
+import { useAddressStore } from '../../stores/Address';
 import AddressList from '../AddressList.vue';
 
 export default defineComponent({
@@ -32,9 +32,13 @@ export default defineComponent({
         const root = ref<HTMLElement | null>(null);
         const scrollbarVisible = ref(false);
         onMounted(() => {
-            watch(addressInfos, () => {
-                scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
-            }, { immediate: true, flush: 'post' });
+            watch(
+                addressInfos,
+                () => {
+                    scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
+                },
+                { immediate: true, flush: 'post' },
+            );
         });
 
         return {
@@ -46,8 +50,7 @@ export default defineComponent({
             scrollbarVisible,
         };
     },
-    props: {
-    },
+    props: {},
     components: {
         PageHeader,
         PageBody,
@@ -57,37 +60,37 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .select-account-overlay {
-        max-height: 100%;
+.select-account-overlay {
+    max-height: 100%;
+}
+
+.page-header {
+    padding-bottom: 1rem;
+}
+
+.page-body {
+    overflow-y: auto;
+    padding: 1rem 0 2rem;
+
+    .address-list {
+        padding: 0 2rem;
     }
+}
 
-    .page-header {
-        padding-bottom: 1rem;
-    }
+// @use '../../scss/mixins.scss' as *;
 
-    .page-body {
-        overflow-y: auto;
-        padding: 1rem 0 2rem;
+// .overlay,
+// .overlay .page-body {
+//     height: 100%;
+// }
 
-        .address-list {
-            padding: 0 2rem;
-        }
-    }
+// .overlay .page-body {
+//     justify-content: space-evenly;
+//     align-items: center;
+//     min-height: 56rem;
 
-    // @use '../../scss/mixins.scss' as *;
-
-    // .overlay,
-    // .overlay .page-body {
-    //     height: 100%;
-    // }
-
-    // .overlay .page-body {
-    //     justify-content: space-evenly;
-    //     align-items: center;
-    //     min-height: 56rem;
-
-    //     .flex-spacer {
-    //         height: 2rem;
-    //     }
-    // }
+//     .flex-spacer {
+//         height: 2rem;
+//     }
+// }
 </style>

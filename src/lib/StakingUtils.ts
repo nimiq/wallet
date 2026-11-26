@@ -1,12 +1,12 @@
 import { i18n } from '../i18n/i18n-setup';
-import { Transaction } from '../stores/Transactions';
 import { useStakingStore, AggregatedRestakingEvent, Validator } from '../stores/Staking';
+import { Transaction } from '../stores/Transactions';
 import { STAKING_CONTRACT_ADDRESS } from './Constants';
 
 export type ValidatorRef = {
-    address: string,
-    name?: string,
-    logo?: string,
+    address: string;
+    name?: string;
+    logo?: string;
 };
 
 export function toValidatorRef(validator: Validator): ValidatorRef {
@@ -19,7 +19,7 @@ export function toValidatorRef(validator: Validator): ValidatorRef {
 
 export const validatorLabel = (v: ValidatorRef): string => v.name || v.address;
 
-export function stakingErrorMessage(error: { message?: string, data?: unknown }): string {
+export function stakingErrorMessage(error: { message?: string; data?: unknown }): string {
     return `${error.message}${error.data ? ` - ${error.data}` : ''}`;
 }
 
@@ -52,7 +52,8 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
                 if (!verbose) return text;
                 return text;
             }
-            default: throw new Error('Unknown staking sender data type');
+            default:
+                throw new Error('Unknown staking sender data type');
         }
     }
 
@@ -147,7 +148,8 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
 
             return text;
         }
-        default: throw new Error(`Unknown staking data type: ${JSON.stringify(transaction.data)}`);
+        default:
+            throw new Error(`Unknown staking data type: ${JSON.stringify(transaction.data)}`);
     }
 }
 
@@ -204,7 +206,7 @@ export function isCurrentMonthAndYear(monthKey: string) {
  * @returns Map of validator addresses to their total rewards and event timestamps
  */
 export function buildRewardsByValidatorMap(events: readonly AggregatedRestakingEvent[]) {
-    const rewardsByValidator = new Map<string, { amount: number, timestamps: number[] }>();
+    const rewardsByValidator = new Map<string, { amount: number; timestamps: number[] }>();
     for (const event of events) {
         const validatorAddress = event.sender_address;
         const existing = rewardsByValidator.get(validatorAddress);

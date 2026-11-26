@@ -1,0 +1,10 @@
+// Config for type checking with vue-tsc. Like the former type checking during Vue CLI builds, only the scripts of Vue
+// single file components are checked, not their templates. This is set in a separate config to not affect the template
+// support of editors.
+{
+  "extends": "./tsconfig.json",
+  "vueCompilerOptions": {
+    "target": 2.7,
+    "skipTemplateCodegen": true
+  }
+}

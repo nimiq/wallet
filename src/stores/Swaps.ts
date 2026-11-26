@@ -1,8 +1,8 @@
 import type { PlainTransactionDetails } from '@nimiq/core';
-import { defineStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
+import { defineStore } from 'pinia';
 import { FiatCurrency } from '../lib/Constants';
 import { assetToCurrency, SupportedSwapAsset } from '../lib/swap/utils/Assets';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
@@ -25,92 +25,89 @@ export enum SwapDirection {
 }
 
 export type SwapNimData = {
-    asset: SwapAsset.NIM,
-    transactionHash: string,
+    asset: SwapAsset.NIM;
+    transactionHash: string;
     htlc?: {
-        address?: string,
-        refundAddress: string,
-        redeemAddress: string,
-        timeoutMs: number,
-    },
+        address?: string;
+        refundAddress: string;
+        redeemAddress: string;
+        timeoutMs: number;
+    };
 };
 
 export type SwapBtcData = {
-    asset: SwapAsset.BTC,
-    transactionHash: string,
-    outputIndex: number,
+    asset: SwapAsset.BTC;
+    transactionHash: string;
+    outputIndex: number;
     htlc?: {
-        address?: string,
-        script: string,
-        refundAddress: string,
-        redeemAddress: string,
-        timeoutTimestamp: number,
-    },
+        address?: string;
+        script: string;
+        refundAddress: string;
+        redeemAddress: string;
+        timeoutTimestamp: number;
+    };
 };
 
 export type SwapErc20Data = {
-    asset: SwapAsset.USDC | SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC,
-    transactionHash: string,
+    asset: SwapAsset.USDC | SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC;
+    transactionHash: string;
     htlc?: {
-        address?: string,
-        refundAddress: string,
-        redeemAddress: string,
-        timeoutTimestamp: number,
-    },
+        address?: string;
+        refundAddress: string;
+        redeemAddress: string;
+        timeoutTimestamp: number;
+    };
 };
 
 export type SwapEurData = {
-    asset: SwapAsset.EUR,
-    bankLabel?: string,
-    bankLogo?: string,
-    iban?: string,
-    amount: number,
+    asset: SwapAsset.EUR;
+    bankLabel?: string;
+    bankLogo?: string;
+    iban?: string;
+    amount: number;
     htlc?: {
-        id: string,
-        timeoutTimestamp: number,
+        id: string;
+        timeoutTimestamp: number;
         settlement?: {
-            status: SettlementStatus,
-            eta?: number,
-            reason?: DeniedReason | string,
-            lastUpdated?: number,
-        },
-    },
+            status: SettlementStatus;
+            eta?: number;
+            reason?: DeniedReason | string;
+            lastUpdated?: number;
+        };
+    };
 };
 
 export type SwapData = SwapNimData | SwapBtcData | SwapErc20Data | SwapEurData;
 
 export type Swap = {
-    id?: string,
-    in?: SwapData,
-    out?: SwapData,
+    id?: string;
+    in?: SwapData;
+    out?: SwapData;
     fees?: {
-        totalFee: number,
-        asset: SwapAsset,
-    },
+        totalFee: number;
+        asset: SwapAsset;
+    };
 };
 
 export type ActiveSwap = SwapObject & {
-    state: SwapState,
-    stateEnteredAt: number,
-    watchtowerNotified: boolean,
-    fundingInstructions?: SepaClearingInstruction,
-    fundingSerializedTx?: string,
+    state: SwapState;
+    stateEnteredAt: number;
+    watchtowerNotified: boolean;
+    fundingInstructions?: SepaClearingInstruction;
+    fundingSerializedTx?: string;
     // Authorization token for KYC enabled OASIS settlements (when selling crypto for fiat).
     // S3 KYC grant tokens and KYC enabled OASIS clearing authorization tokens (buying crypto), don't have to be handled
     // during the swap process in wallet, as those tokens are passed to S3 already in the Hub during swap confirmation.
-    settlementAuthorizationToken?: string,
-    settlementSerializedTx?: string,
-    nimiqProxySerializedTx?: string,
-    remoteFundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction | UsdtTransaction,
-    fundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction | UsdtTransaction,
-    secret?: string,
-    settlementTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction | UsdtTransaction,
-    error?: string,
-    errorAction?: SwapErrorAction,
-}
+    settlementAuthorizationToken?: string;
+    settlementSerializedTx?: string;
+    nimiqProxySerializedTx?: string;
+    remoteFundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc | UsdcTransaction | UsdtTransaction;
+    fundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc | UsdcTransaction | UsdtTransaction;
+    secret?: string;
+    settlementTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc | UsdcTransaction | UsdtTransaction;
+    error?: string;
+    errorAction?: SwapErrorAction;
+};
 
 export enum SwapErrorAction {
     USDC_RESIGN_REDEEM = 'usdc-resign-redeem',
@@ -118,10 +115,10 @@ export enum SwapErrorAction {
 }
 
 export type SwapsState = {
-    swaps: { [hash: string]: Swap },
-    swapByTransaction: { [transactionHash: string]: string },
-    activeSwap: ActiveSwap | null,
-    promoBoxVisible: boolean,
+    swaps: { [hash: string]: Swap };
+    swapByTransaction: { [transactionHash: string]: string };
+    activeSwap: ActiveSwap | null;
+    promoBoxVisible: boolean;
 };
 
 export const useSwapsStore = defineStore('swaps', {
@@ -132,9 +129,12 @@ export const useSwapsStore = defineStore('swaps', {
         promoBoxVisible: false,
     }),
     getters: {
-        getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
-            state.swaps[hash],
-        getSwapByTransactionHash: (state): ((transactionHash: string) => Swap | null) =>
+        getSwap:
+            (state): ((hash: string) => Swap | undefined) =>
+            (hash: string): Readonly<Swap> =>
+                state.swaps[hash],
+        getSwapByTransactionHash:
+            (state): ((transactionHash: string) => Swap | null) =>
             (transactionHash: string): Readonly<Swap> | null => {
                 const swapHash = state.swapByTransaction[transactionHash];
                 if (!swapHash) return null;
@@ -183,9 +183,10 @@ export const useSwapsStore = defineStore('swaps', {
             otherAsset: Exclude<SupportedSwapAsset, SwapAsset.EUR>,
         ) {
             // Check swap with the Fastspot API to detect if it was a EUR swap.
-            const [addSwapData, swapProp, contractProp, feesProp] = type === 'funding'
-                ? [this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const
-                : [this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const;
+            const [addSwapData, swapProp, contractProp, feesProp] =
+                type === 'funding'
+                    ? ([this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const)
+                    : ([this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const);
             const otherCurrency = assetToCurrency(otherAsset);
             const swap = this.$state.swaps[hashRoot];
             if (!swap || !!swap[swapProp]) return; // not a swap, or counterpart already known
@@ -197,24 +198,22 @@ export const useSwapsStore = defineStore('swaps', {
                     [FiatCurrency.EUR]: getEurPerCrypto(otherAsset, contractWithEstimate),
                 },
             };
-            const fees = getFiatFees(
-                contractWithEstimate,
-                otherCurrency,
-                exchangeRate,
-                FiatCurrency.EUR,
-                null,
-            );
+            const fees = getFiatFees(contractWithEstimate, otherCurrency, exchangeRate, FiatCurrency.EUR, null);
 
-            addSwapData(hashRoot, {
-                asset: SwapAsset.EUR,
-                amount: contractWithEstimate[contractProp].amount,
-                // We cannot get bank info or EUR HTLC details from this.
-            }, {
-                fees: {
-                    totalFee: fees[feesProp].total,
+            addSwapData(
+                hashRoot,
+                {
                     asset: SwapAsset.EUR,
+                    amount: contractWithEstimate[contractProp].amount,
+                    // We cannot get bank info or EUR HTLC details from this.
                 },
-            });
+                {
+                    fees: {
+                        totalFee: fees[feesProp].total,
+                        asset: SwapAsset.EUR,
+                    },
+                },
+            );
         },
     },
 });

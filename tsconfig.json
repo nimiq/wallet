@@ -12,37 +12,17 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "noImplicitOverride": true,
-    "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
+    "skipLibCheck": true,
+    "types": ["vite-plus/client"],
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "config": [
-        "src/config/config.local.ts"
-      ]
+      "@/*": ["./src/*"],
+      "config": ["./src/config/config.local.ts"]
     },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "vueCompilerOptions": {
     "target": 2
   },
-  "include": [
-    "types/*",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["types/*", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
+  "exclude": ["node_modules"]
 }

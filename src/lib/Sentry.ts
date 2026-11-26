@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { captureException, init } from '@sentry/vue';
+import Vue from 'vue';
 import { useConfig } from '../composables/useConfig';
 import { ENV_MAIN } from './Constants';
 
@@ -32,7 +32,7 @@ export function startSentry() {
         dsn: 'https://788f2bf1f3f74e408e50d2f2e5488e14@o208918.ingest.sentry.io/5289326',
         Vue,
         environment: config.environment,
-        release: process.env.SENTRY_RELEASE,
+        release: import.meta.env.SENTRY_RELEASE,
         enabled: config.reportToSentry,
         sampleRate: config.environment === ENV_MAIN ? 0.2 : 1,
         beforeSend: stripUrlFragments,
@@ -40,17 +40,19 @@ export function startSentry() {
 }
 
 type ErrorContext = Partial<{
-    accountId: string,
+    accountId: string;
     extra: Partial<{
-        method: string,
-    }>,
+        method: string;
+    }>;
 }>;
 
 export function reportToSentry(error: any, context?: ErrorContext) {
     captureException(error, {
         extra: context?.extra,
-        user: context?.accountId ? {
-            id: context.accountId,
-        } : undefined,
+        user: context?.accountId
+            ? {
+                  id: context.accountId,
+              }
+            : undefined,
     });
 }

@@ -1,9 +1,7 @@
 <template>
     <div class="slide-hint flex-row" :class="direction">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 7" v-for="index in 3" :key="index">
-            <path
-                d="M5.096 2.722a.7.7 0 010 1.174L1.081 6.504A.7.7 0 010 5.917V.7A.7.7 0 011.081.114l4.015 2.608z"
-            />
+            <path d="M5.096 2.722a.7.7 0 010 1.174L1.081 6.504A.7.7 0 010 5.917V.7A.7.7 0 011.081.114l4.015 2.608z" />
         </svg>
     </div>
 </template>
@@ -23,7 +21,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .slide-hint {
     color: white;
     position: absolute;
@@ -50,15 +47,15 @@ svg {
     }
 
     &:nth-child(1) {
-        opacity: .5;
+        opacity: 0.5;
     }
 
     &:nth-child(2) {
-        opacity: .35;
+        opacity: 0.35;
     }
 
     &:nth-child(3) {
-        opacity: .2;
+        opacity: 0.2;
     }
 
     @keyframes fade-n-translate {
@@ -82,5 +79,4 @@ svg {
 svg path {
     fill: currentColor;
 }
-
 </style>

@@ -26,8 +26,12 @@
         <PageBody v-if="page === 1" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('Handling multiple addresses is now convenient and easy – with one password and shared login'
-                    + ' information.') }}
+                    {{
+                        $t(
+                            'Handling multiple addresses is now convenient and easy – with one password and shared login'
+                                + ' information.',
+                        )
+                    }}
                 </p>
                 <i18n tag="p" path="{accounts} hold, manage and aggregate addresses." class="nq-text">
                     <template #accounts>
@@ -41,15 +45,19 @@
                 </i18n>
             </div>
             <div class="visual address-ring">
-                <img src="../../assets/slides/account-ring-half.svg" key="account-ring" alt="Addresses">
+                <img src="../../assets/slides/account-ring-half.svg" key="account-ring" alt="Addresses" />
             </div>
         </PageBody>
 
         <PageBody v-else-if="page === 2" class="left-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('The new Login Files are an easy and convenient way to gain access to your account and its'
-                    + ' addresses.') }}
+                    {{
+                        $t(
+                            'The new Login Files are an easy and convenient way to gain access to your account and its'
+                                + ' addresses.',
+                        )
+                    }}
                 </p>
                 <p class="nq-text">
                     {{ $t('Import it to any browser and enter your password to use the same addresses.') }}
@@ -57,28 +65,38 @@
                 <p class="nq-text">
                     <BlueLink
                         href="https://www.nimiq.com/blog/the-biggest-release-since-mainnet-launch/"
-                        target="_blank" rel="noopener"
-                    >{{ $t('Learn more here') }}</BlueLink>
+                        target="_blank"
+                        rel="noopener"
+                        >{{ $t('Learn more here') }}</BlueLink
+                    >
                 </p>
             </div>
             <div class="visual login-file">
-                <img src="../../assets/slides/login-file-half.svg" key="login-file" alt="LoginFile">
+                <img src="../../assets/slides/login-file-half.svg" key="login-file" alt="LoginFile" />
             </div>
         </PageBody>
 
         <PageBody v-else-if="page === 3" class="right-aligned">
             <div class="text">
                 <p class="nq-text">
-                    {{ $t('Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new'
-                    + ' account picker.') }}
+                    {{
+                        $t(
+                            'Your accounts are now legacy accounts. Easily switch, edit and create accounts with the new'
+                                + ' account picker.',
+                        )
+                    }}
                 </p>
                 <p class="nq-text">
-                    {{ $t('Account creation was massively improved. Give\n'
-                    + 'it a try and experience all new Nimiq features.') }}
+                    {{
+                        $t(
+                            'Account creation was massively improved. Give\n'
+                                + 'it a try and experience all new Nimiq features.',
+                        )
+                    }}
                 </p>
             </div>
             <div class="visual account-menu">
-                <img src="../../assets/slides/old-account-menu-half.svg" key="old-account-menu" alt="Account-Menu">
+                <img src="../../assets/slides/old-account-menu-half.svg" key="old-account-menu" alt="Account-Menu" />
             </div>
         </PageBody>
 
@@ -93,8 +111,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
 import BlueLink from '../BlueLink.vue';
 
@@ -134,68 +152,68 @@ export default defineComponent({
 </script>
 
 <style scoped>
-    .modal >>> .close-button {
-        display: none;
-    }
+.modal >>> .close-button {
+    display: none;
+}
 
-    .page-body {
-        padding-top: 2rem !important;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        overflow: hidden;
-    }
+.page-body {
+    padding-top: 2rem !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
 
-    .page-body.right-aligned {
-        padding-right: 0;
-    }
+.page-body.right-aligned {
+    padding-right: 0;
+}
 
-    .page-body.left-aligned {
-        padding-left: 0;
-        flex-direction: row-reverse;
-    }
+.page-body.left-aligned {
+    padding-left: 0;
+    flex-direction: row-reverse;
+}
 
-    .text,
-    .visual {
-        flex-shrink: 0;
-    }
+.text,
+.visual {
+    flex-shrink: 0;
+}
 
-    .nq-text {
-        color: var(--nimiq-blue);
-        margin-left: 2rem;
-        margin-right: 2rem;
-        width: 27rem;
-    }
+.nq-text {
+    color: var(--nimiq-blue);
+    margin-left: 2rem;
+    margin-right: 2rem;
+    width: 27rem;
+}
 
-    .left-aligned .nq-text {
-        width: 26rem;
-    }
+.left-aligned .nq-text {
+    width: 26rem;
+}
 
-    .visual img {
-        width: 100%;
-        height: 100%;
-    }
+.visual img {
+    width: 100%;
+    height: 100%;
+}
 
-    .visual.address-ring {
-        width: 18rem;
-        height: 100%;
-    }
+.visual.address-ring {
+    width: 18rem;
+    height: 100%;
+}
 
-    .visual.login-file {
-        width: 20.25rem;
-        height: 34rem;
-        margin-left: -7.25rem;
-        margin-top: -1rem;
-    }
+.visual.login-file {
+    width: 20.25rem;
+    height: 34rem;
+    margin-left: -7.25rem;
+    margin-top: -1rem;
+}
 
-    .visual.account-menu {
-        width: 18rem;
-        height: 48rem;
-        align-self: flex-start;
-    }
+.visual.account-menu {
+    width: 18rem;
+    height: 48rem;
+    align-self: flex-start;
+}
 
-    .nq-button {
-        margin-top: 0 !important;
-    }
+.nq-button {
+    margin-top: 0 !important;
+}
 </style>

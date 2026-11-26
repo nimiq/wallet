@@ -3,9 +3,9 @@ import { useAccountStore } from './Account';
 import { Transaction, TransactionState, useTransactionsStore } from './Transactions';
 
 export type AddressState = {
-    addressInfos: {[id: string]: AddressInfo},
-    activeAddress: string | null,
-}
+    addressInfos: { [id: string]: AddressInfo };
+    activeAddress: string | null;
+};
 
 // Mirror of Nimiq.Account.Type
 export enum AddressType {
@@ -16,35 +16,39 @@ export enum AddressType {
 }
 
 export type AddressInfo = {
-    address: string,
-    label: string,
-    balance: number | null,
+    address: string;
+    label: string;
+    balance: number | null;
 } & (BasicAddressInfo | ContractAddressInfo);
 
 export type BasicAddressInfo = {
-    type: AddressType.BASIC,
-}
+    type: AddressType.BASIC;
+};
 
 export type ContractAddressInfo = {
-    type: AddressType.VESTING,
-    owner: string,
-    stepAmount: number,
-    totalAmount: number,
-} & ({
-    // PoS
-    startTime: number,
-    timeStep: number,
-} | {
-    // PoW
-    start: number,
-    stepBlocks: number,
-})
+    type: AddressType.VESTING;
+    owner: string;
+    stepAmount: number;
+    totalAmount: number;
+} & (
+    | {
+          // PoS
+          startTime: number;
+          timeStep: number;
+      }
+    | {
+          // PoW
+          start: number;
+          stepBlocks: number;
+      }
+);
 
 export const useAddressStore = defineStore('addresses', {
-    state: () => ({
-        addressInfos: {},
-        activeAddress: null,
-    } as AddressState),
+    state: () =>
+        ({
+            addressInfos: {},
+            activeAddress: null,
+        }) as AddressState,
     getters: {
         accountAddressInfos: (state): AddressInfo[] => {
             const { activeAccountInfo } = useAccountStore();
@@ -88,11 +92,13 @@ export const useAddressStore = defineStore('addresses', {
 
             // Sort transactions by descending timestamp
             return txs.slice(0).sort((a, b) => {
-                const aHeight = a.blockHeight
+                const aHeight =
+                    a.blockHeight
                     || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
                         && a.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
-                const bHeight = b.blockHeight
+                const bHeight =
+                    b.blockHeight
                     || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
                         && b.validityStartHeight)
                     || Number.MAX_SAFE_INTEGER;
@@ -124,7 +130,7 @@ export const useAddressStore = defineStore('addresses', {
             if (selectIt) this.$state.activeAddress = addressInfo.address;
         },
         setAddressInfos(addressInfos: AddressInfo[]) {
-            const newAddressInfos: {[address: string]: AddressInfo} = {};
+            const newAddressInfos: { [address: string]: AddressInfo } = {};
 
             for (const addressInfo of addressInfos) {
                 newAddressInfos[addressInfo.address] = addressInfo;

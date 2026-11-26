@@ -1,41 +1,34 @@
 <template>
-    <button
-        v-if="activeAccountInfo"
-        class="account-menu reset flex-row"
-        @click="goToAccount"
-    >
+    <button v-if="activeAccountInfo" class="account-menu reset flex-row" @click="goToAccount">
         <div v-if="activeAccountInfo.type === AccountType.BIP39" class="icon" :class="backgroundColor">
-            <LoginFileIcon/>
+            <LoginFileIcon />
         </div>
         <div v-else-if="activeAccountInfo.type === AccountType.LEGACY" class="icon">
-            <Identicon :address="firstAddressInfo.address"/>
+            <Identicon :address="firstAddressInfo.address" />
         </div>
         <div v-else-if="activeAccountInfo.type === AccountType.LEDGER" class="icon">
-            <LedgerIcon/>
+            <LedgerIcon />
         </div>
         <div class="label">
-            {{ activeAccountInfo.type === AccountType.LEGACY
-                ? firstAddressInfo.label
-                : activeAccountInfo.label
-            }}
+            {{ activeAccountInfo.type === AccountType.LEGACY ? firstAddressInfo.label : activeAccountInfo.label }}
         </div>
         <button class="reset menu-button" @click.stop="openMenu">
-            <MenuDotsIcon/>
+            <MenuDotsIcon />
         </button>
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from '@/router';
 
-import LoginFileIcon from './icons/LoginFileIcon.vue';
-import LedgerIcon from './icons/LedgerIcon.vue';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
+import LedgerIcon from './icons/LedgerIcon.vue';
+import LoginFileIcon from './icons/LoginFileIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -50,11 +43,13 @@ export default defineComponent({
             });
         }
 
-        const backgroundColor = computed(() => !!activeAccountInfo.value
-            && getBackgroundClass(activeAccountInfo.value.addresses[0]));
+        const backgroundColor = computed(
+            () => !!activeAccountInfo.value && getBackgroundClass(activeAccountInfo.value.addresses[0]),
+        );
 
-        const firstAddressInfo = computed(() => activeAccountInfo.value
-            && addressState.addressInfos[activeAccountInfo.value.addresses[0]]);
+        const firstAddressInfo = computed(
+            () => activeAccountInfo.value && addressState.addressInfos[activeAccountInfo.value.addresses[0]],
+        );
 
         function goToAccount(testForMenuOpening = true) {
             if (testForMenuOpening && router.currentRoute.name === 'root') {

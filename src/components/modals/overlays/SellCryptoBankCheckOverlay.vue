@@ -16,7 +16,8 @@
         <PageBody class="flex-column">
             <MessageTransition :reverse="currentStep === Step.BANK_CHECK">
                 <template v-if="currentStep === Step.BANK_CHECK">
-                    <BankCheckInput v-model="bankName"
+                    <BankCheckInput
+                        v-model="bankName"
                         @bank-selected="onBankSelected"
                         direction="inbound"
                         :placeholder="$t('Enter bank name')"
@@ -55,36 +56,39 @@
                         </template>
                     </DoubleInput>
                     <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
-                        <BankIcon/><a class="nq-link nq-blue">{{ bank ? bank.name : '' }}</a>
+                        <BankIcon /><a class="nq-link nq-blue">{{ bank ? bank.name : '' }}</a>
                     </div>
                 </template>
             </MessageTransition>
         </PageBody>
         <PageFooter>
             <transition name="fade">
-                <button v-if="currentStep === Step.IBAN_CHECK"
+                <button
+                    v-if="currentStep === Step.IBAN_CHECK"
                     class="nq-button light-blue"
                     :disabled="!canConfirm"
                     @click="confirm"
                     @mousedown.prevent
-                >{{ $t('Confirm account') }}</button>
+                >
+                    {{ $t('Confirm account') }}
+                </button>
             </transition>
         </PageFooter>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { Bank } from '@nimiq/oasis-bank-list';
+import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import IBAN from 'iban';
-import { BankAccount, useBankStore } from '@/stores/Bank';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { BankAccount, useBankStore } from '@/stores/Bank';
 import BankCheckInput from '../../BankCheckInput.vue';
-import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
+import MessageTransition from '../../MessageTransition.vue';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',
@@ -104,31 +108,37 @@ export default defineComponent({
         const iban = ref(bankAccount.value?.iban || '');
 
         const isIbanValid = computed(() => iban.value.length < 5 || IBAN.isValid(iban.value));
-        const isIbanCountryValid = computed(() => iban.value.length < 2
-            || iban.value.substr(0, 2).toUpperCase() === bank.value?.country.toUpperCase(),
+        const isIbanCountryValid = computed(
+            () => iban.value.length < 2 || iban.value.substr(0, 2).toUpperCase() === bank.value?.country.toUpperCase(),
         );
 
         const writing = computed(() => bankName.value.length !== 0);
-        const canConfirm = computed(() =>
-            accountName.value.length > 0
-                && iban.value.length >= 5
-                && isIbanValid.value
-                && isIbanCountryValid.value,
+        const canConfirm = computed(
+            () =>
+                accountName.value.length > 0 && iban.value.length >= 5 && isIbanValid.value && isIbanCountryValid.value,
         );
 
-        watch(currentStep, async () => {
-            await nextTick();
-            if (currentStep.value === Step.BANK_CHECK) {
-                if (bankCheckInput$.value) bankCheckInput$.value.focus();
-            } else if (currentStep.value === Step.IBAN_CHECK) {
-                if (accountNameInput$.value) accountNameInput$.value.focus();
-            }
-        }, { immediate: true });
+        watch(
+            currentStep,
+            async () => {
+                await nextTick();
+                if (currentStep.value === Step.BANK_CHECK) {
+                    if (bankCheckInput$.value) bankCheckInput$.value.focus();
+                } else if (currentStep.value === Step.IBAN_CHECK) {
+                    if (accountNameInput$.value) accountNameInput$.value.focus();
+                }
+            },
+            { immediate: true },
+        );
 
-        watch(bank, () => {
-            accountName.value = bankAccount.value?.accountName || '';
-            iban.value = bankAccount.value?.iban || '';
-        }, { immediate: true });
+        watch(
+            bank,
+            () => {
+                accountName.value = bankAccount.value?.accountName || '';
+                iban.value = bankAccount.value?.iban || '';
+            },
+            { immediate: true },
+        );
 
         function onBankSelected(selectedBank: Bank) {
             context.emit('bank-selected', selectedBank);
@@ -252,7 +262,7 @@ export default defineComponent({
 
         ::v-deep .message {
             font-weight: 600;
-            margin-top: .5rem;
+            margin-top: 0.5rem;
             font-size: 1.75rem;
 
             > .nq-icon {
@@ -292,7 +302,8 @@ export default defineComponent({
     height: 13.5rem;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     will-change: opacity;
     transition: {
         property: opacity;

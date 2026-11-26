@@ -1,9 +1,12 @@
-j<template>
+j
+<template>
     <div class="network-map" ref="container$">
         <canvas class="map" ref="network$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <canvas class="overlay" ref="overlay$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <div class="nodes" :style="`width: ${width}px; height: ${height}px;`">
-            <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
+            <Tooltip
+                v-for="(node, index) in nodes"
+                :key="'node-' + index"
                 class="node"
                 theme="inverse"
                 :container="_self"
@@ -25,10 +28,8 @@ j<template>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { Tooltip } from '@nimiq/vue-components';
-import { getNetworkClient } from '../network';
-import { Peer, useNetworkStore } from '../stores/Network';
+import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -38,6 +39,8 @@ import NetworkMap, {
     SCALING_FACTOR,
     NodeType,
 } from '../lib/NetworkMap';
+import { getNetworkClient } from '../network';
+import { Peer, useNetworkStore } from '../stores/Network';
 import NetworkMapPeerList from './NetworkMapPeerList.vue';
 
 export default defineComponent({
@@ -72,7 +75,7 @@ export default defineComponent({
         let knownAddressesUpdateInterval: number | null = null;
 
         onMounted(async () => {
-            const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => nodes.value = n);
+            const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => (nodes.value = n));
 
             const networkStore = useNetworkStore();
 
@@ -97,9 +100,13 @@ export default defineComponent({
                 }, 500);
             }
 
-            watch(() => networkStore.$state.peers, () => {
-                updateKnownAddresses();
-            }, { immediate: true });
+            watch(
+                () => networkStore.$state.peers,
+                () => {
+                    updateKnownAddresses();
+                },
+                { immediate: true },
+            );
             updateKnownAddresses();
             knownAddressesUpdateInterval = window.setInterval(updateKnownAddresses, 30e3);
 
@@ -116,13 +123,12 @@ export default defineComponent({
 
         // Emit own X coordinate so the parent can scroll the map to the correct horizontal position
         const ownNode = computed(() =>
-            nodes.value.find((node) => [...node.peers].some((peer) => peer.type === NodeType.SELF)));
-        const ownXCoordinate = computed(() => ownNode.value ? ownNode.value.x : null);
-        watch(
-            ownXCoordinate,
-            (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * SCALING_FACTOR),
-            { immediate: true },
+            nodes.value.find((node) => [...node.peers].some((peer) => peer.type === NodeType.SELF)),
         );
+        const ownXCoordinate = computed(() => (ownNode.value ? ownNode.value.x : null));
+        watch(ownXCoordinate, (x) => x !== null && context.emit('own-x-coordinate', (x / 2) * SCALING_FACTOR), {
+            immediate: true,
+        });
 
         function getPreferredTooltipPosition(hexagon: NodeHexagon): string {
             let verticalPosition = 'top';

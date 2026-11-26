@@ -6,16 +6,16 @@ export type ProxyState = {
     // Note that claimed and funded only contain proxies which need to be specifically observed on the network.
     // Proxies between two of our addresses (which are already subscribed on the network anyways) or proxies that have
     // already been settled and confirmed do not get added.
-    claimed: string[],
-    funded: string[],
-    networkTrigger: number,
-    hubCashlinks: {[address: string]: Cashlink},
+    claimed: string[];
+    funded: string[];
+    networkTrigger: number;
+    hubCashlinks: { [address: string]: Cashlink };
 };
 
 export type Cashlink = {
-    address: string,
-    message: string,
-    value: number,
+    address: string;
+    message: string;
+    value: number;
 };
 
 export const useProxyStore = defineStore('proxies', {
@@ -56,7 +56,7 @@ export const useProxyStore = defineStore('proxies', {
             };
         },
         setHubCashlinks(cashlinks: Cashlink[]) {
-            const newCashlinks: {[address: string]: Cashlink} = {};
+            const newCashlinks: { [address: string]: Cashlink } = {};
 
             for (const cashlink of cashlinks) {
                 newCashlinks[cashlink.address] = cashlink;

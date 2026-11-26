@@ -1,0 +1,13 @@
+// Config for type checking the configuration files, which run in Node.js.
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts", "lint/**/*.ts", "types/webpack-i18n-tools.d.ts"]
+}

@@ -1,36 +1,37 @@
-import Vue, { watch, watchEffect } from 'vue';
-import { storeToRefs } from 'pinia';
-// @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
-import VueVirtualScroller from 'vue-virtual-scroller';
-import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
-import { init as initFastspotApi } from '@nimiq/fastspot-api';
-import { init as initOasisApi } from '@nimiq/oasis-api';
 // @ts-expect-error missing types for this package
 import VuePortal from '@linusborg/vue-simple-portal';
+import { init as initFastspotApi } from '@nimiq/fastspot-api';
+import { init as initOasisApi } from '@nimiq/oasis-api';
+import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import Vue, { watch, watchEffect } from 'vue';
+// @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
+import VueVirtualScroller from 'vue-virtual-scroller';
 
 // Must be imported before any modules that use stores, see pinia.ts
 import { pinia } from './pinia';
+
 import App from './App.vue';
-import { serviceWorkerHasUpdate } from './registerServiceWorker';
-import { initStorage } from './storage';
-import { initHubApi, syncFromHub } from './hub';
-import { launchNetwork } from './network';
+import { useConfig } from './composables/useConfig';
+import { useInactivityDetection } from './composables/useInactivityDetection';
+import { initPwa } from './composables/usePwaInstallPrompt';
 import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
+import { initHubApi, syncFromHub } from './hub';
+import { i18n, loadLanguage } from './i18n/i18n-setup';
+import { CryptoCurrency, ENV_MAIN } from './lib/Constants';
+import { init as initKycConnection } from './lib/KycConnection';
+import { startSentry } from './lib/Sentry';
+import { init as initTrials } from './lib/Trials';
 import { resumePendingGaslessPayments } from './lib/usdc/Gasless';
 import { initMatomo } from './matomo';
+import { launchNetwork } from './network';
+import { serviceWorkerHasUpdate } from './registerServiceWorker';
+import router from './router';
+import { initStorage } from './storage';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
-import router from './router';
-import { i18n, loadLanguage } from './i18n/i18n-setup';
-import { CryptoCurrency, ENV_MAIN } from './lib/Constants';
-import { startSentry } from './lib/Sentry';
-import { useConfig } from './composables/useConfig';
-import { initPwa } from './composables/usePwaInstallPrompt';
-import { useInactivityDetection } from './composables/useInactivityDetection';
-import { init as initKycConnection } from './lib/KycConnection';
-import { init as initTrials } from './lib/Trials';
 
 // Side-effects
 import './lib/AddressBook';
@@ -40,9 +41,9 @@ import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import '@/scss/themes.scss';
 
-// Set asset path relative to the public path defined in vue.config.json,
-// see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}img/`);
+// Set asset path relative to the base path defined in vite.config.ts,
+// see https://vite.dev/guide/env-and-mode.html#built-in-constants
+setVueComponentsAssetPath(`${import.meta.env.BASE_URL}js/`, `${import.meta.env.BASE_URL}img/`);
 
 Vue.config.productionTip = false;
 
@@ -59,7 +60,7 @@ async function start() {
     await initHubApi();
     syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
-    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().$state.updateAvailable = hasUpdate);
+    serviceWorkerHasUpdate.then((hasUpdate) => (useSettingsStore().$state.updateAvailable = hasUpdate));
 
     // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
     // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
@@ -138,7 +139,9 @@ async function start() {
 
     launchNetwork();
 
-    const { $state: { activeCurrency } } = useAccountStore();
+    const {
+        $state: { activeCurrency },
+    } = useAccountStore();
 
     watchEffect(() => {
         if (!config.enableBitcoin) return;
@@ -161,14 +164,22 @@ async function start() {
     const addressStore = useAddressStore();
 
     // Recalculate staking fiat values when currency changes
-    watch(() => fiatStoreInstance.currency, (newCurrency) => {
-        stakingStore.calculateMonthlyFiatValues(newCurrency);
-    }, { immediate: true });
+    watch(
+        () => fiatStoreInstance.currency,
+        (newCurrency) => {
+            stakingStore.calculateMonthlyFiatValues(newCurrency);
+        },
+        { immediate: true },
+    );
 
     // Recalculate staking fiat values when active address changes (loads different rewards)
-    watch(() => addressStore.activeAddress, () => {
-        stakingStore.calculateMonthlyFiatValues();
-    }, { immediate: true });
+    watch(
+        () => addressStore.activeAddress,
+        () => {
+            stakingStore.calculateMonthlyFiatValues();
+        },
+        { immediate: true },
+    );
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)

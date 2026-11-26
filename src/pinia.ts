@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { createPinia, PiniaVuePlugin, setActivePinia } from 'pinia';
+import Vue from 'vue';
 
 Vue.use(PiniaVuePlugin);
 

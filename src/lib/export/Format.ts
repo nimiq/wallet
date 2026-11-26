@@ -1,15 +1,15 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
-import { type FiatCurrency } from '../Constants';
 import { useAddressStore } from '../../stores/Address';
-import { useProxyStore } from '../../stores/Proxy';
-import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { useProxyStore } from '../../stores/Proxy';
+import { useSwapsStore } from '../../stores/Swaps';
+import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
+import { type FiatCurrency } from '../Constants';
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
-import { useSwapsStore } from '../../stores/Swaps';
 import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
@@ -25,7 +25,7 @@ export abstract class Format {
         private format: ExportFormat,
         private headers: string[],
         public nimAddresses: string[],
-        public btcAddresses: { internal: string[], external: string[] },
+        public btcAddresses: { internal: string[]; external: string[] },
         public usdcAddresses: string[],
         public usdtAddresses: string[],
         public transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
@@ -101,8 +101,9 @@ export abstract class Format {
         return message;
     }
 
-    protected assertAndSetCryptoAsset<T extends NimTx | BtcTx | UsdcTx | UsdtTx>(tx: T)
-    : asserts tx is T & { readonly asset: CryptoAsset } {
+    protected assertAndSetCryptoAsset<T extends NimTx | BtcTx | UsdcTx | UsdtTx>(
+        tx: T,
+    ): asserts tx is T & { readonly asset: CryptoAsset } {
         let asset: CryptoAsset;
         if ('sender' in tx && 'senderType' in tx) {
             asset = 'NIM';
@@ -111,18 +112,12 @@ export abstract class Format {
         } else if (
             'sender' in tx
             && 'logIndex' in tx
-            && (
-                !tx.token
+            && (!tx.token
                 || tx.token === Config.polygon.usdc.tokenContract
-                || tx.token === Config.polygon.usdc_bridged.tokenContract
-            )
+                || tx.token === Config.polygon.usdc_bridged.tokenContract)
         ) {
             asset = 'USDC';
-        } else if (
-            'sender' in tx
-            && 'logIndex' in tx
-            && tx.token === Config.polygon.usdt_bridged.tokenContract
-        ) {
+        } else if ('sender' in tx && 'logIndex' in tx && tx.token === Config.polygon.usdt_bridged.tokenContract) {
             asset = 'USDT';
         } else {
             throw new Error('Unable to detect tx asset');
@@ -149,11 +144,21 @@ export abstract class Format {
             if (swapInfo) {
                 let isIncoming = false;
                 switch (tx.asset) {
-                    case 'NIM': isIncoming = this.nimAddresses.includes((tx as NimTx).recipient); break;
-                    case 'USDC': isIncoming = this.usdcAddresses.includes((tx as UsdcTx).recipient); break;
-                    case 'USDT': isIncoming = this.usdtAddresses.includes((tx as UsdtTx).recipient); break;
-                    case 'BTC': isIncoming = Boolean((tx as BtcTx).outputs.some((output) =>
-                        output.address && (this.btcAddresses.external.includes(output.address))));
+                    case 'NIM':
+                        isIncoming = this.nimAddresses.includes((tx as NimTx).recipient);
+                        break;
+                    case 'USDC':
+                        isIncoming = this.usdcAddresses.includes((tx as UsdcTx).recipient);
+                        break;
+                    case 'USDT':
+                        isIncoming = this.usdtAddresses.includes((tx as UsdtTx).recipient);
+                        break;
+                    case 'BTC':
+                        isIncoming = Boolean(
+                            (tx as BtcTx).outputs.some(
+                                (output) => output.address && this.btcAddresses.external.includes(output.address),
+                            ),
+                        );
                         break;
                 }
 
@@ -197,12 +202,15 @@ export abstract class Format {
                     break;
                 case 'BTC':
                     const btcIsSender = (tx as BtcTx).inputs.some(
-                        (input) => input.address && (this.btcAddresses.internal.includes(input.address)
-                        || this.btcAddresses.external.includes(input.address)));
+                        (input) =>
+                            input.address
+                            && (this.btcAddresses.internal.includes(input.address)
+                                || this.btcAddresses.external.includes(input.address)),
+                    );
 
                     const btcIsRecipient = (tx as BtcTx).outputs.some(
-                        (output) => output.address
-                    && this.btcAddresses.external.includes(output.address));
+                        (output) => output.address && this.btcAddresses.external.includes(output.address),
+                    );
 
                     if (btcIsSender && btcIsRecipient) continue; // Skip self-transfers
                     if (btcIsSender) this.addRow(undefined, tx, messageOverride);
@@ -232,13 +240,10 @@ export abstract class Format {
         txIn?: BtcTx | NimTx | UsdcTx | UsdtTx,
         txOut?: BtcTx | NimTx | UsdcTx | UsdtTx,
         messageOverride?: string,
-    ): void
+    ): void;
 
     protected download(filename?: string) {
-        const file = [
-            this.headers,
-            ...this.rows,
-        ];
+        const file = [this.headers, ...this.rows];
 
         const csvContent = file.map((cells) => cells.join(',')).join('\r\n');
 
@@ -266,28 +271,39 @@ export abstract class Format {
         return '0';
     }
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean): {
-        value: number,
-        outgoingFee: number,
-    }
+    protected getValue(
+        tx: BtcTx | NimTx | UsdcTx | UsdtTx,
+        isIncoming: boolean,
+    ): {
+        value: number;
+        outgoingFee: number;
+    };
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean, fiatAsset: FiatCurrency): {
-        value: number,
-        outgoingFee: number,
-        fiatValue?: number,
-    }
+    protected getValue(
+        tx: BtcTx | NimTx | UsdcTx | UsdtTx,
+        isIncoming: boolean,
+        fiatAsset: FiatCurrency,
+    ): {
+        value: number;
+        outgoingFee: number;
+        fiatValue?: number;
+    };
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean, fiatAsset?: FiatCurrency): {
-        value: number,
-        outgoingFee: number,
+    protected getValue(
+        tx: BtcTx | NimTx | UsdcTx | UsdtTx,
+        isIncoming: boolean,
+        fiatAsset?: FiatCurrency,
+    ): {
+        value: number;
+        outgoingFee: number;
         // note: different to the transaction list and to transaction modals in the UI, in the transaction export we do
         // not include the USD fiat amount as fallback if fetching historic exchange rates is not supported for the
         // requested fiat currency. Instead, only the available fiat values for the specifically requested fiat currency
         // are included, to keep exports consistent. Note that for such currencies, it's still possible that stored fiat
         // amounts are available for historic transactions, if they were stored via current exchange rates at the time
         // the transaction was new. If the user wants to export USD values, he can trigger a separate export.
-        fiatValue?: number,
-     } {
+        fiatValue?: number;
+    } {
         this.assertAndSetCryptoAsset(tx);
 
         switch (tx.asset) {
@@ -300,28 +316,32 @@ export abstract class Format {
             case 'BTC':
                 if (isIncoming) {
                     // Sum outputs that are ours
-                    const [value, fiatValue] = (tx as BtcTx).outputs.reduce(([satsSum, fiatSum], output) => {
-                        if (output.address && this.btcAddresses.external.includes(output.address)) {
-                            satsSum += output.value;
-                            const outputFiat = fiatAsset ? output.fiatValue?.[fiatAsset] || undefined : 0;
-                            if (fiatSum !== undefined && outputFiat !== undefined) fiatSum += outputFiat;
-                            else fiatSum = undefined;
-                        }
-                        return [satsSum, fiatSum];
-                    }, [0, 0 as number | undefined]);
+                    const [value, fiatValue] = (tx as BtcTx).outputs.reduce(
+                        ([satsSum, fiatSum], output) => {
+                            if (output.address && this.btcAddresses.external.includes(output.address)) {
+                                satsSum += output.value;
+                                const outputFiat = fiatAsset ? output.fiatValue?.[fiatAsset] || undefined : 0;
+                                if (fiatSum !== undefined && outputFiat !== undefined) fiatSum += outputFiat;
+                                else fiatSum = undefined;
+                            }
+                            return [satsSum, fiatSum];
+                        },
+                        [0, 0 as number | undefined],
+                    );
 
                     return {
                         value,
                         outgoingFee: 0,
                         ...(fiatAsset ? { fiatValue } : {}),
                     };
-                } else { // eslint-disable-line no-else-return
+                    // eslint-disable-next-line no-else-return
+                } else {
                     // Sum up all inputs, if we have all parent transactions
                     let totalInput = 0;
                     const { $state: btcTransactions$ } = useBtcTransactionsStore();
                     for (const input of (tx as BtcTx).inputs) {
-                        const value = btcTransactions$
-                            .transactions[input.transactionHash]?.outputs[input.outputIndex]?.value;
+                        const value =
+                            btcTransactions$.transactions[input.transactionHash]?.outputs[input.outputIndex]?.value;
                         if (!value) {
                             totalInput = 0;
                             break;
@@ -330,8 +350,8 @@ export abstract class Format {
                     }
 
                     // Sum up all outputs, and non-change outputs
-                    const [totalOutput, value, fiatValue] = (tx as BtcTx)
-                        .outputs.reduce(([total, satsSum, fiatSum], output) => {
+                    const [totalOutput, value, fiatValue] = (tx as BtcTx).outputs.reduce(
+                        ([total, satsSum, fiatSum], output) => {
                             total += output.value;
                             // Sum outputs that are not change
                             if (!output.address || !this.btcAddresses.internal.includes(output.address)) {
@@ -341,7 +361,9 @@ export abstract class Format {
                                 else fiatSum = undefined;
                             }
                             return [total, satsSum, fiatSum];
-                        }, [0, 0, 0 as number | undefined]);
+                        },
+                        [0, 0, 0 as number | undefined],
+                    );
 
                     // If we have the input sum, we can determine the fee
                     const fee = totalInput > 0 ? totalInput - totalOutput : 0;

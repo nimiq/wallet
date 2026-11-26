@@ -1,8 +1,10 @@
 <template>
     <div @click="$emit('click')" class="validator-info-bar flex-row">
         <ValidatorLabel :validator="validator" />
-        <ValidatorTrustScore v-if="'score' in validator && typeof validator.score.total === 'number'"
-            :score="validator.score.total" />
+        <ValidatorTrustScore
+            v-if="'score' in validator && typeof validator.score.total === 'number'"
+            :score="validator.score.total"
+        />
         <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" />
     </div>
 </template>
@@ -47,7 +49,7 @@ export default defineComponent({
     > * {
         + *::before {
             display: inline-block;
-            margin:0 0.75rem;
+            margin: 0 0.75rem;
             content: ' ';
             width: 3px;
             height: 3px;

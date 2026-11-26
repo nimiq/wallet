@@ -1,11 +1,11 @@
 <template>
     <div class="settings flex-row">
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.push({name: 'settings', query: {sidebar: true}})">
-                <MenuIcon/>
+            <button class="reset menu-button" @click="$router.push({ name: 'settings', query: { sidebar: true } })">
+                <MenuIcon />
             </button>
 
-            <CrossCloseButton @click="$router.push({ name: RouteName.Root }).catch(() => {})"/>
+            <CrossCloseButton @click="$router.push({ name: RouteName.Root }).catch(() => {})" />
         </div>
 
         <div class="column left-column flex-column">
@@ -17,11 +17,10 @@
                             {{ $t('An update to the Wallet is available, update now!') }}
                         </p>
                     </div>
-                    <CircleSpinner v-if="applyingWalletUpdate"/>
-                    <button v-else
-                        class="nq-button-pill green"
-                        @click="applyWalletUpdate" @mousedown.prevent
-                    >{{ $t('Update now') }}</button>
+                    <CircleSpinner v-if="applyingWalletUpdate" />
+                    <button v-else class="nq-button-pill green" @click="applyWalletUpdate" @mousedown.prevent>
+                        {{ $t('Update now') }}
+                    </button>
                 </div>
             </section>
 
@@ -52,9 +51,13 @@
                     </div>
                     <select id="language" name="language" @input="setLanguage($event.target.value)">
                         <option
-                            v-for="lang in Languages" :key="lang.code"
-                            :value="lang.code" :selected="language === lang.code"
-                        >{{ lang.name }}</option>
+                            v-for="lang in Languages"
+                            :key="lang.code"
+                            :value="lang.code"
+                            :selected="language === lang.code"
+                        >
+                            {{ lang.name }}
+                        </option>
                     </select>
                 </div>
 
@@ -83,7 +86,7 @@
 
                     <label class="nq-button-pill light-blue">
                         {{ $t('Load file') }}
-                        <input type="file" @change="loadFile" ref="fileInput$">
+                        <input type="file" @change="loadFile" ref="fileInput$" />
                     </label>
                 </div>
 
@@ -174,8 +177,11 @@
                     <button
                         v-if="!kycUser"
                         class="nq-button-pill light-blue"
-                        @click="() => connectKyc()" @mousedown.prevent
-                    >{{ $t('Connect') }}</button>
+                        @click="() => connectKyc()"
+                        @mousedown.prevent
+                    >
+                        {{ $t('Connect') }}
+                    </button>
                 </div>
             </section>
 
@@ -205,9 +211,13 @@
                             {{ $t('Redirect mode does not yet support swaps.') }}
                         </p>
                         <p class="nq-text">
-                            {{ $t('Automatic mode uses {behavior}.', {
-                                behavior: shouldUseRedirects(/*ignoreSettings*/ true) ? $t('redirects') : $t('popups'),
-                            }) }}
+                            {{
+                                $t('Automatic mode uses {behavior}.', {
+                                    behavior: shouldUseRedirects(/*ignoreSettings*/ true)
+                                        ? $t('redirects')
+                                        : $t('popups'),
+                                })
+                            }}
                         </p>
                     </div>
 
@@ -248,7 +258,7 @@
                         <p class="nq-text">
                             {{ $t('Enter the password of the trial you want to enable, then press enter.') }}
                         </p>
-                        <input class="nq-input-s" @keypress.enter="onTrialPassword($event.target)"/>
+                        <input class="nq-input-s" @keypress.enter="onTrialPassword($event.target)" />
                     </div>
                 </div>
             </section>
@@ -258,14 +268,15 @@
                 <h2 class="nq-label">{{ $t('Reference currency') }}</h2>
 
                 <div class="setting currency-selector">
-                    <button v-for="currencyOption of FIAT_CURRENCIES_OFFERED"
+                    <button
+                        v-for="currencyOption of FIAT_CURRENCIES_OFFERED"
                         :key="currencyOption"
                         :class="{ selected: currencyOption === fiatCurrency }"
                         class="reset currency"
                         @click="setFiatCurrency(currencyOption)"
                     >
-                        <CountryFlag :code="getFiatCurrencyCountry(currencyOption)"/>
-                        {{currencyOption.toUpperCase()}}
+                        <CountryFlag :code="getFiatCurrencyCountry(currencyOption)" />
+                        {{ currencyOption.toUpperCase() }}
                     </button>
                 </div>
             </section>
@@ -276,7 +287,7 @@
             <strong>&middot;</strong>
             <span>{{ VERSION }}</span>
             <strong>&middot;</strong>
-            <router-link :to="{name: 'settings-release-notes'}">{{ $t('Release Notes') }}</router-link>
+            <router-link :to="{ name: 'settings-release-notes' }">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
             <a href="https://www.nimiq.com/wallet-terms-and-conditions/" target="_blank" rel="noopener">{{
                 $t('Terms & Conditions')
@@ -287,59 +298,45 @@
 
         <Portal>
             <transition name="modal">
-                <router-view name="modal"/>
+                <router-view name="modal" />
             </transition>
         </Portal>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
+import { CircleSpinner } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref } from 'vue';
 import { RouteName } from '@/router';
 
 import { useI18n } from '@/lib/useI18n';
-import MenuIcon from '../icons/MenuIcon.vue';
-import CrossCloseButton from '../CrossCloseButton.vue';
-import CountryFlag from '../CountryFlag.vue';
-import { useSettingsStore, ColorMode } from '../../stores/Settings';
-import { FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
-import { useFiatStore } from '../../stores/Fiat';
-import { addVestingContract, shouldUseRedirects } from '../../hub';
 import { usePwaInstallPrompt } from '../../composables/usePwaInstallPrompt';
-import { clearStorage } from '../../storage';
+import { addVestingContract, shouldUseRedirects } from '../../hub';
 import { Languages } from '../../i18n/i18n-setup';
-import { useContactsStore } from '../../stores/Contacts';
-import { updateServiceWorker } from '../../registerServiceWorker';
+import { FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { connectKyc, disconnectKyc } from '../../lib/KycConnection';
 import { enableTrial } from '../../lib/Trials';
+import { updateServiceWorker } from '../../registerServiceWorker';
+import { clearStorage } from '../../storage';
+import { useContactsStore } from '../../stores/Contacts';
+import { useFiatStore } from '../../stores/Fiat';
 import { useKycStore } from '../../stores/Kyc';
+import { useSettingsStore, ColorMode } from '../../stores/Settings';
+import CountryFlag from '../CountryFlag.vue';
+import CrossCloseButton from '../CrossCloseButton.vue';
 import KycIcon from '../icons/KycIcon.vue';
+import MenuIcon from '../icons/MenuIcon.vue';
 
 export default defineComponent({
     setup() {
         const { $t } = useI18n();
         const settingsStore = useSettingsStore();
-        const {
-            btcDecimals,
-            btcUnit,
-            colorMode,
-            decimals,
-            hubBehavior,
-            language,
-            swipingEnabled,
-            updateAvailable,
-        } = storeToRefs(settingsStore);
-        const {
-            setBtcDecimals,
-            setBtcUnit,
-            setDecimals,
-            setHubBehavior,
-            setLanguage,
-            setSwipingEnabled,
-        } = settingsStore;
+        const { btcDecimals, btcUnit, colorMode, decimals, hubBehavior, language, swipingEnabled, updateAvailable } =
+            storeToRefs(settingsStore);
+        const { setBtcDecimals, setBtcUnit, setDecimals, setHubBehavior, setLanguage, setSwipingEnabled } =
+            settingsStore;
         const { connectedUser: kycUser } = storeToRefs(useKycStore());
 
         const { currency: fiatCurrency } = storeToRefs(useFiatStore());
@@ -377,9 +374,14 @@ export default defineComponent({
             const { $state: contacts$, setContact } = useContactsStore();
 
             for (const contact of importedContacts) {
-                if (!contact
-                    || typeof contact.label !== 'string' || !contact.label
-                    || !ValidationUtils.isValidAddress(contact.address)) continue;
+                if (
+                    !contact
+                    || typeof contact.label !== 'string'
+                    || !contact.label
+                    || !ValidationUtils.isValidAddress(contact.address)
+                ) {
+                    continue;
+                }
                 const address = ValidationUtils.normalizeAddress(contact.address);
 
                 const storedLabel = contacts$.contacts[address];
@@ -387,11 +389,13 @@ export default defineComponent({
                     if (storedLabel === contact.label) continue;
                     else {
                         // eslint-disable-next-line no-alert, no-restricted-globals
-                        const shouldOverwrite = confirm($t(
-                            'A contact with the address "{address}", but a different name already exists.\n'
-                                + 'Do you want to replace it?',
-                            { address },
-                        ) as string);
+                        const shouldOverwrite = confirm(
+                            $t(
+                                'A contact with the address "{address}", but a different name already exists.\n'
+                                    + 'Do you want to replace it?',
+                                { address },
+                            ) as string,
+                        );
                         if (!shouldOverwrite) continue;
                     }
                 }
@@ -451,7 +455,7 @@ export default defineComponent({
         }
 
         const copyrightYear = Math.max(
-            Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
+            Number.parseInt(import.meta.env.COPYRIGHT_YEAR, 10), // build year
             new Date().getFullYear(), // user year
         );
 
@@ -492,7 +496,7 @@ export default defineComponent({
             connectKyc,
             disconnectKyc,
             copyrightYear,
-            VERSION: process.env.VERSION,
+            VERSION: import.meta.env.VERSION,
             RouteName,
         };
     },
@@ -630,8 +634,8 @@ section {
 
         .kyc-icon {
             position: absolute; // position at the end of the last line; avoiding it breaking alone into a new line
-            left: calc(100% + .75rem); // .display-name is an inline element, thus 100% refers to length of last line
-            bottom: .125rem;
+            left: calc(100% + 0.75rem); // .display-name is an inline element, thus 100% refers to length of last line
+            bottom: 0.125rem;
             color: var(--nimiq-purple);
         }
     }
@@ -670,17 +674,17 @@ select {
     background-position-x: calc(100% - 1.75rem);
     background-position-y: 55%;
 
-    &[name="theme"] {
+    &[name='theme'] {
         text-transform: capitalize;
     }
 
     &:disabled {
-        opacity: .5;
+        opacity: 0.5;
         cursor: default;
     }
 }
 
-input[type="file"] {
+input[type='file'] {
     display: none;
 }
 
@@ -709,7 +713,7 @@ input[type="file"] {
     transition: {
         property: background-color, box-shadow, color;
         duration: 0.3s;
-    };
+    }
 
     &:hover,
     &:focus,
@@ -726,9 +730,10 @@ input[type="file"] {
 
     &.selected {
         background-color: white;
-        box-shadow: 0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
-                    0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
-                    0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
+        box-shadow:
+            0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025),
+            0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
+            0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
     }
 
     .country-flag {
@@ -766,7 +771,8 @@ input[type="file"] {
     margin-top: 1rem;
 }
 
-@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .settings {
         padding: 5rem 3rem 3rem 4rem;
     }
@@ -805,19 +811,22 @@ input[type="file"] {
     }
 }
 
-@media (min-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (min-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .hub-behavior-setting {
         display: none;
     }
 }
 
-@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .swiping-setting {
         display: none;
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .settings {
         width: 100vw;
         padding: 3.25rem 3rem;

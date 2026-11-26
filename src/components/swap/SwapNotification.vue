@@ -2,25 +2,26 @@
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button
             v-if="activeSwap && !isSwapModalRoute($route)"
-            class="reset swap-notification flex-row" :class="{
-                'complete': swapIsComplete,
-                'expired': swapIsExpired,
-                'errored': (swapIsErrored && !swapIsExpired) || oasisPayoutFailed,
+            class="reset swap-notification flex-row"
+            :class="{
+                complete: swapIsComplete,
+                expired: swapIsExpired,
+                errored: (swapIsErrored && !swapIsExpired) || oasisPayoutFailed,
             }"
             @click="openSwap"
         >
             <div class="icon">
                 <StopwatchIcon v-if="swapIsExpired" />
-                <AlertTriangleIcon v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed"/>
-                <CheckmarkIcon v-else-if="swapIsComplete"/>
-                <LoadingSpinner v-else/>
+                <AlertTriangleIcon v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed" />
+                <CheckmarkIcon v-else-if="swapIsComplete" />
+                <LoadingSpinner v-else />
             </div>
             <div class="content flex-column">
                 <div v-if="swapIsExpired" class="status">
                     {{ $t('Swap has expired') }}
                 </div>
                 <div v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed" class="status">
-                    {{ $t('There\'s a problem') }}
+                    {{ $t("There's a problem") }}
                 </div>
                 <div v-else-if="swapIsComplete" class="status">
                     {{ $t('Swap successful!') }}
@@ -36,23 +37,21 @@
                     {{ $t('Click for more information') }}
                 </span>
                 <span v-else-if="swapIsComplete" class="closing-notice">
-                    {{ $t('It\'s safe to close your wallet now') }}
+                    {{ $t("It's safe to close your wallet now") }}
                 </span>
                 <span v-else class="closing-notice nq-orange">
-                    {{ $t('Don\'t close your wallet!') }}
+                    {{ $t("Don't close your wallet!") }}
                 </span>
             </div>
-            <MaximizeIcon v-if="!swapIsComplete"/>
+            <MaximizeIcon v-if="!swapIsComplete" />
         </button>
     </transition>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import {
     ClearingInfo,
     ClearingStatus,
@@ -64,22 +63,24 @@ import {
     SettlementInfo,
     SettlementStatus,
 } from '@nimiq/oasis-api';
-import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
+import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import type { Route } from 'vue-router';
-import { useRouter, RouteName, getContextRouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
-import { useNetworkStore } from '../../stores/Network';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
-import { useBankStore } from '../../stores/Bank';
+import { useRouter, RouteName, getContextRouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
-import { getNetworkClient } from '../../network';
-import { getServerTime } from '../../lib/Time';
-import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import { getPolygonClient, receiptToTransaction } from '../../ethers';
 import { reportToSentry } from '../../lib/Sentry';
+import { getServerTime } from '../../lib/Time';
+import { getNetworkClient } from '../../network';
+import { useBankStore } from '../../stores/Bank';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { useNetworkStore } from '../../stores/Network';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
+import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
+import MaximizeIcon from '../icons/MaximizeIcon.vue';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -89,13 +90,7 @@ enum SwapError {
 export default defineComponent({
     setup() {
         const { activeSwap } = storeToRefs(useSwapsStore());
-        const {
-            setActiveSwap,
-            addFundingData,
-            addSettlementData,
-            setPromoBoxVisible,
-            $state: swap$,
-        } = useSwapsStore();
+        const { setActiveSwap, addFundingData, addSettlementData, setPromoBoxVisible, $state: swap$ } = useSwapsStore();
         const { bank, bankAccount } = storeToRefs(useBankStore());
         const { config } = useConfig();
 
@@ -158,7 +153,8 @@ export default defineComponent({
                         >);
                         break;
                     }
-                    default: throw new Error('Invalid swap asset');
+                    default:
+                        throw new Error('Invalid swap asset');
                 }
 
                 if (timeout <= timestamp) return true;
@@ -216,8 +212,7 @@ export default defineComponent({
 
             const consensusErrorMsg = (chain: 'Nimiq' | 'Bitcoin' | 'Polygon') => `
                 ${$t('No connection to {chain} network.', { chain })}
-                ${$t('If this error persists, check your internet connection or '
-                    + 'reload the page to reconnect.')}
+                ${$t('If this error persists, check your internet connection or reload the page to reconnect.')}
             `;
 
             if (activeSwap.value) {
@@ -257,17 +252,25 @@ export default defineComponent({
             return undefined;
         });
 
-        watch(processingError, (error: string | undefined) => {
-            if (!activeSwap.value) return;
-            updateSwap({ error });
-        }, { immediate: true });
+        watch(
+            processingError,
+            (error: string | undefined) => {
+                if (!activeSwap.value) return;
+                updateSwap({ error });
+            },
+            { immediate: true },
+        );
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
-                case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
-                case SwapAsset.BTC: return getElectrumClient();
-                case SwapAsset.EUR: return { getHtlc, settleHtlc };
-                default: throw new Error(`Unsupported asset: ${asset}`);
+                case SwapAsset.NIM:
+                    return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
+                case SwapAsset.BTC:
+                    return getElectrumClient();
+                case SwapAsset.EUR:
+                    return { getHtlc, settleHtlc };
+                default:
+                    throw new Error(`Unsupported asset: ${asset}`);
             }
         }
 
@@ -292,8 +295,10 @@ export default defineComponent({
             if (swapsUsdc || swapsUsdt) {
                 // Stablecoin HTLCs were funded, redeemed and refunded via OpenGSN, which is no longer supported. They
                 // return once they are signed as gasless HTLCs.
-                currentError.value = $t('Swaps with USDC or USDT are currently unavailable. This swap cannot be '
-                    + 'processed by this version of the Wallet.') as string;
+                currentError.value = $t(
+                    'Swaps with USDC or USDT are currently unavailable. This swap cannot be '
+                        + 'processed by this version of the Wallet.',
+                ) as string;
                 return;
             }
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
@@ -325,7 +330,7 @@ export default defineComponent({
             //     checkExpired,
             //     (activeSwap.value!.expires * 1000) - await Time.now() + 1000,
             // );
-            if (!await checkExpired()) {
+            if (!(await checkExpired())) {
                 expiryCheckInterval = window.setInterval(checkExpired, 60 * 1000); // Every minute
             }
 
@@ -367,9 +372,10 @@ export default defineComponent({
 
                     if ('getBlock' in remoteFundingTx) {
                         const receipt = await remoteFundingTx.getTransactionReceipt();
-                        const tokenAddress = activeSwap.value!.to.asset === SwapAsset.USDC_MATIC
-                            ? config.polygon.usdc.tokenContract
-                            : config.polygon.usdt_bridged.tokenContract;
+                        const tokenAddress =
+                            activeSwap.value!.to.asset === SwapAsset.USDC_MATIC
+                                ? config.polygon.usdc.tokenContract
+                                : config.polygon.usdt_bridged.tokenContract;
                         const polygonTx = await receiptToTransaction(tokenAddress, receipt);
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
@@ -397,7 +403,7 @@ export default defineComponent({
                         if (router.currentRoute.name !== 'buy-crypto') router.push('buy-crypto');
 
                         // Wait for OASIS HTLC to be funded out-of-band
-                        const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
+                        const fundingTx = (await swapHandler.awaitOutgoing((htlc) => {
                             updateSwap({
                                 fundingTx: htlc as Transaction<SwapAsset.EUR>,
                             });
@@ -418,7 +424,7 @@ export default defineComponent({
                             } else {
                                 oasisLimitExceeded.value = false;
                             }
-                        }) as Transaction<SwapAsset.EUR>;
+                        })) as Transaction<SwapAsset.EUR>;
 
                         oasisLimitExceeded.value = false;
 
@@ -495,7 +501,7 @@ export default defineComponent({
                                 }
 
                                 try {
-                                    const swap = await getSwap(activeSwap.value.id) as Swap;
+                                    const swap = (await getSwap(activeSwap.value.id)) as Swap;
                                     if (swap.secret) {
                                         // TODO: Validate that this secret corresponds to the swap hash
                                         resolve(swap.secret);
@@ -550,8 +556,8 @@ export default defineComponent({
                                 // while we wait for payout acceptance.
                                 addSettlementData(htlc.hash.value, swapData);
 
-                                htlc = await swapHandler.awaitIncomingConfirmation((tx) => {
-                                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                                htlc = (await swapHandler.awaitIncomingConfirmation((tx) => {
+                                    // oxlint-disable-next-line @typescript-eslint/no-shadow
                                     const htlc = tx as OasisHtlc<HtlcStatus.SETTLED>;
 
                                     updateSwap({
@@ -559,9 +565,7 @@ export default defineComponent({
                                     });
 
                                     if (htlc.settlement.status === SettlementStatus.DENIED) {
-                                        const settlement = htlc.settlement as SettlementInfo<
-                                            SettlementStatus.DENIED
-                                        >;
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.DENIED>;
                                         const { reason } = settlement.detail;
                                         oasisLimitExceeded.value = reason === DeniedReason.LIMIT_EXCEEDED;
 
@@ -576,9 +580,7 @@ export default defineComponent({
                                     }
 
                                     if (htlc.settlement.status === SettlementStatus.FAILED) {
-                                        const settlement = htlc.settlement as SettlementInfo<
-                                            SettlementStatus.FAILED
-                                        >;
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.FAILED>;
                                         oasisPayoutFailed.value = true;
 
                                         swapData.htlc!.settlement = {
@@ -592,7 +594,7 @@ export default defineComponent({
                                     }
 
                                     currentError.value = null;
-                                }) as OasisHtlc<HtlcStatus.SETTLED>;
+                                })) as OasisHtlc<HtlcStatus.SETTLED>;
 
                                 oasisLimitExceeded.value = false;
                                 oasisPayoutFailed.value = false;
@@ -604,28 +606,28 @@ export default defineComponent({
                                 status: htlc.settlement.status,
                                 ...(htlc.settlement.status === SettlementStatus.ACCEPTED
                                     ? {
-                                        ...((htlc.settlement as SettlementInfo<
-                                            SettlementStatus.ACCEPTED
-                                        >).detail?.eta
-                                            ? { eta: new Date(
-                                                (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
-                                                    .detail!.eta!).getTime() }
-                                            : {}
-                                        ),
-                                        lastUpdated: Date.now(),
-                                    }
-                                    : {}
-                                ),
+                                          ...((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail?.eta
+                                              ? {
+                                                    eta: new Date(
+                                                        (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
+                                                            .detail!.eta!,
+                                                    ).getTime(),
+                                                }
+                                              : {}),
+                                          lastUpdated: Date.now(),
+                                      }
+                                    : {}),
                                 ...(htlc.settlement.status === SettlementStatus.DENIED
-                                    || htlc.settlement.status === SettlementStatus.FAILED
+                                || htlc.settlement.status === SettlementStatus.FAILED
                                     ? {
-                                        reason: (htlc.settlement as SettlementInfo<
-                                            SettlementStatus.DENIED | SettlementStatus.FAILED
-                                        >).detail.reason,
-                                        lastUpdated: Date.now(),
-                                    }
-                                    : {}
-                                ),
+                                          reason: (
+                                              htlc.settlement as SettlementInfo<
+                                                  SettlementStatus.DENIED | SettlementStatus.FAILED
+                                              >
+                                          ).detail.reason,
+                                          lastUpdated: Date.now(),
+                                      }
+                                    : {}),
                             };
                             addSettlementData(htlc.hash.value, swapData);
                         }
@@ -633,8 +635,7 @@ export default defineComponent({
                         updateSwap({
                             state: SwapState.COMPLETE,
                             stateEnteredAt: Date.now(),
-                            settlementTx:
-                                settlementTx as Transaction<SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR>,
+                            settlementTx: settlementTx as Transaction<SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR>,
                         });
                     } catch (error: any) {
                         if (error.message === SwapError.EXPIRED) return;
@@ -668,23 +669,17 @@ export default defineComponent({
 
         // Whether the route is one of the swap modals, in the variant for the current page, see getContextRouteName.
         function isSwapModalRoute(route: Route) {
-            return [RouteName.Swap, RouteName.BuyCrypto, RouteName.SellCrypto]
-                .some((routeName) => route.name === getContextRouteName(routeName, route));
+            return [RouteName.Swap, RouteName.BuyCrypto, RouteName.SellCrypto].some(
+                (routeName) => route.name === getContextRouteName(routeName, route),
+            );
         }
 
         function openSwap() {
             if (!activeSwap.value) return;
 
-            const cryptoCurrencies = [
-                SwapAsset.NIM,
-                SwapAsset.BTC,
-                SwapAsset.USDC_MATIC,
-                SwapAsset.USDT_MATIC,
-            ];
+            const cryptoCurrencies = [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC];
 
-            const fiatCurrencies = [
-                SwapAsset.EUR,
-            ];
+            const fiatCurrencies = [SwapAsset.EUR];
 
             // Convert from Fastspot SwapAsset to LibSwap SwapAsset
             const fromAsset = activeSwap.value.from.asset as SwapAsset;
@@ -723,7 +718,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .swap-notification {
     width: 34rem;
@@ -800,8 +795,10 @@ export default defineComponent({
     top: 1.25rem;
 }
 
-.minimize-enter-active, .minimize-leave-active,
-.slide-enter-active, .slide-leave-active {
+.minimize-enter-active,
+.minimize-leave-active,
+.slide-enter-active,
+.slide-leave-active {
     transition:
         transform 0.4s cubic-bezier(0.5, 0, 0.15, 1),
         opacity 0.3s cubic-bezier(0.5, 0, 0.15, 1);
@@ -818,7 +815,8 @@ export default defineComponent({
     transform: translateX(45rem);
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .swap-notification {
         right: 1.5rem;
         bottom: 10.5rem;

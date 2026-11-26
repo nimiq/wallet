@@ -72,7 +72,5 @@ export function formatNumber(value: number, separator = '\u00A0'): string {
     const parts = value.toString().split('.');
     const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 
-    return parts.length > 1
-        ? `${integerPart}.${parts[1]}`
-        : integerPart;
+    return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
 }

@@ -10,12 +10,12 @@ export enum ColorMode {
 }
 
 type BtcUnit = {
-    ticker: 'mBTC' | 'BTC',
-    decimals: 5 | 8,
-    unitToCoins: 1e5 | 1e8,
+    ticker: 'mBTC' | 'BTC';
+    decimals: 5 | 8;
+    unitToCoins: 1e5 | 1e8;
 };
 
-export const BtcUnits: {[unit: string]: BtcUnit} = {
+export const BtcUnits: { [unit: string]: BtcUnit } = {
     mbtc: {
         ticker: 'mBTC',
         decimals: 5,
@@ -35,17 +35,17 @@ export type SwipingEnabled = -1 | 0 | 1;
 export type HubBehavior = 'auto' | 'popup' | 'redirect';
 
 export type SettingsState = {
-    decimals: NimDecimals,
-    language: string, // locale
-    colorMode: ColorMode,
-    amountsHidden: boolean,
-    btcDecimals: BtcDecimals,
-    btcUnit: BtcUnit,
-    usdcDecimals: UsdcDecimals,
-    swipingEnabled: SwipingEnabled,
-    trials: Trial[],
-    updateAvailable: boolean,
-    hubBehavior: HubBehavior,
+    decimals: NimDecimals;
+    language: string; // locale
+    colorMode: ColorMode;
+    amountsHidden: boolean;
+    btcDecimals: BtcDecimals;
+    btcUnit: BtcUnit;
+    usdcDecimals: UsdcDecimals;
+    swipingEnabled: SwipingEnabled;
+    trials: Trial[];
+    updateAvailable: boolean;
+    hubBehavior: HubBehavior;
 };
 
 export const useSettingsStore = defineStore('settings', {

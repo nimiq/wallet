@@ -1,24 +1,26 @@
 <template>
     <div class="polygon-warning-page flex-column">
-        <PageHeader :backArrow="canGoBack" @back="$emit('back')"/>
+        <PageHeader :backArrow="canGoBack" @back="$emit('back')" />
         <PageBody class="flex-column">
-            <StopSignIcon/>
+            <StopSignIcon />
             <h3 class="nq-h3">{{ $t('Before you start') }}</h3>
             <h1 class="nq-h1">
                 {{ $t('The Nimiq Wallet uses Polygon {ticker} for speed and low fees.', { ticker }) }}
             </h1>
             <p class="nq-text nq-light-blue">
-                <AlertCircleIcon/>
-                {{ type === 'sending'
-                    ? $t('Send to Polygon {ticker} addresses only!', { ticker })
-                    : $t('Receive from Polygon {ticker} addresses only!', { ticker })
+                <AlertCircleIcon />
+                {{
+                    type === 'sending'
+                        ? $t('Send to Polygon {ticker} addresses only!', { ticker })
+                        : $t('Receive from Polygon {ticker} addresses only!', { ticker })
                 }}
             </p>
             <p class="nq-text nq-orange">
-                <AlertTriangleIcon/>
-                {{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
-                    : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
+                <AlertTriangleIcon />
+                {{
+                    type === 'sending'
+                        ? $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
+                        : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
                 }}
             </p>
             <button class="nq-button light-blue" @click="$emit('continue')" @mousedown.prevent>
@@ -29,11 +31,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
-import StopSignIcon from './icons/StopSignIcon.vue';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import StopSignIcon from './icons/StopSignIcon.vue';
 
 export default defineComponent({
     props: {
@@ -73,7 +75,8 @@ export default defineComponent({
     contain: size layout paint style;
     height: 100%;
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         contain: size style; // not layout and paint to make page scrollable on mobile
     }
 }
@@ -90,7 +93,8 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         contain: layout paint style; // not size to make page scrollable on mobile
     }
 
@@ -119,7 +123,7 @@ export default defineComponent({
         margin: 0;
         border: 1px solid var(--text-16);
         align-self: stretch;
-        letter-spacing: .1px;
+        letter-spacing: 0.1px;
 
         &:first-of-type {
             margin-top: auto;
@@ -136,8 +140,8 @@ export default defineComponent({
 
         .nq-icon {
             display: inline-block;
-            margin-bottom: .5rem;
-            margin-right: .375rem;
+            margin-bottom: 0.5rem;
+            margin-right: 0.375rem;
             vertical-align: middle;
         }
     }

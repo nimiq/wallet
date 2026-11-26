@@ -1,6 +1,6 @@
-import { useTransactionsStore, Transaction, TransactionState, toMs } from '@/stores/Transactions';
-import { useProxyStore } from '@/stores/Proxy';
 import { useAddressStore } from '@/stores/Address';
+import { useProxyStore } from '@/stores/Proxy';
+import { useTransactionsStore, Transaction, TransactionState, toMs } from '@/stores/Transactions';
 
 export enum ProxyType {
     CASHLINK = 'cashlink',
@@ -15,7 +15,7 @@ export enum ProxyTransactionDirection {
 function proxyTransactionIdentifierToExtraData(identifier: string) {
     const extraData = new Uint8Array([
         0, // leading 0 to mark identifier extra data
-        ...(identifier.split('').map((c) => c.charCodeAt(0) + 63)), // mapped to outside of basic ascii range
+        ...identifier.split('').map((c) => c.charCodeAt(0) + 63), // mapped to outside of basic ascii range
     ]);
     // convert to hex
     return extraData.reduce((hex, value) => hex + value.toString(16).padStart(2, '0'), '');
@@ -42,21 +42,25 @@ export function isProxyData(
     const directionsToCheck = transactionDirection
         ? [transactionDirection]
         : [ProxyTransactionDirection.FUND, ProxyTransactionDirection.REDEEM];
-    return proxyTypesToCheck.some((type) => directionsToCheck.some((dir) =>
-        type === ProxyType.HTLC_PROXY && dir === ProxyTransactionDirection.FUND
-            ? data.startsWith(ProxyExtraData[type][dir]) // htlc proxy funding tx data can include additional public key
-            : ProxyExtraData[type][dir] === data));
+    return proxyTypesToCheck.some((type) =>
+        directionsToCheck.some((dir) =>
+            type === ProxyType.HTLC_PROXY && dir === ProxyTransactionDirection.FUND
+                ? data.startsWith(ProxyExtraData[type][dir]) // htlc proxy funding tx data can include additional public key
+                : ProxyExtraData[type][dir] === data,
+        ),
+    );
 }
 
 // map proxy address -> transaction hashes -> transaction; indexed by hash to avoid duplicates
-let knownProxyTransactions: {[proxyAddress: string]: {[transactionHash: string]: Transaction}} | undefined;
+let knownProxyTransactions: { [proxyAddress: string]: { [transactionHash: string]: Transaction } } | undefined;
 
 function isProxyTransaction(tx: Transaction): boolean {
-    return !!tx.relatedTransactionHash
+    return (
+        !!tx.relatedTransactionHash
         || isProxyData(tx.data.raw)
         // additional checks as proxy transactions are not guaranteed to hold the special proxy extra data
-        || (!!knownProxyTransactions
-            && (!!knownProxyTransactions[tx.sender] || !!knownProxyTransactions[tx.recipient]));
+        || (!!knownProxyTransactions && (!!knownProxyTransactions[tx.sender] || !!knownProxyTransactions[tx.recipient]))
+    );
 }
 
 // Get the proxy address of a proxy transaction. The tx must have been checked before to be an actual proxy transaction.
@@ -64,7 +68,8 @@ function getProxyAddress(tx: Transaction): string {
     const { $state: addresses$ } = useAddressStore();
     // Note: cashlink transactions always hold the proxy extra data. Also swap proxy transactions from or to our address
     // hold the proxy extra data. Only the htlc creation transactions from a proxy hold the htlc data instead.
-    const isFunding = isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
+    const isFunding =
+        isProxyData(tx.data.raw, undefined, ProxyTransactionDirection.FUND)
         || !!addresses$.addressInfos[tx.sender] // sent from one of our addresses
         || useProxyStore().allProxies.some((proxy) => tx.recipient === proxy); // sent to proxy
     return isFunding ? tx.recipient : tx.sender;
@@ -83,7 +88,7 @@ export function cleanupKnownProxyTransactions(txs: Transaction[]) {
 
 export function detectProxyTransactions(
     txs: Transaction[],
-    knownTransactions: {[transactionHash: string]: Transaction},
+    knownTransactions: { [transactionHash: string]: Transaction },
 ) {
     const { addFundedProxy, addClaimedProxy, removeProxy, triggerNetwork } = useProxyStore();
     const { $state: addresses$ } = useAddressStore();
@@ -134,8 +139,8 @@ export function detectProxyTransactions(
     for (const proxyToReEvaluate of proxiesToReEvaluate) {
         for (const tx of Object.values(knownProxyTransactions[proxyToReEvaluate])) {
             setRelatedTransaction(tx, null);
-            knownProxyTransactions![proxyToReEvaluate][tx.transactionHash] = transactions$.transactions[
-                tx.transactionHash];
+            knownProxyTransactions![proxyToReEvaluate][tx.transactionHash] =
+                transactions$.transactions[tx.transactionHash];
         }
     }
 
@@ -147,10 +152,12 @@ export function detectProxyTransactions(
         // Check whether we need to subscribe for network updates for the proxy address. This is the case if we don't
         // know the related transaction for a tx yet or if there is a transaction from or to the proxy which is not
         // confirmed yet and not related to one of our addresses which we are observing anyways.
-        const needToSubscribeToProxy = proxyTransactions.some((proxyTx) =>
-            !proxyTx.relatedTransactionHash
-            || (proxyTx.state !== TransactionState.CONFIRMED
-            && !addresses$.addressInfos[proxyTx.sender] && !addresses$.addressInfos[proxyTx.recipient]),
+        const needToSubscribeToProxy = proxyTransactions.some(
+            (proxyTx) =>
+                !proxyTx.relatedTransactionHash
+                || (proxyTx.state !== TransactionState.CONFIRMED
+                    && !addresses$.addressInfos[proxyTx.sender]
+                    && !addresses$.addressInfos[proxyTx.recipient]),
         );
 
         if (needToSubscribeToProxy) {
@@ -174,9 +181,11 @@ export function detectProxyTransactions(
 }
 
 function isHtlcTransaction(tx: Transaction): boolean {
-    return 'hashRoot' in tx.data // htlc creation
+    return (
+        'hashRoot' in tx.data // htlc creation
         || 'creator' in tx.proof // htlc refunding
-        || 'hashRoot' in tx.proof; // htlc settlement
+        || 'hashRoot' in tx.proof
+    ); // htlc settlement
 }
 
 function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions: Transaction[]) {
@@ -197,8 +206,8 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         return tx1.timestamp && tx2.timestamp
             ? toMs(tx2.timestamp) - toMs(tx1.timestamp)
             : tx1.blockHeight && tx2.blockHeight
-                ? tx2.blockHeight - tx1.blockHeight
-                : tx2.validityStartHeight - tx1.validityStartHeight;
+              ? tx2.blockHeight - tx1.blockHeight
+              : tx2.validityStartHeight - tx1.validityStartHeight;
     });
 
     for (const tx of proxyTransactions) {
@@ -212,52 +221,52 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         let relatedTx: Transaction | undefined;
         const isCashlink = isProxyData(tx.data.raw, ProxyType.CASHLINK);
         const isFunding = proxyAddress === tx.recipient;
-        const potentialRelatedTxs = proxyTransactions.filter((proxyTx) =>
-            // only consider the ones not related to another transaction yet
-            !proxyTx.relatedTransactionHash
-            // ignore invalid or expired transactions
-            && proxyTx.state !== TransactionState.INVALIDATED
-            && proxyTx.state !== TransactionState.EXPIRED
-            // at least one of the transactions must be from or to one of our addresses
-            && (!!addresses$.addressInfos[tx.sender] || !!addresses$.addressInfos[tx.recipient]
-                || !!addresses$.addressInfos[proxyTx.sender] || !!addresses$.addressInfos[proxyTx.recipient])
-            // check whether this is a potential related tx
-            && (isFunding
-                // proxy tx is redeeming
-                ? (proxyTx.sender === proxyAddress
-                    // is the redeeming tx later?
-                    && (tx.timestamp && proxyTx.timestamp
-                        ? toMs(tx.timestamp) < toMs(proxyTx.timestamp)
-                        : tx.blockHeight && proxyTx.blockHeight
+        const potentialRelatedTxs = proxyTransactions.filter(
+            (proxyTx) =>
+                // only consider the ones not related to another transaction yet
+                !proxyTx.relatedTransactionHash
+                // ignore invalid or expired transactions
+                && proxyTx.state !== TransactionState.INVALIDATED
+                && proxyTx.state !== TransactionState.EXPIRED
+                // at least one of the transactions must be from or to one of our addresses
+                && (!!addresses$.addressInfos[tx.sender]
+                    || !!addresses$.addressInfos[tx.recipient]
+                    || !!addresses$.addressInfos[proxyTx.sender]
+                    || !!addresses$.addressInfos[proxyTx.recipient])
+                // check whether this is a potential related tx
+                && (isFunding
+                    ? // proxy tx is redeeming
+                      proxyTx.sender === proxyAddress
+                      // is the redeeming tx later?
+                      && (tx.timestamp && proxyTx.timestamp
+                          ? toMs(tx.timestamp) < toMs(proxyTx.timestamp)
+                          : tx.blockHeight && proxyTx.blockHeight
                             ? tx.blockHeight < proxyTx.blockHeight
-                            // a tx's validity start height can also be earlier than the height at which it gets
-                            // broadcast, thus this check can be off, but typically, this is not the case
-                            : tx.validityStartHeight <= proxyTx.validityStartHeight)
-                    // check the tx amount
-                    && (isCashlink
-                        // for cashlinks, partial redeeming is allowed
-                        ? tx.value >= proxyTx.value + proxyTx.fee
-                        // other proxies must be redeemed entirely
-                        : tx.value === proxyTx.value + proxyTx.fee)
-                )
-                // proxy tx is funding
-                : (proxyTx.recipient === proxyAddress
-                    // is the redeeming tx earlier?
-                    && (tx.timestamp && proxyTx.timestamp
-                        ? toMs(tx.timestamp) > toMs(proxyTx.timestamp)
-                        : tx.blockHeight && proxyTx.blockHeight
+                            : // a tx's validity start height can also be earlier than the height at which it gets
+                              // broadcast, thus this check can be off, but typically, this is not the case
+                              tx.validityStartHeight <= proxyTx.validityStartHeight)
+                      // check the tx amount
+                      && (isCashlink
+                          ? // for cashlinks, partial redeeming is allowed
+                            tx.value >= proxyTx.value + proxyTx.fee
+                          : // other proxies must be redeemed entirely
+                            tx.value === proxyTx.value + proxyTx.fee)
+                    : // proxy tx is funding
+                      proxyTx.recipient === proxyAddress
+                      // is the redeeming tx earlier?
+                      && (tx.timestamp && proxyTx.timestamp
+                          ? toMs(tx.timestamp) > toMs(proxyTx.timestamp)
+                          : tx.blockHeight && proxyTx.blockHeight
                             ? tx.blockHeight > proxyTx.blockHeight
-                            // a tx's validity start height can also be earlier than the height at which it gets
-                            // broadcast, thus this check can be off, but typically, this is not the case
-                            : tx.validityStartHeight >= proxyTx.validityStartHeight)
-                    // check the tx amount
-                    && (isCashlink
-                        // for cashlinks, partial redeeming is allowed
-                        ? tx.value + tx.fee <= proxyTx.value
-                        // other proxies must be redeemed entirely
-                        : tx.value + tx.fee === proxyTx.value)
-                )
-            ),
+                            : // a tx's validity start height can also be earlier than the height at which it gets
+                              // broadcast, thus this check can be off, but typically, this is not the case
+                              tx.validityStartHeight >= proxyTx.validityStartHeight)
+                      // check the tx amount
+                      && (isCashlink
+                          ? // for cashlinks, partial redeeming is allowed
+                            tx.value + tx.fee <= proxyTx.value
+                          : // other proxies must be redeemed entirely
+                            tx.value + tx.fee === proxyTx.value)),
         );
 
         // If there are multiple matching transactions (if any) pick the one which is time wise the closest.
@@ -267,16 +276,16 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         // matched instead of B-C for given transaction order A B C.
         const isCloser = (checkedValue: number, currentBest: number, allowEquality = false) =>
             (allowEquality && checkedValue === currentBest)
-            || (isFunding
-                ? checkedValue < currentBest
-                : checkedValue > currentBest);
+            || (isFunding ? checkedValue < currentBest : checkedValue > currentBest);
         for (const potentialRelatedTx of potentialRelatedTxs) {
-            if (!relatedTx
+            if (
+                !relatedTx
                 || (!!relatedTx.timestamp && !!potentialRelatedTx.timestamp
                     ? isCloser(toMs(potentialRelatedTx.timestamp), toMs(relatedTx.timestamp))
                     : !!relatedTx.blockHeight && !!potentialRelatedTx.blockHeight
-                        ? isCloser(potentialRelatedTx.blockHeight, relatedTx.blockHeight)
-                        : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight, true))) {
+                      ? isCloser(potentialRelatedTx.blockHeight, relatedTx.blockHeight)
+                      : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight, true))
+            ) {
                 relatedTx = potentialRelatedTx;
             }
         }
@@ -285,7 +294,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
 
         setRelatedTransaction(tx, relatedTx);
         knownProxyTransactions![proxyAddress][tx.transactionHash] = transactions$.transactions[tx.transactionHash];
-        knownProxyTransactions![proxyAddress][relatedTx.transactionHash] = transactions$.transactions[
-            relatedTx.transactionHash];
+        knownProxyTransactions![proxyAddress][relatedTx.transactionHash] =
+            transactions$.transactions[relatedTx.transactionHash];
     }
 }

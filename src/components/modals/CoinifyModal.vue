@@ -2,19 +2,19 @@
     <Modal class="coinify-modal" emitClose @close="close">
         <header class="flex-row">
             <Tooltip preferredPosition="bottom right">
-                <InfoCircleSmallIcon slot="trigger"/>
+                <InfoCircleSmallIcon slot="trigger" />
                 <i18n path="This service is operated by {link}" tag="span">
                     <a slot="link" href="https://coinify.com" target="_blank" rel="noopener">coinify.com</a>
                 </i18n>
             </Tooltip>
-            <img src="../../assets/exchanges/coinify-full.png" alt="Coinify Logo">
+            <img src="../../assets/exchanges/coinify-full.png" alt="Coinify Logo" />
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
         <iframe
             :src="widgetUrl"
             title="Coinify trade widget"
-            allow="camera;fullscreen;accelerometer;gyroscope;magnetometer;payment"
+            allow="camera; fullscreen; accelerometer; gyroscope; magnetometer; payment"
             allowfullscreen
             class="widget-iframe flex-grow"
         />
@@ -22,19 +22,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
+import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, onMounted, onUnmounted } from 'vue';
 import router from '@/router';
-import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
 import { useAccountSettingsStore } from '@/stores/AccountSettings';
 import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { useFiatStore } from '@/stores/Fiat';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
-import Modal from './Modal.vue';
 import { useConfig } from '../../composables/useConfig';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'CoinifyModal',
@@ -65,8 +65,8 @@ export default defineComponent({
             activeCurrency.value === CryptoCurrency.USDC
                 ? 'USDCPOLYGON'
                 : activeCurrency.value === CryptoCurrency.USDT
-                    ? 'USDTPOLYGON'
-                    : activeCurrency.value.toUpperCase(),
+                  ? 'USDTPOLYGON'
+                  : activeCurrency.value.toUpperCase(),
         );
         url.searchParams.set('defaultFiatCurrency', currency.value.toUpperCase());
 
@@ -104,42 +104,42 @@ export default defineComponent({
             // We are only interested in sell confirmation events, where the user must make a transaction to Coinify
             if (msg.event === 'trade.trade-created' && msg.context.transferIn.medium === 'blockchain') {
                 const payload = msg as {
-                    type: 'event',
-                    event: 'trade.trade-created',
+                    type: 'event';
+                    event: 'trade.trade-created';
                     context: {
-                        createTime: string, // "2021-01-21T15:12:20.300Z"
-                        id: number, // 123456
-                        inAmount: number, // In full coins, e.g. 53.25
-                        inCurrency: string, // e.g. "EUR" or "NIM"
-                        isPriceQuoteApproximate: boolean,
-                        outAmountExpected: number, // In full coins, e.g. 0.00187817
-                        outCurrency: string, // e.g. "BTC"
-                        quoteExpireTime: string, // "2021-01-21T15:27:20.300Z"
-                        state: string, // e.g. "awaiting_transfer_in",
-                        traderEmail: string,
-                        traderId: number,
+                        createTime: string; // "2021-01-21T15:12:20.300Z"
+                        id: number; // 123456
+                        inAmount: number; // In full coins, e.g. 53.25
+                        inCurrency: string; // e.g. "EUR" or "NIM"
+                        isPriceQuoteApproximate: boolean;
+                        outAmountExpected: number; // In full coins, e.g. 0.00187817
+                        outCurrency: string; // e.g. "BTC"
+                        quoteExpireTime: string; // "2021-01-21T15:27:20.300Z"
+                        state: string; // e.g. "awaiting_transfer_in",
+                        traderEmail: string;
+                        traderId: number;
                         transferIn: {
-                            id: number, // 123456
-                            sendAmount: number, // In full coins, e.g. 116023.12353
-                            receiveAmount: number, // In full coins, e.g. 116000
-                            currency: 'NIM' | 'BTC' | 'USDCPOLYGON' | 'USDTPOLYGON',
-                            medium: 'blockchain',
+                            id: number; // 123456
+                            sendAmount: number; // In full coins, e.g. 116023.12353
+                            receiveAmount: number; // In full coins, e.g. 116000
+                            currency: 'NIM' | 'BTC' | 'USDCPOLYGON' | 'USDTPOLYGON';
+                            medium: 'blockchain';
                             details?: {
-                                account: string, // The crypto address the user should send the coins to
-                                memo?: string | null,
-                                paymentUri: string,
-                            },
-                        },
+                                account: string; // The crypto address the user should send the coins to
+                                memo?: string | null;
+                                paymentUri: string;
+                            };
+                        };
                         transferOut: {
-                            id: number, // 123456
-                            sendAmount: number, // In full coins, e.g. 55.05
-                            receiveAmount: number, // In full coins, e.g. 50
-                            currency: string, // e.g. "USD"
-                            medium: 'bank',
-                            details: any, // Not relevant for our use case, can be ignored
-                        },
-                        updateTime: string, // "2021-01-21T15:12:20.300Z"
-                    },
+                            id: number; // 123456
+                            sendAmount: number; // In full coins, e.g. 55.05
+                            receiveAmount: number; // In full coins, e.g. 50
+                            currency: string; // e.g. "USD"
+                            medium: 'bank';
+                            details: any; // Not relevant for our use case, can be ignored
+                        };
+                        updateTime: string; // "2021-01-21T15:12:20.300Z"
+                    };
                 };
 
                 // For NIM and BTC we can use the payment URI as-is
@@ -150,15 +150,19 @@ export default defineComponent({
                 if (payload.context.inCurrency === 'USDCPOLYGON') {
                     // Ensure the user is in USDC mode
                     useAccountSettingsStore().setStablecoin(CryptoCurrency.USDC);
-                    const paymentUri = payload.context.transferIn.details!.paymentUri
-                        .replace('usdc-polygon:', 'polygon:');
+                    const paymentUri = payload.context.transferIn.details!.paymentUri.replace(
+                        'usdc-polygon:',
+                        'polygon:',
+                    );
                     router.push(`/${paymentUri}`);
                 }
                 if (payload.context.inCurrency === 'USDTPOLYGON') {
                     // Ensure the user is in USDT mode
                     useAccountSettingsStore().setStablecoin(CryptoCurrency.USDT);
-                    const paymentUri = payload.context.transferIn.details!.paymentUri
-                        .replace('usdt-polygon:', 'polygon:');
+                    const paymentUri = payload.context.transferIn.details!.paymentUri.replace(
+                        'usdt-polygon:',
+                        'polygon:',
+                    );
                     router.push(`/${paymentUri}`);
                 }
             }

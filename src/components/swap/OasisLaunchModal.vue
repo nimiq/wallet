@@ -8,13 +8,15 @@
             </p>
 
             <ul>
-                <li><StarIcon/> {{ $t('Selling now available') }}</li>
-                <li><StarIcon/> {{ $t('Per-swap limits raised to {amount}', { amount: '820€' }) }}</li>
+                <li><StarIcon /> {{ $t('Selling now available') }}</li>
+                <li><StarIcon /> {{ $t('Per-swap limits raised to {amount}', { amount: '820€' }) }}</li>
                 <li>
-                    <StarIcon/>
+                    <StarIcon />
                     <a
                         href="https://www.nimiq.com/oasis/integrate#resources-and-documentation"
-                        target="_blank" rel="noopener" class="nq-link"
+                        target="_blank"
+                        rel="noopener"
+                        class="nq-link"
                     >
                         {{ $t('Developer resources') }}
                     </a>
@@ -32,11 +34,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { PageBody, PageFooter } from '@nimiq/vue-components';
-import Modal from '../modals/Modal.vue';
+import { defineComponent, ref } from 'vue';
 import BlueLink from '../BlueLink.vue';
 import StarIcon from '../icons/StarIcon.vue';
+import Modal from '../modals/Modal.vue';
 
 const LOCAL_STORAGE_KEY = 'oasis-launch-modal-shown';
 
@@ -86,7 +88,9 @@ export default defineComponent({
     text-align: center;
 }
 
-.nq-h1, .nq-text, ul {
+.nq-h1,
+.nq-text,
+ul {
     margin-top: 0;
 }
 
@@ -127,5 +131,4 @@ li + li {
         justify-content: center;
     }
 }
-
 </style>

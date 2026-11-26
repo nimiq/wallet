@@ -29,13 +29,14 @@
                     <div v-if="!item.sender && !item.isMonthlyReward" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
-                            <CircleSpinner/>
+                            <CircleSpinner />
                             <span>{{ $t('Fetching') }}</span>
                         </div>
-                        <div v-else-if="item.isLatestMonth && !hasFetchedAddress"
+                        <div
+                            v-else-if="item.isLatestMonth && !hasFetchedAddress"
                             class="failed-to-fetch flex-row nq-orange"
                         >
-                            <AlertTriangleIcon/>
+                            <AlertTriangleIcon />
                             <span>{{ $t('Failed to fetch transactions') }}</span>
                         </div>
                     </div>
@@ -46,7 +47,7 @@
                         :month="getMonthFromReward(item)"
                         hide-month
                     />
-                    <TransactionListItem v-else :transaction="item"/>
+                    <TransactionListItem v-else :transaction="item" />
                 </div>
             </template>
 
@@ -54,8 +55,10 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <i18n path="Invite a friend with a {cashlink} or buy more here in the wallet."
-                        tag="p" class="nq-text"
+                    <i18n
+                        path="Invite a friend with a {cashlink} or buy more here in the wallet."
+                        tag="p"
+                        class="nq-text"
                     >
                         <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
                     </i18n>
@@ -72,7 +75,7 @@
             <router-link v-if="isMainnet" to="buy" class="nq-button light-blue">
                 {{ $t('Buy NIM') }}
             </router-link>
-            <TestnetFaucet v-else-if="activeAddress" :address="activeAddress"/>
+            <TestnetFaucet v-else-if="activeAddress" :address="activeAddress" />
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
@@ -81,21 +84,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, watchEffect, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, Ref, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import TransactionListItem from '@/components/TransactionListItem.vue';
-import TestnetFaucet from './TestnetFaucet.vue';
-import CrossCloseButton from './CrossCloseButton.vue';
-import { useAddressStore } from '../stores/Address';
-import { useNetworkStore } from '../stores/Network';
+import { useConfig } from '../composables/useConfig';
+import { useTransactionList } from '../composables/useTransactionList';
+import { createCashlink } from '../hub';
 import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
-import { createCashlink } from '../hub';
-import { useConfig } from '../composables/useConfig';
+import { useAddressStore } from '../stores/Address';
+import { useNetworkStore } from '../stores/Network';
+import CrossCloseButton from './CrossCloseButton.vue';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
 import StakingRewardsListItem from './staking/StakingRewardsListItem.vue';
-import { useTransactionList } from '../composables/useTransactionList';
+import TestnetFaucet from './TestnetFaucet.vue';
 
 export default defineComponent({
     props: {
@@ -118,10 +121,14 @@ export default defineComponent({
 
         const txCount = computed(() => transactionsForActiveAddress.value.length);
 
-        const unclaimedCashlinkTxs = computed(() => transactionsForActiveAddress.value.filter(
-            (tx) => tx.sender === activeAddress.value && !tx.relatedTransactionHash
-                && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND),
-        ));
+        const unclaimedCashlinkTxs = computed(() =>
+            transactionsForActiveAddress.value.filter(
+                (tx) =>
+                    tx.sender === activeAddress.value
+                    && !tx.relatedTransactionHash
+                    && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND),
+            ),
+        );
 
         // Count unclaimed cashlinks
         watchEffect(() => {
@@ -147,21 +154,29 @@ export default defineComponent({
         // - Active address changes
         // - Unclaimed Cashlinks list is opened
         const scroller = ref<{
-            scrollToPosition(position: number, smooth?: boolean): void,
-            $el: HTMLDivElement,
-                } | null>(null);
+            scrollToPosition(position: number, smooth?: boolean): void;
+            $el: HTMLDivElement;
+        } | null>(null);
 
-        watch(activeAddress, () => {
-            if (scroller.value) {
-                scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
-            }
-        }, { immediate: true, flush: 'post' });
+        watch(
+            activeAddress,
+            () => {
+                if (scroller.value) {
+                    scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
+                }
+            },
+            { immediate: true, flush: 'post' },
+        );
 
-        watch(() => props.showUnclaimedCashlinkList, (show) => {
-            if (show && scroller.value) {
-                scroller.value.scrollToPosition(0, true);
-            }
-        }, { immediate: true, flush: 'post' });
+        watch(
+            () => props.showUnclaimedCashlinkList,
+            (show) => {
+                if (show && scroller.value) {
+                    scroller.value.scrollToPosition(0, true);
+                }
+            },
+            { immediate: true, flush: 'post' },
+        );
 
         function onScroll() {
             context.emit('scroll');
@@ -298,8 +313,12 @@ export default defineComponent({
         animation-iteration-count: 1;
 
         @keyframes fadein {
-            0% { opacity: 0 }
-            100% { opacity: 1 }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
     }
 
@@ -320,9 +339,15 @@ export default defineComponent({
             animation-delay: inherit;
 
             @keyframes loading {
-                0% { opacity: 1 }
-                50% { opacity: .5 }
-                100% { opacity: 1 }
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+                100% {
+                    opacity: 1;
+                }
             }
         }
 
@@ -455,7 +480,8 @@ export default defineComponent({
     font-weight: 600;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .month-label {
         padding-top: 4rem;
     }

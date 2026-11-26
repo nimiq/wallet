@@ -6,21 +6,21 @@
 // potential other Wallet windows or swaps. However, for the case that the wallet is configured to use redirects, we
 // still clear the swap kyc handler storage after requests.
 
-import type VueI18n from 'vue-i18n';
 import HubApi, { SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
 import { BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
-import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
 import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
+import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
 import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config'; // Not using useConfig composable because we try to avoid Vue as dependency here.
-import { KycProvider, KycUser } from './stores/Kyc';
+import type VueI18n from 'vue-i18n';
 import { i18n, detectLanguage, loadLanguage } from './i18n/i18n-setup';
+import { KycProvider, KycUser } from './stores/Kyc';
 
 export interface SetupSwapWithKycResult extends SetupSwapResult {
     kyc: {
-        provider: KycProvider.TEN31PASS,
-        s3GrantToken: string, // JWT token representing the S3 service grant
-        oasisGrantToken?: string, // JWT token representing the OASIS service grant
+        provider: KycProvider.TEN31PASS;
+        s3GrantToken: string; // JWT token representing the S3 service grant
+        oasisGrantToken?: string; // JWT token representing the OASIS service grant
     };
 }
 
@@ -93,9 +93,11 @@ i18n.missing = () => ''; // don't return index numbers before language loaded; s
 function $t(key: VueI18n.Path, fallback: string): string;
 function $t(key: VueI18n.Path, values: VueI18n.Values, fallback: string): string;
 function $t(key: VueI18n.Path, valuesOrFallback: VueI18n.Values | string, fallback?: string): string {
-    return i18n.t(key, typeof valuesOrFallback !== 'string' ? valuesOrFallback : undefined) as string
+    return (
+        (i18n.t(key, typeof valuesOrFallback !== 'string' ? valuesOrFallback : undefined) as string)
         // The translation was missing and i18n.t returned an empty string as configured by i18n.missing
-        || (typeof valuesOrFallback === 'string' ? valuesOrFallback : fallback!);
+        || (typeof valuesOrFallback === 'string' ? valuesOrFallback : fallback!)
+    );
 }
 
 async function run() {
@@ -108,16 +110,19 @@ async function run() {
 
         // Listen for initial request if not known yet.
         if (!rpcServerState || !request || !kycUser) {
-            [rpcServerState, request, kycUser] = await new Promise<[RpcServerState, SetupSwapRequest, KycUser]>((
-                resolve,
-                reject,
-            ) => {
-                const rpcServer = new RpcServer(/* allowed origins */ window.location.origin);
-                // no need to parse/validate the request as we are the only allowed origin
-                rpcServer.onRequest(HubApi.RequestType.SETUP_SWAP, (state, req, user) => resolve([state, req, user]));
-                rpcServer.init(/* onClientTimeout */ () =>
-                    reject(new Error($t('No request received.', 'No request received.'))));
-            });
+            [rpcServerState, request, kycUser] = await new Promise<[RpcServerState, SetupSwapRequest, KycUser]>(
+                (resolve, reject) => {
+                    const rpcServer = new RpcServer(/* allowed origins */ window.location.origin);
+                    // no need to parse/validate the request as we are the only allowed origin
+                    rpcServer.onRequest(HubApi.RequestType.SETUP_SWAP, (state, req, user) =>
+                        resolve([state, req, user]),
+                    );
+                    rpcServer.init(
+                        /* onClientTimeout */ () =>
+                            reject(new Error($t('No request received.', 'No request received.'))),
+                    );
+                },
+            );
             writeSwapKycHandlerStorage(rpcServerState, request, kycUser, kycResponse);
         }
 
@@ -135,63 +140,74 @@ async function run() {
                 // Hub partially operates on different values, we need to revert this preprocessing here that the Wallet
                 // did on the original values. More specifically, we want to get the original swapSuggestion values back
                 // that were modified in the hubRequest in SwapModal, BuyCryptoModal and SellCryptoModal.
-                const serviceRequests: ServiceRequest[] = [{
-                    serviceId: s3ServiceId,
-                    usages: [{
-                        usageId: Config.ten31Pass.services.s3.usageIds.swap,
-                        parameters: {
-                            from_amount: (() => {
-                                switch (request.fund.type) {
-                                    case 'NIM': return toDecimalString(request.fund.value, 5);
-                                    case 'BTC': return toDecimalString(request.fund.output.value, 8);
-                                    case 'EUR': return toDecimalString(request.fund.value + request.fund.fee, 2);
-                                    default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
-                                }
-                            })(),
-                            from_asset: request.fund.type,
-                            to_amount: (() => {
-                                switch (request.redeem.type) {
-                                    case 'NIM': return toDecimalString(request.redeem.value + request.redeem.fee, 5);
-                                    case 'BTC': return toDecimalString(request.redeem.input.value, 8);
-                                    case 'EUR': return toDecimalString(request.redeem.value, 2);
-                                    default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
-                                }
-                            })(),
-                            to_asset: request.redeem.type,
-                            id: request.swapId,
-                        },
-                    }],
-                }];
+                const serviceRequests: ServiceRequest[] = [
+                    {
+                        serviceId: s3ServiceId,
+                        usages: [
+                            {
+                                usageId: Config.ten31Pass.services.s3.usageIds.swap,
+                                parameters: {
+                                    from_amount: (() => {
+                                        switch (request.fund.type) {
+                                            case 'NIM':
+                                                return toDecimalString(request.fund.value, 5);
+                                            case 'BTC':
+                                                return toDecimalString(request.fund.output.value, 8);
+                                            case 'EUR':
+                                                return toDecimalString(request.fund.value + request.fund.fee, 2);
+                                            default:
+                                                throw new Error($t('Unsupported currency', 'Unsupported currency'));
+                                        }
+                                    })(),
+                                    from_asset: request.fund.type,
+                                    to_amount: (() => {
+                                        switch (request.redeem.type) {
+                                            case 'NIM':
+                                                return toDecimalString(request.redeem.value + request.redeem.fee, 5);
+                                            case 'BTC':
+                                                return toDecimalString(request.redeem.input.value, 8);
+                                            case 'EUR':
+                                                return toDecimalString(request.redeem.value, 2);
+                                            default:
+                                                throw new Error($t('Unsupported currency', 'Unsupported currency'));
+                                        }
+                                    })(),
+                                    to_asset: request.redeem.type,
+                                    id: request.swapId,
+                                },
+                            },
+                        ],
+                    },
+                ];
                 if (request.fund.type === 'EUR') {
                     serviceRequests.push({
                         serviceId: oasisServiceId,
-                        usages: [{
-                            usageId: Config.ten31Pass.services.oasis.usageIds.clearing,
-                            parameters: {
-                                amount: request.fund.value + request.fund.fee,
+                        usages: [
+                            {
+                                usageId: Config.ten31Pass.services.oasis.usageIds.clearing,
+                                parameters: {
+                                    amount: request.fund.value + request.fund.fee,
+                                },
                             },
-                        }],
+                        ],
                     });
                 } else if (request.redeem.type === 'EUR') {
                     serviceRequests.push({
                         serviceId: oasisServiceId,
-                        usages: [{
-                            usageId: Config.ten31Pass.services.oasis.usageIds.settling,
-                            parameters: {
-                                amount: request.redeem.value,
+                        usages: [
+                            {
+                                usageId: Config.ten31Pass.services.oasis.usageIds.settling,
+                                parameters: {
+                                    amount: request.redeem.value,
+                                },
                             },
-                        }],
+                        ],
                     });
                 }
                 // Redirect to TEN31 Pass.
-                await ten31PassApi.requestGrants(
-                    Config.ten31Pass.appId,
-                    serviceRequests,
-                    /* asPopup */ false,
-                    {
-                        preferredResponseType: ResponseType.IMMEDIATE_REDIRECT,
-                    },
-                );
+                await ten31PassApi.requestGrants(Config.ten31Pass.appId, serviceRequests, /* asPopup */ false, {
+                    preferredResponseType: ResponseType.IMMEDIATE_REDIRECT,
+                });
                 return;
             }
 
@@ -205,27 +221,29 @@ async function run() {
                 const oasisGrant = grantResponse.services[oasisServiceId];
                 const isOasisSwap = request.fund.type === 'EUR' || request.redeem.type === 'EUR';
                 if (!s3Grant || (isOasisSwap && !oasisGrant)) {
-                    throw new Error($t(
-                        'TEN31 Pass didn\'t return expected grants.',
-                        'TEN31 Pass didn\'t return expected grants.',
-                    ));
+                    throw new Error(
+                        $t("TEN31 Pass didn't return expected grants.", "TEN31 Pass didn't return expected grants."),
+                    );
                 }
                 if (grantResponse.app !== kycUser.appGrant) {
-                    throw new Error($t(
-                        'Unexpected user. This account is currently connected to the TEN31 Pass of {userName}.',
-                        { userName: kycUser.name },
-                        `Unexpected user. This account is currently connected to the TEN31 Pass of ${kycUser.name}.`,
-                    ));
+                    throw new Error(
+                        $t(
+                            'Unexpected user. This account is currently connected to the TEN31 Pass of {userName}.',
+                            { userName: kycUser.name },
+                            `Unexpected user. This account is currently connected to the TEN31 Pass of ${kycUser.name}.`,
+                        ),
+                    );
                 }
-                const [s3GrantToken, oasisGrantToken] = await Promise.all([
-                    ten31PassApi.getServiceGrantInfo(s3Grant),
-                    oasisGrant ? ten31PassApi.getServiceGrantInfo(oasisGrant) : Promise.resolve(null),
-                ].map((serviveGrantPromise) => serviveGrantPromise.then((serviceGrant) => serviceGrant?.token)));
+                const [s3GrantToken, oasisGrantToken] = await Promise.all(
+                    [
+                        ten31PassApi.getServiceGrantInfo(s3Grant),
+                        oasisGrant ? ten31PassApi.getServiceGrantInfo(oasisGrant) : Promise.resolve(null),
+                    ].map((serviveGrantPromise) => serviveGrantPromise.then((serviceGrant) => serviceGrant?.token)),
+                );
                 if (!s3GrantToken || (isOasisSwap && !oasisGrantToken)) {
-                    throw new Error($t(
-                        'TEN31 Pass didn\'t return expected grants.',
-                        'TEN31 Pass didn\'t return expected grants.',
-                    ));
+                    throw new Error(
+                        $t("TEN31 Pass didn't return expected grants.", "TEN31 Pass didn't return expected grants."),
+                    );
                 }
                 kycResponse = {
                     provider: KycProvider.TEN31PASS,
@@ -239,11 +257,13 @@ async function run() {
                 throw new Error('Unexpected');
             }
         } else {
-            throw new Error($t(
-                'Unsupported KYC provider {provider}.',
-                { provider: kycUser.provider },
-                `Unsupported KYC provider ${kycUser.provider}.`,
-            ));
+            throw new Error(
+                $t(
+                    'Unsupported KYC provider {provider}.',
+                    { provider: kycUser.provider },
+                    `Unsupported KYC provider ${kycUser.provider}.`,
+                ),
+            );
         }
 
         // Launch Hub swap creation flow or check for Hub redirect response.
@@ -255,13 +275,16 @@ async function run() {
         });
         // Redirect to Hub if we didn't get the hub response yet.
         if (!setupSwapResult) {
-            await hubApi.setupSwap<BehaviorType.REDIRECT>({
-                ...request,
-                kyc: {
-                    ...kycResponse,
-                    userId: kycUser.id,
+            await hubApi.setupSwap<BehaviorType.REDIRECT>(
+                {
+                    ...request,
+                    kyc: {
+                        ...kycResponse,
+                        userId: kycUser.id,
+                    },
                 },
-            }, new HubApi.RedirectRequestBehavior());
+                new HubApi.RedirectRequestBehavior(),
+            );
             return;
         }
 
@@ -278,11 +301,10 @@ async function run() {
             rpcServerState.reply(ResponseStatus.ERROR, e);
         } else if (window.opener) {
             // Can't report error as we don't know the request id. Display a good old alert.
-            alert($t( // eslint-disable-line no-alert
-                'An error occurred: {message}',
-                { message: e.message || e },
-                `An error occurred: ${e.message || e}`,
-            ));
+            // eslint-disable-next-line no-alert
+            alert(
+                $t('An error occurred: {message}', { message: e.message || e }, `An error occurred: ${e.message || e}`),
+            );
             window.close();
         } else {
             // We're in fact not a popup but were opened by hub.ts as redirect. Go back to Wallet main UI.

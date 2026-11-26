@@ -8,7 +8,8 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-grow"></div>
-            <BankCheckInput v-model="bankName"
+            <BankCheckInput
+                v-model="bankName"
                 @bank-selected="(bank) => $emit('bank-selected', bank)"
                 direction="outbound"
                 :placeholder="$t('Enter bank name')"
@@ -29,10 +30,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { RouteName } from '@/router';
 import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
@@ -129,6 +130,6 @@ export default defineComponent({
         left: auto;
         right: auto;
         top: 1rem;
-    };
+    }
 }
 </style>

@@ -1,18 +1,20 @@
 <template>
     <transition name="fade" mode="out-in">
-        <FiatAmount v-if="fiatAmount !== undefined"
+        <FiatAmount
+            v-if="fiatAmount !== undefined"
             :amount="Math.min(roundDown ? Math.floor(fiatAmount) : fiatAmount, max || Infinity)"
             :hideDecimals="roundDown"
-            :currency="fiatCurrency"/>
+            :currency="fiatCurrency"
+        />
         <div v-else class="fiat-amount placeholder"></div>
     </transition>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
-import { useFiatStore } from '../stores/Fiat';
+import { defineComponent, computed } from 'vue';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
+import { useFiatStore } from '../stores/Fiat';
 
 export default defineComponent({
     name: 'FiatConvertedAmount',
@@ -46,16 +48,19 @@ export default defineComponent({
         const exchangeRate = computed(() => fiatStore.exchangeRates[props.currency]?.[fiatCurrency.value]);
         const currencyDecimals = computed(() => {
             switch (props.currency) {
-                case CryptoCurrency.BTC: return 8;
+                case CryptoCurrency.BTC:
+                    return 8;
                 case CryptoCurrency.USDC:
                 case CryptoCurrency.USDT:
                     return 6;
-                default: return 5;
+                default:
+                    return 5;
             }
         });
-        const fiatAmount = computed(() => exchangeRate.value !== undefined && typeof props.amount === 'number'
-            ? (props.amount / 10 ** currencyDecimals.value) * exchangeRate.value
-            : undefined,
+        const fiatAmount = computed(() =>
+            exchangeRate.value !== undefined && typeof props.amount === 'number'
+                ? (props.amount / 10 ** currencyDecimals.value) * exchangeRate.value
+                : undefined,
         );
 
         return {

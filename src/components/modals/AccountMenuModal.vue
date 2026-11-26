@@ -1,40 +1,42 @@
 <template>
     <Modal class="account-menu-modal menu">
         <div v-if="activeAccountId && activeAccountInfo" class="current-account">
-            <AccountMenuItem :id="activeAccountId"/>
-            <button v-if="canExportFile" class="item reset flex-row"
-                @click="backup(activeAccountId, 'fileOnly')">
-                <LoginFileDownloadIcon/>{{ $t('Save Login File') }}
-                <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
+            <AccountMenuItem :id="activeAccountId" />
+            <button v-if="canExportFile" class="item reset flex-row" @click="backup(activeAccountId, 'fileOnly')">
+                <LoginFileDownloadIcon />{{ $t('Save Login File') }}
+                <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert" />
             </button>
-            <button v-if="canExportBackup" class="item reset flex-row"
-                @click="$router.push({ name: RouteName.Backup })">
-                <BackupIcon/>{{ $t('Create Backup') }}
-                <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported && !activeAccountInfo.backupCodesExported"
+            <button
+                v-if="canExportBackup"
+                class="item reset flex-row"
+                @click="$router.push({ name: RouteName.Backup })"
+            >
+                <BackupIcon />{{ $t('Create Backup') }}
+                <AlertTriangleIcon
+                    v-if="!activeAccountInfo.wordsExported && !activeAccountInfo.backupCodesExported"
                     class="alert"
                 />
             </button>
             <button class="item reset flex-row" @click="rename(activeAccountId)">
-                <RenameIcon/>{{ $t('Rename') }}
+                <RenameIcon />{{ $t('Rename') }}
             </button>
-            <button
-                v-if="canChangePassword"
-                class="item reset flex-row"
-                @click="changePassword(activeAccountId)"
-            >
-                <ChangePasswordIcon/>{{ $t('Change password') }}
+            <button v-if="canChangePassword" class="item reset flex-row" @click="changePassword(activeAccountId)">
+                <ChangePasswordIcon />{{ $t('Change password') }}
             </button>
 
             <button
                 class="item reset flex-row"
-                @mousedown="$router.push({
-                    name: RouteName.ExportHistory, params: { type: 'account' },
-                })"
+                @mousedown="
+                    $router.push({
+                        name: RouteName.ExportHistory,
+                        params: { type: 'account' },
+                    })
+                "
             >
                 <BoxedArrowUpIcon />{{ $t('Export History') }}
             </button>
             <button class="item reset logout flex-row" @click="logout(activeAccountId)">
-                <LogoutArrowIcon/>{{ $t('Logout') }}
+                <LogoutArrowIcon />{{ $t('Logout') }}
             </button>
         </div>
 
@@ -42,7 +44,8 @@
 
         <div class="account-list" v-if="otherAccountIds.length">
             <AccountMenuItem
-                v-for="id of otherAccountIds" :key="id"
+                v-for="id of otherAccountIds"
+                :key="id"
                 :id="id"
                 tag="button"
                 class="reset"
@@ -57,22 +60,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { RouteName, useRouter } from '@/router';
 
-import AccountMenuItem from '../AccountMenuItem.vue';
-import Modal from './Modal.vue';
-import LoginFileDownloadIcon from '../icons/AccountMenu/LoginFileDownloadIcon.vue';
-import BackupIcon from '../icons/AccountMenu/BackupIcon.vue';
-import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
-import ChangePasswordIcon from '../icons/AccountMenu/ChangePasswordIcon.vue';
-import LogoutArrowIcon from '../icons/AccountMenu/LogoutArrowIcon.vue';
-import { useAccountStore, AccountType } from '../../stores/Account';
-import { backup, rename, changePassword, logout, onboard } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { backup, rename, changePassword, logout, onboard } from '../../hub';
+import { useAccountStore, AccountType } from '../../stores/Account';
+import AccountMenuItem from '../AccountMenuItem.vue';
+import BackupIcon from '../icons/AccountMenu/BackupIcon.vue';
+import ChangePasswordIcon from '../icons/AccountMenu/ChangePasswordIcon.vue';
+import LoginFileDownloadIcon from '../icons/AccountMenu/LoginFileDownloadIcon.vue';
+import LogoutArrowIcon from '../icons/AccountMenu/LogoutArrowIcon.vue';
+import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     setup() {
@@ -82,13 +85,15 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
 
         const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
-        const isNotLedger = computed(() =>
-            !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
+        const isNotLedger = computed(
+            () => !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER,
+        );
         const canExportBackup = isNotLedger;
         const canChangePassword = isNotLedger;
 
-        const otherAccountIds = computed(() => Object.keys(accountInfos.value)
-            .filter((id) => id !== activeAccountId.value));
+        const otherAccountIds = computed(() =>
+            Object.keys(accountInfos.value).filter((id) => id !== activeAccountId.value),
+        );
 
         function onAccountSelected(id: string) {
             selectAccount(id);
@@ -96,7 +101,9 @@ export default defineComponent({
             if (isMobile.value) {
                 router.replace({ name: RouteName.Root });
             } else {
-                router.push({ name: RouteName.Root }).catch(() => { /* ignore */ });
+                router.push({ name: RouteName.Root }).catch(() => {
+                    /* ignore */
+                });
             }
         }
 
@@ -133,7 +140,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../scss/mixins.scss' as *;
 
-@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .menu {
         --sidebar-width: 24rem;
         display: block;
@@ -254,7 +262,7 @@ export default defineComponent({
     ::v-deep .icon {
         opacity: 0.8;
 
-        transition: opacity var(--attr-duration) var(--nimiq-ease),
+        transition: opacity var(--attr-duration) var(--nimiq-ease);
     }
 }
 
@@ -273,7 +281,8 @@ export default defineComponent({
     align-self: flex-start;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .menu {
         ::v-deep .wrapper {
             .small-page {

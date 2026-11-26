@@ -8,17 +8,18 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="argument-grid">
-                <div class="usdc" :class="{ 'active': selection === 'usdc' }">
-                    {{ $t('Higher transparency and regulatory compliance.')}}
+                <div class="usdc" :class="{ active: selection === 'usdc' }">
+                    {{ $t('Higher transparency and regulatory compliance.') }}
                 </div>
-                <div class="usdt" :class="{ 'active': selection === 'usdt' }">
-                    {{ $t('Higher liquidity and global market adoption.')}}
+                <div class="usdt" :class="{ active: selection === 'usdt' }">
+                    {{ $t('Higher liquidity and global market adoption.') }}
                 </div>
             </div>
             <StablecoinSelector v-model="selection" />
             <a
                 href="https://www.moonpay.com/learn/cryptocurrency/what-is-the-difference-between-usdt-and-usdc"
-                target="_blank" rel="noopener"
+                target="_blank"
+                rel="noopener"
                 class="nq-link flex-row"
             >
                 {{ $t('Learn more') }}
@@ -34,15 +35,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { PageBody, PageHeader, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { defineComponent, ref } from 'vue';
 import { useRouter } from '@/router';
-import Modal from './Modal.vue';
-import { CryptoCurrency } from '../../lib/Constants';
-import StablecoinSelector from '../StablecoinSelector.vue';
-import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useAccountStore } from '../../stores/Account';
+import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import StablecoinSelector from '../StablecoinSelector.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'stablecoin-selection-modal',

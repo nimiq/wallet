@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 
 export type Peer = {
-    peerId: string,
-    multiAddress: string,
-    nodeType: string,
-    connected: boolean,
-}
+    peerId: string;
+    multiAddress: string;
+    nodeType: string;
+    connected: boolean;
+};
 
 const NETWORK_STALLED_BLOCK_GAP = 60e3; // 60 seconds
 

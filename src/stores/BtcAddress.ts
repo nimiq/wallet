@@ -3,54 +3,55 @@ import { useAccountStore } from './Account';
 import { Transaction } from './BtcTransactions';
 
 export type BtcAddressState = {
-    addressInfos: {[address: string]: BtcAddressInfo},
-    copiedExternalAddresses: BtcCopiedAddresses, // { address: timestamp }
-}
+    addressInfos: { [address: string]: BtcAddressInfo };
+    copiedExternalAddresses: BtcCopiedAddresses; // { address: timestamp }
+};
 
 export type BtcAddressSet = {
-    internal: BtcAddressInfo[],
-    external: BtcAddressInfo[],
-}
+    internal: BtcAddressInfo[];
+    external: BtcAddressInfo[];
+};
 
 export type UTXO = {
-    transactionHash: string,
-    index: number,
+    transactionHash: string;
+    index: number;
     witness: {
-        script: string,
-        value: number,
-    },
-}
+        script: string;
+        value: number;
+    };
+};
 
 export type BtcAddressInfo = {
-    address: string,
-    txoCount?: number, // Number of transaction outputs received, to track if the address has been reused
-    utxos: UTXO[],
-}
+    address: string;
+    txoCount?: number; // Number of transaction outputs received, to track if the address has been reused
+    utxos: UTXO[];
+};
 
-export type BtcCopiedAddresses = { [address: string]: number } // timestamps per address
+export type BtcCopiedAddresses = { [address: string]: number }; // timestamps per address
 
 export const useBtcAddressStore = defineStore('btcAddresses', {
-    state: () => ({
-        addressInfos: {},
-        copiedExternalAddresses: {},
-    } as BtcAddressState),
+    state: () =>
+        ({
+            addressInfos: {},
+            copiedExternalAddresses: {},
+        }) as BtcAddressState,
     getters: {
         addressSet: (state): BtcAddressSet => {
             const { activeAccountInfo } = useAccountStore();
             const accountInfo = activeAccountInfo;
             return accountInfo && accountInfo.btcAddresses
                 ? {
-                    internal: accountInfo.btcAddresses.internal
-                        .map((addr) => state.addressInfos[addr])
-                        .filter((addrInfo) => !!addrInfo),
-                    external: accountInfo.btcAddresses.external
-                        .map((addr) => state.addressInfos[addr])
-                        .filter((addrInfo) => !!addrInfo),
-                }
+                      internal: accountInfo.btcAddresses.internal
+                          .map((addr) => state.addressInfos[addr])
+                          .filter((addrInfo) => !!addrInfo),
+                      external: accountInfo.btcAddresses.external
+                          .map((addr) => state.addressInfos[addr])
+                          .filter((addrInfo) => !!addrInfo),
+                  }
                 : {
-                    internal: [],
-                    external: [],
-                };
+                      internal: [],
+                      external: [],
+                  };
         },
         activeInternalAddresses(): string[] {
             return (this.addressSet as BtcAddressSet).internal.map((btcAddressInfo) => btcAddressInfo.address);
@@ -59,7 +60,7 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
             return (this.addressSet as BtcAddressSet).external.map((btcAddressInfo) => btcAddressInfo.address);
         },
         activeAddresses(): string[] {
-            return (this.activeInternalAddresses as string[]).concat((this.activeExternalAddresses as string[]));
+            return (this.activeInternalAddresses as string[]).concat(this.activeExternalAddresses as string[]);
         },
         accountUtxos(): Array<UTXO & { address: string }> {
             const utxos = [] as Array<UTXO & { address: string }>;
@@ -84,7 +85,7 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
         accountCopiedExternalAddresses(state): Readonly<BtcCopiedAddresses> {
             const tmp = {} as BtcCopiedAddresses;
 
-            for (const address of (this.activeExternalAddresses as string[])) {
+            for (const address of this.activeExternalAddresses as string[]) {
                 if (state.copiedExternalAddresses[address]) {
                     tmp[address] = state.copiedExternalAddresses[address];
                 }
@@ -95,8 +96,10 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
         // activeExternalAddresses that were never copied
         availableExternalAddresses(): string[] {
             return this.addressSet.external
-                .filter(({ txoCount, address }: BtcAddressInfo) =>
-                    !txoCount && !this.accountCopiedExternalAddresses[address])
+                .filter(
+                    ({ txoCount, address }: BtcAddressInfo) =>
+                        !txoCount && !this.accountCopiedExternalAddresses[address],
+                )
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address);
         },
         nextChangeAddress(): string | undefined {
@@ -105,7 +108,7 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {
-            const newAddressInfos: {[address: string]: BtcAddressInfo} = {};
+            const newAddressInfos: { [address: string]: BtcAddressInfo } = {};
 
             for (const addressInfo of addressInfos) {
                 newAddressInfos[addressInfo.address] = addressInfo;
@@ -133,8 +136,9 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
                     if (!addressInfo) continue;
 
                     this.patchAddress(address, {
-                        utxos: addressInfo.utxos.filter((utxo) =>
-                            !spentInputs.has(`${utxo.transactionHash}:${utxo.index}`)),
+                        utxos: addressInfo.utxos.filter(
+                            (utxo) => !spentInputs.has(`${utxo.transactionHash}:${utxo.index}`),
+                        ),
                     });
                 }
             }
@@ -155,8 +159,13 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
                     }
 
                     // Skip this output if the UTXO is already known
-                    if (addressInfo.utxos.some((utxo) =>
-                        utxo.transactionHash === transactionHash && utxo.index === index)) continue;
+                    if (
+                        addressInfo.utxos.some(
+                            (utxo) => utxo.transactionHash === transactionHash && utxo.index === index,
+                        )
+                    ) {
+                        continue;
+                    }
 
                     const utxos = utxosByAddress.get(address) || [];
                     utxos.push({
@@ -214,8 +223,10 @@ export const useBtcAddressStore = defineStore('btcAddresses', {
         // remove a list of addresses from the copiedAddresses list and every other addresses copied before
         removeCopiedAddressesAndOlder(addresses: string[]) {
             const copiedExternalAddresses = { ...this.$state.copiedExternalAddresses };
-            const mostRecentTimestamp = addresses.reduce((acc, cur) =>
-                copiedExternalAddresses[cur] > acc ? copiedExternalAddresses[cur] : acc, 0);
+            const mostRecentTimestamp = addresses.reduce(
+                (acc, cur) => (copiedExternalAddresses[cur] > acc ? copiedExternalAddresses[cur] : acc),
+                0,
+            );
 
             if (mostRecentTimestamp === 0) return;
 

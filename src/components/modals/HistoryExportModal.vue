@@ -29,16 +29,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref } from 'vue';
 import { useI18n } from '@/lib/useI18n';
+import { CryptoCurrency } from '../../lib/Constants';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';
 import { useAccountStore } from '../../stores/Account';
-import Modal from './Modal.vue';
-import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
 import ButtonGroup from '../ButtonGroup.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'history-export-modal',
@@ -55,7 +55,10 @@ export default defineComponent({
             [ExportFormat.BLOCKPIT]: { label: 'Blockpit' },
         };
         const format = ref(ExportFormat.GENERIC);
-        const years = Array(new Date().getFullYear() + 1 - 2018).fill(0).map((_, i) => (2018 + i).toString()).reverse();
+        const years = Array(new Date().getFullYear() + 1 - 2018)
+            .fill(0)
+            .map((_, i) => (2018 + i).toString())
+            .reverse();
         const selectedYear = ref((new Date().getFullYear() - 1).toString());
 
         const isExporting = ref(false);

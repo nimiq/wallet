@@ -3,7 +3,7 @@
         <PageBody class="flex-column">
             <header class="flex-column">
                 <svg class="background" viewBox="0 0 421 166" fill="#F8F8F8" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M-84.5 -95.25H506L497.5 166C264.868 125.233 144.154 124.767 -84.5 166V-95.25Z"/>
+                    <path d="M-84.5 -95.25H506L497.5 166C264.868 125.233 144.154 124.767 -84.5 166V-95.25Z" />
                 </svg>
 
                 <img src="@/assets/exchanges/coinify-full.png" alt="Coinify" />
@@ -20,24 +20,23 @@
                 <div class="crypto-logos flex-row">
                     <span class="nq-icon nimiq-logo" title="NIM"></span>
                     <BitcoinIcon title="BTC" />
-                    <UsdcIcon v-if="$config.polygon.enabled && stablecoin === CryptoCurrency.USDC"
+                    <UsdcIcon
+                        v-if="$config.polygon.enabled && stablecoin === CryptoCurrency.USDC"
                         :title="stablecoin.toUpperCase()"
                     />
-                    <UsdtIcon v-if="$config.polygon.enabled && stablecoin === CryptoCurrency.USDT"
+                    <UsdtIcon
+                        v-if="$config.polygon.enabled && stablecoin === CryptoCurrency.USDT"
                         :title="stablecoin.toUpperCase()"
                     />
                 </div>
 
                 <p class="fees flex-row">
-                    {{ $t('{percentage} fees', { percentage: '1%'}) }}
+                    {{ $t('{percentage} fees', { percentage: '1%' }) }}
                     <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
-                        <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                        <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                     </svg>
                     <i18n path="min {amount}" tag="span">
-                        <FiatAmount slot="amount"
-                            :amount="4.99"
-                            :currency="FiatCurrency.USD"
-                        />
+                        <FiatAmount slot="amount" :amount="4.99" :currency="FiatCurrency.USD" />
                     </i18n>
                 </p>
                 <small>{{ $t('+ network fees') }}</small>
@@ -52,15 +51,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import { storeToRefs } from 'pinia';
+import { defineComponent } from 'vue';
+import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
-import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     setup() {
@@ -85,98 +84,99 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .page-body {
-        padding-top: 0;
-        padding-left: 0;
-        padding-right: 0;
+.page-body {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+header {
+    height: 21rem;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    svg.background {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border-top-left-radius: 1.25rem;
+        border-top-right-radius: 1.25rem;
     }
 
-    header {
-        height: 21rem;
-        justify-content: center;
-        align-items: center;
+    img {
         position: relative;
+        margin-top: -4rem;
+        width: 23.5rem;
+    }
+}
 
-        svg.background {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            border-top-left-radius: 1.25rem;
-            border-top-right-radius: 1.25rem;
-        }
+main {
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
 
-        img {
-            position: relative;
-            margin-top: -4rem;
-            width: 23.5rem;
-        }
+.nq-h1 {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.subline {
+    max-width: 34rem;
+    font-size: var(--body-size);
+    line-height: 1.4;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.crypto-logos {
+    border: 1px solid var(--text-10);
+    padding: 0.5rem;
+    border-radius: 9rem;
+    gap: 1rem;
+    margin: 3rem 0;
+
+    svg,
+    .nimiq-logo {
+        width: 3.25rem;
+        height: 3.25rem;
     }
 
-    main {
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
+    .bitcoin {
+        color: var(--bitcoin-orange);
     }
 
-    .nq-h1 {
-        margin: 0;
-        line-height: 1.2;
+    .usdc {
+        color: var(--usdc-blue);
     }
 
-    .subline {
-        max-width: 34rem;
-        font-size: var(--body-size);
-        line-height: 1.4;
-        text-align: center;
-        margin-top: 1rem;
-        margin-bottom: 0;
+    .usdt {
+        color: var(--usdt-green);
     }
+}
 
-    .crypto-logos {
-        border: 1px solid var(--text-10);
-        padding: 0.5rem;
-        border-radius: 9rem;
-        gap: 1rem;
-        margin: 3rem 0;
+.fees {
+    margin: 0;
+    align-items: center;
+    gap: 0.75rem;
+    line-height: 1;
+    font-size: var(--h2-size);
+    font-weight: 600;
 
-        svg, .nimiq-logo {
-            width: 3.25rem;
-            height: 3.25rem;
-        }
-
-        .bitcoin {
-            color: var(--bitcoin-orange);
-        }
-
-        .usdc {
-            color: var(--usdc-blue);
-        }
-
-        .usdt {
-            color: var(--usdt-green);
-        }
+    .dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        opacity: 0.5;
     }
+}
 
-    .fees {
-        margin: 0;
-        align-items: center;
-        gap: 0.75rem;
-        line-height: 1;
-        font-size: var(--h2-size);
-        font-weight: 600;
-
-        .dot {
-            width: 0.5rem;
-            height: 0.5rem;
-            opacity: 0.5;
-        }
-    }
-
-    small {
-        font-size: var(--small-size);
-        font-weight: 600;
-        opacity: 0.7;
-        line-height: 1;
-        margin-top: 0.75rem;
-    }
+small {
+    font-size: var(--small-size);
+    font-weight: 600;
+    opacity: 0.7;
+    line-height: 1;
+    margin-top: 0.75rem;
+}
 </style>

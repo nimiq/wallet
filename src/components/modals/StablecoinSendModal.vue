@@ -1,14 +1,15 @@
 <template>
-    <Modal :showOverlay="contactListOpened
-        || recipientDetailsOpened
-        || recipientFlaggedAddressWarningOpened
-        || statusScreenOpened"
+    <Modal
+        :showOverlay="
+            contactListOpened || recipientDetailsOpened || recipientFlaggedAddressWarningOpened || statusScreenOpened
+        "
         :closeButtonInverse="recipientFlaggedAddressWarningOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
         ref="modal$"
     >
-        <PolygonWarningPage v-if="page === Pages.WARNING"
+        <PolygonWarningPage
+            v-if="page === Pages.WARNING"
             type="sending"
             :canGoBack="!!$route.params.canUserGoBack"
             :key="Pages.WARNING"
@@ -36,13 +37,15 @@
                         :allowNimAddresses="false"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
-                        ref="addressInput$"/>
-                    <span class="notice"
+                        ref="addressInput$"
+                    />
+                    <span
+                        class="notice"
                         :class="{
-                            'resolving': isResolvingUnstoppableDomain,
+                            resolving: isResolvingUnstoppableDomain,
                             'nq-orange': resolverError,
                         }"
-                        :style="{'opacity': isResolvingUnstoppableDomain || resolverError ? 1 : 0}"
+                        :style="{ opacity: isResolvingUnstoppableDomain || resolverError ? 1 : 0 }"
                     >
                         <template v-if="isResolvingUnstoppableDomain">
                             {{ $t('Resolving Unstoppable Domain...') }}
@@ -50,41 +53,45 @@
                         <template v-else-if="resolverError">
                             {{ resolverError }}
                         </template>
-                        <template v-else>
-                            &nbsp;
-                        </template>
+                        <template v-else> &nbsp; </template>
                     </span>
                 </section>
             </PageBody>
-            <PolygonWarningFooter type="sending" level="info"/>
+            <PolygonWarningFooter type="sending" level="info" />
             <button class="reset scan-qr-button" @click="$router.push({ name: RouteName.Scan })">
-                <ScanQrCodeIcon/>
+                <ScanQrCodeIcon />
             </button>
         </div>
 
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
             <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
             <PageBody class="page__contact-list">
-                <UsdcContactBook @contact-selected="onContactSelected"/>
+                <UsdcContactBook @contact-selected="onContactSelected" />
             </PageBody>
         </div>
 
         <div v-if="recipientDetailsOpened && recipientInfo" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay flex-column">
-                <Avatar :label="recipientInfo.label"/>
+                <Avatar :label="recipientInfo.label" />
                 <LabelInput
                     v-if="recipientInfo.type === RecipientType.CONTACT"
                     v-model="recipientInfo.label"
                     :placeholder="$t('Name this contact...')"
-                    ref="labelInput$"/>
+                    ref="labelInput$"
+                />
                 <label v-else>{{ recipientInfo.label }}</label>
-                <AddressDisplay :address="recipientInfo.address" format="ethereum" copyable/>
-                <LongPressButton @long-press="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT">
+                <AddressDisplay :address="recipientInfo.address" format="ethereum" copyable />
+                <LongPressButton
+                    @long-press="
+                        recipientDetailsOpened = false;
+                        page = Pages.AMOUNT_INPUT;
+                    "
+                >
                     {{ $t('Save and proceed') }}
                     <template #subline>{{ $t('Long press to confirm') }}</template>
                 </LongPressButton>
             </PageBody>
-            <PolygonWarningFooter type="sending" level="warning"/>
+            <PolygonWarningFooter type="sending" level="warning" />
         </div>
 
         <transition name="fade" slot="overlay">
@@ -93,24 +100,26 @@
                 :info="recipientInfo.flaggedInfo"
                 :currency="stablecoin"
                 @abort="reset"
-                @continue="page = Pages.AMOUNT_INPUT; closeRecipientDetails();"
+                @continue="
+                    page = Pages.AMOUNT_INPUT;
+                    closeRecipientDetails();
+                "
                 class="page page__flagged-address-warning"
             />
         </transition>
 
         <div
-            v-if="page === Pages.AMOUNT_INPUT && recipientInfo" class="page flex-column"
-            :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
+            v-if="page === Pages.AMOUNT_INPUT && recipientInfo"
+            class="page flex-column"
+            :key="Pages.AMOUNT_INPUT"
+            @click="amountMenuOpened = false"
         >
-            <PageHeader
-                :backArrow="!!$route.params.canUserGoBack || page !== initialPage"
-                @back="back"
-            >{{ $t('Set Amount') }}</PageHeader>
+            <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">{{
+                $t('Set Amount')
+            }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="flex-row sender-recipient">
-                    <UsdcAddressInfo
-                        :address="addressInfo.address"
-                    />
+                    <UsdcAddressInfo :address="addressInfo.address" />
                     <div class="separator-wrapper">
                         <div class="separator"></div>
                     </div>
@@ -124,9 +133,11 @@
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
                     <span v-if="isDeniedRecipient" class="nq-notice warning" key="denied-recipient">
-                        {{ $t('This is a contract address. {ticker} sent to it would be lost.', {
-                            ticker: stablecoin.toUpperCase(),
-                        }) }}
+                        {{
+                            $t('This is a contract address. {ticker} sent to it would be lost.', {
+                                ticker: stablecoin.toUpperCase(),
+                            })
+                        }}
                     </span>
                     <span v-else class="nq-notice warning" key="invalid-recipient">
                         {{ $t('The sender and recipient cannot be identical.') }}
@@ -136,12 +147,19 @@
                 <section
                     v-if="isValidRecipient"
                     class="amount-section"
-                    :class="{'insufficient-balance': maxSendableAmount < amount}"
+                    :class="{ 'insufficient-balance': maxSendableAmount < amount }"
                 >
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== stablecoin}">
-                        <AmountInput v-if="activeCurrency === stablecoin" v-model="amount"
-                            :decimals="6" :disabled="gotRequestUriAmount" ref="amountInput$">
-                            <AmountMenu slot="suffix" class="ticker"
+                    <div class="flex-row amount-row" :class="{ estimate: activeCurrency !== stablecoin }">
+                        <AmountInput
+                            v-if="activeCurrency === stablecoin"
+                            v-model="amount"
+                            :decimals="6"
+                            :disabled="gotRequestUriAmount"
+                            ref="amountInput$"
+                        >
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :currency="stablecoin"
                                 :activeCurrency="activeCurrency"
@@ -150,13 +168,20 @@
                                 :feeOption="false"
                                 :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @currency="(currency) => (activeCurrency = currency)"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount"
-                            :decimals="fiatCurrencyInfo.decimals" :disabled="gotRequestUriAmount">
+                        <AmountInput
+                            v-else
+                            v-model="fiatAmount"
+                            :decimals="fiatCurrencyInfo.decimals"
+                            :disabled="gotRequestUriAmount"
+                        >
                             <span slot="prefix" class="tilde">~</span>
-                            <AmountMenu slot="suffix" class="ticker"
+                            <AmountMenu
+                                slot="suffix"
+                                class="ticker"
                                 :open="amountMenuOpened"
                                 :currency="stablecoin"
                                 :activeCurrency="activeCurrency"
@@ -165,16 +190,16 @@
                                 :feeOption="false"
                                 :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
-                                @currency="(currency) => activeCurrency = currency"
-                                @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
+                                @currency="(currency) => (activeCurrency = currency)"
+                                @click.native.stop="amountMenuOpened = !amountMenuOpened"
+                            />
                         </AmountInput>
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === stablecoin" key="fiat-amount">
-                            <FiatConvertedAmount :data-amount="amount" :amount="amount" :currency="stablecoin"/>
-                            <svg class="dot" viewBox="0 0 3 3"
-                                xmlns="http://www.w3.org/2000/svg">
+                            <FiatConvertedAmount :data-amount="amount" :amount="amount" :currency="stablecoin" />
+                            <svg class="dot" viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg">
                                 <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                             </svg>
                             <template v-if="feeLoading">
@@ -183,24 +208,32 @@
                             <template v-else>
                                 <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
                                     <template #amount>
-                                        <FiatAmount :amount="fiatSmUnit"
-                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                        <FiatAmount
+                                            :amount="fiatSmUnit"
+                                            :hideDecimals="false"
+                                            :currency="fiatCurrency"
+                                        />
                                     </template>
                                 </i18n>
                                 <i18n v-else tag="span" path="{amount} fee" class="fee">
                                     <template #amount>
-                                        <FiatAmount :amount="roundedUpFiatFee"
-                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                        <FiatAmount
+                                            :amount="roundedUpFiatFee"
+                                            :hideDecimals="false"
+                                            :currency="fiatCurrency"
+                                        />
                                     </template>
                                 </i18n>
                             </template>
                         </span>
                         <div v-else key="usdc-amount" class="usdc-amount">
                             <span>
-                                {{ $t('You will send {amount} {ticker}', {
-                                    amount: amount / 1e6,
-                                    ticker: stablecoin.toUpperCase(),
-                                }) }}
+                                {{
+                                    $t('You will send {amount} {ticker}', {
+                                        amount: amount / 1e6,
+                                        ticker: stablecoin.toUpperCase(),
+                                    })
+                                }}
                             </span>
                             <div>
                                 <template v-if="feeLoading">
@@ -209,31 +242,44 @@
                                 <template v-else>
                                     <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
                                         <template #amount>
-                                            <FiatAmount :amount="fiatSmUnit"
-                                                :hideDecimals="false" :currency="fiatCurrency"/>
+                                            <FiatAmount
+                                                :amount="fiatSmUnit"
+                                                :hideDecimals="false"
+                                                :currency="fiatCurrency"
+                                            />
                                         </template>
                                     </i18n>
                                     <i18n v-else tag="span" path="{amount} fee" class="fee">
                                         <template #amount>
-                                            <FiatAmount :amount="roundedUpFiatFee"
-                                                :hideDecimals="false" :currency="fiatCurrency"/>
+                                            <FiatAmount
+                                                :amount="roundedUpFiatFee"
+                                                :hideDecimals="false"
+                                                :currency="fiatCurrency"
+                                            />
                                         </template>
                                     </i18n>
                                 </template>
                             </div>
                         </div>
                     </span>
-                    <span v-else-if="exceedsTransferLimit" class="insufficient-balance-warning nq-orange"
-                        key="transfer-limit">
-                        {{ $t('During the test phase, at most {amount} {ticker} can be sent per transfer.', {
-                            amount: maxSendableAmount / 1e6,
-                            ticker: stablecoin.toUpperCase(),
-                        }) }}
-                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
-                            {{ $t('Send {amount} {ticker}', {
+                    <span
+                        v-else-if="exceedsTransferLimit"
+                        class="insufficient-balance-warning nq-orange"
+                        key="transfer-limit"
+                    >
+                        {{
+                            $t('During the test phase, at most {amount} {ticker} can be sent per transfer.', {
                                 amount: maxSendableAmount / 1e6,
                                 ticker: stablecoin.toUpperCase(),
-                            }) }}
+                            })
+                        }}
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
+                            {{
+                                $t('Send {amount} {ticker}', {
+                                    amount: maxSendableAmount / 1e6,
+                                    ticker: stablecoin.toUpperCase(),
+                                })
+                            }}
                         </a>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -244,12 +290,9 @@
                     </span>
                 </section>
             </PageBody>
-            <SendModalFooter
-                :assets="[stablecoin]"
-                :disabled="!canSend"
-                :error="feeError"
-                @click="sign"
-            ><template #cta>{{ $t('Send {currency}', { currency: stablecoin }) }}</template></SendModalFooter>
+            <SendModalFooter :assets="[stablecoin]" :disabled="!canSend" :error="feeError" @click="sign"
+                ><template #cta>{{ $t('Send {currency}', { currency: stablecoin }) }}</template></SendModalFooter
+            >
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -268,6 +311,7 @@
 </template>
 
 <script lang="ts">
+import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { parseRequestLink, Currency, CurrencyInfo, EthereumChain } from '@nimiq/utils';
 import {
     AddressDisplay,
@@ -280,50 +324,49 @@ import {
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useRouter, RouteName } from '@/router';
-import { useI18n } from '@/lib/useI18n';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, watchEffect } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import type { TransferRequest } from '@nimiq/gasless-sdk/core';
+import { useI18n } from '@/lib/useI18n';
+import { useRouter, RouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
-import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
-import { sendPolygonTransaction } from '../../hub';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { loadEthersLibrary } from '../../ethers';
+import { sendPolygonTransaction } from '../../hub';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
+import { reportToSentry } from '../../lib/Sentry';
+import {
+    isValidDomain as isValidUnstoppableDomain,
+    resolve as resolveUnstoppableDomain,
+} from '../../lib/UnstoppableDomains';
 import {
     quoteGaslessFee,
     isDeniedGaslessRecipient,
     GaslessFeeQuote,
     GaslessTransferError,
 } from '../../lib/usdc/Gasless';
-import {
-    isValidDomain as isValidUnstoppableDomain,
-    resolve as resolveUnstoppableDomain,
-} from '../../lib/UnstoppableDomains';
 import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useFiatStore } from '../../stores/Fiat';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
+import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
-import PolygonWarningPage from '../PolygonWarningPage.vue';
-import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import PolygonWarningFooter from '../PolygonWarningFooter.vue';
+import PolygonWarningPage from '../PolygonWarningPage.vue';
 import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import UsdcAddressInfo from '../UsdcAddressInfo.vue';
 import UsdcContactBook from '../UsdcContactBook.vue';
 import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useUsdtContactsStore } from '../../stores/UsdtContacts';
-import { reportToSentry } from '../../lib/Sentry';
 
 export enum RecipientType {
     CONTACT,
@@ -353,24 +396,24 @@ export default defineComponent({
         const { addressInfo } = storeToRefs(usePolygonAddressStore());
         const { $state: addresses$ } = usePolygonAddressStore();
         const { stablecoin } = storeToRefs(useAccountSettingsStore());
-        const { $state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcTransactionsStore()
-            : useUsdtTransactionsStore();
-        const { contactsArray: contacts, getLabel } = storeToRefs(stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore());
-        const { setContact } = stablecoin.value === CryptoCurrency.USDC
-            ? useUsdcContactsStore()
-            : useUsdtContactsStore();
+        const { $state: transactions$ } =
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcTransactionsStore() : useUsdtTransactionsStore();
+        const { contactsArray: contacts, getLabel } = storeToRefs(
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore(),
+        );
+        const { setContact } =
+            stablecoin.value === CryptoCurrency.USDC ? useUsdcContactsStore() : useUsdtContactsStore();
         const { $state: network$ } = usePolygonNetworkStore();
         const { config } = useConfig();
 
         // These are non-reactive because we're only interested in whether the user had ever sent USDC/T when the modal
         // was initially opened.
-        const normalizedUserAddresses = Object.values(addresses$.addressInfos)
-            .map(({ address }) => address.toLowerCase());
-        const hasEverSent = Object.values(transactions$.transactions)
-            .some(({ sender }) => normalizedUserAddresses.includes(sender.toLowerCase()));
+        const normalizedUserAddresses = Object.values(addresses$.addressInfos).map(({ address }) =>
+            address.toLowerCase(),
+        );
+        const hasEverSent = Object.values(transactions$.transactions).some(({ sender }) =>
+            normalizedUserAddresses.includes(sender.toLowerCase()),
+        );
         const page = ref(hasEverSent ? Pages.RECIPIENT_INPUT : Pages.WARNING);
 
         function reset() {
@@ -392,10 +435,10 @@ export default defineComponent({
         }
 
         const recipientInfo = ref<{
-            address: string,
-            label: string,
-            type: RecipientType,
-            flaggedInfo: FlaggedAddressInfo | null,
+            address: string;
+            label: string;
+            type: RecipientType;
+            flaggedInfo: FlaggedAddressInfo | null;
         } | null>(null);
         const recipientDetailsOpened = ref(false);
         const recipientFlaggedAddressWarningOpened = ref(false);
@@ -422,7 +465,7 @@ export default defineComponent({
         const hasOwnAddresses = computed(() => Object.keys(addresses$.addressInfos).length - 1 > 0);
 
         const contactListOpened = ref(false);
-        function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
+        function onContactSelected(contact: { address: string; label: string }, type = RecipientType.CONTACT) {
             updateRecipientInfo(contact.address, contact.label, type, null);
             contactListOpened.value = false;
             page.value = Pages.AMOUNT_INPUT;
@@ -431,34 +474,40 @@ export default defineComponent({
         const addressInputValue = ref(''); // Used for resetting the address input
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
-        watch(addressInputValue, async (address) => {
-            resolverError.value = '';
+        watch(
+            addressInputValue,
+            async (address) => {
+                resolverError.value = '';
 
-            // Detect unstoppable domains
-            if (isValidUnstoppableDomain(address)) {
-                isResolvingUnstoppableDomain.value = true;
-                const domain = address;
-                const ticker = stablecoin.value!.toUpperCase();
-                try {
-                    const [resolvedAddress, ethers] = await Promise.all([
-                        resolveUnstoppableDomain(domain, ticker as 'USDC' | 'USDT'),
-                        loadEthersLibrary(),
-                    ]);
-                    if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
-                        const normalizedAddress = ethers.utils.getAddress(resolvedAddress); // normalize with checksum
-                        onAddressEntered(normalizedAddress, domain);
-                    } else {
-                        resolverError.value = $t('Domain does not resolve to a valid address') as string;
+                // Detect unstoppable domains
+                if (isValidUnstoppableDomain(address)) {
+                    isResolvingUnstoppableDomain.value = true;
+                    const domain = address;
+                    const ticker = stablecoin.value!.toUpperCase();
+                    try {
+                        const [resolvedAddress, ethers] = await Promise.all([
+                            resolveUnstoppableDomain(domain, ticker as 'USDC' | 'USDT'),
+                            loadEthersLibrary(),
+                        ]);
+                        if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
+                            const normalizedAddress = ethers.utils.getAddress(resolvedAddress); // normalize with checksum
+                            onAddressEntered(normalizedAddress, domain);
+                        } else {
+                            resolverError.value = $t('Domain does not resolve to a valid address') as string;
+                        }
+                    } catch (error) {
+                        console.debug(error); // eslint-disable-line no-console
+                        resolverError.value = (error instanceof Error ? error.message : String(error)).replace(
+                            `crypto.${ticker}.address record`,
+                            `${ticker} address`,
+                        );
+                    } finally {
+                        isResolvingUnstoppableDomain.value = false;
                     }
-                } catch (error) {
-                    console.debug(error); // eslint-disable-line no-console
-                    resolverError.value = (error instanceof Error ? error.message : String(error))
-                        .replace(`crypto.${ticker}.address record`, `${ticker} address`);
-                } finally {
-                    isResolvingUnstoppableDomain.value = false;
                 }
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
 
         function onAddressEntered(address: string, fallbackLabel = '') {
             // In StablecoinSendModal we allow double invocation of onAddressEntered (different to SendModal), as we
@@ -470,9 +519,9 @@ export default defineComponent({
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
-            const ownAccountLabel = Object.values(useAccountStore().accountInfos).find(
-                (ai) => ai.polygonAddresses?.includes(address),
-            )?.label || '';
+            const ownAccountLabel =
+                Object.values(useAccountStore().accountInfos).find((ai) => ai.polygonAddresses?.includes(address))
+                    ?.label || '';
 
             if (ownedAddressInfo) {
                 label = ownAccountLabel;
@@ -504,10 +553,12 @@ export default defineComponent({
         }
 
         // The Keyguard refuses to sign transfers to these addresses
-        const isDeniedRecipient = computed(() => !!recipientInfo.value
-            && isDeniedGaslessRecipient(recipientInfo.value.address));
-        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address
-            && !isDeniedRecipient.value);
+        const isDeniedRecipient = computed(
+            () => !!recipientInfo.value && isDeniedGaslessRecipient(recipientInfo.value.address),
+        );
+        const isValidRecipient = computed(
+            () => recipientInfo.value?.address !== addressInfo.value?.address && !isDeniedRecipient.value,
+        );
         useFlaggedAddressCheck(recipientInfo, RecipientType, 'evm');
 
         watch(
@@ -532,8 +583,10 @@ export default defineComponent({
         }
 
         function closeRecipientDetails() {
-            if (page.value === Pages.RECIPIENT_INPUT
-                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)) {
+            if (
+                page.value === Pages.RECIPIENT_INPUT
+                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)
+            ) {
                 resetRecipient();
             }
             recipientDetailsOpened.value = false;
@@ -553,17 +606,24 @@ export default defineComponent({
 
         // Use 2.00 USDC/T as safe fallback fee
         const maxSendableBalance = computed(() => {
-            const balance = stablecoin.value === CryptoCurrency.USDC
-                ? addressInfo.value!.balanceUsdc
-                : addressInfo.value!.balanceUsdtBridged;
+            const balance =
+                stablecoin.value === CryptoCurrency.USDC
+                    ? addressInfo.value!.balanceUsdc
+                    : addressInfo.value!.balanceUsdtBridged;
             return Math.max((balance || 0) - (fee.value || 2e6), 0);
         });
         const { maxTransferAmount } = config.polygon.gasless;
-        const maxSendableAmount = computed(() => (maxTransferAmount !== null
-            ? Math.min(maxSendableBalance.value, maxTransferAmount)
-            : maxSendableBalance.value));
-        const exceedsTransferLimit = computed(() => maxTransferAmount !== null && amount.value > maxTransferAmount
-            && amount.value <= maxSendableBalance.value);
+        const maxSendableAmount = computed(() =>
+            maxTransferAmount !== null
+                ? Math.min(maxSendableBalance.value, maxTransferAmount)
+                : maxSendableBalance.value,
+        );
+        const exceedsTransferLimit = computed(
+            () =>
+                maxTransferAmount !== null
+                && amount.value > maxTransferAmount
+                && amount.value <= maxSendableBalance.value,
+        );
 
         const amountMenuOpened = ref(false);
 
@@ -583,35 +643,42 @@ export default defineComponent({
 
         const fiatToCoinDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e6);
 
-        watch(activeCurrency, (currency) => {
-            if (currency === CryptoCurrency.USDC || currency === CryptoCurrency.USDT) {
-                fiatAmount.value = 0;
-                return;
-            }
+        watch(
+            activeCurrency,
+            (currency) => {
+                if (currency === CryptoCurrency.USDC || currency === CryptoCurrency.USDT) {
+                    fiatAmount.value = 0;
+                    return;
+                }
 
-            // Fiat store already has all exchange rates for all supported fiat currencies
-            // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value
-                * fiat$.exchangeRates[stablecoin.value!][currency]!
-                * fiatToCoinDecimalRatio.value;
-        }, { immediate: true });
+                // Fiat store already has all exchange rates for all supported fiat currencies
+                // TODO: What to do when exchange rates are not yet populated?
+                fiatAmount.value =
+                    amount.value * fiat$.exchangeRates[stablecoin.value!][currency]! * fiatToCoinDecimalRatio.value;
+            },
+            { immediate: true },
+        );
 
         watchEffect(() => {
             if (
                 activeCurrency.value === CryptoCurrency.USDC
                 || activeCurrency.value === CryptoCurrency.USDT
                 || gotRequestUriAmount.value
-            ) return;
+            ) {
+                return;
+            }
             amount.value = Math.floor(
                 fiatAmount.value
-                / exchangeRates.value[stablecoin.value!][activeCurrency.value]!
-                / fiatToCoinDecimalRatio.value);
+                    / exchangeRates.value[stablecoin.value!][activeCurrency.value]!
+                    / fiatToCoinDecimalRatio.value,
+            );
         });
 
         async function sendMax() {
             if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.USDC && activeCurrency.value !== CryptoCurrency.USDT) {
-                fiatAmount.value = maxSendableAmount.value
+                fiatAmount.value =
+                    maxSendableAmount.value
                     * fiat$.exchangeRates[stablecoin.value!][activeCurrency.value]!
                     * fiatToCoinDecimalRatio.value;
             }
@@ -621,13 +688,14 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
-        const canSend = computed(() =>
-            network$.consensus === 'established'
-            && isValidRecipient.value
-            && !!amount.value
-            && amount.value <= maxSendableAmount.value
-            && !feeLoading.value
-            && !feeError.value,
+        const canSend = computed(
+            () =>
+                network$.consensus === 'established'
+                && isValidRecipient.value
+                && !!amount.value
+                && amount.value <= maxSendableAmount.value
+                && !feeLoading.value
+                && !feeError.value,
         );
 
         const gotRequestUriRecipient = ref(false);
@@ -651,13 +719,15 @@ export default defineComponent({
             // loading ethers, and event.preventDefault() needs to be called synchronously below. Instead, the
             // normalization and validation happen afterward.
             const parsedRequestLink = parseRequestLink(uri, {
-                currencies: [
-                    stablecoin.value === CryptoCurrency.USDC ? Currency.USDC : Currency.USDT,
-                    Currency.MATIC,
-                ],
+                currencies: [stablecoin.value === CryptoCurrency.USDC ? Currency.USDC : Currency.USDT, Currency.MATIC],
             });
-            if (!parsedRequestLink || !parsedRequestLink.chainId
-                || !allowedChains.includes(parsedRequestLink.chainId)) return;
+            if (
+                !parsedRequestLink
+                || !parsedRequestLink.chainId
+                || !allowedChains.includes(parsedRequestLink.chainId)
+            ) {
+                return;
+            }
             if (event) {
                 // Prevent paste event being applied to the recipient label field, that now became focussed.
                 event.preventDefault();
@@ -709,29 +779,37 @@ export default defineComponent({
             elementRef.value.focus();
         }
 
-        watch(page, (currentPage) => {
-            if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
-            } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInput$);
-            }
-        }, { immediate: true });
-
-        watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
-            if (warningOpened) {
-                if (document.activeElement && 'blur' in document.activeElement) {
-                    (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+        watch(
+            page,
+            (currentPage) => {
+                if (currentPage === Pages.RECIPIENT_INPUT) {
+                    focus(addressInput$);
+                } else if (currentPage === Pages.AMOUNT_INPUT) {
+                    focus(amountInput$);
                 }
-                return;
-            }
-            if (detailsOpened) {
-                focus(labelInput$);
-            } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
-            } else {
-                focus(amountInput$);
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
+
+        watch(
+            [recipientDetailsOpened, recipientFlaggedAddressWarningOpened],
+            ([detailsOpened, warningOpened]) => {
+                if (warningOpened) {
+                    if (document.activeElement && 'blur' in document.activeElement) {
+                        (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+                    }
+                    return;
+                }
+                if (detailsOpened) {
+                    focus(labelInput$);
+                } else if (page.value === Pages.RECIPIENT_INPUT) {
+                    focus(addressInput$);
+                } else {
+                    focus(amountInput$);
+                }
+            },
+            { immediate: true },
+        );
 
         /**
          * Status Screen
@@ -752,16 +830,18 @@ export default defineComponent({
             statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
-            const token = stablecoin.value === CryptoCurrency.USDC
-                ? config.polygon.usdc.tokenContract
-                : config.polygon.usdt_bridged.tokenContract;
+            const token =
+                stablecoin.value === CryptoCurrency.USDC
+                    ? config.polygon.usdc.tokenContract
+                    : config.polygon.usdt_bridged.tokenContract;
             const recipient = recipientInfo.value!.address;
             // A correction must pay the same token to the same recipient. Otherwise, it is a new payment.
-            const corrects = failedPayment.value
+            const corrects =
+                failedPayment.value
                 && failedPayment.value.token.toLowerCase() === token.toLowerCase()
                 && failedPayment.value.to.toLowerCase() === recipient.toLowerCase()
-                ? failedPayment.value
-                : undefined;
+                    ? failedPayment.value
+                    : undefined;
 
             try {
                 const tx = await sendPolygonTransaction(
@@ -790,15 +870,15 @@ export default defineComponent({
                 // Show success screen
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientInfo.value!.label
-                    ? $t('Sent {coin} {ticker} to {name}', {
-                        coin: amount.value / 1e6,
-                        name: recipientInfo.value!.label,
-                        ticker: stablecoin.value!.toUpperCase(),
-                    }) as string
-                    : $t('Sent {coin} {ticker}', {
-                        coin: amount.value / 1e6,
-                        ticker: stablecoin.value!.toUpperCase(),
-                    }) as string;
+                    ? ($t('Sent {coin} {ticker} to {name}', {
+                          coin: amount.value / 1e6,
+                          name: recipientInfo.value!.label,
+                          ticker: stablecoin.value!.toUpperCase(),
+                      }) as string)
+                    : ($t('Sent {coin} {ticker}', {
+                          coin: amount.value / 1e6,
+                          ticker: stablecoin.value!.toUpperCase(),
+                      }) as string);
 
                 // Close modal
                 successCloseTimeout = window.setTimeout(() => {
@@ -818,8 +898,9 @@ export default defineComponent({
                 statusMessage.value = error.message.split(' req={')[0]; // eslint-disable-line prefer-destructuring
                 if (failedPayment.value) {
                     // The Keyguard's confirm page does not tell, as it does not know about the failed attempt
-                    statusMessage.value += ` ${$t('A retry replaces the failed attempt: at most one of them can '
-                        + 'go through.')}`;
+                    statusMessage.value += ` ${$t(
+                        'A retry replaces the failed attempt: at most one of them can go through.',
+                    )}`;
                 }
             }
         }
@@ -917,14 +998,18 @@ export default defineComponent({
         }
 
         // USDC/T fee does not depend on the amount, therefore it is not reactive to amount
-        watch(statusScreenOpened, (statusScreenOpen) => {
-            if (!statusScreenOpen) {
-                startFeeUpdates();
-            } else if (!feeError.value) {
-                // Avoid changing the fees while signing.
-                stopFeeUpdates();
-            }
-        }, { immediate: true });
+        watch(
+            statusScreenOpened,
+            (statusScreenOpen) => {
+                if (!statusScreenOpen) {
+                    startFeeUpdates();
+                } else if (!feeError.value) {
+                    // Avoid changing the fees while signing.
+                    stopFeeUpdates();
+                }
+            },
+            { immediate: true },
+        );
 
         onBeforeUnmount(() => {
             stopFeeUpdates();
@@ -941,8 +1026,7 @@ export default defineComponent({
             return (fee.value / 1e6) * exchangeRate;
         });
 
-        const roundedUpFiatFee = computed(() =>
-            Math.ceil(feeInFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
+        const roundedUpFiatFee = computed(() => Math.ceil(feeInFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
 
         const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value <= fiatSmUnit.value);
 
@@ -1115,11 +1199,13 @@ export default defineComponent({
         .notice {
             margin-top: -3.5rem;
             font-size: var(--small-size);
-            transition: opacity .3s var(--nimiq-ease), margin-top .3s var(--nimiq-ease);
+            transition:
+                opacity 0.3s var(--nimiq-ease),
+                margin-top 0.3s var(--nimiq-ease);
 
             &.resolving {
                 font-weight: 600;
-                opacity: .5 !important;
+                opacity: 0.5 !important;
             }
         }
 
@@ -1176,7 +1262,7 @@ export default defineComponent({
             }
 
             ::v-deep .chunk {
-                margin: .75rem 0;
+                margin: 0.75rem 0;
             }
         }
 
@@ -1216,7 +1302,7 @@ export default defineComponent({
             position: relative;
             flex-grow: 1;
             overflow: hidden;
-            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
             .separator {
                 height: 100%;
@@ -1229,8 +1315,12 @@ export default defineComponent({
                 animation: separatorSliding 2.2s infinite;
 
                 @keyframes separatorSliding {
-                    0% { transform: translateX(0) }
-                    100% { transform: translateX(300%) }
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(300%);
+                    }
                 }
             }
         }
@@ -1290,8 +1380,8 @@ export default defineComponent({
                 margin-left: -0.2em;
             }
 
-            [data-amount]:not([data-amount="0"])::before {
-                content: "~";
+            [data-amount]:not([data-amount='0'])::before {
+                content: '~';
             }
 
             & ::v-deep .circle-spinner {
@@ -1352,8 +1442,9 @@ export default defineComponent({
     .send-modal-footer {
         padding: 0 3rem 2rem;
 
-        @media (max-width: 450px) { // Breakpoint of .page-body padding
-            padding: .75rem 1rem 2rem;
+        @media (max-width: 450px) {
+            // Breakpoint of .page-body padding
+            padding: 0.75rem 1rem 2rem;
         }
 
         ::v-deep .footer-notice {
@@ -1368,7 +1459,8 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full Mobile Breakpoint
         .status-screen {
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;

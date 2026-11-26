@@ -1,41 +1,54 @@
+import { Cookie } from '@nimiq/utils';
+import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { I18nMixin as VueComponentsI18n } from '@nimiq/vue-components';
-import { Cookie } from '@nimiq/utils';
 
 Vue.use(VueI18n);
 
-export const Languages = [{
-    code: 'en',
-    name: 'English',
-}, {
-    code: 'es',
-    name: 'Español',
-}, {
-    code: 'zh',
-    name: '简体中文',
-}, {
-    code: 'de',
-    name: 'Deutsch',
-}, {
-    code: 'fr',
-    name: 'Français',
-}, {
-    code: 'pt',
-    name: 'Português',
-}, {
-    code: 'ru',
-    name: 'Русский',
-}, {
-    code: 'uk',
-    name: 'Українська',
-}, {
-    code: 'nl',
-    name: 'Nederlands',
-// }, {
-//     code: 'tr',
-//     name: 'Türkçe',
-}];
+export const Languages = [
+    {
+        code: 'en',
+        name: 'English',
+    },
+    {
+        code: 'es',
+        name: 'Español',
+    },
+    {
+        code: 'zh',
+        name: '简体中文',
+    },
+    {
+        code: 'de',
+        name: 'Deutsch',
+    },
+    {
+        code: 'fr',
+        name: 'Français',
+    },
+    {
+        code: 'pt',
+        name: 'Português',
+    },
+    {
+        code: 'ru',
+        name: 'Русский',
+    },
+    {
+        code: 'uk',
+        name: 'Українська',
+    },
+    {
+        code: 'nl',
+        name: 'Nederlands',
+        // }, {
+        //     code: 'tr',
+        //     name: 'Türkçe',
+    },
+];
+
+// Language files are loaded lazily, each as a separate chunk.
+const languageFiles = import.meta.glob<{ default: VueI18n.LocaleMessageObject }>('./*.po');
 
 const DEFAULT_LANGUAGE = 'en';
 const SUPPORTED_LANGUAGES = Languages.map((lang) => lang.code);
@@ -47,15 +60,17 @@ export const i18n = new VueI18n({
     silentTranslationWarn: true, // disable the "no translation found" warning
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
     i18n.missing = () => ''; // trick to not show numbers instead of string before language is loaded
 }
 
 function setI18nLanguage(lang: string): string {
     const { hostname } = window.location;
-    const cookieDomain = hostname.includes('nimiq-testnet.com') ? 'nimiq-testnet.com'
-        : hostname.includes('nimiq.com') ? 'nimiq.com'
-            : undefined;
+    const cookieDomain = hostname.includes('nimiq-testnet.com')
+        ? 'nimiq-testnet.com'
+        : hostname.includes('nimiq.com')
+          ? 'nimiq.com'
+          : undefined;
 
     Cookie.setCookie('lang', lang, { domain: cookieDomain, samesite: 'lax' });
     i18n.locale = lang;
@@ -76,7 +91,7 @@ export async function loadLanguage(lang: string): Promise<string> {
     }
 
     // If the language hasn't been loaded yet
-    const messages = await import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`);
+    const messages = await languageFiles[`./${lang}.po`]();
     i18n.setLocaleMessage(lang, messages.default);
     loadedLanguage.push(lang);
     return setI18nLanguage(lang);

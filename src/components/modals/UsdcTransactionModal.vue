@@ -1,7 +1,7 @@
 <template>
     <Modal class="transaction-modal">
         <PageHeader
-            :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}"
+            :class="{ 'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash) }"
         >
             <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
 
@@ -34,7 +34,7 @@
             </i18n>
 
             <template v-else-if="transaction.event && transaction.event.name === 'Swap'">
-                {{ $t("Conversion from USDC.e") }}
+                {{ $t('Conversion from USDC.e') }}
             </template>
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
@@ -50,30 +50,26 @@
             </i18n>
 
             <TransactionDetailOasisPayoutStatus
-                v-if="swapData && swapData.asset === SwapAsset.EUR
-                    && swapData.htlc && swapData.htlc.settlement
-                    && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED"
+                v-if="
+                    swapData
+                    && swapData.asset === SwapAsset.EUR
+                    && swapData.htlc
+                    && swapData.htlc.settlement
+                    && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                "
                 slot="more"
                 :data="swapData"
             />
-            <span
-                v-else-if="transaction.state === TransactionState.FAILED"
-                slot="more"
-                class="nq-red failed flex-row"
-            >
-                <CrossIcon/>
+            <span v-else-if="transaction.state === TransactionState.FAILED" slot="more" class="nq-red failed flex-row">
+                <CrossIcon />
                 {{ $t('Partially reverted') }}
             </span>
             <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                 <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
-                    <template v-slot:dateAndTime>
-                        {{ datum }} <strong>&middot;</strong> {{ time }}
-                    </template>
+                    <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
                 </i18n>
                 <i18n v-else path="Sent at {dateAndTime}" :tag="false">
-                    <template v-slot:dateAndTime>
-                        {{ datum }} <strong>&middot;</strong> {{ time }}
-                    </template>
+                    <template v-slot:dateAndTime> {{ datum }} <strong>&middot;</strong> {{ time }} </template>
                 </i18n>
             </span>
         </PageHeader>
@@ -83,17 +79,23 @@
                     <div class="identicon-container">
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
-                            :address="peerAddress"/>
-                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
-                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
-                        <SwapMediumIcon/>
+                            :address="peerAddress"
+                        />
+                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC" />
+                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR" />
+                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''" />
+                        <SwapMediumIcon />
                     </div>
                     <span class="label">{{ peerLabel }}</span>
-                    <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" copyable tooltipPosition="bottom right"/>
+                    <InteractiveShortAddress
+                        v-if="swapData && peerAddress"
+                        :address="peerAddress"
+                        copyable
+                        tooltipPosition="bottom right"
+                    />
                 </div>
-                <UsdcAddressInfo v-else-if="transaction.event && transaction.event.name === 'Swap'"
+                <UsdcAddressInfo
+                    v-else-if="transaction.event && transaction.event.name === 'Swap'"
                     :address="transaction.sender"
                     label="USDC.e"
                     copyable
@@ -101,66 +103,89 @@
                     dark
                     tooltipPosition="bottom right"
                 />
-                <UsdcAddressInfo v-else
+                <UsdcAddressInfo
+                    v-else
                     :address="transaction.sender"
                     :label="isIncoming ? peerLabel : undefined"
                     copyable
-                    :editable="isIncoming ? (peerIsContact || !peerLabel) : false"
+                    :editable="isIncoming ? peerIsContact || !peerLabel : false"
                     tooltipPosition="bottom right"
                 />
-                <ArrowRightIcon class="arrow"/>
+                <ArrowRightIcon class="arrow" />
                 <div v-if="!isIncoming && swapInfo" class="swap-peer flex-column">
                     <div class="identicon-container">
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
-                            :address="peerAddress"/>
-                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
-                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
-                        <SwapMediumIcon/>
+                            :address="peerAddress"
+                        />
+                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC" />
+                        <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR" />
+                        <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''" />
+                        <SwapMediumIcon />
                     </div>
                     <span class="label">{{ peerLabel || '&nbsp;' }}</span>
-                    <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left"/>
+                    <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left" />
                 </div>
-                <UsdcAddressInfo v-else-if="transaction.event && transaction.event.name === 'Swap'"
+                <UsdcAddressInfo
+                    v-else-if="transaction.event && transaction.event.name === 'Swap'"
                     :address="transaction.sender"
                     label="USDC"
                     copyable
                     :editable="false"
                     tooltipPosition="bottom left"
                 />
-                <UsdcAddressInfo v-else
+                <UsdcAddressInfo
+                    v-else
                     :address="transaction.recipient"
                     :label="!isIncoming ? peerLabel : undefined"
                     copyable
-                    :editable="!isIncoming ? (peerIsContact || !peerLabel) : false"
+                    :editable="!isIncoming ? peerIsContact || !peerLabel : false"
                     tooltipPosition="bottom left"
                 />
             </div>
 
             <div class="amount-block flex-column">
-                <Amount :amount="txValue" :currency="ticker" value-mask
-                    class="transaction-value" :class="{
-                    isIncoming,
-                    'nq-green': isIncoming,
-                }" />
+                <Amount
+                    :amount="txValue"
+                    :currency="ticker"
+                    value-mask
+                    class="transaction-value"
+                    :class="{
+                        isIncoming,
+                        'nq-green': isIncoming,
+                    }"
+                />
 
                 <div class="flex-row">
-                    <div v-if="
-                        swapData && swapData.asset === SwapAsset.EUR
-                        && swapInfo && swapInfo.fees && swapInfo.fees.totalFee
-                    " class="fiat-amount">
+                    <div
+                        v-if="
+                            swapData
+                            && swapData.asset === SwapAsset.EUR
+                            && swapInfo
+                            && swapInfo.fees
+                            && swapInfo.fees.totalFee
+                        "
+                        class="fiat-amount"
+                    >
                         <Tooltip>
                             <template slot="trigger">
-                                <FiatAmount :amount="(swapData.amount / 100)
-                                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                                    * (isIncoming ? 1 : -1)" :currency="assetToCurrency(swapData.asset)"
+                                <FiatAmount
+                                    :amount="
+                                        swapData.amount / 100
+                                        - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                                            * (isIncoming ? 1 : -1)
+                                    "
+                                    :currency="assetToCurrency(swapData.asset)"
                                 />
                             </template>
                             <span>{{ $t('Historic value') }}</span>
                             <p class="explainer">
-                                {{ $t('This value is based on the historic exchange rate of the USD and your ' +
-                                    'reference currency.') }}
+                                {{
+                                    $t(
+                                        'This value is based on the historic exchange rate of the USD and your '
+                                            + 'reference currency.',
+                                    )
+                                }}
                             </p>
                         </Tooltip>
                     </div>
@@ -169,7 +194,8 @@
                             v-if="transaction.state === TransactionState.PENDING"
                             :amount="txValue"
                             currency="usdc"
-                            value-mask/>
+                            value-mask
+                        />
                         <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
                         <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                             Fiat value unavailable
@@ -179,72 +205,100 @@
                                 <template slot="trigger">
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
-                                        :amount="fiat.value / transaction.value * txValue"
+                                        :amount="(fiat.value / transaction.value) * txValue"
                                         :currency="fiat.currency"
-                                        value-mask/>
+                                        value-mask
+                                    />
                                 </template>
                                 <span>{{ $t('Historic value') }}</span>
                                 <p class="explainer">
-                                    {{ $t('This value is based on the historic exchange rate of the USD and your ' +
-                                        'reference currency.') }}
+                                    {{
+                                        $t(
+                                            'This value is based on the historic exchange rate of the USD and your '
+                                                + 'reference currency.',
+                                        )
+                                    }}
                                 </p>
                             </Tooltip>
                         </div>
                     </transition>
                     <template v-if="swapData && (swapTransaction || swapData.asset === SwapAsset.EUR)">
-                        <svg v-if="
-                            swapData.asset !== SwapAsset.EUR
-                            || (swapInfo && swapInfo.fees && swapInfo.fees.totalFee)"
-                            viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot"
+                        <svg
+                            v-if="
+                                swapData.asset !== SwapAsset.EUR
+                                || (swapInfo && swapInfo.fees && swapInfo.fees.totalFee)
+                            "
+                            viewBox="0 0 3 3"
+                            width="3"
+                            height="3"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="dot"
                         >
-                            <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                            <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                         </svg>
-                        <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction
-                            && (!usesNimSwapProxy || swapTransaction.relatedTransactionHash)"
-                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace({
-                                name: RouteName.Transaction,
-                                params: { hash: swapTransaction.transactionHash }
-                            })"
+                        <button
+                            v-if="
+                                swapData.asset === SwapAsset.NIM
+                                && swapTransaction
+                                && (!usesNimSwapProxy || swapTransaction.relatedTransactionHash)
+                            "
+                            class="swap-other-side reset flex-row"
+                            :class="{ incoming: !isIncoming }"
+                            @click="
+                                $router.replace({
+                                    name: RouteName.Transaction,
+                                    params: { hash: swapTransaction.transactionHash },
+                                })
+                            "
                         >
                             <div class="icon">
-                                <GroundedArrowUpIcon v-if="isIncoming"/>
-                                <GroundedArrowDownIcon v-else/>
+                                <GroundedArrowUpIcon v-if="isIncoming" />
+                                <GroundedArrowDownIcon v-else />
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
                                 :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
-                                value-mask/>
+                                value-mask
+                            />
                         </button>
-                        <button v-if="swapData.asset === SwapAsset.BTC && swapTransaction"
-                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace({
-                                name: RouteName.BtcTransaction,
-                                params: { hash: swapTransaction.transactionHash }
-                            })"
+                        <button
+                            v-if="swapData.asset === SwapAsset.BTC && swapTransaction"
+                            class="swap-other-side reset flex-row"
+                            :class="{ incoming: !isIncoming }"
+                            @click="
+                                $router.replace({
+                                    name: RouteName.BtcTransaction,
+                                    params: { hash: swapTransaction.transactionHash },
+                                })
+                            "
                         >
                             <div class="icon">
-                                <GroundedArrowUpIcon v-if="isIncoming"/>
-                                <GroundedArrowDownIcon v-else/>
+                                <GroundedArrowUpIcon v-if="isIncoming" />
+                                <GroundedArrowDownIcon v-else />
                             </div>
                             <Amount
                                 :amount="swapTransaction.outputs[0].value"
                                 :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
-                                value-mask/>
+                                value-mask
+                            />
                         </button>
-                        <div v-else-if="swapData.asset === SwapAsset.EUR"
-                            class="swap-other-side flex-row" :class="{'incoming': !isIncoming}">
+                        <div
+                            v-else-if="swapData.asset === SwapAsset.EUR"
+                            class="swap-other-side flex-row"
+                            :class="{ incoming: !isIncoming }"
+                        >
                             <div class="icon">
-                                <GroundedArrowUpIcon v-if="isIncoming"/>
-                                <GroundedArrowDownIcon v-else/>
+                                <GroundedArrowUpIcon v-if="isIncoming" />
+                                <GroundedArrowDownIcon v-else />
                             </div>
                             <FiatAmount
                                 :amount="swapData.amount / 100"
                                 :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
-                                value-mask/>
+                                value-mask
+                            />
                         </div>
                     </template>
                 </div>
@@ -255,7 +309,7 @@
             <div class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
-                <InfoCircleSmallIcon slot="trigger"/>
+                <InfoCircleSmallIcon slot="trigger" />
                 <span v-if="transaction.blockHeight" class="block">
                     {{ $t('Block #{height}', { height: transaction.blockHeight }) }}
                 </span>
@@ -267,18 +321,15 @@
                     <Amount :amount="transaction.fee" :currency="ticker" /> fee
                 </span>
 
-                <BlueLink
-                    :href="blockExplorerLink"
-                    target="_blank" rel="noopener"
-                >{{ $t('Block explorer') }}</BlueLink>
+                <BlueLink :href="blockExplorerLink" target="_blank" rel="noopener">{{ $t('Block explorer') }}</BlueLink>
             </Tooltip>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
+import { SwapAsset } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import {
     ArrowRightIcon,
     FiatAmount,
@@ -289,37 +340,37 @@ import {
     Identicon,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { SwapAsset } from '@nimiq/fastspot-api';
-import { SettlementStatus } from '@nimiq/oasis-api';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
-import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
-import { useUsdcContactsStore } from '@/stores/UsdcContacts';
-import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
-import { RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import Amount from '../Amount.vue';
-import BlueLink from '../BlueLink.vue';
-import Modal from './Modal.vue';
-import UsdcAddressInfo from '../UsdcAddressInfo.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import BankIcon from '../icons/BankIcon.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
-import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
-import Avatar from '../Avatar.vue';
-import InteractiveShortAddress from '../InteractiveShortAddress.vue';
-import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
-import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
-import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
-import { useAddressStore } from '../../stores/Address';
-import { getPolygonBlockNumber } from '../../ethers';
+import { RouteName } from '@/router';
+import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
+import { useUsdcContactsStore } from '@/stores/UsdcContacts';
+import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useConfig } from '../../composables/useConfig';
 import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
+import { getPolygonBlockNumber } from '../../ethers';
+import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
+import { useAddressStore } from '../../stores/Address';
+import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
+import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
+import Amount from '../Amount.vue';
+import Avatar from '../Avatar.vue';
+import BlueLink from '../BlueLink.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import BankIcon from '../icons/BankIcon.vue';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import UsdcAddressInfo from '../UsdcAddressInfo.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'usdc-transaction-modal',
@@ -336,15 +387,8 @@ export default defineComponent({
 
         const transaction = computed(() => useUsdcTransactionsStore().$state.transactions[props.hash]);
 
-        const {
-            txValue,
-            isIncoming,
-            isCancelledSwap,
-            peerLabel,
-            swapData,
-            swapInfo,
-            fiat,
-        } = useUsdcTransactionInfo(transaction);
+        const { txValue, isIncoming, isCancelledSwap, peerLabel, swapData, swapInfo, fiat } =
+            useUsdcTransactionInfo(transaction);
 
         const { config } = useConfig();
 
@@ -374,14 +418,14 @@ export default defineComponent({
 
         const usesNimSwapProxy = computed(() => {
             if (!swapTransaction.value || !('validityStartHeight' in swapTransaction.value)) return false;
-            const swapPeerAddress = isIncoming.value
-                ? swapTransaction.value.sender
-                : swapTransaction.value.recipient;
+            const swapPeerAddress = isIncoming.value ? swapTransaction.value.sender : swapTransaction.value.recipient;
             // Note that we don't only test for the swap proxy detection extra data here as the swap tx holds htlc data
             // instead. Only the related tx holds the proxy identifying extra data.
-            return isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
+            return (
+                isProxyData(swapTransaction.value.data.raw, ProxyType.HTLC_PROXY)
                 || swapTransaction.value.relatedTransactionHash
-                || !useAddressStore().$state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
+                || !useAddressStore().$state.addressInfos[swapPeerAddress]
+            ); // not one of our addresses -> proxy
         });
 
         // Data
@@ -417,11 +461,7 @@ export default defineComponent({
 
                 if (swapData.value.asset === SwapAsset.BTC) {
                     const swapTx = swapTransaction.value as BtcTransaction | null;
-                    return swapTx
-                        ? isIncoming.value
-                            ? swapTx.inputs[0].address!
-                            : swapTx.outputs[0].address!
-                        : ''; // we don't know the peer address
+                    return swapTx ? (isIncoming.value ? swapTx.inputs[0].address! : swapTx.outputs[0].address!) : ''; // we don't know the peer address
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -437,17 +477,20 @@ export default defineComponent({
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
         const datum = computed(() => date.value && date.value.toLocaleDateString());
-        const time = computed(() => date.value
-            && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
+        const time = computed(
+            () => date.value && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`,
+        );
 
         // Top left tooltip
         const { outdatedHeight: outdatedBlockHeight } = storeToRefs(usePolygonNetworkStore());
         getPolygonBlockNumber(); // Trigger blockHeight update
 
         const confirmations = computed(() =>
-            transaction.value.blockHeight ? outdatedBlockHeight.value - transaction.value.blockHeight + 1 : 0);
+            transaction.value.blockHeight ? outdatedBlockHeight.value - transaction.value.blockHeight + 1 : 0,
+        );
         const blockExplorerLink = computed(() =>
-            explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash));
+            explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash),
+        );
 
         const ticker = computed(() => {
             // If the swap had a positive slippage, the ticker should be the asset we received.
@@ -455,9 +498,7 @@ export default defineComponent({
                 return CryptoCurrency.USDC;
             }
 
-            return transaction.value.token === config.polygon.usdc.tokenContract
-                ? CryptoCurrency.USDC
-                : 'usdc.e';
+            return transaction.value.token === config.polygon.usdc.tokenContract ? CryptoCurrency.USDC : 'usdc.e';
         });
 
         return {
@@ -516,7 +557,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
 .page-header {
@@ -527,7 +568,7 @@ export default defineComponent({
         white-space: nowrap;
         overflow: hidden;
         margin-bottom: 1rem;
-        mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0));
+        mask: linear-gradient(90deg, white, white calc(100% - 4rem), rgba(255, 255, 255, 0));
     }
 
     span {
@@ -569,13 +610,13 @@ export default defineComponent({
         transition: background-color var(--transition-time) var(--nimiq-ease);
 
         &:hover,
-        &:focus{
-            background-color: #F2F2F4;
+        &:focus {
+            background-color: #f2f2f4;
         }
 
         &.incoming:hover,
-        &.incoming:focus{
-            background-color: #EDFAF8;
+        &.incoming:focus {
+            background-color: #edfaf8;
         }
     }
 }
@@ -646,7 +687,7 @@ export default defineComponent({
             white-space: nowrap;
             overflow: hidden;
             width: 100%;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
     }
 }
@@ -679,7 +720,8 @@ export default defineComponent({
             margin-left: -0.6em;
         }
 
-        @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
+        @media (max-width: $mobileBreakpoint) {
+            // Full Mobile Breakpoint
             font-size: 4.75rem;
         }
     }
@@ -708,7 +750,7 @@ export default defineComponent({
 
                 &::after {
                     top: -1.5rem;
-                    background: #211B43;
+                    background: #211b43;
                 }
             }
 
@@ -717,7 +759,7 @@ export default defineComponent({
                 transform: translate(-10rem, -1.5rem);
             }
 
-            ::v-deep [value-mask]::after{
+            ::v-deep [value-mask]::after {
                 margin-right: 0;
             }
         }
@@ -825,10 +867,11 @@ export default defineComponent({
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .page-header {
         ::v-deep .nq-h1 {
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
 
         &.inline-header ::v-deep .nq-h1 {
@@ -853,7 +896,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 450px) { // Nimiq Style breakpoint for smaller .nq-card-header padding
+@media (max-width: 450px) {
+    // Nimiq Style breakpoint for smaller .nq-card-header padding
     .page-header {
         ::v-deep .nq-h1 {
             margin-left: 3rem;

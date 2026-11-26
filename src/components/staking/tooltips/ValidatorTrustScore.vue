@@ -1,10 +1,11 @@
- <template>
-    <div class="validator-trust-score flex-row"
+<template>
+    <div
+        class="validator-trust-score flex-row"
         :class="{
             'high-score': !dry && !disabled && stars >= 4.5,
             'low-score': !dry && !disabled && stars >= 2.5 && stars < 3.5,
             'very-low-score': !dry && !disabled && stars < 2.5,
-            'disabled': disabled,
+            disabled: disabled,
             dry,
             borderless,
         }"
@@ -37,8 +38,8 @@ export default defineComponent({
     },
     setup(props) {
         const disabled = computed(() => props.score === null);
-        const stars = computed(() => props.score !== null ? props.score * 5 : 0);
-        const displayValue = computed(() => disabled.value ? '-' : stars.value.toFixed(2));
+        const stars = computed(() => (props.score !== null ? props.score * 5 : 0));
+        const displayValue = computed(() => (disabled.value ? '-' : stars.value.toFixed(2)));
 
         return {
             stars,
@@ -62,9 +63,15 @@ export default defineComponent({
     --color: var(--text-50);
     color: var(--color);
 
-    &.high-score { --color: var(--nimiq-green) }
-    &.low-score { --color: var(--nimiq-orange) }
-    &.very-low-score { --color: var(--nimiq-red) }
+    &.high-score {
+        --color: var(--nimiq-green);
+    }
+    &.low-score {
+        --color: var(--nimiq-orange);
+    }
+    &.very-low-score {
+        --color: var(--nimiq-red);
+    }
     &.disabled {
         --color: var(--text-40);
         font-style: italic;

@@ -1,17 +1,20 @@
 <template>
-    <div class="status-screen" :class="{
-        'nq-blue-bg': showLoadingBackground && !lightBlue,
-        'nq-light-blue-bg': showLoadingBackground && lightBlue,
-        'exit-transition': state === 'success',
-        small,
-    }">
+    <div
+        class="status-screen"
+        :class="{
+            'nq-blue-bg': showLoadingBackground && !lightBlue,
+            'nq-light-blue-bg': showLoadingBackground && lightBlue,
+            'exit-transition': state === 'success',
+            small,
+        }"
+    >
         <transition name="fade-loading">
             <div class="wrapper" v-if="state === 'loading'">
                 <h1 class="title nq-h1">{{ loadingTitle }}</h1>
 
                 <div class="icon-row">
                     <slot name="loading">
-                        <LoadingSpinner/>
+                        <LoadingSpinner />
                     </slot>
                 </div>
 
@@ -28,7 +31,7 @@
 
                 <div class="icon-row">
                     <slot name="success">
-                        <CheckmarkIcon/>
+                        <CheckmarkIcon />
                         <h1 class="title nq-h1">{{ title }}</h1>
                     </slot>
                 </div>
@@ -41,12 +44,12 @@
             <div class="wrapper warning nq-orange-bg" v-if="state === 'warning'">
                 <div
                     class="spacer"
-                    :class="{'with-main-action': !!mainAction, 'with-alternative-action': !!alternativeAction}"
+                    :class="{ 'with-main-action': !!mainAction, 'with-alternative-action': !!alternativeAction }"
                 ></div>
 
                 <div class="icon-row">
                     <slot name="warning">
-                        <FaceNeutralIcon/>
+                        <FaceNeutralIcon />
 
                         <h1 class="title nq-h1">{{ title }}</h1>
                         <p v-if="message" class="message nq-text">{{ message }}</p>
@@ -54,18 +57,16 @@
                 </div>
 
                 <div class="action-row">
-                    <button
-                        v-if="mainAction"
-                        class="nq-button orange inverse"
-                        @click="onMainAction"
-                        @mousedown.prevent
-                    >{{ mainAction }}</button>
+                    <button v-if="mainAction" class="nq-button orange inverse" @click="onMainAction" @mousedown.prevent>
+                        {{ mainAction }}
+                    </button>
                     <a
                         v-if="alternativeAction"
                         href="javascript:void(0)"
                         class="alternative-action nq-link"
                         @click="onAlternativeAction"
-                    >{{ alternativeAction }}</a>
+                        >{{ alternativeAction }}</a
+                    >
                 </div>
             </div>
         </transition>
@@ -74,12 +75,12 @@
             <div class="wrapper error nq-red-bg" v-if="state === 'error'">
                 <div
                     class="spacer"
-                    :class="{'with-main-action': !!mainAction, 'with-alternative-action': !!alternativeAction}"
+                    :class="{ 'with-main-action': !!mainAction, 'with-alternative-action': !!alternativeAction }"
                 ></div>
 
                 <div class="icon-row">
                     <slot name="error">
-                        <FaceSadIcon/>
+                        <FaceSadIcon />
 
                         <h1 class="title nq-h1">{{ title }}</h1>
                         <p v-if="message" class="message nq-text">{{ message }}</p>
@@ -92,13 +93,16 @@
                         class="main-action nq-button red inverse"
                         @click="onMainAction"
                         @mousedown.prevent
-                    >{{ mainAction }}</button>
+                    >
+                        {{ mainAction }}
+                    </button>
                     <a
                         v-if="alternativeAction"
                         href="javascript:void(0)"
                         class="alternative-action nq-link"
                         @click="onAlternativeAction"
-                    >{{ alternativeAction }}</a>
+                        >{{ alternativeAction }}</a
+                    >
                 </div>
             </div>
         </transition>
@@ -106,8 +110,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
 import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
+import { defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 
 export const SUCCESS_REDIRECT_DELAY = 2000; // 1s of transition + 1s of display
@@ -191,58 +195,73 @@ export default defineComponent({
         let hideLoadingBackgroundTimeout = -1;
         let statusUpdateTimeout = -1;
 
-        watch(() => props.title || '', (newTitle: string) => {
-            // only change the _loadingTitle, if we're still in the loading state (and not changing the state right
-            // after setting the title) to avoid it being changed on the loading screen when we actually want to set
-            // it for the success/error/warning screen.
-            nextTick(() => {
-                if (props.state !== State.LOADING) return;
-                loadingTitle.value = newTitle;
-            });
-        }, { immediate: true });
+        watch(
+            () => props.title || '',
+            (newTitle: string) => {
+                // only change the _loadingTitle, if we're still in the loading state (and not changing the state right
+                // after setting the title) to avoid it being changed on the loading screen when we actually want to set
+                // it for the success/error/warning screen.
+                nextTick(() => {
+                    if (props.state !== State.LOADING) return;
+                    loadingTitle.value = newTitle;
+                });
+            },
+            { immediate: true },
+        );
 
-        watch(() => props.state, (newState: string, oldState: string | undefined) => {
-            if (newState === State.LOADING) {
-                // Starting in or changing to LOADING
-                if (hideLoadingBackgroundTimeout !== -1) {
-                    clearTimeout(hideLoadingBackgroundTimeout);
-                    hideLoadingBackgroundTimeout = -1;
-                }
-                showLoadingBackground.value = true;
-            } else {
-                // other state than LOADING
-                if (oldState === State.LOADING) { // eslint-disable-line no-lonely-if
-                    if (hideLoadingBackgroundTimeout === -1) {
-                        hideLoadingBackgroundTimeout = window.setTimeout(() => {
-                            showLoadingBackground.value = false;
-                            hideLoadingBackgroundTimeout = -1;
-                        }, 1000);
+        watch(
+            () => props.state,
+            (newState: string, oldState: string | undefined) => {
+                if (newState === State.LOADING) {
+                    // Starting in or changing to LOADING
+                    if (hideLoadingBackgroundTimeout !== -1) {
+                        clearTimeout(hideLoadingBackgroundTimeout);
+                        hideLoadingBackgroundTimeout = -1;
                     }
+                    showLoadingBackground.value = true;
                 } else {
-                    showLoadingBackground.value = false;
+                    // other state than LOADING
+                    // eslint-disable-next-line no-lonely-if
+                    if (oldState === State.LOADING) {
+                        if (hideLoadingBackgroundTimeout === -1) {
+                            hideLoadingBackgroundTimeout = window.setTimeout(() => {
+                                showLoadingBackground.value = false;
+                                hideLoadingBackgroundTimeout = -1;
+                            }, 1000);
+                        }
+                    } else {
+                        showLoadingBackground.value = false;
+                    }
                 }
-            }
-        }, { immediate: true });
+            },
+            { immediate: true },
+        );
 
-        watch(() => props.status || '', async (newStatus: string) => {
-            if (statusUpdateTimeout !== -1) {
-                clearTimeout(statusUpdateTimeout);
-                // reset transitioning state for new change
-                isTransitioningStatus.value = false;
-                await nextTick();
-                await new Promise((resolve) => { requestAnimationFrame(resolve); }); // await style update
-                currentStatus.value = nextStatus.value;
-            }
+        watch(
+            () => props.status || '',
+            async (newStatus: string) => {
+                if (statusUpdateTimeout !== -1) {
+                    clearTimeout(statusUpdateTimeout);
+                    // reset transitioning state for new change
+                    isTransitioningStatus.value = false;
+                    await nextTick();
+                    await new Promise((resolve) => {
+                        requestAnimationFrame(resolve);
+                    }); // await style update
+                    currentStatus.value = nextStatus.value;
+                }
 
-            nextStatus.value = newStatus;
-            isTransitioningStatus.value = true;
+                nextStatus.value = newStatus;
+                isTransitioningStatus.value = true;
 
-            statusUpdateTimeout = window.setTimeout(() => {
-                statusUpdateTimeout = -1;
-                currentStatus.value = newStatus;
-                isTransitioningStatus.value = false;
-            }, 500);
-        }, { immediate: true });
+                statusUpdateTimeout = window.setTimeout(() => {
+                    statusUpdateTimeout = -1;
+                    currentStatus.value = newStatus;
+                    isTransitioningStatus.value = false;
+                }, 500);
+            },
+            { immediate: true },
+        );
 
         function onMainAction() {
             context.emit(Events.MAIN_ACTION);
@@ -272,236 +291,250 @@ export default defineComponent({
 </script>
 
 <style scoped>
-    .status-screen {
-        --status-screen-margin: .75rem;
-        display: flex;
-        flex-direction: column;
-        border-radius: 0.5rem;
-        width: calc(100% - 2 * var(--status-screen-margin));
-        height: calc(100% - 2 * var(--status-screen-margin));
-        margin: var(--status-screen-margin);
-        z-index: 3;
-        position: relative;
-        flex-grow: 1;
-    }
+.status-screen {
+    --status-screen-margin: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    width: calc(100% - 2 * var(--status-screen-margin));
+    height: calc(100% - 2 * var(--status-screen-margin));
+    margin: var(--status-screen-margin);
+    z-index: 3;
+    position: relative;
+    flex-grow: 1;
+}
 
-    .wrapper {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        flex-grow: 1;
-        border-radius: 0.5rem;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-    }
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    border-radius: 0.5rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
 
-    .icon-row,
-    .status-row,
-    .action-row {
-        width: 100%;
-        text-align: center;
-    }
+.icon-row,
+.status-row,
+.action-row {
+    width: 100%;
+    text-align: center;
+}
 
-    .success .icon-row {
-        margin-top: 2rem;
-    }
+.success .icon-row {
+    margin-top: 2rem;
+}
 
-    .status-row {
-        --status-font-size: var(--h2-size);
-        margin-top: 2rem; /* Same as title margin-bottom, to equalize spacing to center icon */
-        margin-bottom: 5rem;
-        height: var(--status-font-size); /* 1 line of status text. For multiple lines, the text overflows to the top */
-        position: relative;
-    }
+.status-row {
+    --status-font-size: var(--h2-size);
+    margin-top: 2rem; /* Same as title margin-bottom, to equalize spacing to center icon */
+    margin-bottom: 5rem;
+    height: var(--status-font-size); /* 1 line of status text. For multiple lines, the text overflows to the top */
+    position: relative;
+}
 
-    .status-screen.small .status-row {
-        margin-bottom: 2.5rem;
-    }
+.status-screen.small .status-row {
+    margin-bottom: 2.5rem;
+}
 
-    .status {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0 2rem;
-        font-size: var(--status-font-size);
-        font-weight: normal;
-        line-height: 1.2;
-        opacity: 1;
-    }
+.status {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0 2rem;
+    font-size: var(--status-font-size);
+    font-weight: normal;
+    line-height: 1.2;
+    opacity: 1;
+}
 
-    .status-screen.small .status {
-        /* on small layout center multiple lines vertically instead of overflowing to the top */
-        transform: translateY(calc(50% - var(--status-font-size) / 2));
-    }
+.status-screen.small .status {
+    /* on small layout center multiple lines vertically instead of overflowing to the top */
+    transform: translateY(calc(50% - var(--status-font-size) / 2));
+}
 
-    .status-row.transition .status {
-        transition: transform 500ms, opacity 500ms;
-    }
+.status-row.transition .status {
+    transition:
+        transform 500ms,
+        opacity 500ms;
+}
 
-    .status-row.transition .status.current {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
+.status-row.transition .status.current {
+    transform: translateY(-100%);
+    opacity: 0;
+}
 
-    .status-screen.small .status-row.transition .status.current {
-        /* on small layout move message less to avoid that it flies over half the screen */
-        transform: translateY(calc(-1 * var(--status-font-size)));
-    }
+.status-screen.small .status-row.transition .status.current {
+    /* on small layout move message less to avoid that it flies over half the screen */
+    transform: translateY(calc(-1 * var(--status-font-size)));
+}
 
-    .status-row:not(.transition) .status.next {
-        transform: translateY(100%);
-        opacity: 0;
-    }
+.status-row:not(.transition) .status.next {
+    transform: translateY(100%);
+    opacity: 0;
+}
 
-    .spacer {
-        padding-top: 2rem;
-    }
+.spacer {
+    padding-top: 2rem;
+}
 
-    .success .spacer {
-        padding-top: 6rem;
-    }
+.success .spacer {
+    padding-top: 6rem;
+}
 
-    .spacer.with-main-action {
-        padding-bottom: 8rem;
-    }
+.spacer.with-main-action {
+    padding-bottom: 8rem;
+}
 
-    .spacer.with-alternative-action {
-        margin-bottom: 2rem;
-    }
+.spacer.with-alternative-action {
+    margin-bottom: 2rem;
+}
 
-    .action-row {
-        padding-bottom: 2rem;
-    }
+.action-row {
+    padding-bottom: 2rem;
+}
 
-    .action-row .nq-link {
-        color: white;
-        font-size: var(--link-size);
-    }
+.action-row .nq-link {
+    color: white;
+    font-size: var(--link-size);
+}
 
-    /* FADE transitions */
+/* FADE transitions */
 
-    .fade-loading-leave-active,
-    .fade-result-leave-active {
-        transition: opacity 300ms;
-    }
+.fade-loading-leave-active,
+.fade-result-leave-active {
+    transition: opacity 300ms;
+}
 
-    .fade-loading-enter-active,
-    .fade-result-enter-active {
-        transition: opacity 700ms 300ms;
-    }
+.fade-loading-enter-active,
+.fade-result-enter-active {
+    transition: opacity 700ms 300ms;
+}
 
-    .fade-loading-enter,
-    .fade-loading-leave-to,
-    .fade-result-enter,
-    .fade-result-leave-to {
-        opacity: 0;
-    }
+.fade-loading-enter,
+.fade-loading-leave-to,
+.fade-result-enter,
+.fade-result-leave-to {
+    opacity: 0;
+}
 </style>
 
 <style>
-    .status-screen .title {
-        line-height: 1;
-        margin-top: 4rem;
-        white-space: pre-line;
+.status-screen .title {
+    line-height: 1;
+    margin-top: 4rem;
+    white-space: pre-line;
+}
+
+.status-screen.small .title {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    font-size: var(--h2-size);
+}
+
+.status-screen .icon-row .nq-icon {
+    margin: auto;
+}
+
+.status-screen .loading-spinner {
+    width: 7rem;
+}
+
+.status-screen .success .nq-icon {
+    font-size: 9rem;
+}
+
+.status-screen .warning .nq-icon {
+    font-size: 10rem;
+}
+
+.status-screen .error .nq-icon {
+    font-size: 12rem;
+}
+
+.status-screen .icon-row .title,
+.status-screen .icon-row .message {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.status-screen .icon-row .title {
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+.status-screen .message {
+    max-width: 70%;
+    opacity: 1;
+}
+
+.status-screen.exit-transition {
+    /* animation: exit-transition 600ms 1s; */
+}
+
+@keyframes exit-transition {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    80% {
+        opacity: 0;
+    }
+    to {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.status-screen.exit-transition .success .icon-row {
+    animation: success-title-slide 1s;
+}
+
+@keyframes success-title-slide {
+    from {
+        transform: translateY(8rem);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Optional entry animation that components can apply on the status-screen */
+.status-screen.grow-from-bottom-button {
+    position: absolute;
+    animation: status-screen-grow-from-bottom-button 0.6s forwards cubic-bezier(0.25, 0, 0, 1);
+    overflow: hidden;
+}
+
+@keyframes status-screen-grow-from-bottom-button {
+    0%,
+    20% {
+        max-width: calc(100% - 12rem);
+        max-height: 7.5rem;
+        bottom: calc(4.25rem - var(--status-screen-margin));
+        left: calc(6rem - var(--status-screen-margin));
+        border-radius: 4rem;
     }
 
-    .status-screen.small .title {
-        margin-top: 3rem;
-        margin-bottom: 2rem;
-        font-size: var(--h2-size);
+    0% {
+        opacity: 0;
     }
 
-    .status-screen .icon-row .nq-icon {
-        margin: auto;
-    }
-
-    .status-screen .loading-spinner {
-        width: 7rem;
-    }
-
-    .status-screen .success .nq-icon {
-        font-size: 9rem;
-    }
-
-    .status-screen .warning .nq-icon {
-        font-size: 10rem;
-    }
-
-    .status-screen .error .nq-icon {
-        font-size: 12rem;
-    }
-
-    .status-screen .icon-row .title,
-    .status-screen .icon-row .message {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .status-screen .icon-row .title {
-        max-width: 80%;
-        line-height: 1.4;
-    }
-
-    .status-screen .message {
-        max-width: 70%;
+    25% {
         opacity: 1;
     }
 
-    .status-screen.exit-transition {
-        /* animation: exit-transition 600ms 1s; */
+    100% {
+        max-width: calc(100% - 2 * var(--status-screen-margin));
+        max-height: calc(100% - 2 * var(--status-screen-margin));
+        bottom: 0;
+        left: 0;
+        border-radius: 0.5rem;
     }
-
-    @keyframes exit-transition {
-        from { transform: scale(1); opacity: 1; }
-        80%  { opacity: 0; }
-        to   { transform: scale(0); opacity: 0; }
-    }
-
-    .status-screen.exit-transition .success .icon-row {
-        animation: success-title-slide 1s;
-    }
-
-    @keyframes success-title-slide {
-        from { transform: translateY(8rem); }
-        to   { transform: translateY(0); }
-    }
-
-    /* Optional entry animation that components can apply on the status-screen */
-    .status-screen.grow-from-bottom-button {
-        position: absolute;
-        animation: status-screen-grow-from-bottom-button .6s forwards cubic-bezier(0.25, 0, 0, 1);
-        overflow: hidden;
-    }
-
-    @keyframes status-screen-grow-from-bottom-button {
-        0%,
-        20% {
-            max-width: calc(100% - 12rem);
-            max-height: 7.5rem;
-            bottom: calc(4.25rem - var(--status-screen-margin));
-            left: calc(6rem - var(--status-screen-margin));
-            border-radius: 4rem;
-        }
-
-        0% {
-            opacity: 0;
-        }
-
-        25% {
-            opacity: 1;
-        }
-
-        100% {
-            max-width: calc(100% - 2 * var(--status-screen-margin));
-            max-height: calc(100% - 2 * var(--status-screen-margin));
-            bottom: 0;
-            left: 0;
-            border-radius: 0.5rem;
-        }
-    }
+}
 </style>

@@ -1,15 +1,12 @@
 <template>
     <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
         <div class="wrapper flex-column" @click.self="onBackdropClick" ref="main$">
-            <SmallPage
-                class="main"
-                :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }"
-            >
+            <SmallPage class="main" :class="{ smallen: showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }">
                 <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="handle$">
                     <div class="swipe-bar"></div>
                 </div>
-                <slot/>
-                <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                <slot />
+                <CloseButton class="top-right" :class="{ inverse: closeButtonInverse }" @click="close" />
                 <transition name="fade">
                     <div v-if="showOverlay" class="cover"></div>
                 </transition>
@@ -17,8 +14,8 @@
 
             <transition name="overlay">
                 <SmallPage v-if="showOverlay" class="overlay">
-                    <slot name="overlay"/>
-                    <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
+                    <slot name="overlay" />
+                    <CloseButton class="top-right" :class="{ inverse: closeButtonInverse }" @click="close" />
                 </SmallPage>
             </transition>
         </div>
@@ -26,15 +23,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
-import { useRouter } from '@/router';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
-import { useWindowSize } from '../../composables/useWindowSize';
+import { useRouter } from '@/router';
 import { useSwipes } from '../../composables/useSwipes';
-import { useSettingsStore } from '../../stores/Settings';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { pointerdown } from '../../directives/PointerEvents';
+import { useSettingsStore } from '../../stores/Settings';
 
 export function enableModalTransition() {
     document.body.classList.remove('modal-transition-disabled');
@@ -90,10 +87,15 @@ const Modal = defineComponent({
             // For example: choose a sender via AddressSelectorModal -> open qr scanner from SendModal -> after scan in
             // ScanQrModal return to SendModal -> abort the action in SendModal
 
-            while (router.currentRoute.matched.find((routeRecord) => 'modal' in routeRecord.components
-                || 'persistent-modal' in routeRecord.components
-                || Object.values(routeRecord.components).some((component) => /modal/i.test(
-                    'name' in component ? component.name as string : '')))
+            while (
+                router.currentRoute.matched.find(
+                    (routeRecord) =>
+                        'modal' in routeRecord.components
+                        || 'persistent-modal' in routeRecord.components
+                        || Object.values(routeRecord.components).some((component) =>
+                            /modal/i.test('name' in component ? (component.name as string) : ''),
+                        ),
+                )
             ) {
                 router.back();
 
@@ -216,7 +218,7 @@ export default Modal;
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
 .backdrop {
@@ -277,7 +279,8 @@ export default Modal;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .backdrop {
         justify-content: flex-end;
     }
@@ -339,7 +342,7 @@ export default Modal;
 </style>
 
 <style lang="scss">
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 @use '../../scss/functions.scss' as *;
 
 :root {
@@ -357,15 +360,18 @@ export default Modal;
         transform var(--modal-transition-time) var(--nimiq-ease);
 }
 
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
     transition: background-color var(--modal-transition-time) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.modal-leave-active, .modal-leave-to {
+.modal-leave-active,
+.modal-leave-to {
     pointer-events: none;
 }
 
-.modal-enter, .modal-leave-to {
+.modal-enter,
+.modal-leave-to {
     background-color: nimiq-blue(0) !important;
 
     .wrapper {
@@ -375,14 +381,15 @@ export default Modal;
 }
 
 .overlay-enter-active {
-    transition: transform var(--overlay-transition-time) cubic-bezier(.3, 1, 0.2, 1);
+    transition: transform var(--overlay-transition-time) cubic-bezier(0.3, 1, 0.2, 1);
 }
 
 .overlay-leave-active {
     transition: transform var(--overlay-transition-time) cubic-bezier(0.3, 0, 0, 1);
 }
 
-.overlay-enter, .overlay-leave-to {
+.overlay-enter,
+.overlay-leave-to {
     /**
      * 100% is the height of the overlay
      * 100vh is the height of the viewport
@@ -397,8 +404,10 @@ export default Modal;
     transform: translate3D(0, calc(-1.1 * ((100vh - 100%) / 2 + 100%)), 0);
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
-    .modal-enter, .modal-leave-to {
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
+    .modal-enter,
+    .modal-leave-to {
         .wrapper {
             opacity: 1 !important;
             transform: translate3D(0, 100%, 0);
@@ -415,7 +424,8 @@ export default Modal;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .modal-enter, .modal-leave-to {
+    .modal-enter,
+    .modal-leave-to {
         .wrapper {
             opacity: 0 !important;
             transform: none;
@@ -423,11 +433,13 @@ export default Modal;
     }
 
     /* Instead of translating the overlay, simply fade it in */
-    .overlay-enter-active, .overlay-leave-active {
+    .overlay-enter-active,
+    .overlay-leave-active {
         transition: opacity var(--overlay-transition-time) var(--nimiq-ease);
     }
 
-    .overlay-enter, .overlay-leave-to {
+    .overlay-enter,
+    .overlay-leave-to {
         opacity: 0;
     }
 }

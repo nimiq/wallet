@@ -1,6 +1,7 @@
 <template>
     <div class="staking-overview">
-        <div class="staking-container flex-row nq-button-pill green"
+        <div
+            class="staking-container flex-row nq-button-pill green"
             @click="openStakingModal"
             :key="stake && stake.address"
         >
@@ -8,11 +9,14 @@
                 <RoundStakingIcon color="white" />
                 <div class="staking-amounts flex-column">
                     <div class="amount-row flex-row">
-                        <Amount :amount="stakedBalance" value-mask/> {{ $t('staked') }}
+                        <Amount :amount="stakedBalance" value-mask /> {{ $t('staked') }}
                     </div>
-                    <div class="details-row flex-row" :class="{
-                        'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),
-                    }">
+                    <div
+                        class="details-row flex-row"
+                        :class="{
+                            'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),
+                        }"
+                    >
                         <!-- Both switch-recovery states come first, for the same reason as in the
                              Info page footer: they read as "Payout ready" otherwise. -->
                         <template v-if="switchStall === 'activation'">
@@ -21,10 +25,10 @@
                         <template v-else-if="switchStall === 'interrupted'">
                             <CircleExclamationMarkIcon /> {{ $t('Validator switch interrupted') }}
                         </template>
-                        <template v-else-if="stake && (
-                            (stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance
-                        )">
-                            <CircleExclamationMarkIcon /> {{ $t('Payout ready')}}
+                        <template
+                            v-else-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)"
+                        >
+                            <CircleExclamationMarkIcon /> {{ $t('Payout ready') }}
                         </template>
                         <template v-else-if="stake && stake.inactiveBalance">
                             <template v-if="pendingOperationNeedsManualStep">
@@ -45,7 +49,7 @@
                             <span>{{ inactiveReleaseTime }} left</span>
                         </template>
                         <template v-else>
-                            <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                            <FiatConvertedAmount :amount="stakedBalance" value-mask />
                             <span class="dot"></span>
                             <span>{{ percentage }}%</span>
                         </template>
@@ -55,9 +59,7 @@
 
             <div v-if="restakingRewards" class="rewards flex-row">
                 <div class="rewards-amounts flex-column">
-                    <div class="amount-row flex-row">
-                        +<Amount :amount="restakingRewards" value-mask/>
-                    </div>
+                    <div class="amount-row flex-row">+<Amount :amount="restakingRewards" value-mask /></div>
                     <div class="details-row flex-row">
                         <div v-if="totalRewardsFiatValue === undefined" class="amount-loading-placeholder"></div>
                         <FiatAmount
@@ -95,24 +97,24 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { FiatAmount } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
-import { useAddressStore } from '../../stores/Address';
-import { useRouter } from '../../router';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
+import * as Constants from '../../lib/Constants';
+import { useRouter } from '../../router';
+import { useAddressStore } from '../../stores/Address';
+import { useNetworkStore } from '../../stores/Network';
+import { useStakingStore } from '../../stores/Staking';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
-import ValidatorIcon from './ValidatorIcon.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorReward from './tooltips/ValidatorReward.vue';
-import ShortAddress from '../ShortAddress.vue';
-import { useNetworkStore } from '../../stores/Network';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
-import * as Constants from '../../lib/Constants';
+import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
+import ShortAddress from '../ShortAddress.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -132,9 +134,9 @@ export default defineComponent({
         const { height } = storeToRefs(useNetworkStore());
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value
-            ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
-            : 0);
+        const stakedBalance = computed(() =>
+            stake.value ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance : 0,
+        );
 
         const percentage = computed(() => {
             const total = availableBalance.value + stakedBalance.value;
@@ -142,10 +144,7 @@ export default defineComponent({
         });
 
         // Calculate total rewards fiat value using month-based logic via composable
-        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(
-            monthlyRewards,
-            stakingEvents,
-        );
+        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(monthlyRewards, stakingEvents);
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
@@ -155,11 +154,7 @@ export default defineComponent({
                 const hours = date.getUTCHours().toString().padStart(2, '0');
                 const minutes = date.getUTCMinutes().toString().padStart(2, '0');
                 const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-                return [
-                    ...(hours !== '' ? [hours] : []),
-                    minutes,
-                    seconds,
-                ].join(':');
+                return [...(hours !== '' ? [hours] : []), minutes, seconds].join(':');
             }
 
             return '00:00';
@@ -283,7 +278,8 @@ export default defineComponent({
     }
 }
 
-.staking-amounts, .rewards-amounts {
+.staking-amounts,
+.rewards-amounts {
     .amount-row {
         font-size: var(--body-size);
         font-weight: bold;
@@ -332,7 +328,8 @@ export default defineComponent({
             justify-content: space-between;
             width: 100%;
 
-            .amount-row, .details-row {
+            .amount-row,
+            .details-row {
                 margin: 0;
             }
         }

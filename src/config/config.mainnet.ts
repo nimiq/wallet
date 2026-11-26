@@ -49,7 +49,7 @@ export default {
     albatrossWatchtower: {
         endpoint: 'https://aegis.watchtower.nimiq.systems',
         username: 'watchtower',
-        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // injected in vue.config.js
+        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // injected in vite.config.ts
     },
 
     polygon: {
@@ -62,7 +62,7 @@ export default {
             swaps: true,
         },
         networkId: 137,
-        rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
+        rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vite.config.ts
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
         usdc_bridged: {
             tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -97,7 +97,7 @@ export default {
             // up with the Nimiq organization.
             maxTransferAmount: 20e6 as number | null,
             // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
-            testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
+            testTokens: null as { usdcDomainName: string; usdt0Contract: string } | null,
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config (as in the
             // Keyguard)
             deniedRecipients: [
@@ -113,7 +113,7 @@ export default {
     },
 
     unstoppableDomains: {
-        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vue.config.js.
+        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vite.config.ts.
         ethereumRpcEndpoint: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY_MAINNET}`,
     },
 
@@ -169,9 +169,7 @@ export default {
     },
 
     nimiqPay: {
-        cosignerPublicKeys: [
-            '91b21f4b100273bd7034f6369c29d1f7ba72dba7de6720ad3cd8b81916218913',
-        ],
+        cosignerPublicKeys: ['91b21f4b100273bd7034f6369c29d1f7ba72dba7de6720ad3cd8b81916218913'],
     },
 
     matomo: {

@@ -3,18 +3,18 @@
         <div class="flex-column">
             <div class="label-input-wrapper flex-row">
                 <Avatar :label="addressInfo.label" />
-                <!-- eslint-disable-next-line eslint-disable-line vue/no-mutating-props -->
-                <LabelInput v-model="addressInfo.label"
+                <LabelInput
+                    v-model="addressInfo.label"
                     ref="labelInput$"
                     :placeholder="$t('Label the sender')"
                     vanishing
                     @keydown.native.enter="$event.target.blur()"
                 />
                 <div class="blue-tooltip" v-if="showTooltip">
-                    <p>{{ $t('Add a label to quickly find the transaction '
-                        + 'in your history, once it was sent.') }}</p>
-                    <p>{{ $t('With Bitcoin, there are no contacts, since '
-                        + 'addresses are only used once.') }}</p>
+                    <p>
+                        {{ $t('Add a label to quickly find the transaction ' + 'in your history, once it was sent.') }}
+                    </p>
+                    <p>{{ $t('With Bitcoin, there are no contacts, since ' + 'addresses are only used once.') }}</p>
                 </div>
             </div>
             <div class="address-created">{{ addressInfo.timelabel }}</div>
@@ -31,20 +31,20 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineComponent, ref } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
-import InteractiveShortAddress from './InteractiveShortAddress.vue';
-import Avatar from './Avatar.vue';
-import TrashIcon from './icons/TrashIcon.vue';
+import Vue, { defineComponent, ref } from 'vue';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
+import Avatar from './Avatar.vue';
+import TrashIcon from './icons/TrashIcon.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
 
 export type BtcCopiedAddressInfo = {
-    address: string,
-    label: string,
-    timestamp: number,
-    readonly timelabel: string,
-}
+    address: string;
+    label: string;
+    timestamp: number;
+    readonly timelabel: string;
+};
 
 const BtcCopiedAddress = defineComponent({
     props: {
@@ -133,7 +133,7 @@ export default BtcCopiedAddress;
     ::v-deep {
         .nq-input,
         .width-finder {
-            padding: 0.25rem .75rem;
+            padding: 0.25rem 0.75rem;
             font-size: var(--body-size);
             font-weight: 600;
         }
@@ -186,8 +186,9 @@ export default BtcCopiedAddress;
 
 .interactive-short-address ::v-deep {
     .copyable {
-        transition: transform var(--short-transition-duration) var(--nimiq-ease),
-            color .3s var(--nimiq-ease); // preserve original transition
+        transition:
+            transform var(--short-transition-duration) var(--nimiq-ease),
+            color 0.3s var(--nimiq-ease); // preserve original transition
         transform: translateX(4rem);
 
         .btc-copied-address:hover &,
@@ -198,7 +199,7 @@ export default BtcCopiedAddress;
     }
 
     .short-address {
-        opacity: .7;
+        opacity: 0.7;
     }
     .copyable:hover .short-address,
     .copyable:focus .short-address,
@@ -219,8 +220,9 @@ export default BtcCopiedAddress;
     cursor: pointer;
     opacity: 0;
 
-    transition: background var(--short-transition-duration) var(--nimiq-ease),
-                opacity var(--short-transition-duration) var(--nimiq-ease);
+    transition:
+        background var(--short-transition-duration) var(--nimiq-ease),
+        opacity var(--short-transition-duration) var(--nimiq-ease);
 
     ::v-deep svg {
         width: auto;
@@ -234,10 +236,10 @@ export default BtcCopiedAddress;
     }
 
     &:hover {
-        background: rgba(#D94432/*Nimiq red*/, .12);
+        background: rgba(#d94432 /*Nimiq red*/, 0.12);
 
         ::v-deep svg g {
-            stroke: var(--nimiq-red)
+            stroke: var(--nimiq-red);
         }
     }
 

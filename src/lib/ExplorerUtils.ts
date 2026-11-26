@@ -1,6 +1,6 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { CryptoCurrency, ENV_MAIN } from './Constants';
 import { useConfig } from '../composables/useConfig';
+import { CryptoCurrency, ENV_MAIN } from './Constants';
 
 export function explorerTxLink(asset: CryptoCurrency, hash: string) {
     const { config } = useConfig();
@@ -14,7 +14,8 @@ export function explorerTxLink(asset: CryptoCurrency, hash: string) {
         case CryptoCurrency.USDC:
         case CryptoCurrency.USDT:
             return `https://${config.environment === ENV_MAIN ? '' : 'amoy.'}polygonscan.com/tx/${hash}`;
-        default: throw new Error('Invalid asset');
+        default:
+            throw new Error('Invalid asset');
     }
 }
 
@@ -34,6 +35,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
         case SwapAsset.EUR:
             if (config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;
             return `${config.oasis.apiEndpoint}/htlc/${address}`;
-        default: throw new Error('Invalid asset');
+        default:
+            throw new Error('Invalid asset');
     }
 }

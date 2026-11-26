@@ -1,19 +1,10 @@
-/* eslint-disable no-console */
-import { ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
-import type { Result } from 'ethers/lib/utils';
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
 import type { TransferRequest } from '@nimiq/gasless-sdk/core';
-import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
-import { usePolygonNetworkStore } from './stores/PolygonNetwork';
-import {
-    HtlcEvent,
-    Transaction,
-    TransactionState,
-    useUsdcTransactionsStore,
-    UniswapEvent,
-} from './stores/UsdcTransactions';
+import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
+import type { Result } from 'ethers/lib/utils';
+import { storeToRefs } from 'pinia';
+/* eslint-disable no-console */
+import { ref, watch } from 'vue';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN, CryptoCurrency } from './lib/Constants';
 import {
@@ -28,11 +19,20 @@ import {
     USDT_BRIDGED_HTLC_CONTRACT_ABI,
 } from './lib/usdc/ContractABIs';
 import { getPoolAddress } from './lib/usdc/Uniswap';
-import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useAccountSettingsStore } from './stores/AccountSettings';
+import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
+import { usePolygonNetworkStore } from './stores/PolygonNetwork';
+import {
+    HtlcEvent,
+    Transaction,
+    TransactionState,
+    useUsdcTransactionsStore,
+    UniswapEvent,
+} from './stores/UsdcTransactions';
+import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 
 export async function loadEthersLibrary() {
-    return import(/* webpackChunkName: "ethers-js" */ 'ethers');
+    return import('ethers');
 }
 
 export interface PolygonClient {
@@ -81,19 +81,22 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     });
 
     const { config } = useConfig();
-    unwatchGetPolygonClientConfig = watch(() => [
-        config.polygon.rpcEndpoint,
-        config.polygon.networkId,
-        config.polygon.usdc_bridged,
-        config.polygon.usdc,
-        config.polygon.usdt_bridged,
-    ], () => {
-        // Reset clientPromise when the usdc config changes.
-        clientPromise = null;
-        if (!unwatchGetPolygonClientConfig) return;
-        unwatchGetPolygonClientConfig();
-        unwatchGetPolygonClientConfig = null;
-    });
+    unwatchGetPolygonClientConfig = watch(
+        () => [
+            config.polygon.rpcEndpoint,
+            config.polygon.networkId,
+            config.polygon.usdc_bridged,
+            config.polygon.usdc,
+            config.polygon.usdt_bridged,
+        ],
+        () => {
+            // Reset clientPromise when the usdc config changes.
+            clientPromise = null;
+            if (!unwatchGetPolygonClientConfig) return;
+            unwatchGetPolygonClientConfig();
+            unwatchGetPolygonClientConfig = null;
+        },
+    );
 
     let provider: providers.BaseProvider;
     const ethers = await loadEthersLibrary();
@@ -105,7 +108,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         );
     } else if (rpcEndpoint.substring(0, 2) === 'ws') {
         // No need to optimize this import as it's the ethers-js chunk which is already loaded via loadEthersLibrary.
-        const SturdyWebsocket = (await import(/* webpackChunkName: "ethers-js" */ 'sturdy-websocket')).default;
+        const SturdyWebsocket = (await import('sturdy-websocket')).default;
         const socket = new SturdyWebsocket(rpcEndpoint, {
             debug: true,
         });
@@ -137,19 +140,33 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     });
 
     const usdcBridgedToken = new ethers.Contract(
-        config.polygon.usdc_bridged.tokenContract, USDC_BRIDGED_TOKEN_CONTRACT_ABI, provider);
+        config.polygon.usdc_bridged.tokenContract,
+        USDC_BRIDGED_TOKEN_CONTRACT_ABI,
+        provider,
+    );
     const usdcBridgedTransfer = new ethers.Contract(
-        config.polygon.usdc_bridged.transferContract, USDC_BRIDGED_TRANSFER_CONTRACT_ABI, provider);
+        config.polygon.usdc_bridged.transferContract,
+        USDC_BRIDGED_TRANSFER_CONTRACT_ABI,
+        provider,
+    );
 
-    const usdcToken = new ethers.Contract(
-        config.polygon.usdc.tokenContract, USDC_TOKEN_CONTRACT_ABI, provider);
+    const usdcToken = new ethers.Contract(config.polygon.usdc.tokenContract, USDC_TOKEN_CONTRACT_ABI, provider);
     const usdcTransfer = new ethers.Contract(
-        config.polygon.usdc.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
+        config.polygon.usdc.transferContract,
+        USDC_TRANSFER_CONTRACT_ABI,
+        provider,
+    );
 
     const usdtBridgedToken = new ethers.Contract(
-        config.polygon.usdt_bridged.tokenContract, USDT_BRIDGED_TOKEN_CONTRACT_ABI, provider);
+        config.polygon.usdt_bridged.tokenContract,
+        USDT_BRIDGED_TOKEN_CONTRACT_ABI,
+        provider,
+    );
     const usdtBridgedTransfer = new ethers.Contract(
-        config.polygon.usdt_bridged.transferContract, USDT_BRIDGED_TRANSFER_CONTRACT_ABI, provider);
+        config.polygon.usdt_bridged.transferContract,
+        USDT_BRIDGED_TRANSFER_CONTRACT_ABI,
+        provider,
+    );
 
     resolver!({
         provider,
@@ -169,28 +186,26 @@ async function getUsdcBridgedBalance(address: string) {
     // Bridged USDC is not configured on testnet, where it therefore has no balance
     if (!useConfig().config.polygon.usdc_bridged.tokenContract) return 0;
     const client = await getPolygonClient();
-    const balance = await client.usdcBridgedToken.balanceOf(address) as BigNumber;
+    const balance = (await client.usdcBridgedToken.balanceOf(address)) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
 }
 
 async function getUsdcBalance(address: string) {
     const client = await getPolygonClient();
-    const balance = await client.usdcToken.balanceOf(address) as BigNumber;
+    const balance = (await client.usdcToken.balanceOf(address)) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
 }
 
 async function getUsdtBridgedBalance(address: string) {
     const client = await getPolygonClient();
-    const balance = await client.usdtBridgedToken.balanceOf(address) as BigNumber;
+    const balance = (await client.usdtBridgedToken.balanceOf(address)) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDT, enough for now
 }
 
 async function updateUsdcBridgedBalances(addresses: string[] = [...usdcBridgedBalances.keys()]) {
     if (!addresses.length) return;
     const accounts = await Promise.all(addresses.map((address) => getUsdcBridgedBalance(address)));
-    const newBalances: Balances = new Map(
-        accounts.map((balance, i) => [addresses[i], balance]),
-    );
+    const newBalances: Balances = new Map(accounts.map((balance, i) => [addresses[i], balance]));
     for (const [address, newBalance] of newBalances) {
         if (usdcBridgedBalances.get(address) === newBalance) {
             // Balance did not change since last check.
@@ -215,9 +230,7 @@ async function updateUsdcBridgedBalances(addresses: string[] = [...usdcBridgedBa
 async function updateUsdcBalances(addresses: string[] = [...usdcBridgedBalances.keys()]) {
     if (!addresses.length) return;
     const accounts = await Promise.all(addresses.map((address) => getUsdcBalance(address)));
-    const newBalances: Balances = new Map(
-        accounts.map((balance, i) => [addresses[i], balance]),
-    );
+    const newBalances: Balances = new Map(accounts.map((balance, i) => [addresses[i], balance]));
     for (const [address, newBalance] of newBalances) {
         if (usdcBalances.get(address) === newBalance) {
             // Balance did not change since last check.
@@ -231,9 +244,7 @@ async function updateUsdcBalances(addresses: string[] = [...usdcBridgedBalances.
 
     if (!newBalances.size) return;
     if (newBalances.size) {
-        console.debug(
-            'Got new native USDC balances for', [...newBalances.keys()], [...newBalances.values()],
-        );
+        console.debug('Got new native USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
     }
     const { patchAddress } = usePolygonAddressStore();
     for (const [address, balanceUsdc] of newBalances) {
@@ -244,9 +255,7 @@ async function updateUsdcBalances(addresses: string[] = [...usdcBridgedBalances.
 async function updateUsdtBridgedBalances(addresses: string[] = [...usdtBridgedBalances.keys()]) {
     if (!addresses.length) return;
     const accounts = await Promise.all(addresses.map((address) => getUsdtBridgedBalance(address)));
-    const newBalances: Balances = new Map(
-        accounts.map((balance, i) => [addresses[i], balance]),
-    );
+    const newBalances: Balances = new Map(accounts.map((balance, i) => [addresses[i], balance]));
     for (const [address, newBalance] of newBalances) {
         if (usdtBridgedBalances.get(address) === newBalance) {
             // Balance did not change since last check.
@@ -301,7 +310,12 @@ export async function safeQueryFilter(
                 // Fail if minimum range is reached.
                 if (currentRange <= NO_LOG_LIMIT_BLOCK_RANGE) {
                     // eslint-disable-next-line
-                    console.error('Query filter failed within the no-limit range, giving up.', currentStart, currentEnd, err);
+                    console.error(
+                        'Query filter failed within the no-limit range, giving up.',
+                        currentStart,
+                        currentEnd,
+                        err,
+                    );
                     throw err;
                 }
                 // Otherwise halve the range and retry.
@@ -309,7 +323,7 @@ export async function safeQueryFilter(
                 currentEnd = currentStart + currentRange;
                 console.warn(
                     'Query filter failed. '
-                    + `Retrying with a halved range of ${currentRange}, from ${currentStart}, to ${currentEnd}`,
+                        + `Retrying with a halved range of ${currentRange}, from ${currentStart}, to ${currentEnd}`,
                     err,
                 );
             }
@@ -343,11 +357,11 @@ let currentUsdtBridgedSubscriptionFilter: EventFilter | undefined;
 function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
         // Only subscribe to incoming logs
-        if (client.usdcBridgedToken.address) { // Not configured on testnet
-            const newUsdcBridgedFilterIncoming = client.usdcBridgedToken.filters.Transfer(
-                null,
-                [...subscribedAddresses],
-            );
+        if (client.usdcBridgedToken.address) {
+            // Not configured on testnet
+            const newUsdcBridgedFilterIncoming = client.usdcBridgedToken.filters.Transfer(null, [
+                ...subscribedAddresses,
+            ]);
             client.usdcBridgedToken.on(newUsdcBridgedFilterIncoming, usdcTransactionListener);
             if (currentUsdcBridgedSubscriptionFilter) {
                 client.usdcBridgedToken.off(currentUsdcBridgedSubscriptionFilter, usdcTransactionListener);
@@ -440,9 +454,7 @@ async function usdtTransactionListener(from: string, to: string, value: BigNumbe
     const [block, receipt] = await Promise.all([
         log.getBlock(),
         // Handle HTLC redeem/refund events by watchtower
-        from === config.polygon.usdt_bridged.htlcContract
-            ? log.getTransactionReceipt()
-            : Promise.resolve(null),
+        from === config.polygon.usdt_bridged.htlcContract ? log.getTransactionReceipt() : Promise.resolve(null),
     ]);
 
     let tx: Transaction;
@@ -477,914 +489,968 @@ export async function launchPolygon() {
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     const addressStore = usePolygonAddressStore();
-    watch(() => addressStore.addressInfo, () => {
-        const newAddresses: string[] = [];
-        const removedAddresses = new Set(subscribedAddresses);
+    watch(
+        () => addressStore.addressInfo,
+        () => {
+            const newAddresses: string[] = [];
+            const removedAddresses = new Set(subscribedAddresses);
 
-        for (const address of Object.keys(addressStore.$state.addressInfos)) {
-            if (subscribedAddresses.has(address)) {
-                removedAddresses.delete(address);
-                continue;
+            for (const address of Object.keys(addressStore.$state.addressInfos)) {
+                if (subscribedAddresses.has(address)) {
+                    removedAddresses.delete(address);
+                    continue;
+                }
+
+                subscribedAddresses.add(address);
+                newAddresses.push(address);
             }
 
-            subscribedAddresses.add(address);
-            newAddresses.push(address);
-        }
-
-        if (removedAddresses.size) {
-            for (const removedAddress of removedAddresses) {
-                subscribedAddresses.delete(removedAddress);
-                fetchedUsdcBridgedAddresses.delete(removedAddress);
-                fetchedUsdcAddresses.delete(removedAddress);
-                fetchedUsdtBridgedAddresses.delete(removedAddress);
+            if (removedAddresses.size) {
+                for (const removedAddress of removedAddresses) {
+                    subscribedAddresses.delete(removedAddress);
+                    fetchedUsdcBridgedAddresses.delete(removedAddress);
+                    fetchedUsdcAddresses.delete(removedAddress);
+                    fetchedUsdtBridgedAddresses.delete(removedAddress);
+                }
+                // Let the network forget the balances of the removed addresses,
+                // so that they are reported as new again at re-login.
+                forgetBalances([...removedAddresses]);
             }
-            // Let the network forget the balances of the removed addresses,
-            // so that they are reported as new again at re-login.
-            forgetBalances([...removedAddresses]);
-        }
 
-        if (!newAddresses.length) return;
+            if (!newAddresses.length) return;
 
-        console.debug('Subscribing to Polygon addresses', newAddresses);
-        subscribe(newAddresses);
-    }, { immediate: true });
+            console.debug('Subscribing to Polygon addresses', newAddresses);
+            subscribe(newAddresses);
+        },
+        { immediate: true },
+    );
 
     // Auto-detect stablecoin from balances and transactions
     const { stablecoin } = storeToRefs(useAccountSettingsStore());
     const { setStablecoin } = useAccountSettingsStore();
-    watch(() => addressStore.addressInfo, (ai) => {
-        if (!ai || stablecoin.value) {
-            return;
-        }
+    watch(
+        () => addressStore.addressInfo,
+        (ai) => {
+            if (!ai || stablecoin.value) {
+                return;
+            }
 
-        const usdcNativeBalance = ai.balanceUsdc ?? undefined;
-        const usdcBridgedBalance = ai.balanceUsdcBridged ?? undefined;
-        const usdcBalance = usdcNativeBalance !== undefined && usdcBridgedBalance !== undefined
-            ? usdcNativeBalance + usdcBridgedBalance
-            : usdcNativeBalance !== undefined
-                ? usdcNativeBalance
-                : usdcBridgedBalance;
+            const usdcNativeBalance = ai.balanceUsdc ?? undefined;
+            const usdcBridgedBalance = ai.balanceUsdcBridged ?? undefined;
+            const usdcBalance =
+                usdcNativeBalance !== undefined && usdcBridgedBalance !== undefined
+                    ? usdcNativeBalance + usdcBridgedBalance
+                    : usdcNativeBalance !== undefined
+                      ? usdcNativeBalance
+                      : usdcBridgedBalance;
 
-        const usdtBalance = ai.balanceUsdtBridged ?? undefined;
+            const usdtBalance = ai.balanceUsdtBridged ?? undefined;
 
-        if (usdcBalance !== undefined && usdtBalance !== undefined) {
-            if (usdcBalance > 0.01e6 && !usdtBalance) {
+            if (usdcBalance !== undefined && usdtBalance !== undefined) {
+                if (usdcBalance > 0.01e6 && !usdtBalance) {
+                    setStablecoin(CryptoCurrency.USDC);
+                } else if (usdtBalance > 0.01e6 && !usdcBalance) {
+                    setStablecoin(CryptoCurrency.USDT);
+                }
+            }
+        },
+        { immediate: true },
+    );
+
+    watch(
+        () => [usdcTransactionsStore.$state.transactions, usdtTransactionsStore.$state.transactions],
+        ([usdcTxs, usdtTxs]) => {
+            if (stablecoin.value || !addressStore.addressInfo) {
+                return;
+            }
+
+            const ai = addressStore.addressInfo;
+
+            // Check transaction history
+            const latestUsdcTx = Object.values(usdcTxs)
+                .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
+                .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
+            const latestUsdtTx = Object.values(usdtTxs)
+                .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
+                .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
+
+            if (
+                latestUsdcTx
+                && (!latestUsdtTx || (latestUsdcTx.timestamp || Infinity) > (latestUsdtTx.timestamp || Infinity))
+            ) {
                 setStablecoin(CryptoCurrency.USDC);
-            } else if (usdtBalance > 0.01e6 && !usdcBalance) {
+            } else if (
+                latestUsdtTx
+                && (!latestUsdcTx || (latestUsdtTx.timestamp || Infinity) > (latestUsdcTx.timestamp || Infinity))
+            ) {
                 setStablecoin(CryptoCurrency.USDT);
             }
-        }
-    }, { immediate: true });
-
-    watch(() => [
-        usdcTransactionsStore.$state.transactions,
-        usdtTransactionsStore.$state.transactions,
-    ], ([usdcTxs, usdtTxs]) => {
-        if (stablecoin.value || !addressStore.addressInfo) {
-            return;
-        }
-
-        const ai = addressStore.addressInfo;
-
-        // Check transaction history
-        const latestUsdcTx = Object.values(usdcTxs)
-            .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
-            .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
-        const latestUsdtTx = Object.values(usdtTxs)
-            .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
-            .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
-
-        if (latestUsdcTx
-            && (!latestUsdtTx || (latestUsdcTx.timestamp || Infinity) > (latestUsdtTx.timestamp || Infinity))) {
-            setStablecoin(CryptoCurrency.USDC);
-        } else if (latestUsdtTx
-            && (!latestUsdcTx || (latestUsdtTx.timestamp || Infinity) > (latestUsdcTx.timestamp || Infinity))) {
-            setStablecoin(CryptoCurrency.USDT);
-        }
-    }, { immediate: true });
+        },
+        { immediate: true },
+    );
 
     // Fetch transactions for active address
     const usdcBridgedTxFetchTrigger = ref(0);
-    watch([
-        () => addressStore.addressInfo,
-        usdcBridgedTxFetchTrigger,
-        () => config.polygon,
-    ], async ([
-        addressInfo,
-        trigger,
-    ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
-        if (!address || fetchedUsdcBridgedAddresses.has(address)) return;
-        // Bridged USDC is not configured on testnet
-        if (!config.polygon.usdc_bridged.tokenContract) return;
-        fetchedUsdcBridgedAddresses.add(address);
+    watch(
+        [() => addressStore.addressInfo, usdcBridgedTxFetchTrigger, () => config.polygon],
+        async ([addressInfo, trigger]) => {
+            const address = (addressInfo as PolygonAddressInfo | null)?.address;
+            if (!address || fetchedUsdcBridgedAddresses.has(address)) return;
+            // Bridged USDC is not configured on testnet
+            if (!config.polygon.usdc_bridged.tokenContract) return;
+            fetchedUsdcBridgedAddresses.add(address);
 
-        console.debug('Scheduling bridged USDC transaction fetch for', address);
+            console.debug('Scheduling bridged USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(usdcTransactionsStore.$state.transactions)
-            .filter((tx) => (!tx.token || tx.token === config.polygon.usdc_bridged.tokenContract)
-                && (tx.sender === address || tx.recipient === address));
-        const lastConfirmedHeight = knownTxs
-            .filter((tx) => Boolean(tx.blockHeight))
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-        const earliestHeightToCheck = Math.max(
-            config.polygon.usdc_bridged.earliestHistoryScanHeight,
-            lastConfirmedHeight - 1000,
-        );
-
-        network$.fetchingUsdcTxHistory++;
-
-        if ((trigger as number) > 0) updateUsdcBridgedBalances([address]);
-
-        const client = await getPolygonClient();
-        const poolAddress = await getLegacyFeePoolAddress(
-            client.usdcBridgedTransfer,
-            config.polygon.usdc_bridged.tokenContract,
-        );
-
-        console.debug('Fetching bridged USDC transaction history for', address, knownTxs);
-
-        // EventFilters only allow to query with an AND condition between arguments (topics). So while
-        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
-        // OR two AND pairs. That requires two separate requests.
-        const filterIncoming = client.usdcBridgedToken.filters.Transfer(null, address);
-        const filterOutgoing = client.usdcBridgedToken.filters.Transfer(address);
-
-        const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
-
-        Promise.all([
-            client.usdcBridgedToken.balanceOf(address) as Promise<BigNumber>,
-            client.usdcBridgedToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            getLegacyAllowanceUsed(
-                client,
-                client.usdcBridgedToken,
-                address,
-                config.polygon.usdc_bridged.transferContract,
-            ),
-            getLegacyAllowanceUsed(client, client.usdcBridgedToken, address, config.polygon.usdc_bridged.htlcContract),
-        ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
-            let blockHeight = await getPolygonBlockNumber();
-
-            // To filter known txs
-            const knownHashes = knownTxs.map(
-                (tx) => tx.transactionHash,
+            const knownTxs = Object.values(usdcTransactionsStore.$state.transactions).filter(
+                (tx) =>
+                    (!tx.token || tx.token === config.polygon.usdc_bridged.tokenContract)
+                    && (tx.sender === address || tx.recipient === address),
+            );
+            const lastConfirmedHeight = knownTxs
+                .filter((tx) => Boolean(tx.blockHeight))
+                .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+            const earliestHeightToCheck = Math.max(
+                config.polygon.usdc_bridged.earliestHistoryScanHeight,
+                lastConfirmedHeight - 1000,
             );
 
-            const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
-            const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
+            network$.fetchingUsdcTxHistory++;
 
-            /* eslint-disable max-len */
-            while (blockHeight > earliestHeightToCheck && (
-                balance.gt(0)
-                || nonce > 0
-                || transferAllowanceUsed.gt(0)
-                || htlcAllowanceUsed.gt(0)
-            )) {
-                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
-                const endHeight = blockHeight;
-                blockHeight = startHeight;
+            if ((trigger as number) > 0) updateUsdcBridgedBalances([address]);
 
-                console.debug('Bridged USDC Sync start', {
-                    balance: balance.toNumber() / 1e6,
-                    nonce,
-                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                    htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-                });
+            const client = await getPolygonClient();
+            const poolAddress = await getLegacyFeePoolAddress(
+                client.usdcBridgedTransfer,
+                config.polygon.usdc_bridged.tokenContract,
+            );
 
-                console.debug(`Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
+            console.debug('Fetching bridged USDC transaction history for', address, knownTxs);
 
-                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
-                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
-                ]);
+            // EventFilters only allow to query with an AND condition between arguments (topics). So while
+            // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+            // OR two AND pairs. That requires two separate requests.
+            const filterIncoming = client.usdcBridgedToken.filters.Transfer(null, address);
+            const filterOutgoing = client.usdcBridgedToken.filters.Transfer(address);
 
-                // Ignore address poisoning transactions
-                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
-                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+            const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-                console.debug(`Got ${logsIn.length} incoming bridged logs, ${logsOut.length} outgoing bridged logs` /* , and ${metaTxs.length} meta tx logs` */);
+            Promise.all([
+                client.usdcBridgedToken.balanceOf(address) as Promise<BigNumber>,
+                client.usdcBridgedToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+                getLegacyAllowanceUsed(
+                    client,
+                    client.usdcBridgedToken,
+                    address,
+                    config.polygon.usdc_bridged.transferContract,
+                ),
+                getLegacyAllowanceUsed(
+                    client,
+                    client.usdcBridgedToken,
+                    address,
+                    config.polygon.usdc_bridged.htlcContract,
+                ),
+            ])
+                .then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
+                    let blockHeight = await getPolygonBlockNumber();
 
-                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
-                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
-                console.debug(`Found ${outgoingTxs.size} outgoing bridged txs`);
-                nonce -= outgoingTxs.size;
+                    // To filter known txs
+                    const knownHashes = knownTxs.map((tx) => tx.transactionHash);
 
-                const txsUsingHtlcAllowance = new Set(logsOut
-                    .filter((ev) => ev.args?.to === config.polygon.usdc_bridged.htlcContract) // Only HTLC fundings are relevant
-                    .map((ev) => ev.transactionHash));
+                    const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+                    const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
 
-                const allTransferLogs = logsIn.concat(logsOut);
-
-                // eslint-disable-next-line no-loop-func
-                const newLogs = allTransferLogs.filter((log) => {
-                    if (!log.args) return false;
-
-                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
-                    if (log.args.from === address && nonce <= 0) {
-                        balance = balance.add(log.args.value);
-
-                        if (txsUsingHtlcAllowance.has(log.transactionHash)) {
-                            htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
-                        } else {
-                            transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
-                        }
-                    }
-                    if (log.args.to === address) {
-                        balance = balance.sub(log.args.value);
-                    }
-
-                    if (knownHashes.includes(log.transactionHash)) return false;
-
-                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
-                    if (
-                        log.args.to === poolAddress
-                        || (
-                            // Before v3, transfers to the transferContract were the fees paid to OpenGSN
-                            config.environment !== ENV_MAIN
-                            && (
-                                log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
-                                || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
-                            )
-                        )
+                    /* oxlint-disable eslint-js/max-len */
+                    while (
+                        blockHeight > earliestHeightToCheck
+                        && (balance.gt(0) || nonce > 0 || transferAllowanceUsed.gt(0) || htlcAllowanceUsed.gt(0))
                     ) {
-                        // Find the main transfer log
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex);
+                        const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                        const endHeight = blockHeight;
+                        blockHeight = startHeight;
 
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                        } else if (!mainTransferLog) {
-                            // If no main transfer log was found, it means this transaction failed
-                            // and only the fee was paid.
-                            (log as TransferEvent).failed = true;
+                        console.debug('Bridged USDC Sync start', {
+                            balance: balance.toNumber() / 1e6,
+                            nonce,
+                            transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                            htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                        });
+
+                        console.debug(
+                            `Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`,
+                        );
+
+                        // eslint-disable-next-line no-await-in-loop
+                        let [logsIn, logsOut /* , metaTxs */] = await Promise.all([
+                            safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
+                            safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
+                        ]);
+
+                        // Ignore address poisoning transactions
+                        logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                        logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+
+                        console.debug(
+                            `Got ${logsIn.length} incoming bridged logs, ${logsOut.length} outgoing bridged logs` /* , and ${metaTxs.length} meta tx logs` */,
+                        );
+
+                        // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                        const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                        console.debug(`Found ${outgoingTxs.size} outgoing bridged txs`);
+                        nonce -= outgoingTxs.size;
+
+                        const txsUsingHtlcAllowance = new Set(
+                            logsOut
+                                .filter((ev) => ev.args?.to === config.polygon.usdc_bridged.htlcContract) // Only HTLC fundings are relevant
+                                .map((ev) => ev.transactionHash),
+                        );
+
+                        const allTransferLogs = logsIn.concat(logsOut);
+
+                        // eslint-disable-next-line no-loop-func
+                        const newLogs = allTransferLogs.filter((log) => {
+                            if (!log.args) return false;
+
+                            // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
+                            if (log.args.from === address && nonce <= 0) {
+                                balance = balance.add(log.args.value);
+
+                                if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                                    htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                                } else {
+                                    transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                                }
+                            }
+                            if (log.args.to === address) {
+                                balance = balance.sub(log.args.value);
+                            }
+
+                            if (knownHashes.includes(log.transactionHash)) return false;
+
+                            // Transfers to the Uniswap pool are the fees paid to OpenGSN
+                            if (
+                                log.args.to === poolAddress
+                                // Before v3, transfers to the transferContract were the fees paid to OpenGSN
+                                || (config.environment !== ENV_MAIN
+                                    && (log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
+                                        || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1')) // v1 USDC transfer contract
+                            ) {
+                                // Find the main transfer log
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex !== log.logIndex,
+                                );
+
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    // Write this log's `value` as the main transfer log's `fee`
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                } else if (!mainTransferLog) {
+                                    // If no main transfer log was found, it means this transaction failed
+                                    // and only the fee was paid.
+                                    (log as TransferEvent).failed = true;
+                                    return true;
+                                }
+
+                                // Then ignore this log
+                                return false;
+                            }
+
+                            if (
+                                // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
+                                config.environment !== ENV_MAIN
+                                && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                            ) {
+                                // Determine if this transfer is the fee, by looking for another transfer in this
+                                // transaction with a higher `logIndex`, which means that one is the main transfer and this
+                                // one is the fee.
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex > log.logIndex,
+                                );
+
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    // Write this log's `value` as the main transfer log's `fee`
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                }
+
+                                // Then ignore this log
+                                return false;
+                            }
+
+                            if (log.args.to === config.polygon.usdc_bridged.htlcContract) {
+                                // Get Open event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdcBridgedHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address !== config.polygon.usdc_bridged.htlcContract) continue;
+                                        try {
+                                            const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                            if (name === 'Open') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                    token: args.token,
+                                                    amount: args.amount.toNumber(),
+                                                    recipient: args.recipient,
+                                                    hash: args.hash,
+                                                    timeout: args.timeout.toNumber(),
+                                                };
+                                            }
+                                        } catch (error) {
+                                            /* ignore */
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
+                            if (log.args.from === config.polygon.usdc_bridged.htlcContract) {
+                                // Get Redeem or Refund event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdcBridgedHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address !== config.polygon.usdc_bridged.htlcContract) continue;
+                                        try {
+                                            const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                            if (name === 'Redeem') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                    secret: args.secret,
+                                                };
+                                            }
+                                            if (name === 'Refund') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                };
+                                            }
+                                        } catch (error) {
+                                            /* ignore */
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
+                            if (log.args.to === config.polygon.usdcConversion.swapContract) {
+                                // Get native USDC transfer log from pool to user
+                                const uniswapEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address !== config.polygon.usdc.tokenContract) continue;
+                                        try {
+                                            const { args, name } = client.usdcToken.interface.parseLog(innerLog);
+                                            if (name === 'Transfer') {
+                                                const event: UniswapEvent = {
+                                                    name: 'Swap',
+                                                    amountIn: log.args!.value.toNumber(),
+                                                    amountOut: args.value.toNumber(),
+                                                };
+                                                return event;
+                                            }
+                                        } catch (error) {
+                                            /* ignore */
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                uniswapEventsByTransactionHash.set(log.transactionHash, uniswapEventPromise);
+                            }
+
                             return true;
-                        }
+                        }) as TransferEvent[];
 
-                        // Then ignore this log
-                        return false;
-                    }
+                        const logsAndBlocks = newLogs.map((log) => ({
+                            log,
+                            block: log.getBlock(),
+                            event:
+                                htlcEventsByTransactionHash.get(log.transactionHash)
+                                || uniswapEventsByTransactionHash.get(log.transactionHash),
+                        }));
 
-                    if (
-                        // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
-                        config.environment !== ENV_MAIN
-                        && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
-                    ) {
-                        // Determine if this transfer is the fee, by looking for another transfer in this
-                        // transaction with a higher `logIndex`, which means that one is the main transfer and this
-                        // one is the fee.
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex > log.logIndex);
-
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                        }
-
-                        // Then ignore this log
-                        return false;
-                    }
-
-                    if (log.args.to === config.polygon.usdc_bridged.htlcContract) {
-                        // Get Open event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdcBridgedHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdc_bridged.htlcContract) continue;
-                                try {
-                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                    if (name === 'Open') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                            token: args.token,
-                                            amount: args.amount.toNumber(),
-                                            recipient: args.recipient,
-                                            hash: args.hash,
-                                            timeout: args.timeout.toNumber(),
-                                        };
-                                    }
-                                } catch (error) { /* ignore */ }
-                            }
-                            return undefined;
+                        // TODO: Allow individual fetches to fail, but still add the other transactions?
+                        // eslint-disable-next-line no-await-in-loop
+                        await Promise.all(
+                            logsAndBlocks.map(async ({ log, block, event }) =>
+                                logAndBlockToPlain(log, await block, await event),
+                            ),
+                        ).then((transactions) => {
+                            usdcTransactionsStore.addTransactions(transactions);
                         });
+                    } // End while loop
+                    /* oxlint-enable eslint-js/max-len */
 
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    if (log.args.from === config.polygon.usdc_bridged.htlcContract) {
-                        // Get Redeem or Refund event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdcBridgedHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdc_bridged.htlcContract) continue;
-                                try {
-                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                    if (name === 'Redeem') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                            secret: args.secret,
-                                        };
-                                    }
-                                    if (name === 'Refund') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                        };
-                                    }
-                                } catch (error) { /* ignore */ }
-                            }
-                            return undefined;
-                        });
-
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    if (log.args.to === config.polygon.usdcConversion.swapContract) {
-                        // Get native USDC transfer log from pool to user
-                        const uniswapEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdc.tokenContract) continue;
-                                try {
-                                    const { args, name } = client.usdcToken.interface.parseLog(innerLog);
-                                    if (name === 'Transfer') {
-                                        const event: UniswapEvent = {
-                                            name: 'Swap',
-                                            amountIn: log.args!.value.toNumber(),
-                                            amountOut: args.value.toNumber(),
-                                        };
-                                        return event;
-                                    }
-                                } catch (error) { /* ignore */ }
-                            }
-                            return undefined;
-                        });
-
-                        uniswapEventsByTransactionHash.set(log.transactionHash, uniswapEventPromise);
-                    }
-
-                    return true;
-                }) as TransferEvent[];
-
-                const logsAndBlocks = newLogs.map((log) => ({
-                    log,
-                    block: log.getBlock(),
-                    event: htlcEventsByTransactionHash.get(log.transactionHash)
-                        || uniswapEventsByTransactionHash.get(log.transactionHash),
-                }));
-
-                // TODO: Allow individual fetches to fail, but still add the other transactions?
-                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
-                    async ({ log, block, event }) => logAndBlockToPlain(
-                        log,
-                        await block,
-                        await event,
-                    ),
-                )).then((transactions) => {
-                    usdcTransactionsStore.addTransactions(transactions);
-                });
-            } // End while loop
-            /* eslint-enable max-len */
-
-            console.debug('Bridged USDC Sync end', {
-                balance: balance.toNumber() / 1e6,
-                nonce,
-                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-            });
-        })
-            .catch((error) => {
-                console.error(error);
-                fetchedUsdcBridgedAddresses.delete(address);
-            })
-            .then(() => network$.fetchingUsdcTxHistory--);
-    }, { immediate: true });
+                    console.debug('Bridged USDC Sync end', {
+                        balance: balance.toNumber() / 1e6,
+                        nonce,
+                        transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                        htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    fetchedUsdcBridgedAddresses.delete(address);
+                })
+                .then(() => network$.fetchingUsdcTxHistory--);
+        },
+        { immediate: true },
+    );
 
     const usdcTxFetchTrigger = ref(0);
-    watch([
-        () => addressStore.addressInfo,
-        usdcTxFetchTrigger,
-        () => config.polygon,
-    ], async ([
-        addressInfo,
-        trigger,
-    ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
-        if (!address || fetchedUsdcAddresses.has(address)) return;
-        fetchedUsdcAddresses.add(address);
+    watch(
+        [() => addressStore.addressInfo, usdcTxFetchTrigger, () => config.polygon],
+        async ([addressInfo, trigger]) => {
+            const address = (addressInfo as PolygonAddressInfo | null)?.address;
+            if (!address || fetchedUsdcAddresses.has(address)) return;
+            fetchedUsdcAddresses.add(address);
 
-        console.debug('Scheduling native USDC transaction fetch for', address);
+            console.debug('Scheduling native USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(usdcTransactionsStore.$state.transactions)
-            .filter((tx) => tx.token === config.polygon.usdc.tokenContract
-                && (tx.sender === address || tx.recipient === address));
-        const lastConfirmedHeight = knownTxs
-            .filter((tx) => Boolean(tx.blockHeight))
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-        const earliestHeightToCheck = Math.max(
-            config.polygon.usdc.earliestHistoryScanHeight,
-            lastConfirmedHeight - 1000,
-        );
-
-        network$.fetchingUsdcTxHistory++;
-
-        if ((trigger as number) > 0) updateUsdcBalances([address]);
-
-        const client = await getPolygonClient();
-        const poolAddress = await getLegacyFeePoolAddress(client.usdcTransfer, config.polygon.usdc.tokenContract);
-
-        console.debug('Fetching native USDC transaction history for', address, knownTxs);
-
-        // EventFilters only allow to query with an AND condition between arguments (topics). So while
-        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
-        // OR two AND pairs. That requires two separate requests.
-        const filterIncoming = client.usdcToken.filters.Transfer(null, address);
-        const filterOutgoing = client.usdcToken.filters.Transfer(address);
-        // const filterMetaTx = client.usdcBridgedToken.filters.MetaTransactionExecuted();
-
-        const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
-
-        Promise.all([
-            client.usdcToken.balanceOf(address) as Promise<BigNumber>,
-            client.usdcToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.transferContract),
-            getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.htlcContract),
-        ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
-            let blockHeight = await getPolygonBlockNumber();
-
-            // To filter known txs
-            const knownHashes = knownTxs.map(
-                (tx) => tx.transactionHash,
+            const knownTxs = Object.values(usdcTransactionsStore.$state.transactions).filter(
+                (tx) =>
+                    tx.token === config.polygon.usdc.tokenContract
+                    && (tx.sender === address || tx.recipient === address),
+            );
+            const lastConfirmedHeight = knownTxs
+                .filter((tx) => Boolean(tx.blockHeight))
+                .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+            const earliestHeightToCheck = Math.max(
+                config.polygon.usdc.earliestHistoryScanHeight,
+                lastConfirmedHeight - 1000,
             );
 
-            const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+            network$.fetchingUsdcTxHistory++;
 
-            /* eslint-disable max-len */
-            while (blockHeight > earliestHeightToCheck && (
-                balance.gt(0)
-                || nonce > 0
-                || transferAllowanceUsed.gt(0)
-                || htlcAllowanceUsed.gt(0)
-            )) {
-                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
-                const endHeight = blockHeight;
-                blockHeight = startHeight;
+            if ((trigger as number) > 0) updateUsdcBalances([address]);
 
-                console.debug('Native USDC Sync start', {
-                    balance: balance.toNumber() / 1e6,
-                    nonce,
-                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                    htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-                });
+            const client = await getPolygonClient();
+            const poolAddress = await getLegacyFeePoolAddress(client.usdcTransfer, config.polygon.usdc.tokenContract);
 
-                console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
+            console.debug('Fetching native USDC transaction history for', address, knownTxs);
 
-                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    safeQueryFilter(client.usdcToken, filterIncoming, startHeight, endHeight),
-                    safeQueryFilter(client.usdcToken, filterOutgoing, startHeight, endHeight),
-                ]);
+            // EventFilters only allow to query with an AND condition between arguments (topics). So while
+            // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+            // OR two AND pairs. That requires two separate requests.
+            const filterIncoming = client.usdcToken.filters.Transfer(null, address);
+            const filterOutgoing = client.usdcToken.filters.Transfer(address);
+            // const filterMetaTx = client.usdcBridgedToken.filters.MetaTransactionExecuted();
 
-                // Ignore address poisoning transactions
-                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
-                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+            const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-                console.debug(`Got ${logsIn.length} incoming native logs, ${logsOut.length} outgoing native logs` /* , and ${metaTxs.length} meta tx logs` */);
+            Promise.all([
+                client.usdcToken.balanceOf(address) as Promise<BigNumber>,
+                client.usdcToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+                getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.transferContract),
+                getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.htlcContract),
+            ])
+                .then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
+                    let blockHeight = await getPolygonBlockNumber();
 
-                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
-                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
-                console.debug(`Found ${outgoingTxs.size} outgoing native txs`);
-                nonce -= outgoingTxs.size;
+                    // To filter known txs
+                    const knownHashes = knownTxs.map((tx) => tx.transactionHash);
 
-                const txsUsingHtlcAllowance = new Set(logsOut
-                    .filter((ev) => ev.args?.to === config.polygon.usdc.htlcContract) // Only HTLC fundings are relevant
-                    .map((ev) => ev.transactionHash));
+                    const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
 
-                const allTransferLogs = logsIn.concat(logsOut);
+                    /* oxlint-disable eslint-js/max-len */
+                    while (
+                        blockHeight > earliestHeightToCheck
+                        && (balance.gt(0) || nonce > 0 || transferAllowanceUsed.gt(0) || htlcAllowanceUsed.gt(0))
+                    ) {
+                        const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                        const endHeight = blockHeight;
+                        blockHeight = startHeight;
 
-                // eslint-disable-next-line no-loop-func
-                const newLogs = allTransferLogs.filter((log) => {
-                    if (!log.args) return false;
+                        console.debug('Native USDC Sync start', {
+                            balance: balance.toNumber() / 1e6,
+                            nonce,
+                            transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                            htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                        });
 
-                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
-                    if (log.args.from === address && nonce <= 0) {
-                        balance = balance.add(log.args.value);
+                        console.debug(
+                            `Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`,
+                        );
 
-                        if (txsUsingHtlcAllowance.has(log.transactionHash)) {
-                            htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
-                        } else {
-                            transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
-                        }
-                    }
-                    if (log.args.to === address) {
-                        balance = balance.sub(log.args.value);
-                    }
+                        // eslint-disable-next-line no-await-in-loop
+                        let [logsIn, logsOut /* , metaTxs */] = await Promise.all([
+                            safeQueryFilter(client.usdcToken, filterIncoming, startHeight, endHeight),
+                            safeQueryFilter(client.usdcToken, filterOutgoing, startHeight, endHeight),
+                        ]);
 
-                    if (knownHashes.includes(log.transactionHash)) return false;
+                        // Ignore address poisoning transactions
+                        logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                        logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
 
-                    // Transfers to a gasless relay, in a transaction with another transfer from this address, are
-                    // the fees paid to the relay
-                    if (log.args.from === address && isGaslessRelay(log.args.to)) {
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex
-                            && otherLog.args?.from === address);
-                        if (mainTransferLog && mainTransferLog.args) {
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                            return false;
-                        }
-                    }
+                        console.debug(
+                            `Got ${logsIn.length} incoming native logs, ${logsOut.length} outgoing native logs` /* , and ${metaTxs.length} meta tx logs` */,
+                        );
 
-                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
-                    if (log.args.to === poolAddress) {
-                        // Find the main transfer log
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex);
+                        // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                        const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                        console.debug(`Found ${outgoingTxs.size} outgoing native txs`);
+                        nonce -= outgoingTxs.size;
 
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                        } else if (!mainTransferLog) {
-                            // If no main transfer log was found, it means this transaction failed
-                            // and only the fee was paid.
-                            (log as TransferEvent).failed = true;
+                        const txsUsingHtlcAllowance = new Set(
+                            logsOut
+                                .filter((ev) => ev.args?.to === config.polygon.usdc.htlcContract) // Only HTLC fundings are relevant
+                                .map((ev) => ev.transactionHash),
+                        );
+
+                        const allTransferLogs = logsIn.concat(logsOut);
+
+                        // eslint-disable-next-line no-loop-func
+                        const newLogs = allTransferLogs.filter((log) => {
+                            if (!log.args) return false;
+
+                            // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
+                            if (log.args.from === address && nonce <= 0) {
+                                balance = balance.add(log.args.value);
+
+                                if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                                    htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                                } else {
+                                    transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                                }
+                            }
+                            if (log.args.to === address) {
+                                balance = balance.sub(log.args.value);
+                            }
+
+                            if (knownHashes.includes(log.transactionHash)) return false;
+
+                            // Transfers to a gasless relay, in a transaction with another transfer from this address, are
+                            // the fees paid to the relay
+                            if (log.args.from === address && isGaslessRelay(log.args.to)) {
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex !== log.logIndex
+                                        && otherLog.args?.from === address,
+                                );
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                    return false;
+                                }
+                            }
+
+                            // Transfers to the Uniswap pool are the fees paid to OpenGSN
+                            if (log.args.to === poolAddress) {
+                                // Find the main transfer log
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex !== log.logIndex,
+                                );
+
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    // Write this log's `value` as the main transfer log's `fee`
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                } else if (!mainTransferLog) {
+                                    // If no main transfer log was found, it means this transaction failed
+                                    // and only the fee was paid.
+                                    (log as TransferEvent).failed = true;
+                                    return true;
+                                }
+
+                                // Then ignore this log
+                                return false;
+                            }
+
+                            if (log.args.to === config.polygon.usdc.htlcContract) {
+                                // Get Open event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdcHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address === config.polygon.usdc.htlcContract) {
+                                            try {
+                                                const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                                if (name === 'Open') {
+                                                    return <HtlcEvent>{
+                                                        name,
+                                                        id: args.id,
+                                                        token: args.token,
+                                                        amount: args.amount.toNumber(),
+                                                        recipient: args.recipient,
+                                                        hash: args.hash,
+                                                        timeout: args.timeout.toNumber(),
+                                                    };
+                                                }
+                                            } catch (error) {
+                                                /* ignore */
+                                            }
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
+                            if (log.args.from === config.polygon.usdc.htlcContract) {
+                                // Get Redeem or Refund event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdcHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address === config.polygon.usdc.htlcContract) {
+                                            try {
+                                                const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                                if (name === 'Redeem') {
+                                                    return <HtlcEvent>{
+                                                        name,
+                                                        id: args.id,
+                                                        secret: args.secret,
+                                                    };
+                                                }
+                                                if (name === 'Refund') {
+                                                    return <HtlcEvent>{
+                                                        name,
+                                                        id: args.id,
+                                                    };
+                                                }
+                                            } catch (error) {
+                                                /* ignore */
+                                            }
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
+                            if (log.args.from === config.polygon.usdcConversion.swapContract) {
+                                // Uniswap swaps from bridged to native USDC are handled by the bridged USDC listener
+                                // to be able to include the transaction fee into it.
+                                return false;
+                            }
+
                             return true;
-                        }
+                        }) as TransferEvent[];
 
-                        // Then ignore this log
-                        return false;
-                    }
+                        const logsAndBlocks = newLogs.map((log) => ({
+                            log,
+                            block: log.getBlock(),
+                            event: htlcEventsByTransactionHash.get(log.transactionHash),
+                        }));
 
-                    if (log.args.to === config.polygon.usdc.htlcContract) {
-                        // Get Open event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdcHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.polygon.usdc.htlcContract) {
-                                    try {
-                                        const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                        if (name === 'Open') {
-                                            return <HtlcEvent>{
-                                                name,
-                                                id: args.id,
-                                                token: args.token,
-                                                amount: args.amount.toNumber(),
-                                                recipient: args.recipient,
-                                                hash: args.hash,
-                                                timeout: args.timeout.toNumber(),
-                                            };
-                                        }
-                                    } catch (error) { /* ignore */ }
-                                }
-                            }
-                            return undefined;
+                        // TODO: Allow individual fetches to fail, but still add the other transactions?
+                        // eslint-disable-next-line no-await-in-loop
+                        await Promise.all(
+                            logsAndBlocks.map(async ({ log, block, event }) =>
+                                logAndBlockToPlain(log, await block, await event),
+                            ),
+                        ).then((transactions) => {
+                            usdcTransactionsStore.addTransactions(transactions);
                         });
+                    } // End while loop
+                    /* oxlint-enable eslint-js/max-len */
 
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    if (log.args.from === config.polygon.usdc.htlcContract) {
-                        // Get Redeem or Refund event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdcHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.polygon.usdc.htlcContract) {
-                                    try {
-                                        const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                        if (name === 'Redeem') {
-                                            return <HtlcEvent>{
-                                                name,
-                                                id: args.id,
-                                                secret: args.secret,
-                                            };
-                                        }
-                                        if (name === 'Refund') {
-                                            return <HtlcEvent>{
-                                                name,
-                                                id: args.id,
-                                            };
-                                        }
-                                    } catch (error) { /* ignore */ }
-                                }
-                            }
-                            return undefined;
-                        });
-
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    if (log.args.from === config.polygon.usdcConversion.swapContract) {
-                        // Uniswap swaps from bridged to native USDC are handled by the bridged USDC listener
-                        // to be able to include the transaction fee into it.
-                        return false;
-                    }
-
-                    return true;
-                }) as TransferEvent[];
-
-                const logsAndBlocks = newLogs.map((log) => ({
-                    log,
-                    block: log.getBlock(),
-                    event: htlcEventsByTransactionHash.get(log.transactionHash),
-                }));
-
-                // TODO: Allow individual fetches to fail, but still add the other transactions?
-                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
-                    async ({ log, block, event }) => logAndBlockToPlain(
-                        log,
-                        await block,
-                        await event,
-                    ),
-                )).then((transactions) => {
-                    usdcTransactionsStore.addTransactions(transactions);
-                });
-            } // End while loop
-            /* eslint-enable max-len */
-
-            console.debug('Native USDC Sync end', {
-                balance: balance.toNumber() / 1e6,
-                nonce,
-                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-            });
-        })
-            .catch((error) => {
-                console.error(error);
-                fetchedUsdcAddresses.delete(address);
-            })
-            .then(() => network$.fetchingUsdcTxHistory--);
-    }, { immediate: true });
+                    console.debug('Native USDC Sync end', {
+                        balance: balance.toNumber() / 1e6,
+                        nonce,
+                        transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                        htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    fetchedUsdcAddresses.delete(address);
+                })
+                .then(() => network$.fetchingUsdcTxHistory--);
+        },
+        { immediate: true },
+    );
 
     // Fetch transactions for active address
     const usdtBridgedTxFetchTrigger = ref(0);
-    watch([
-        () => addressStore.addressInfo,
-        usdtBridgedTxFetchTrigger,
-        () => config.polygon,
-    ], async ([
-        addressInfo,
-        trigger,
-    ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
-        if (!address || fetchedUsdtBridgedAddresses.has(address)) return;
-        fetchedUsdtBridgedAddresses.add(address);
+    watch(
+        [() => addressStore.addressInfo, usdtBridgedTxFetchTrigger, () => config.polygon],
+        async ([addressInfo, trigger]) => {
+            const address = (addressInfo as PolygonAddressInfo | null)?.address;
+            if (!address || fetchedUsdtBridgedAddresses.has(address)) return;
+            fetchedUsdtBridgedAddresses.add(address);
 
-        console.debug('Scheduling bridged USDT transaction fetch for', address);
+            console.debug('Scheduling bridged USDT transaction fetch for', address);
 
-        const knownTxs = Object.values(usdtTransactionsStore.$state.transactions)
-            .filter((tx) => (!tx.token || tx.token === config.polygon.usdt_bridged.tokenContract)
-                && (tx.sender === address || tx.recipient === address));
-        const lastConfirmedHeight = knownTxs
-            .filter((tx) => Boolean(tx.blockHeight))
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
-        const earliestHeightToCheck = Math.max(
-            config.polygon.usdt_bridged.earliestHistoryScanHeight,
-            lastConfirmedHeight - 1000,
-        );
-
-        network$.fetchingUsdtTxHistory++;
-
-        if ((trigger as number) > 0) updateUsdtBridgedBalances([address]);
-
-        const client = await getPolygonClient();
-        const poolAddress = await getLegacyFeePoolAddress(
-            client.usdtBridgedTransfer,
-            config.polygon.usdt_bridged.tokenContract,
-        );
-
-        console.debug('Fetching bridged USDT transaction history for', address, knownTxs);
-
-        // EventFilters only allow to query with an AND condition between arguments (topics). So while
-        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
-        // OR two AND pairs. That requires two separate requests.
-        const filterIncoming = client.usdtBridgedToken.filters.Transfer(null, address);
-        const filterOutgoing = client.usdtBridgedToken.filters.Transfer(address);
-
-        const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
-
-        Promise.all([
-            client.usdtBridgedToken.balanceOf(address) as Promise<BigNumber>,
-            // Outgoing transfers use one of two nonces: the meta transaction nonce for OpenGSN transfers, and the
-            // permit nonce for gasless transfers.
-            Promise.all([
-                readOptionalNonce(client.usdtBridgedToken.getNonce(address)),
-                readOptionalNonce(client.usdtBridgedToken.nonces(address)),
-            ]).then(([metaTxNonce, permitNonce]) => metaTxNonce + permitNonce),
-            getLegacyAllowanceUsed(
-                client,
-                client.usdtBridgedToken,
-                address,
-                config.polygon.usdt_bridged.transferContract,
-            ),
-            getLegacyAllowanceUsed(client, client.usdtBridgedToken, address, config.polygon.usdt_bridged.htlcContract),
-        ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
-            let blockHeight = await getPolygonBlockNumber();
-
-            // To filter known txs
-            const knownHashes = knownTxs.map(
-                (tx) => tx.transactionHash,
+            const knownTxs = Object.values(usdtTransactionsStore.$state.transactions).filter(
+                (tx) =>
+                    (!tx.token || tx.token === config.polygon.usdt_bridged.tokenContract)
+                    && (tx.sender === address || tx.recipient === address),
+            );
+            const lastConfirmedHeight = knownTxs
+                .filter((tx) => Boolean(tx.blockHeight))
+                .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+            const earliestHeightToCheck = Math.max(
+                config.polygon.usdt_bridged.earliestHistoryScanHeight,
+                lastConfirmedHeight - 1000,
             );
 
-            const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
-            const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
+            network$.fetchingUsdtTxHistory++;
 
-            /* eslint-disable max-len */
-            while (blockHeight > earliestHeightToCheck && (
-                balance.gt(0)
-                || nonce > 0
-                || transferAllowanceUsed.gt(0)
-                || htlcAllowanceUsed.gt(0)
-            )) {
-                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
-                const endHeight = blockHeight;
-                blockHeight = startHeight;
+            if ((trigger as number) > 0) updateUsdtBridgedBalances([address]);
 
-                console.debug('Bridged USDT Sync start', {
-                    balance: balance.toNumber() / 1e6,
-                    nonce,
-                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                    htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-                });
+            const client = await getPolygonClient();
+            const poolAddress = await getLegacyFeePoolAddress(
+                client.usdtBridgedTransfer,
+                config.polygon.usdt_bridged.tokenContract,
+            );
 
-                console.debug(`Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
+            console.debug('Fetching bridged USDT transaction history for', address, knownTxs);
 
-                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    safeQueryFilter(client.usdtBridgedToken, filterIncoming, startHeight, endHeight),
-                    safeQueryFilter(client.usdtBridgedToken, filterOutgoing, startHeight, endHeight),
-                ]);
+            // EventFilters only allow to query with an AND condition between arguments (topics). So while
+            // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+            // OR two AND pairs. That requires two separate requests.
+            const filterIncoming = client.usdtBridgedToken.filters.Transfer(null, address);
+            const filterOutgoing = client.usdtBridgedToken.filters.Transfer(address);
 
-                // Ignore address poisoning transactions
-                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
-                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+            const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-                console.debug(`Got ${logsIn.length} incoming bridged logs, ${logsOut.length} outgoing bridged logs` /* , and ${metaTxs.length} meta tx logs` */);
+            Promise.all([
+                client.usdtBridgedToken.balanceOf(address) as Promise<BigNumber>,
+                // Outgoing transfers use one of two nonces: the meta transaction nonce for OpenGSN transfers, and the
+                // permit nonce for gasless transfers.
+                Promise.all([
+                    readOptionalNonce(client.usdtBridgedToken.getNonce(address)),
+                    readOptionalNonce(client.usdtBridgedToken.nonces(address)),
+                ]).then(([metaTxNonce, permitNonce]) => metaTxNonce + permitNonce),
+                getLegacyAllowanceUsed(
+                    client,
+                    client.usdtBridgedToken,
+                    address,
+                    config.polygon.usdt_bridged.transferContract,
+                ),
+                getLegacyAllowanceUsed(
+                    client,
+                    client.usdtBridgedToken,
+                    address,
+                    config.polygon.usdt_bridged.htlcContract,
+                ),
+            ])
+                .then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
+                    let blockHeight = await getPolygonBlockNumber();
 
-                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
-                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
-                console.debug(`Found ${outgoingTxs.size} outgoing bridged txs`);
-                nonce -= outgoingTxs.size;
+                    // To filter known txs
+                    const knownHashes = knownTxs.map((tx) => tx.transactionHash);
 
-                const txsUsingHtlcAllowance = new Set(logsOut
-                    .filter((ev) => ev.args?.to === config.polygon.usdt_bridged.htlcContract) // Only HTLC fundings are relevant
-                    .map((ev) => ev.transactionHash));
+                    const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+                    const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
 
-                const allTransferLogs = logsIn.concat(logsOut);
+                    /* oxlint-disable eslint-js/max-len */
+                    while (
+                        blockHeight > earliestHeightToCheck
+                        && (balance.gt(0) || nonce > 0 || transferAllowanceUsed.gt(0) || htlcAllowanceUsed.gt(0))
+                    ) {
+                        const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                        const endHeight = blockHeight;
+                        blockHeight = startHeight;
 
-                // eslint-disable-next-line no-loop-func
-                const newLogs = allTransferLogs.filter((log) => {
-                    if (!log.args) return false;
+                        console.debug('Bridged USDT Sync start', {
+                            balance: balance.toNumber() / 1e6,
+                            nonce,
+                            transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                            htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                        });
 
-                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
-                    if (log.args.from === address && nonce <= 0) {
-                        balance = balance.add(log.args.value);
+                        console.debug(
+                            `Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`,
+                        );
 
-                        if (txsUsingHtlcAllowance.has(log.transactionHash)) {
-                            htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
-                        } else {
-                            transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
-                        }
-                    }
-                    if (log.args.to === address) {
-                        balance = balance.sub(log.args.value);
-                    }
+                        // eslint-disable-next-line no-await-in-loop
+                        let [logsIn, logsOut /* , metaTxs */] = await Promise.all([
+                            safeQueryFilter(client.usdtBridgedToken, filterIncoming, startHeight, endHeight),
+                            safeQueryFilter(client.usdtBridgedToken, filterOutgoing, startHeight, endHeight),
+                        ]);
 
-                    if (knownHashes.includes(log.transactionHash)) return false;
+                        // Ignore address poisoning transactions
+                        logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                        logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
 
-                    // Transfers to a gasless relay, in a transaction with another transfer from this address, are
-                    // the fees paid to the relay
-                    if (log.args.from === address && isGaslessRelay(log.args.to)) {
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex
-                            && otherLog.args?.from === address);
-                        if (mainTransferLog && mainTransferLog.args) {
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                            return false;
-                        }
-                    }
+                        console.debug(
+                            `Got ${logsIn.length} incoming bridged logs, ${logsOut.length} outgoing bridged logs` /* , and ${metaTxs.length} meta tx logs` */,
+                        );
 
-                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
-                    if (log.args.to === poolAddress) {
-                        // Find the main transfer log
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex);
+                        // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                        const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                        console.debug(`Found ${outgoingTxs.size} outgoing bridged txs`);
+                        nonce -= outgoingTxs.size;
 
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                        } else if (!mainTransferLog) {
-                            // If no main transfer log was found, it means this transaction failed
-                            // and only the fee was paid.
-                            (log as TransferEvent).failed = true;
+                        const txsUsingHtlcAllowance = new Set(
+                            logsOut
+                                .filter((ev) => ev.args?.to === config.polygon.usdt_bridged.htlcContract) // Only HTLC fundings are relevant
+                                .map((ev) => ev.transactionHash),
+                        );
+
+                        const allTransferLogs = logsIn.concat(logsOut);
+
+                        // eslint-disable-next-line no-loop-func
+                        const newLogs = allTransferLogs.filter((log) => {
+                            if (!log.args) return false;
+
+                            // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
+                            if (log.args.from === address && nonce <= 0) {
+                                balance = balance.add(log.args.value);
+
+                                if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                                    htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                                } else {
+                                    transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                                }
+                            }
+                            if (log.args.to === address) {
+                                balance = balance.sub(log.args.value);
+                            }
+
+                            if (knownHashes.includes(log.transactionHash)) return false;
+
+                            // Transfers to a gasless relay, in a transaction with another transfer from this address, are
+                            // the fees paid to the relay
+                            if (log.args.from === address && isGaslessRelay(log.args.to)) {
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex !== log.logIndex
+                                        && otherLog.args?.from === address,
+                                );
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                    return false;
+                                }
+                            }
+
+                            // Transfers to the Uniswap pool are the fees paid to OpenGSN
+                            if (log.args.to === poolAddress) {
+                                // Find the main transfer log
+                                const mainTransferLog = allTransferLogs.find(
+                                    (otherLog) =>
+                                        otherLog.transactionHash === log.transactionHash
+                                        && otherLog.logIndex !== log.logIndex,
+                                );
+
+                                if (mainTransferLog && mainTransferLog.args) {
+                                    // Write this log's `value` as the main transfer log's `fee`
+                                    mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                                } else if (!mainTransferLog) {
+                                    // If no main transfer log was found, it means this transaction failed
+                                    // and only the fee was paid.
+                                    (log as TransferEvent).failed = true;
+                                    return true;
+                                }
+
+                                // Then ignore this log
+                                return false;
+                            }
+
+                            if (log.args.to === config.polygon.usdt_bridged.htlcContract) {
+                                // Get Open event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdtBridgedHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
+                                        try {
+                                            const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                            if (name === 'Open') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                    token: args.token,
+                                                    amount: args.amount.toNumber(),
+                                                    recipient: args.recipient,
+                                                    hash: args.hash,
+                                                    timeout: args.timeout.toNumber(),
+                                                };
+                                            }
+                                        } catch (error) {
+                                            /* ignore */
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
+                            if (log.args.from === config.polygon.usdt_bridged.htlcContract) {
+                                // Get Redeem or Refund event log
+                                const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                                    const htlcContract = await getUsdtBridgedHtlcContract();
+
+                                    for (const innerLog of receipt.logs) {
+                                        if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
+                                        try {
+                                            const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                            if (name === 'Redeem') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                    secret: args.secret,
+                                                };
+                                            }
+                                            if (name === 'Refund') {
+                                                return <HtlcEvent>{
+                                                    name,
+                                                    id: args.id,
+                                                };
+                                            }
+                                        } catch (error) {
+                                            /* ignore */
+                                        }
+                                    }
+                                    return undefined;
+                                });
+
+                                htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                            }
+
                             return true;
-                        }
+                        }) as TransferEvent[];
 
-                        // Then ignore this log
-                        return false;
-                    }
+                        const logsAndBlocks = newLogs.map((log) => ({
+                            log,
+                            block: log.getBlock(),
+                            event:
+                                htlcEventsByTransactionHash.get(log.transactionHash)
+                                || uniswapEventsByTransactionHash.get(log.transactionHash),
+                        }));
 
-                    if (log.args.to === config.polygon.usdt_bridged.htlcContract) {
-                        // Get Open event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdtBridgedHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
-                                try {
-                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                    if (name === 'Open') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                            token: args.token,
-                                            amount: args.amount.toNumber(),
-                                            recipient: args.recipient,
-                                            hash: args.hash,
-                                            timeout: args.timeout.toNumber(),
-                                        };
-                                    }
-                                } catch (error) { /* ignore */ }
-                            }
-                            return undefined;
+                        // TODO: Allow individual fetches to fail, but still add the other transactions?
+                        // eslint-disable-next-line no-await-in-loop
+                        await Promise.all(
+                            logsAndBlocks.map(async ({ log, block, event }) =>
+                                logAndBlockToPlain(log, await block, await event),
+                            ),
+                        ).then((transactions) => {
+                            usdtTransactionsStore.addTransactions(transactions);
                         });
+                    } // End while loop
+                    /* oxlint-enable eslint-js/max-len */
 
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    if (log.args.from === config.polygon.usdt_bridged.htlcContract) {
-                        // Get Redeem or Refund event log
-                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                            const htlcContract = await getUsdtBridgedHtlcContract();
-
-                            for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
-                                try {
-                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                    if (name === 'Redeem') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                            secret: args.secret,
-                                        };
-                                    }
-                                    if (name === 'Refund') {
-                                        return <HtlcEvent>{
-                                            name,
-                                            id: args.id,
-                                        };
-                                    }
-                                } catch (error) { /* ignore */ }
-                            }
-                            return undefined;
-                        });
-
-                        htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    }
-
-                    return true;
-                }) as TransferEvent[];
-
-                const logsAndBlocks = newLogs.map((log) => ({
-                    log,
-                    block: log.getBlock(),
-                    event: htlcEventsByTransactionHash.get(log.transactionHash)
-                        || uniswapEventsByTransactionHash.get(log.transactionHash),
-                }));
-
-                // TODO: Allow individual fetches to fail, but still add the other transactions?
-                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
-                    async ({ log, block, event }) => logAndBlockToPlain(
-                        log,
-                        await block,
-                        await event,
-                    ),
-                )).then((transactions) => {
-                    usdtTransactionsStore.addTransactions(transactions);
-                });
-            } // End while loop
-            /* eslint-enable max-len */
-
-            console.debug('Bridged USDT Sync end', {
-                balance: balance.toNumber() / 1e6,
-                nonce,
-                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
-            });
-        })
-            .catch((error) => {
-                console.error(error);
-                fetchedUsdtBridgedAddresses.delete(address);
-            })
-            .then(() => network$.fetchingUsdtTxHistory--);
-    }, { immediate: true });
+                    console.debug('Bridged USDT Sync end', {
+                        balance: balance.toNumber() / 1e6,
+                        nonce,
+                        transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                        htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    fetchedUsdtBridgedAddresses.delete(address);
+                })
+                .then(() => network$.fetchingUsdtTxHistory--);
+        },
+        { immediate: true },
+    );
 }
 
 function logAndBlockToPlain(
@@ -1401,9 +1467,7 @@ function logAndBlockToPlain(
         value: log.args.value.toNumber(), // With Javascript numbers we can safely represent up to 9,007,199,254 USDC/T
         fee: log.args.fee?.toNumber(),
         event,
-        state: log.failed
-            ? TransactionState.FAILED
-            : (block ? TransactionState.MINED : TransactionState.PENDING),
+        state: log.failed ? TransactionState.FAILED : block ? TransactionState.MINED : TransactionState.PENDING,
         blockHeight: block?.number,
         timestamp: block?.timestamp,
     };
@@ -1418,24 +1482,26 @@ export async function receiptToTransaction(
     const { config } = useConfig();
     const client = await getPolygonClient();
 
-    const [tokenContract, transferContract] = token === config.polygon.usdc.tokenContract
-        ? [client.usdcToken, client.usdcTransfer]
-        : token === config.polygon.usdc_bridged.tokenContract
-            ? [client.usdcBridgedToken, client.usdcBridgedTransfer]
-            : [client.usdtBridgedToken, client.usdtBridgedTransfer];
+    const [tokenContract, transferContract] =
+        token === config.polygon.usdc.tokenContract
+            ? [client.usdcToken, client.usdcTransfer]
+            : token === config.polygon.usdc_bridged.tokenContract
+              ? [client.usdcBridgedToken, client.usdcBridgedTransfer]
+              : [client.usdtBridgedToken, client.usdtBridgedTransfer];
 
-    const htlcContractAddress = token === config.polygon.usdc.tokenContract
-        ? config.polygon.usdc.htlcContract
-        : token === config.polygon.usdc_bridged.tokenContract
-            ? config.polygon.usdc_bridged.htlcContract
-            : config.polygon.usdt_bridged.htlcContract;
+    const htlcContractAddress =
+        token === config.polygon.usdc.tokenContract
+            ? config.polygon.usdc.htlcContract
+            : token === config.polygon.usdc_bridged.tokenContract
+              ? config.polygon.usdc_bridged.htlcContract
+              : config.polygon.usdt_bridged.htlcContract;
 
     const [htlcContract, poolAddress] = await Promise.all([
         token === config.polygon.usdc.tokenContract
             ? getUsdcHtlcContract()
             : token === config.polygon.usdc_bridged.tokenContract
-                ? getUsdcBridgedHtlcContract()
-                : getUsdtBridgedHtlcContract(),
+              ? getUsdcBridgedHtlcContract()
+              : getUsdtBridgedHtlcContract(),
         getLegacyFeePoolAddress(transferContract, token),
     ]);
 
@@ -1483,25 +1549,17 @@ export async function receiptToTransaction(
             // Transfers to the Uniswap pool are the fees paid to OpenGSN
             if (
                 log.args.to === poolAddress
-                || (
-                    // Before v3, transfers to the transferContract were the fees paid to OpenGSN
-                    config.environment !== ENV_MAIN
-                    && (
-                        log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
-                        || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
-                    )
-                )
-                || (
-                    // Before v3, the first transfer to the HTLC contract was the fee paid to OpenGSN
-                    config.environment !== ENV_MAIN
-                    && (
-                        log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
-                        && !feeLog
-                        // When Fastspot is funding the HTLC, there's only one Transfer event, which is the main
-                        // `transferLog`, so don't handle any fee.
-                        && logs.filter((l) => l?.name === 'Transfer').length > 1
-                    )
-                )
+                // Before v3, transfers to the transferContract were the fees paid to OpenGSN
+                || (config.environment !== ENV_MAIN
+                    && (log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
+                        || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1')) // v1 USDC transfer contract
+                // Before v3, the first transfer to the HTLC contract was the fee paid to OpenGSN
+                || (config.environment !== ENV_MAIN
+                    && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                    && !feeLog
+                    // When Fastspot is funding the HTLC, there's only one Transfer event, which is the main
+                    // `transferLog`, so don't handle any fee.
+                    && logs.filter((l) => l?.name === 'Transfer').length > 1)
             ) {
                 feeLog = log as TransferLog;
                 return;
@@ -1523,7 +1581,9 @@ export async function receiptToTransaction(
                                 amountOut: args.value.toNumber(),
                             };
                         }
-                    } catch (error) { /* ignore */ }
+                    } catch (error) {
+                        /* ignore */
+                    }
                 }
             }
 
@@ -1575,7 +1635,7 @@ export async function receiptToTransaction(
 
     return logAndBlockToPlain(
         transferLog,
-        block || await client.provider.getBlock(transferLog.blockHash),
+        block || (await client.provider.getBlock(transferLog.blockHash)),
         htlcEvent || uniswapEvent,
     );
 }
@@ -1613,11 +1673,7 @@ export async function getUsdcHtlcContract() {
 
     const { ethers, provider } = await getPolygonClient();
     const { config } = useConfig();
-    usdcHtlcContract = new ethers.Contract(
-        config.polygon.usdc.htlcContract,
-        USDC_HTLC_CONTRACT_ABI,
-        provider,
-    );
+    usdcHtlcContract = new ethers.Contract(config.polygon.usdc.htlcContract, USDC_HTLC_CONTRACT_ABI, provider);
     return usdcHtlcContract;
 }
 
@@ -1646,13 +1702,15 @@ async function getLegacyAllowanceUsed(
     spender: string,
 ): Promise<BigNumber> {
     if (!spender) return client.ethers.BigNumber.from(0);
-    const MAX_ALLOWANCE = client.ethers
-        .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+    const MAX_ALLOWANCE = client.ethers.BigNumber.from(
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+    );
     // The minimum allowance that should remain so we can be certain the max allowance was ever given.
     // If the current allowance is below this number, we ignore allowance counting for the history sync.
-    const MIN_ALLOWANCE = client.ethers
-        .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
-    const allowance = await tokenContract.allowance(owner, spender) as BigNumber;
+    const MIN_ALLOWANCE = client.ethers.BigNumber.from(
+        '0x1000000000000000000000000000000000000000000000000000000000000000',
+    );
+    const allowance = (await tokenContract.allowance(owner, spender)) as BigNumber;
     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
     return MAX_ALLOWANCE.sub(allowance);
 }
@@ -1705,9 +1763,10 @@ export async function gaslessReceiptToTransaction(
         throw new Error('Not a gasless transfer');
     }
 
-    const tokenContract = request.token.toLowerCase() === config.polygon.usdc.tokenContract.toLowerCase()
-        ? client.usdcToken
-        : client.usdtBridgedToken;
+    const tokenContract =
+        request.token.toLowerCase() === config.polygon.usdc.tokenContract.toLowerCase()
+            ? client.usdcToken
+            : client.usdtBridgedToken;
     const transferLogs: TransferLog[] = [];
     for (const log of receipt.logs) {
         if (log.address.toLowerCase() !== request.token.toLowerCase()) continue;
@@ -1716,13 +1775,17 @@ export async function gaslessReceiptToTransaction(
             if (name === 'Transfer' && (args.from as string).toLowerCase() === request.from.toLowerCase()) {
                 transferLogs.push({ ...log, args: args as unknown as TransferResult, name });
             }
-        } catch (error) { /* ignore */ }
+        } catch (error) {
+            /* ignore */
+        }
     }
-    const transferLog = transferLogs.find(({ args }) => args.to.toLowerCase() === request.to.toLowerCase()
-        && args.value.eq(request.amount));
+    const transferLog = transferLogs.find(
+        ({ args }) => args.to.toLowerCase() === request.to.toLowerCase() && args.value.eq(request.amount),
+    );
     if (!transferLog) throw new Error('Could not find the transfer log');
-    const feeLog = transferLogs.find(({ args }) => args.to.toLowerCase() === request.relay.toLowerCase()
-        && args.value.eq(request.fee));
+    const feeLog = transferLogs.find(
+        ({ args }) => args.to.toLowerCase() === request.relay.toLowerCase() && args.value.eq(request.fee),
+    );
     if (!feeLog && request.fee !== '0') throw new Error('Could not find the fee log');
 
     transferLog.args = addFeeToArgs(transferLog.args, client.ethers.BigNumber.from(request.fee)) as TransferResult;

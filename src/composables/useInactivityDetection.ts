@@ -36,7 +36,7 @@ function onActivity() {
     // Throttle activity events to avoid unnecessarily handling duplicate or excessive events.
     if (areActivityEventsThrottled) return;
     areActivityEventsThrottled = true;
-    setTimeout(() => areActivityEventsThrottled = false, ACTIVITY_EVENTS_THROTTLE_TIME);
+    setTimeout(() => (areActivityEventsThrottled = false), ACTIVITY_EVENTS_THROTTLE_TIME);
 
     isUserInactive!.value = false;
     clearTimeout(inactivityTimeout);

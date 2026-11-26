@@ -1,144 +1,125 @@
-import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
-import Vue, { provide, inject } from 'vue';
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
+import Vue, { provide, inject } from 'vue';
+import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 
 import Config from 'config';
 
+import type { WarningModalProps } from './components/modals/WarningModal.vue';
 import { i18n } from './i18n/i18n-setup';
 import { areSwapsUnderMaintenance } from './lib/swap/utils/Assets';
-import type { WarningModalProps } from './components/modals/WarningModal.vue';
 
 // Start views
-import Groundfloor from './components/layouts/Groundfloor.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
+import Groundfloor from './components/layouts/Groundfloor.vue';
 
-import { AccountType, useAccountStore } from './stores/Account';
 import { CryptoCurrency } from './lib/Constants';
+import { AccountType, useAccountStore } from './stores/Account';
 
 // Main views
-const SettingsLayout = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
-const NetworkLayout = () =>
-    import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
+const SettingsLayout = () => import('./components/layouts/Settings.vue');
+const NetworkLayout = () => import('./components/layouts/Network.vue');
 
 // Modals
-const AccountMenuModal = () =>
-    import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
-const BackupModal = () =>
-    import(/* webpackChunkName: "backup-modal" */ './components/modals/BackupModal.vue');
-const HistoryExportModal = () =>
-    import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
-const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
-const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
-const AddressSelectorModal = () =>
-    import(/* webpackChunkName: "address-selector-modal" */ './components/modals/AddressSelectorModal.vue');
-const TransactionModal = () =>
-    import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
-const BuyOptionsModal = () =>
-    import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
-const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
-const WelcomeModal = () =>
-    import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
-const WelcomeStakingModal = () =>
-    import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
-const MigrationWelcomeModal = () =>
-    import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
-const MultisigAnnouncementModal = () =>
-    import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
-const DisclaimerModal = () =>
-    import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
-const ReleaseNotesModal = () =>
-    import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
-const StablecoinSelectionModal = () =>
-    import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
-const WalletStatusModal = () =>
-    import(/* webpackChunkName: "wallet-status-modal" */ './components/modals/WalletStatusModal.vue');
+const AccountMenuModal = () => import('./components/modals/AccountMenuModal.vue');
+const BackupModal = () => import('./components/modals/BackupModal.vue');
+const HistoryExportModal = () => import('./components/modals/HistoryExportModal.vue');
+const SendModal = () => import('./components/modals/SendModal.vue');
+const ReceiveModal = () => import('./components/modals/ReceiveModal.vue');
+const AddressSelectorModal = () => import('./components/modals/AddressSelectorModal.vue');
+const TransactionModal = () => import('./components/modals/TransactionModal.vue');
+const BuyOptionsModal = () => import('./components/modals/BuyOptionsModal.vue');
+const ScanQrModal = () => import('./components/modals/ScanQrModal.vue');
+const WelcomeModal = () => import('./components/modals/WelcomeModal.vue');
+const WelcomeStakingModal = () => import('./components/staking/WelcomeStakingModal.vue');
+const MigrationWelcomeModal = () => import('./components/modals/MigrationWelcomeModal.vue');
+const MultisigAnnouncementModal = () => import('./components/modals/MultisigAnnouncementModal.vue');
+const DisclaimerModal = () => import('./components/modals/DisclaimerModal.vue');
+const ReleaseNotesModal = () => import('./components/modals/ReleaseNotesModal.vue');
+const StablecoinSelectionModal = () => import('./components/modals/StablecoinSelectionModal.vue');
+const WalletStatusModal = () => import('./components/modals/WalletStatusModal.vue');
 
 // Bitcoin Modals
-const BtcActivationModal = () =>
-    import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
-const BtcSendModal = () => import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
-const BtcReceiveModal = () =>
-    import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
-const BtcTransactionModal = () =>
-    import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
+const BtcActivationModal = () => import('./components/modals/BtcActivationModal.vue');
+const BtcSendModal = () => import('./components/modals/BtcSendModal.vue');
+const BtcReceiveModal = () => import('./components/modals/BtcReceiveModal.vue');
+const BtcTransactionModal = () => import('./components/modals/BtcTransactionModal.vue');
 
 // Stablecoin Modals
-const PolygonActivationModal = () =>
-    import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
+const PolygonActivationModal = () => import('./components/modals/PolygonActivationModal.vue');
 export function gasAbstractionMaintenanceWarning(): WarningModalProps {
     return {
         icon: 'warning',
         title: i18n.t('Gas abstraction is currently disabled') as string,
-        message: i18n.t('Sending and receiving USDC/USDT is temporarily disabled due to a security issue with '
-            + 'our Polygon gas abstraction contract. Stablecoins sent to you will still arrive, but you can\'t '
-            + 'move them here until it\'s fixed, so please avoid receiving them for now. Your funds stay under '
-            + 'your control. If you need to move them now, you can import your account into another Polygon '
-            + 'wallet like MetaMask.') as string,
+        message: i18n.t(
+            'Sending and receiving USDC/USDT is temporarily disabled due to a security issue with '
+                + "our Polygon gas abstraction contract. Stablecoins sent to you will still arrive, but you can't "
+                + "move them here until it's fixed, so please avoid receiving them for now. Your funds stay under "
+                + 'your control. If you need to move them now, you can import your account into another Polygon '
+                + 'wallet like MetaMask.',
+        ) as string,
         link: 'https://x.com/nimiq/status/2100661471789412565',
     };
 }
 const GasAbstractionMaintenanceModal = () =>
-    import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
-        .then(({ createWarningModal }) => createWarningModal(gasAbstractionMaintenanceWarning));
-const StablecoinSendModal = () => (Config.polygon.maintenance.transfers
-    ? GasAbstractionMaintenanceModal()
-    : import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue'));
-const StablecoinReceiveModal = () => (Config.polygon.maintenance.transfers
-    ? GasAbstractionMaintenanceModal()
-    : import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue'));
-const UsdcTransactionModal = () =>
-    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
-const UsdtTransactionModal = () =>
-    import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
-const UsdtAddedModal = () =>
-    import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
+    import('./components/modals/WarningModal.vue').then(({ createWarningModal }) =>
+        createWarningModal(gasAbstractionMaintenanceWarning),
+    );
+const StablecoinSendModal = () =>
+    Config.polygon.maintenance.transfers
+        ? GasAbstractionMaintenanceModal()
+        : import('./components/modals/StablecoinSendModal.vue');
+const StablecoinReceiveModal = () =>
+    Config.polygon.maintenance.transfers
+        ? GasAbstractionMaintenanceModal()
+        : import('./components/modals/StablecoinReceiveModal.vue');
+const UsdcTransactionModal = () => import('./components/modals/UsdcTransactionModal.vue');
+const UsdtTransactionModal = () => import('./components/modals/UsdtTransactionModal.vue');
+const UsdtAddedModal = () => import('./components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
-const SwapModal = () => (areSwapsUnderMaintenance()
-    ? import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
-        .then(({ createWarningModal }) => createWarningModal(() => ({
-            title: i18n.t('Swaps are under maintenance') as string,
-            message: i18n.t('Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance '
-                + 'is completed.') as string,
-        })))
-    : import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
+const SwapModal = () =>
+    areSwapsUnderMaintenance()
+        ? import('./components/modals/WarningModal.vue').then(({ createWarningModal }) =>
+              createWarningModal(() => ({
+                  title: i18n.t('Swaps are under maintenance') as string,
+                  message: i18n.t(
+                      'Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance '
+                          + 'is completed.',
+                  ) as string,
+              })),
+          )
+        : import('./components/swap/SwapModal.vue');
 export function stablecoinSwapMaintenanceWarning(): WarningModalProps {
     return {
         icon: 'warning',
         title: i18n.t('Stablecoin swaps are currently disabled') as string,
-        message: i18n.t('Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon '
-            + 'contract that powers gas-free USDC/USDT transactions, so we\'ve paused them while we fix it. Your '
-            + 'wallet is non-custodial, so your funds stay under your control. If you need to move them now, you '
-            + 'can import your account into another Polygon wallet like MetaMask. NIM and BTC '
-            + 'swaps are not affected.') as string,
+        message: i18n.t(
+            'Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon '
+                + "contract that powers gas-free USDC/USDT transactions, so we've paused them while we fix it. Your "
+                + 'wallet is non-custodial, so your funds stay under your control. If you need to move them now, you '
+                + 'can import your account into another Polygon wallet like MetaMask. NIM and BTC '
+                + 'swaps are not affected.',
+        ) as string,
         link: 'https://x.com/nimiq/status/2100661471789412565',
     };
 }
 const StablecoinSwapMaintenanceModal = () =>
-    import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
-        .then(({ createWarningModal }) => createWarningModal(stablecoinSwapMaintenanceWarning));
-const BuyCryptoModal = () =>
-    import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
-const SellCryptoModal = () =>
-    import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
+    import('./components/modals/WarningModal.vue').then(({ createWarningModal }) =>
+        createWarningModal(stablecoinSwapMaintenanceWarning),
+    );
+const BuyCryptoModal = () => import('./components/modals/BuyCryptoModal.vue');
+const SellCryptoModal = () => import('./components/modals/SellCryptoModal.vue');
 
-const MoonpayModal = () =>
-    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
-const MoonpaySellInfoModal = () =>
-    import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpaySellInfoModal.vue');
-const SimplexModal = () =>
-    import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
-const CoinifyModal = () =>
-    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifyModal.vue');
-const CoinifySellInfoModal = () =>
-    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifySellInfoModal.vue');
+const MoonpayModal = () => import('./components/modals/MoonpayModal.vue');
+const MoonpaySellInfoModal = () => import('./components/modals/MoonpaySellInfoModal.vue');
+const SimplexModal = () => import('./components/modals/SimplexModal.vue');
+const CoinifyModal = () => import('./components/modals/CoinifyModal.vue');
+const CoinifySellInfoModal = () => import('./components/modals/CoinifySellInfoModal.vue');
 
 // Staking Modals
-const StakingModal = () =>
-    import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
-const ValidatorDetailsModal = () =>
-    import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
+const StakingModal = () => import('./components/staking/StakingModal.vue');
+const ValidatorDetailsModal = () => import('./components/staking/ValidatorDetailsModal.vue');
 
 Vue.use(VueRouter);
 
@@ -219,7 +200,7 @@ export const STAKING_QUERY_SHOW_VALIDATORS = { page: 'validators' } as const;
 function createContextRoutes(
     baseRouteName: RouteName,
     routeConfig: Partial<RouteConfig>,
-): { base: RouteConfig, settings: RouteConfig, network: RouteConfig } {
+): { base: RouteConfig; settings: RouteConfig; network: RouteConfig } {
     // Generate the context-specific route names by prefixing with 'settings-' or 'network-'
     const settingsRouteName = `settings-${baseRouteName}` as RouteName;
     const networkRouteName = `network-${baseRouteName}` as RouteName;
@@ -292,438 +273,490 @@ export function getContextRouteName(baseRouteName: RouteName, route: Route = rou
     return `${context.name}-${baseRouteName}` as RouteName; // see createContextRoutes
 }
 
-const routes: RouteConfig[] = [{
-    // Not named, as the name of its default child route below is the one to navigate to.
-    path: '/',
-    components: {
-        groundfloor: Groundfloor,
-    },
-    children: [{
-        path: '',
+const routes: RouteConfig[] = [
+    {
+        // Not named, as the name of its default child route below is the one to navigate to.
+        path: '/',
         components: {
-            accountOverview: AccountOverview,
-            addressOverview: AddressOverview,
+            groundfloor: Groundfloor,
         },
-        name: RouteName.Root,
-        alias: '/transactions',
-        meta: { column: Columns.DYNAMIC },
-        children: [{
-            path: '/accounts',
-            components: {
-                modal: AccountMenuModal,
+        children: [
+            {
+                path: '',
+                components: {
+                    accountOverview: AccountOverview,
+                    addressOverview: AddressOverview,
+                },
+                name: RouteName.Root,
+                alias: '/transactions',
+                meta: { column: Columns.DYNAMIC },
+                children: [
+                    {
+                        path: '/accounts',
+                        components: {
+                            modal: AccountMenuModal,
+                        },
+                        name: RouteName.RootAccounts,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/backup',
+                        components: {
+                            modal: BackupModal,
+                        },
+                        name: RouteName.Backup,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/export-history/:type',
+                        components: {
+                            modal: HistoryExportModal,
+                        },
+                        name: RouteName.ExportHistory,
+                        props: { modal: true },
+                        meta: { column: Columns.ADDRESS },
+                    },
+                    {
+                        path: '/send',
+                        components: {
+                            modal: AddressSelectorModal,
+                        },
+                        name: RouteName.Send,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/send/nim',
+                        components: {
+                            modal: SendModal,
+                        },
+                        name: RouteName.SendNim,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/send/btc',
+                        components: {
+                            modal: BtcSendModal,
+                        },
+                        name: RouteName.SendBtc,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/send/usdc',
+                        components: {
+                            modal: StablecoinSendModal,
+                        },
+                        name: RouteName.SendUsdc,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        // Same as /send/usdc, but we still define a separate named route instead of an alias of /send/usdc, because
+                        // an alias can only be navigated to by path or by shared route name. When navigating by path, no additional
+                        // params like canUserGoBack can be passed. When navigating by shared route name, /send/usdc appears in the
+                        // address bar.
+                        path: '/send/usdt',
+                        components: {
+                            modal: StablecoinSendModal,
+                        },
+                        name: RouteName.SendUsdt,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/receive',
+                        components: {
+                            modal: AddressSelectorModal,
+                        },
+                        name: RouteName.Receive,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/receive/nim',
+                        components: {
+                            modal: ReceiveModal,
+                        },
+                        name: RouteName.ReceiveNim,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/receive/btc',
+                        components: {
+                            modal: BtcReceiveModal,
+                        },
+                        name: RouteName.ReceiveBtc,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/receive/usdc',
+                        components: {
+                            modal: StablecoinReceiveModal,
+                        },
+                        name: RouteName.ReceiveUsdc,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        // Not an alias of /receive/usdc, see note on /send/usdt.
+                        path: '/receive/usdt',
+                        components: {
+                            modal: StablecoinReceiveModal,
+                        },
+                        name: RouteName.ReceiveUsdt,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/transaction/:hash',
+                        components: {
+                            modal: TransactionModal,
+                        },
+                        name: RouteName.Transaction,
+                        props: { modal: true },
+                        meta: { column: Columns.ADDRESS },
+                    },
+                    {
+                        path: '/buy-crypto',
+                        components: {
+                            modal: BuyCryptoModal,
+                        },
+                        name: RouteName.BuyCrypto,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/scan',
+                        components: {
+                            modal: ScanQrModal,
+                        },
+                        name: RouteName.Scan,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/:requestUri(nimiq:.+)',
+                        components: {
+                            modal: SendModal,
+                        },
+                        name: RouteName.SendViaUri,
+                        props: {
+                            // Pass full path including query parameters.
+                            modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
+                        },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/welcome',
+                        components: {
+                            modal: WelcomeModal,
+                        },
+                        name: RouteName.Welcome,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/welcome-backup',
+                        components: {
+                            modal: BackupModal,
+                        },
+                        name: RouteName.WelcomeBackup,
+                        props: {
+                            modal: { showBackButton: true, showSkipButton: true }, // props for BackupModal
+                        },
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/welcome-staking',
+                        components: {
+                            modal: WelcomeStakingModal,
+                        },
+                        name: RouteName.WelcomeStaking,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/migration-welcome',
+                        components: {
+                            modal: MigrationWelcomeModal,
+                        },
+                        name: RouteName.MigrationWelcome,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/btc-activation',
+                        components: {
+                            modal: BtcActivationModal,
+                        },
+                        name: RouteName.BtcActivation,
+                        props: {
+                            modal: parseActivationRedirect,
+                        },
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/btc-transaction/:hash',
+                        components: {
+                            modal: BtcTransactionModal,
+                        },
+                        name: RouteName.BtcTransaction,
+                        props: { modal: true },
+                        meta: { column: Columns.ADDRESS },
+                    },
+                    {
+                        path: '/:requestUri(bitcoin:.+)',
+                        components: {
+                            modal: BtcSendModal,
+                        },
+                        name: RouteName.SendViaBtcUri,
+                        props: {
+                            // Pass full path including query parameters.
+                            modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
+                        },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/usdc-activation',
+                        alias: '/usdt-activation',
+                        components: {
+                            modal: PolygonActivationModal,
+                        },
+                        name: RouteName.PolygonActivation,
+                        props: {
+                            modal: parseActivationRedirect,
+                        },
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/usdc-transaction/:hash',
+                        components: {
+                            modal: UsdcTransactionModal,
+                        },
+                        name: RouteName.UsdcTransaction,
+                        props: { modal: true },
+                        meta: { column: Columns.ADDRESS },
+                    },
+                    {
+                        path: '/usdt-transaction/:hash',
+                        components: {
+                            modal: UsdtTransactionModal,
+                        },
+                        name: RouteName.UsdtTransaction,
+                        props: { modal: true },
+                        meta: { column: Columns.ADDRESS },
+                    },
+                    {
+                        // Match complete pathname with all segments, which is important for polygon request links with contract
+                        // functions as the contract function name is a separate path segment, e.g. /transfer.
+                        path: '/:requestUri(polygon:.+)',
+                        components: {
+                            modal: StablecoinSendModal,
+                        },
+                        name: RouteName.SendViaPolygonUri,
+                        props: {
+                            // Pass full path including query parameters.
+                            modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
+                        },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/usdt-added',
+                        components: {
+                            modal: UsdtAddedModal,
+                        },
+                        name: RouteName.UsdtAdded,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/multisig-announcement',
+                        components: {
+                            modal: MultisigAnnouncementModal,
+                        },
+                        name: RouteName.MultisigAnnouncement,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/stablecoin-selection',
+                        components: {
+                            modal: StablecoinSelectionModal,
+                        },
+                        name: RouteName.StablecoinSelection,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/moonpay',
+                        components: {
+                            modal: MoonpayModal,
+                        },
+                        name: RouteName.Moonpay,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/simplex',
+                        components: {
+                            'persistent-modal': SimplexModal,
+                        },
+                        name: RouteName.Simplex,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/coinify',
+                        components: {
+                            modal: CoinifyModal,
+                        },
+                        name: RouteName.Coinify,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/release-notes',
+                        components: {
+                            modal: ReleaseNotesModal,
+                        },
+                        name: RouteName.RootReleaseNotes,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/staking',
+                        components: {
+                            modal: StakingModal,
+                        },
+                        name: RouteName.Staking,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/validator-details',
+                        components: {
+                            modal: ValidatorDetailsModal,
+                        },
+                        name: RouteName.ValidatorDetails,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/staking/rewards/:month?',
+                        components: {
+                            modal: StakingModal,
+                        },
+                        name: RouteName.StakingRewards,
+                        props: { modal: true },
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/wallet-status',
+                        components: {
+                            modal: WalletStatusModal,
+                        },
+                        name: RouteName.WalletStatus,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    // While stablecoin swaps are under maintenance, show a warning instead of the SwapModal for swaps with USDC
+                    // or USDT. Registered before the regular swap route to take precedence, as paths are matched in registration
+                    // order. This covers paths like /swap/NIM-USDC_MATIC as opened by AccountOverview, deep links and history
+                    // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal itself shows the
+                    // warning as overlay instead of navigating, if USDC or USDT get selected. Parentheses aren't supported within
+                    // param patterns.
+                    ...(Config.polygon.maintenance.swaps
+                        ? [
+                              {
+                                  path: '/swap/:pair(.*USD[CT]_MATIC.*)',
+                                  components: {
+                                      modal: StablecoinSwapMaintenanceModal,
+                                  },
+                                  name: RouteName.StablecoinSwapMaintenance,
+                                  meta: { column: Columns.ACCOUNT },
+                              },
+                          ]
+                        : []),
+                    // Sidebar modals - base routes
+                    sidebarModalRoutes.buy.base,
+                    sidebarModalRoutes.sellCrypto.base,
+                    sidebarModalRoutes.swap.base,
+                    sidebarModalRoutes.moonpaySellInfo.base,
+                    sidebarModalRoutes.coinifySellInfo.base,
+                ],
+                beforeEnter: (to, from, next) => {
+                    if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
+                        const parsed = parseNimiqSafeRequestLink(window.location.href);
+                        if (!parsed) return next();
+                        const path = createNimiqRequestLink(parsed.recipient, {
+                            ...parsed,
+                            type: NimiqRequestLinkType.URI,
+                        });
+                        return next({ path, replace: true });
+                    }
+                    return next();
+                },
             },
-            name: RouteName.RootAccounts,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/backup',
-            components: {
-                modal: BackupModal,
+            {
+                path: '/settings',
+                components: {
+                    settings: SettingsLayout,
+                },
+                name: RouteName.Settings,
+                meta: { column: Columns.ACCOUNT },
+                children: [
+                    {
+                        path: '/accounts',
+                        components: {
+                            modal: AccountMenuModal,
+                        },
+                        name: RouteName.SettingsAccounts,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    {
+                        path: '/disclaimer',
+                        components: {
+                            modal: DisclaimerModal,
+                        },
+                        name: RouteName.Disclaimer,
+                        meta: { column: Columns.ACCOUNT },
+                    },
+                    {
+                        path: '/release-notes',
+                        components: {
+                            modal: ReleaseNotesModal,
+                        },
+                        name: RouteName.SettingsReleaseNotes,
+                        meta: { column: Columns.DYNAMIC },
+                    },
+                    // Sidebar modals - settings routes
+                    sidebarModalRoutes.buy.settings,
+                    sidebarModalRoutes.swap.settings,
+                    sidebarModalRoutes.sellCrypto.settings,
+                    sidebarModalRoutes.moonpaySellInfo.settings,
+                    sidebarModalRoutes.coinifySellInfo.settings,
+                ],
             },
-            name: RouteName.Backup,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/export-history/:type',
-            components: {
-                modal: HistoryExportModal,
-            },
-            name: RouteName.ExportHistory,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
-            path: '/send',
-            components: {
-                modal: AddressSelectorModal,
-            },
-            name: RouteName.Send,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/send/nim',
-            components: {
-                modal: SendModal,
-            },
-            name: RouteName.SendNim,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/send/btc',
-            components: {
-                modal: BtcSendModal,
-            },
-            name: RouteName.SendBtc,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/send/usdc',
-            components: {
-                modal: StablecoinSendModal,
-            },
-            name: RouteName.SendUsdc,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            // Same as /send/usdc, but we still define a separate named route instead of an alias of /send/usdc, because
-            // an alias can only be navigated to by path or by shared route name. When navigating by path, no additional
-            // params like canUserGoBack can be passed. When navigating by shared route name, /send/usdc appears in the
-            // address bar.
-            path: '/send/usdt',
-            components: {
-                modal: StablecoinSendModal,
-            },
-            name: RouteName.SendUsdt,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/receive',
-            components: {
-                modal: AddressSelectorModal,
-            },
-            name: RouteName.Receive,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/receive/nim',
-            components: {
-                modal: ReceiveModal,
-            },
-            name: RouteName.ReceiveNim,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/receive/btc',
-            components: {
-                modal: BtcReceiveModal,
-            },
-            name: RouteName.ReceiveBtc,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/receive/usdc',
-            components: {
-                modal: StablecoinReceiveModal,
-            },
-            name: RouteName.ReceiveUsdc,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            // Not an alias of /receive/usdc, see note on /send/usdt.
-            path: '/receive/usdt',
-            components: {
-                modal: StablecoinReceiveModal,
-            },
-            name: RouteName.ReceiveUsdt,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/transaction/:hash',
-            components: {
-                modal: TransactionModal,
-            },
-            name: RouteName.Transaction,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
-            path: '/buy-crypto',
-            components: {
-                modal: BuyCryptoModal,
-            },
-            name: RouteName.BuyCrypto,
-            meta: { column: Columns.DYNAMIC },
-        },
-        {
-            path: '/scan',
-            components: {
-                modal: ScanQrModal,
-            },
-            name: RouteName.Scan,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/:requestUri(nimiq:.+)',
-            components: {
-                modal: SendModal,
-            },
-            name: RouteName.SendViaUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/welcome',
-            components: {
-                modal: WelcomeModal,
-            },
-            name: RouteName.Welcome,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/welcome-backup',
-            components: {
-                modal: BackupModal,
-            },
-            name: RouteName.WelcomeBackup,
-            props: {
-                modal: { showBackButton: true, showSkipButton: true }, // props for BackupModal
-            },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/welcome-staking',
-            components: {
-                modal: WelcomeStakingModal,
-            },
-            name: RouteName.WelcomeStaking,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/migration-welcome',
-            components: {
-                modal: MigrationWelcomeModal,
-            },
-            name: RouteName.MigrationWelcome,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/btc-activation',
-            components: {
-                modal: BtcActivationModal,
-            },
-            name: RouteName.BtcActivation,
-            props: {
-                modal: parseActivationRedirect,
-            },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/btc-transaction/:hash',
-            components: {
-                modal: BtcTransactionModal,
-            },
-            name: RouteName.BtcTransaction,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
-            path: '/:requestUri(bitcoin:.+)',
-            components: {
-                modal: BtcSendModal,
-            },
-            name: RouteName.SendViaBtcUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/usdc-activation',
-            alias: '/usdt-activation',
-            components: {
-                modal: PolygonActivationModal,
-            },
-            name: RouteName.PolygonActivation,
-            props: {
-                modal: parseActivationRedirect,
-            },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/usdc-transaction/:hash',
-            components: {
-                modal: UsdcTransactionModal,
-            },
-            name: RouteName.UsdcTransaction,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
-            path: '/usdt-transaction/:hash',
-            components: {
-                modal: UsdtTransactionModal,
-            },
-            name: RouteName.UsdtTransaction,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
-            // Match complete pathname with all segments, which is important for polygon request links with contract
-            // functions as the contract function name is a separate path segment, e.g. /transfer.
-            path: '/:requestUri(polygon:.+)',
-            components: {
-                modal: StablecoinSendModal,
-            },
-            name: RouteName.SendViaPolygonUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/usdt-added',
-            components: {
-                modal: UsdtAddedModal,
-            },
-            name: RouteName.UsdtAdded,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/multisig-announcement',
-            components: {
-                modal: MultisigAnnouncementModal,
-            },
-            name: RouteName.MultisigAnnouncement,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/stablecoin-selection',
-            components: {
-                modal: StablecoinSelectionModal,
-            },
-            name: RouteName.StablecoinSelection,
-            meta: { column: Columns.ACCOUNT },
-        },
-        {
-            path: '/moonpay',
-            components: {
-                modal: MoonpayModal,
-            },
-            name: RouteName.Moonpay,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/simplex',
-            components: {
-                'persistent-modal': SimplexModal,
-            },
-            name: RouteName.Simplex,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/coinify',
-            components: {
-                modal: CoinifyModal,
-            },
-            name: RouteName.Coinify,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/release-notes',
-            components: {
-                modal: ReleaseNotesModal,
-            },
-            name: RouteName.RootReleaseNotes,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/staking',
-            components: {
-                modal: StakingModal,
-            },
-            name: RouteName.Staking,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/validator-details',
-            components: {
-                modal: ValidatorDetailsModal,
-            },
-            name: RouteName.ValidatorDetails,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/staking/rewards/:month?',
-            components: {
-                modal: StakingModal,
-            },
-            name: RouteName.StakingRewards,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/wallet-status',
-            components: {
-                modal: WalletStatusModal,
-            },
-            name: RouteName.WalletStatus,
-            meta: { column: Columns.DYNAMIC },
-        },
-        // While stablecoin swaps are under maintenance, show a warning instead of the SwapModal for swaps with USDC
-        // or USDT. Registered before the regular swap route to take precedence, as paths are matched in registration
-        // order. This covers paths like /swap/NIM-USDC_MATIC as opened by AccountOverview, deep links and history
-        // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal itself shows the
-        // warning as overlay instead of navigating, if USDC or USDT get selected. Parentheses aren't supported within
-        // param patterns.
-        ...(Config.polygon.maintenance.swaps ? [{
-            path: '/swap/:pair(.*USD[CT]_MATIC.*)',
-            components: {
-                modal: StablecoinSwapMaintenanceModal,
-            },
-            name: RouteName.StablecoinSwapMaintenance,
-            meta: { column: Columns.ACCOUNT },
-        }] : []),
-        // Sidebar modals - base routes
-        sidebarModalRoutes.buy.base,
-        sidebarModalRoutes.sellCrypto.base,
-        sidebarModalRoutes.swap.base,
-        sidebarModalRoutes.moonpaySellInfo.base,
-        sidebarModalRoutes.coinifySellInfo.base,
         ],
-        beforeEnter: (to, from, next) => {
-            if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
-                const parsed = parseNimiqSafeRequestLink(window.location.href);
-                if (!parsed) return next();
-                const path = createNimiqRequestLink(parsed.recipient, {
-                    ...parsed,
-                    type: NimiqRequestLinkType.URI,
-                });
-                return next({ path, replace: true });
-            }
-            return next();
-        },
-    }, {
-        path: '/settings',
+    },
+    {
+        path: '/network',
         components: {
-            settings: SettingsLayout,
+            basement: NetworkLayout,
         },
-        name: RouteName.Settings,
+        name: RouteName.Network,
         meta: { column: Columns.ACCOUNT },
-        children: [{
-            path: '/accounts',
-            components: {
-                modal: AccountMenuModal,
+        children: [
+            {
+                path: '/accounts',
+                components: {
+                    modal: AccountMenuModal,
+                },
+                name: RouteName.NetworkAccounts,
+                meta: { column: Columns.DYNAMIC },
             },
-            name: RouteName.SettingsAccounts,
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/disclaimer',
-            components: {
-                modal: DisclaimerModal,
+            {
+                path: '/release-notes',
+                components: {
+                    modal: ReleaseNotesModal,
+                },
+                name: RouteName.NetworkReleaseNotes,
+                meta: { column: Columns.DYNAMIC },
             },
-            name: RouteName.Disclaimer,
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/release-notes',
-            components: {
-                modal: ReleaseNotesModal,
-            },
-            name: RouteName.SettingsReleaseNotes,
-            meta: { column: Columns.DYNAMIC },
-        },
-        // Sidebar modals - settings routes
-        sidebarModalRoutes.buy.settings,
-        sidebarModalRoutes.swap.settings,
-        sidebarModalRoutes.sellCrypto.settings,
-        sidebarModalRoutes.moonpaySellInfo.settings,
-        sidebarModalRoutes.coinifySellInfo.settings,
+            // Sidebar modals - network routes
+            sidebarModalRoutes.buy.network,
+            sidebarModalRoutes.swap.network,
+            sidebarModalRoutes.sellCrypto.network,
+            sidebarModalRoutes.moonpaySellInfo.network,
+            sidebarModalRoutes.coinifySellInfo.network,
         ],
-    }],
-}, {
-    path: '/network',
-    components: {
-        basement: NetworkLayout,
     },
-    name: RouteName.Network,
-    meta: { column: Columns.ACCOUNT },
-    children: [{
-        path: '/accounts',
-        components: {
-            modal: AccountMenuModal,
-        },
-        name: RouteName.NetworkAccounts,
-        meta: { column: Columns.DYNAMIC },
-    }, {
-        path: '/release-notes',
-        components: {
-            modal: ReleaseNotesModal,
-        },
-        name: RouteName.NetworkReleaseNotes,
-        meta: { column: Columns.DYNAMIC },
-    },
-    // Sidebar modals - network routes
-    sidebarModalRoutes.buy.network,
-    sidebarModalRoutes.swap.network,
-    sidebarModalRoutes.sellCrypto.network,
-    sidebarModalRoutes.moonpaySellInfo.network,
-    sidebarModalRoutes.coinifySellInfo.network,
-    ],
-}];
+];
 
 // If wallet was opened on a path other than root route, for example on a modal, inject a root history entry before the
 // actually requested route, such that a back navigation gets the user to the main wallet view, instead of leaving the
@@ -746,9 +779,9 @@ if (!window.history.state) {
     // Only return to the initial url if it's not on the root route, i.e. if another view or modal is supposed to be
     // opened. If it is on the root route, we don't add a second history entry for the root route, we do however close
     // the sidebar, if it's open, by stripping the sidebar parameter, and keep it closed.
-    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== process.env.BASE_URL;
+    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== import.meta.env.BASE_URL;
     const rootUrl = new URL(initialUrl);
-    rootUrl.pathname = process.env.BASE_URL!;
+    rootUrl.pathname = import.meta.env.BASE_URL;
     if (shouldReturnToInitialUrl) {
         // Can clear params and hash entirely as they're preserved in the initialUrl.
         rootUrl.search = '';
@@ -766,7 +799,7 @@ if (!window.history.state) {
 
 const router = new VueRouter({
     mode: 'history',
-    base: process.env.BASE_URL,
+    base: import.meta.env.BASE_URL,
     routes,
 });
 
@@ -783,7 +816,8 @@ function createActivationNavigationGuard(
 ) {
     const activationRoute = currency === CryptoCurrency.BTC ? RouteName.BtcActivation : RouteName.PolygonActivation;
     return (to: Route, from: Route, next: NavigationGuardNext) => {
-        const requiresCurrencyActivation = routesRequiringActivation.has(to.name as RouteName)
+        const requiresCurrencyActivation =
+            routesRequiringActivation.has(to.name as RouteName)
             || (to.name === getContextRouteName(RouteName.Swap, to)
                 && !!to.params.pair?.includes(currency.toUpperCase()));
         const { activeAccountInfo: activeAccount } = useAccountStore();
@@ -814,30 +848,36 @@ function createActivationNavigationGuard(
         }
     };
 }
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.BTC,
-    new Set([RouteName.SendBtc, RouteName.SendViaBtcUri, RouteName.ReceiveBtc]),
-    (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
-    () => useAccountStore().hasBitcoinAddresses,
-));
+router.beforeEach(
+    createActivationNavigationGuard(
+        CryptoCurrency.BTC,
+        new Set([RouteName.SendBtc, RouteName.SendViaBtcUri, RouteName.ReceiveBtc]),
+        (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
+        () => useAccountStore().hasBitcoinAddresses,
+    ),
+);
 const usdcRoutesRequiringActivation = Config.polygon.maintenance.transfers
     ? []
     : [RouteName.SendUsdc, RouteName.ReceiveUsdc, /* covers USDC and USDT */ RouteName.SendViaPolygonUri];
 const usdtRoutesRequiringActivation = Config.polygon.maintenance.transfers
     ? []
     : [RouteName.SendUsdt, RouteName.ReceiveUsdt];
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.USDC,
-    new Set(usdcRoutesRequiringActivation),
-    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses,
-));
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.USDT,
-    new Set(usdtRoutesRequiringActivation),
-    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses,
-));
+router.beforeEach(
+    createActivationNavigationGuard(
+        CryptoCurrency.USDC,
+        new Set(usdcRoutesRequiringActivation),
+        (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
+        () => useAccountStore().hasPolygonAddresses,
+    ),
+);
+router.beforeEach(
+    createActivationNavigationGuard(
+        CryptoCurrency.USDT,
+        new Set(usdtRoutesRequiringActivation),
+        (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
+        () => useAccountStore().hasPolygonAddresses,
+    ),
+);
 
 function parseActivationRedirect(route: Route) {
     // check for a redirect set by the activation navigation guard

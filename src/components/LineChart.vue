@@ -1,8 +1,14 @@
 <template>
     <div class="line-chart flex-column" :style="containerStyle">
-        <svg ref="svg$" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :preserveAspectRatio="preserveAspectRatio"
-            :style="{ opacity: points.length >= 2 ? 1 : 0 }">
-            <path ref="path$"
+        <svg
+            ref="svg$"
+            xmlns="http://www.w3.org/2000/svg"
+            :viewBox="viewBox"
+            :preserveAspectRatio="preserveAspectRatio"
+            :style="{ opacity: points.length >= 2 ? 1 : 0 }"
+        >
+            <path
+                ref="path$"
                 :d="path"
                 fill="none"
                 :stroke="stroke"
@@ -32,10 +38,9 @@ interface ChartDimensions {
 }
 
 // Chart utility functions
-const calculateViewBox = (dimensions: ChartDimensions) => (
+const calculateViewBox = (dimensions: ChartDimensions) =>
     `-${dimensions.strokeWidth / 2} -${dimensions.padding} `
-    + `${dimensions.width + dimensions.strokeWidth} ${dimensions.height + 2 * dimensions.padding}`
-);
+    + `${dimensions.width + dimensions.strokeWidth} ${dimensions.height + 2 * dimensions.padding}`;
 
 const calculatePath = (points: Point[], dimensions: ChartDimensions, smoothingFactor: number): string => {
     if (points.length < 2) return '';
@@ -66,12 +71,7 @@ const calculatePath = (points: Point[], dimensions: ChartDimensions, smoothingFa
         };
     };
 
-    const controlPoint = (
-        current: Point,
-        previous: Point | null,
-        next: Point | null,
-        isEnd = false,
-    ): Point => {
+    const controlPoint = (current: Point, previous: Point | null, next: Point | null, isEnd = false): Point => {
         const p = previous || current;
         const n = next || current;
 
@@ -84,31 +84,39 @@ const calculatePath = (points: Point[], dimensions: ChartDimensions, smoothingFa
     };
 
     // Generate SVG path
-    return normalizedPoints.map((point, index) => {
-        if (index === 0) return `M ${point.x} ${point.y}`;
+    return normalizedPoints
+        .map((point, index) => {
+            if (index === 0) return `M ${point.x} ${point.y}`;
 
-        const prev = index > 0 ? normalizedPoints[index - 1] : null;
-        const next = index < normalizedPoints.length - 1 ? normalizedPoints[index + 1] : null;
+            const prev = index > 0 ? normalizedPoints[index - 1] : null;
+            const next = index < normalizedPoints.length - 1 ? normalizedPoints[index + 1] : null;
 
-        const cp1 = controlPoint(prev!, normalizedPoints[index - 2] || null, point);
-        const cp2 = controlPoint(point, prev, next, true);
+            const cp1 = controlPoint(prev!, normalizedPoints[index - 2] || null, point);
+            const cp2 = controlPoint(point, prev, next, true);
 
-        return `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${point.x} ${point.y}`;
-    }).join(' ');
+            return `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${point.x} ${point.y}`;
+        })
+        .join(' ');
 };
 
 const animatePath = async (pathElement: SVGPathElement): Promise<void> => {
     // Reset strokeDashArray
     pathElement.style.strokeDasharray = '';
     // Wait for strokeDasharray reset to be applied
-    await new Promise((resolve) => { requestAnimationFrame(resolve); });
+    await new Promise((resolve) => {
+        requestAnimationFrame(resolve);
+    });
 
     const pathLength = pathElement.getTotalLength();
     pathElement.style.strokeDasharray = `0 ${pathLength}`;
     // Wait for initial strokeDasharray to be applied
-    await new Promise((resolve) => { requestAnimationFrame(resolve); });
+    await new Promise((resolve) => {
+        requestAnimationFrame(resolve);
+    });
     // Wait one more frame to be ready for the animation
-    await new Promise((resolve) => { requestAnimationFrame(resolve); });
+    await new Promise((resolve) => {
+        requestAnimationFrame(resolve);
+    });
 
     pathElement.style.strokeDasharray = `${pathLength} 0`;
 };
@@ -119,8 +127,7 @@ export default defineComponent({
         points: {
             type: Array as () => Point[],
             required: true,
-            validator: (points: Point[]) => points.every((p) =>
-                typeof p.x === 'number' && typeof p.y === 'number'),
+            validator: (points: Point[]) => points.every((p) => typeof p.x === 'number' && typeof p.y === 'number'),
         },
         width: {
             type: [Number, String],
@@ -178,21 +185,18 @@ export default defineComponent({
 
         const viewBox = computed(() => calculateViewBox(dimensions.value));
 
-        const path = computed(() => calculatePath(
-            props.points,
-            dimensions.value,
-            props.smoothingFactor,
-        ));
+        const path = computed(() => calculatePath(props.points, dimensions.value, props.smoothingFactor));
 
-        const onResize = () => requestAnimationFrame(() => {
-            if (!svg$.value) return;
-            const svgBoundingBox = svg$.value.getBoundingClientRect();
-            dimensions.value = {
-                ...dimensions.value,
-                width: svgBoundingBox.width,
-                height: svgBoundingBox.height,
-            };
-        });
+        const onResize = () =>
+            requestAnimationFrame(() => {
+                if (!svg$.value) return;
+                const svgBoundingBox = svg$.value.getBoundingClientRect();
+                dimensions.value = {
+                    ...dimensions.value,
+                    width: svgBoundingBox.width,
+                    height: svgBoundingBox.height,
+                };
+            });
 
         onMounted(() => {
             window.addEventListener('resize', onResize);
@@ -204,15 +208,19 @@ export default defineComponent({
         // Handle animation
         let shouldAnimate = props.animate;
 
-        watch(() => props.points, async () => {
-            if (!path$.value || !shouldAnimate) return;
-            if (props.points.length >= 2) {
-                await animatePath(path$.value);
-                shouldAnimate = false;
-            } else {
-                path$.value.style.strokeDasharray = '';
-            }
-        }, { immediate: true, flush: 'post' });
+        watch(
+            () => props.points,
+            async () => {
+                if (!path$.value || !shouldAnimate) return;
+                if (props.points.length >= 2) {
+                    await animatePath(path$.value);
+                    shouldAnimate = false;
+                } else {
+                    path$.value.style.strokeDasharray = '';
+                }
+            },
+            { immediate: true, flush: 'post' },
+        );
 
         return {
             svg$,
@@ -232,7 +240,7 @@ export default defineComponent({
 
 svg {
     flex-grow: 1;
-    transition: opacity .3s var(--nimiq-ease);
+    transition: opacity 0.3s var(--nimiq-ease);
 
     path {
         transition: stroke-dasharray 1.2s linear;

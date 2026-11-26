@@ -7,14 +7,15 @@
                     <template v-if="'name' in validator">
                         <span class="validator-label">{{ validator.name }}</span>
                     </template>
-                    <ShortAddress v-else :address="validator.address"/>
+                    <ShortAddress v-else :address="validator.address" />
                 </div>
                 <div class="validator-item-inner-row flex-row validator-subline">
                     <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" />
                     <!-- <strong class="dot">&middot;</strong>-->
                 </div>
             </div>
-            <ValidatorTrustScore v-if="'score' in validator && typeof validator.score.total === 'number'"
+            <ValidatorTrustScore
+                v-if="'score' in validator && typeof validator.score.total === 'number'"
                 :score="validator.score.total"
             />
         </div>
@@ -25,8 +26,8 @@
 import { defineComponent } from 'vue';
 import { Validator } from '../../stores/Staking';
 
-import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 
@@ -67,7 +68,10 @@ export default defineComponent({
 
     transition: background-color 400ms var(--nimiq-ease);
 
-    &:hover, &:focus { background-color: #f2f2f4 }
+    &:hover,
+    &:focus {
+        background-color: #f2f2f4;
+    }
 }
 
 .validator-item-wrapper {
@@ -89,15 +93,22 @@ export default defineComponent({
         padding-right: 2rem;
         font-size: var(--body-size);
 
-        .validator-label { font-weight: 600 }
-        .short-address { font-weight: 500 }
+        .validator-label {
+            font-weight: 600;
+        }
+        .short-address {
+            font-weight: 500;
+        }
 
         .trigger {
             color: nimiq-blue(0.4);
 
             transition: color 400ms var(--nimiq-ease);
 
-            &:hover, &:focus { color: nimiq-blue(.6) }
+            &:hover,
+            &:focus {
+                color: nimiq-blue(0.6);
+            }
         }
     }
 
@@ -106,6 +117,8 @@ export default defineComponent({
         font-size: var(--small-size);
     }
 
-    .dot { margin: 0 0.675rem }
+    .dot {
+        margin: 0 0.675rem;
+    }
 }
 </style>

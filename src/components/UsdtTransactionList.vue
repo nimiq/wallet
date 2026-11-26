@@ -9,16 +9,12 @@
             ref="scroller"
         >
             <template v-slot:default="{ item, index }">
-                <div
-                    class="list-element loading"
-                    v-if="item.loading"
-                    :style="{ animationDelay: `${index * .1}s` }"
-                >
+                <div class="list-element loading" v-if="item.loading" :style="{ animationDelay: `${index * 0.1}s` }">
                     <div class="date flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
                     </div>
-                    <HexagonIcon class="identicon"/>
+                    <HexagonIcon class="identicon" />
                     <div class="data flex-column">
                         <div class="placeholder"></div>
                         <div class="placeholder"></div>
@@ -32,11 +28,11 @@
                     <div v-if="!item.sender" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
                         <div v-if="item.isLatestMonth && isFetchingUsdtTxHistory" class="fetching flex-row">
-                            <CircleSpinner/>
+                            <CircleSpinner />
                             <span>{{ $t('Fetching') }}</span>
                         </div>
                     </div>
-                    <UsdtTransactionListItem v-else :transaction="item"/>
+                    <UsdtTransactionListItem v-else :transaction="item" />
                 </div>
             </template>
 
@@ -65,19 +61,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
 import UsdtTransactionListItem from '@/components/UsdtTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
-import { usePolygonAddressStore } from '../stores/PolygonAddress';
-import { useUsdtTransactionsStore, Transaction, TransactionState } from '../stores/UsdtTransactions';
-import { useUsdtContactsStore } from '../stores/UsdtContacts';
-import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
-import { ENV_MAIN } from '../lib/Constants';
 import { useConfig } from '../composables/useConfig';
-import { useWindowSize } from '../composables/useWindowSize';
 import { useUsdtTransactionInfo } from '../composables/useUsdtTransactionInfo';
+import { useWindowSize } from '../composables/useWindowSize';
+import { ENV_MAIN } from '../lib/Constants';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
+import { useUsdtTransactionsStore, Transaction, TransactionState } from '../stores/UsdtTransactions';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -93,8 +89,8 @@ function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
     options: {
-        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
-        year?: 'numeric' | '2-digit',
+        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow';
+        year?: 'numeric' | '2-digit';
     },
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
@@ -140,11 +136,14 @@ export default defineComponent({
 
         // Height of items in pixel
         const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const itemSize = computed(() => (isMobile.value ? 68 : 72)); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active address
-        const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
-            .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
+        const txsForActiveAddress = computed(() =>
+            Object.values(transactions$.transactions).filter(
+                (tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value,
+            ),
+        );
 
         const txCount = computed(() => txsForActiveAddress.value.length);
 
@@ -152,7 +151,10 @@ export default defineComponent({
         const filteredTxs = computed(() => {
             if (!props.searchString) return txsForActiveAddress.value;
 
-            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
+            const searchStrings = props.searchString
+                .toUpperCase()
+                .split(' ')
+                .filter((value) => value !== '');
 
             return txsForActiveAddress.value.filter((tx) => {
                 const transaction = ref<Readonly<Transaction>>(tx);
@@ -245,14 +247,10 @@ export default defineComponent({
                 if (txMonthYear !== displayedMonthYear) {
                     // Inject a month label
                     transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            locale,
-                            {
-                                month: 'long',
-                                year: txYear !== currentYear ? 'numeric' : undefined,
-                            },
-                        ),
+                        transactionHash: getLocaleMonthStringFromDate(txDate, locale, {
+                            month: 'long',
+                            year: txYear !== currentYear ? 'numeric' : undefined,
+                        }),
                         isLatestMonth,
                     });
                     isLatestMonth = false;
@@ -323,15 +321,19 @@ export default defineComponent({
         // Scroll to top when
         // - Active address changes
         const scroller = ref<{
-            scrollToPosition(position: number, smooth?: boolean): void,
-            $el: HTMLDivElement,
-                } | null>(null);
+            scrollToPosition(position: number, smooth?: boolean): void;
+            $el: HTMLDivElement;
+        } | null>(null);
 
-        watch(activeAddress, () => {
-            if (scroller.value) {
-                scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
-            }
-        }, { immediate: true, flush: 'post' });
+        watch(
+            activeAddress,
+            () => {
+                if (scroller.value) {
+                    scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
+                }
+            },
+            { immediate: true, flush: 'post' },
+        );
 
         function onScroll() {
             context.emit('scroll');
@@ -414,8 +416,12 @@ export default defineComponent({
         animation-iteration-count: 1;
 
         @keyframes fadein {
-            0% { opacity: 0 }
-            100% { opacity: 1 }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
     }
 
@@ -436,9 +442,15 @@ export default defineComponent({
             animation-delay: inherit;
 
             @keyframes loading {
-                0% { opacity: 1 }
-                50% { opacity: .5 }
-                100% { opacity: 1 }
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+                100% {
+                    opacity: 1;
+                }
             }
         }
 
@@ -568,7 +580,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .month-label {
         padding-top: 4rem;
     }

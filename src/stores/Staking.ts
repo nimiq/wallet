@@ -1,20 +1,10 @@
-import Vue, { markRaw } from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { defineStore, storeToRefs } from 'pinia';
-import { useAccountStore } from './Account';
-import { useAddressStore } from './Address';
-import { useFiatStore } from './Fiat';
-import { useNetworkStore } from './Network';
-import { TransactionState, useTransactionsStore } from './Transactions';
+import Vue, { markRaw } from 'vue';
 import { usePolicy } from '../composables/usePolicy';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
 import { fetchWatchtowerJob, fetchWatchtowerJobsForStaker, WatchtowerJob } from '../lib/AlbatrossWatchtower';
-import {
-    CryptoCurrency,
-    FiatCurrency,
-    FIAT_API_PROVIDER_TX_HISTORY,
-    FIAT_PRICE_UNAVAILABLE,
-} from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import {
     getEndOfMonthTimestamp,
     isCurrentMonthAndYear,
@@ -22,25 +12,30 @@ import {
     validatorLabel,
     ValidatorRef,
 } from '../lib/StakingUtils';
+import { useAccountStore } from './Account';
+import { useAddressStore } from './Address';
+import { useFiatStore } from './Fiat';
+import { useNetworkStore } from './Network';
+import { TransactionState, useTransactionsStore } from './Transactions';
 
 export type StakingState = {
-    chainValidators: Record<string, RawValidator>,
-    apiValidators: Record<string, ApiValidator>,
-    stakeByAddress: Record<string, Stake>,
-    stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>,
-    cachedMonthlyRewardsByAddress: Record<string, Map<string, MonthlyReward>>,
+    chainValidators: Record<string, RawValidator>;
+    apiValidators: Record<string, ApiValidator>;
+    stakeByAddress: Record<string, Stake>;
+    stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>;
+    cachedMonthlyRewardsByAddress: Record<string, Map<string, MonthlyReward>>;
     // What the watchtower holds for a staker's pending payout: a job (possibly started from another
     // browser, which then has no record of its own), or `null` once the watchtower conclusively
     // holds none. Absent while not asked or inconclusive. Not persisted (see storage.ts): it is
     // re-derived from the watchtower after every start.
-    watchtowerJobByAddress: Record<string, WatchtowerJob | null>,
-}
+    watchtowerJobByAddress: Record<string, WatchtowerJob | null>;
+};
 
 export type AggregatedRestakingEvent = {
-    sender_address: string,
-    time_window: string, // ISO 8601 encoded
-    aggregated_value: number,
-}
+    sender_address: string;
+    time_window: string; // ISO 8601 encoded
+    aggregated_value: number;
+};
 
 export interface MonthlyReward {
     total: number;
@@ -50,56 +45,57 @@ export interface MonthlyReward {
 }
 
 export type Stake = {
-    address: string,
-    activeBalance: number, // activeBalance (does not include inactiveBalance)
-    inactiveBalance: number,
-    inactiveRelease?: number,
+    address: string;
+    activeBalance: number; // activeBalance (does not include inactiveBalance)
+    inactiveBalance: number;
+    inactiveRelease?: number;
     // Election block at which the last deactivation takes effect (at or after its confirming macro
     // block). Absent on stakes stored before it was recorded.
-    inactiveFrom?: number,
-    validator?: string,
-    retiredBalance: number,
-}
+    inactiveFrom?: number;
+    validator?: string;
+    retiredBalance: number;
+};
 
 export type ApiValidator = {
-    id: number,
-    name: string,
-    address: string,
-    description: string | null,
-    fee: number,
-    payoutType: 'none' | 'direct' | 'restake',
-    payoutSchedule: string,
-    isMaintainedByNimiq: boolean,
-    website: string | null,
-    logo?: string,
-    hasDefaultLogo: boolean,
-    accentColor: string,
-    unstableScore: number | null,
-    dominanceRatioViaBalance: number,
-    dominanceRatioViaSlots: number,
+    id: number;
+    name: string;
+    address: string;
+    description: string | null;
+    fee: number;
+    payoutType: 'none' | 'direct' | 'restake';
+    payoutSchedule: string;
+    isMaintainedByNimiq: boolean;
+    website: string | null;
+    logo?: string;
+    hasDefaultLogo: boolean;
+    accentColor: string;
+    unstableScore: number | null;
+    dominanceRatioViaBalance: number;
+    dominanceRatioViaSlots: number;
     // contact?: Record<string, string> | null,
     score: {
-        total: number | null,
-        dominance: 0,
-        availability: number | null,
-        reliability: number | null,
-    },
-}
+        total: number | null;
+        dominance: 0;
+        availability: number | null;
+        reliability: number | null;
+    };
+};
 
 export type RawValidator = {
-    address: string,
-    active: boolean,
-    balance: number,
-    rewardAddress?: string,
+    address: string;
+    active: boolean;
+    balance: number;
+    rewardAddress?: string;
 
     // Calculated fields
-    dominance: number, // Percentage
-}
+    dominance: number; // Percentage
+};
 
-export type RegisteredValidator = RawValidator & ApiValidator & {
-    // Calculated fields
-    annualReward: number, // Percentage
-}
+export type RegisteredValidator = RawValidator
+    & ApiValidator & {
+        // Calculated fields
+        annualReward: number; // Percentage
+    };
 
 export type Validator = RawValidator | RegisteredValidator;
 
@@ -111,20 +107,20 @@ export type Validator = RawValidator | RegisteredValidator;
 // `watchtowerJobId` is the job the watchtower answered with; `syncWatchtowerOperation` follows it
 // in `watchtowerJobByAddress`, as an accepted job can still fail on-chain.
 export type SwitchValidatorRecord = {
-    targetValidatorAddress: string,
-    targetValidatorName?: string,
-    startedAtBlock: number,
-    deactivationTxHash: string,
-    watchtowerRegistered?: boolean,
-    watchtowerJobId?: string,
-}
+    targetValidatorAddress: string;
+    targetValidatorName?: string;
+    startedAtBlock: number;
+    deactivationTxHash: string;
+    watchtowerRegistered?: boolean;
+    watchtowerJobId?: string;
+};
 
 export type UnstakingRecord = {
-    startedAtBlock: number,
-    deactivationTxHash: string,
-    watchtowerRegistered?: boolean,
-    watchtowerJobId?: string,
-}
+    startedAtBlock: number;
+    deactivationTxHash: string;
+    watchtowerRegistered?: boolean;
+    watchtowerJobId?: string;
+};
 
 // Retired-but-not-removed stake (inactive 0, retired > 0) is still the watchtower's job: only a
 // snapshot with neither balance means the payout went through.
@@ -134,8 +130,9 @@ function hasPendingPayout(stake: Stake): boolean {
 
 // Inactive stake its cooldown no longer holds: from this block on it can be paid out or re-delegated.
 function isInactiveStakeReleased(stake: Stake): boolean {
-    return stake.inactiveBalance > 0 && !!stake.inactiveRelease
-        && stake.inactiveRelease <= useNetworkStore().$state.height;
+    return (
+        stake.inactiveBalance > 0 && !!stake.inactiveRelease && stake.inactiveRelease <= useNetworkStore().$state.height
+    );
 }
 
 // Nobody is going to send an operation's queued follow-up (retire/remove, or update-staker): the
@@ -170,9 +167,14 @@ type Policy = Awaited<ReturnType<typeof usePolicy>>;
 function currentDeactivationBlock(stake: Stake, policy: Policy): number | undefined {
     if (stake.inactiveFrom === undefined) return undefined;
     const heights = Object.values(useTransactionsStore().$state.transactions)
-        .filter((tx) => tx.sender === stake.address && tx.data.type === 'set-active-stake'
-            && tx.blockHeight !== undefined && tx.executionResult !== false
-            && policy.electionBlockAfter(tx.blockHeight) === stake.inactiveFrom)
+        .filter(
+            (tx) =>
+                tx.sender === stake.address
+                && tx.data.type === 'set-active-stake'
+                && tx.blockHeight !== undefined
+                && tx.executionResult !== false
+                && policy.electionBlockAfter(tx.blockHeight) === stake.inactiveFrom,
+        )
         .map((tx) => tx.blockHeight!);
     return heights.length ? Math.max(...heights) : undefined;
 }
@@ -250,20 +252,21 @@ function hasTransactionFailed(hash: string): boolean {
     return !!tx && (tx.state === TransactionState.EXPIRED || tx.state === TransactionState.INVALIDATED);
 }
 
-export type StakingScoringRules = any
+export type StakingScoringRules = any;
 
 export const useStakingStore = defineStore('staking', {
-    state: () => ({
-        chainValidators: {},
-        apiValidators: {},
-        stakeByAddress: {},
-        stakingEventsByAddress: {},
-        cachedMonthlyRewardsByAddress: {},
-        watchtowerJobByAddress: {},
-        // Bumped on every switch/unstaking-record write so the getters reading those records from
-        // localStorage re-evaluate. Drop once the records move into reactive state.
-        operationRecordTrigger: 0,
-    } as StakingState & { operationRecordTrigger: number }),
+    state: () =>
+        ({
+            chainValidators: {},
+            apiValidators: {},
+            stakeByAddress: {},
+            stakingEventsByAddress: {},
+            cachedMonthlyRewardsByAddress: {},
+            watchtowerJobByAddress: {},
+            // Bumped on every switch/unstaking-record write so the getters reading those records from
+            // localStorage re-evaluate. Drop once the records move into reactive state.
+            operationRecordTrigger: 0,
+        }) as StakingState & { operationRecordTrigger: number },
     getters: {
         validators: (state): Readonly<Record<string, Validator>> => {
             const validators: Record<string, Validator> = {};
@@ -276,9 +279,11 @@ export const useStakingStore = defineStore('staking', {
                 validators[address] = {
                     ...validator,
                     ...apiValidator,
-                    ...(apiValidator ? {
-                        annualReward: calculateStakingReward(apiValidator.fee, activeStake),
-                    } : {}),
+                    ...(apiValidator
+                        ? {
+                              annualReward: calculateStakingReward(apiValidator.fee, activeStake),
+                          }
+                        : {}),
                 };
             }
 
@@ -310,9 +315,7 @@ export const useStakingStore = defineStore('staking', {
         totalActiveStake(): Readonly<number> {
             const stake = this.activeStake as Stake | null;
 
-            return stake
-                ? stake.activeBalance + stake.inactiveBalance + stake.retiredBalance
-                : 0;
+            return stake ? stake.activeBalance + stake.inactiveBalance + stake.retiredBalance : 0;
         },
 
         // cumulated stake object for each account
@@ -321,12 +324,17 @@ export const useStakingStore = defineStore('staking', {
             const accounts = Object.values(accountInfos);
 
             const stakes: Record<string, Stake> = {};
-            for (const accountInfo of accounts) { // for each account
-                for (const address of accountInfo.addresses) { // for each address
-                    if (state.stakeByAddress[address]) { // if there is a stake for this address
-                        if (!stakes[accountInfo.id]) { // if there is no stake for this account
+            for (const accountInfo of accounts) {
+                // for each account
+                for (const address of accountInfo.addresses) {
+                    // for each address
+                    if (state.stakeByAddress[address]) {
+                        // if there is a stake for this address
+                        if (!stakes[accountInfo.id]) {
+                            // if there is no stake for this account
                             stakes[accountInfo.id] = { ...state.stakeByAddress[address] }; // create a new stake object
-                        } else { // if there is a stake for this account
+                        } else {
+                            // if there is a stake for this account
                             stakes[accountInfo.id].activeBalance += state.stakeByAddress[address].activeBalance;
                             stakes[accountInfo.id].inactiveBalance += state.stakeByAddress[address].inactiveBalance;
                             stakes[accountInfo.id].retiredBalance += state.stakeByAddress[address].retiredBalance;
@@ -376,11 +384,13 @@ export const useStakingStore = defineStore('staking', {
             const stake = this.activeStake as Stake | null;
             if (!stake || !stake.validator) return null;
 
-            return this.validators[stake.validator] || {
-                address: stake.validator,
-                dominance: 0,
-                active: false,
-            };
+            return (
+                this.validators[stake.validator] || {
+                    address: stake.validator,
+                    dominance: 0,
+                    active: false,
+                }
+            );
         },
 
         activeWatchtowerJob: (state): WatchtowerJob | null | undefined => {
@@ -499,7 +509,9 @@ export const useStakingStore = defineStore('staking', {
             let record: UnstakingRecord | SwitchValidatorRecord | null = null;
             if (operation) {
                 record = (operation === 'unstake' ? this.activeUnstakingOperation : this.activeSwitchOperation) as
-                    UnstakingRecord | SwitchValidatorRecord | null;
+                    | UnstakingRecord
+                    | SwitchValidatorRecord
+                    | null;
             }
             return isFollowUpUnscheduled(record, this.activeWatchtowerJob as WatchtowerJob | null | undefined);
         },
@@ -530,9 +542,11 @@ export const useStakingStore = defineStore('staking', {
             if (!events || !Array.isArray(events)) return null;
 
             // If we have validator API data and it's not a restaking validator, return 0 (no restaking rewards)
-            if (this.activeValidator
+            if (
+                this.activeValidator
                 && (this.activeValidator as RegisteredValidator).payoutType
-                && (this.activeValidator as RegisteredValidator).payoutType !== 'restake') {
+                && (this.activeValidator as RegisteredValidator).payoutType !== 'restake'
+            ) {
                 return 0;
             }
 
@@ -562,15 +576,16 @@ export const useStakingStore = defineStore('staking', {
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
                 const { sender_address: rewardSenderAddress } = event;
-                if (rewardSenderAddress === validatorAddress
+                if (
+                    rewardSenderAddress === validatorAddress
                     || (validatorRewardAddress
                         ? rewardSenderAddress === validatorRewardAddress
-                        // TODO ideally, we should somehow get the validator reward address, if it's not known. The
-                        //  current behavior of including the reward by default is probably not ideal, as a validator
-                        //  could use it to artificially inflate its reported rewards. Consider getting the appropriate
-                        //  validator reward address, or removing true as default value.
-                        : true
-                    )) {
+                        : // TODO ideally, we should somehow get the validator reward address, if it's not known. The
+                          //  current behavior of including the reward by default is probably not ideal, as a validator
+                          //  could use it to artificially inflate its reported rewards. Consider getting the appropriate
+                          //  validator reward address, or removing true as default value.
+                          true)
+                ) {
                     totalRestakingRewards += event.aggregated_value;
                 }
             }
@@ -585,7 +600,8 @@ export const useStakingStore = defineStore('staking', {
 
             // Get previously cached monthly rewards for the ACTIVE ADDRESS to preserve fiatValue
             const { activeAddress } = useAddressStore();
-            const cachedRewards = (activeAddress && state.cachedMonthlyRewardsByAddress[activeAddress])
+            const cachedRewards =
+                (activeAddress && state.cachedMonthlyRewardsByAddress[activeAddress])
                 || new Map<string, MonthlyReward>();
 
             // Cache event count, to avoid repeatedly accessing it with the overhead of Vue's reactivity system, which
@@ -649,8 +665,11 @@ export const useStakingStore = defineStore('staking', {
             // A new deactivation of stake still unpaid starts another payout, so what the watchtower said about
             // the previous one no longer applies: a stale "no job" would flag a manual step the new one may not need.
             // A full retire clears `inactiveFrom` as well, without deactivating anything.
-            const redeactivated = !!previous && hasPendingPayout(previous)
-                && stake.inactiveFrom !== undefined && previous.inactiveFrom !== stake.inactiveFrom;
+            const redeactivated =
+                !!previous
+                && hasPendingPayout(previous)
+                && stake.inactiveFrom !== undefined
+                && previous.inactiveFrom !== stake.inactiveFrom;
             if (redeactivated) Vue.delete(this.$state.watchtowerJobByAddress, stake.address);
             // A payout that just became pending is worth asking about right away (the periodic sync
             // covers the rest): on a browser that did not start the operation, this is what reveals it.
@@ -659,7 +678,7 @@ export const useStakingStore = defineStore('staking', {
             }
         },
         setStakes(stakes: Stake[]) {
-            const newStakes: {[address: string]: Stake} = {};
+            const newStakes: { [address: string]: Stake } = {};
 
             for (const stake of stakes) {
                 newStakes[stake.address] = stake;
@@ -694,7 +713,7 @@ export const useStakingStore = defineStore('staking', {
             };
         },
         setValidators(validators: RawValidator[]) {
-            const newValidators: {[address: string]: RawValidator} = {};
+            const newValidators: { [address: string]: RawValidator } = {};
 
             for (const validator of validators) {
                 newValidators[validator.address] = validator;
@@ -703,7 +722,7 @@ export const useStakingStore = defineStore('staking', {
             this.$state.chainValidators = newValidators;
         },
         setApiValidators(apiValidators: ApiValidator[]) {
-            const newApiValidators: {[address: string]: ApiValidator} = {};
+            const newApiValidators: { [address: string]: ApiValidator } = {};
 
             for (const validator of apiValidators) {
                 newApiValidators[validator.address] = validator;
@@ -896,16 +915,18 @@ export const useStakingStore = defineStore('staking', {
             if (!monthlyRewards || monthlyRewards.size === 0) return;
 
             // Filter months that need fiat value calculation
-            const monthsToUpdate: Array<{ monthKey: string, monthData: MonthlyReward, timestamp: number }> = [];
+            const monthsToUpdate: Array<{ monthKey: string; monthData: MonthlyReward; timestamp: number }> = [];
 
             for (const [monthKey, monthData] of monthlyRewards.entries()) {
                 const { isCurrentMonth } = isCurrentMonthAndYear(monthKey);
 
                 // Skip current month (calculated in real-time by composables)
                 // Only calculate for past months that don't have cached value for this currency
-                if (!isCurrentMonth
+                if (
+                    !isCurrentMonth
                     && typeof monthData.fiatValue?.[fiatCurrency] !== 'number'
-                    && typeof monthData.fiatValue?.[historyFiatCurrency] !== 'number') {
+                    && typeof monthData.fiatValue?.[historyFiatCurrency] !== 'number'
+                ) {
                     const endOfMonthTimestamp = getEndOfMonthTimestamp(monthKey);
                     monthsToUpdate.push({ monthKey, monthData, timestamp: endOfMonthTimestamp });
                 }
@@ -935,9 +956,7 @@ export const useStakingStore = defineStore('staking', {
                 Vue.set(
                     monthData.fiatValue!,
                     historyFiatCurrency,
-                    exchangeRate !== undefined
-                        ? exchangeRate * (monthData.total / 1e5)
-                        : FIAT_PRICE_UNAVAILABLE,
+                    exchangeRate !== undefined ? exchangeRate * (monthData.total / 1e5) : FIAT_PRICE_UNAVAILABLE,
                 );
 
                 // Update cached rewards for this address

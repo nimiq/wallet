@@ -2,33 +2,34 @@
     <button
         class="reset transaction"
         :class="state"
-        @click="$router.push({name: 'usdt-transaction', params: {hash: transaction.transactionHash}})"
+        @click="$router.push({ name: 'usdt-transaction', params: { hash: transaction.transactionHash } })"
         :key="`tx-${transaction.transactionHash}`"
     >
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
-            <span class="day">{{ dateDay }}</span><br>
+            <span class="day">{{ dateDay }}</span><br />
             <span class="month">{{ dateMonth }}</span>
         </div>
         <div v-else-if="state === TransactionState.PENDING" class="pending">
-            <CircleSpinner/>
+            <CircleSpinner />
         </div>
-        <div
-            v-else-if="state === TransactionState.EXPIRED || state === TransactionState.FAILED"
-            class="invalid nq-red"
-        >
-            <CrossIcon/>
+        <div v-else-if="state === TransactionState.EXPIRED || state === TransactionState.FAILED" class="invalid nq-red">
+            <CrossIcon />
         </div>
         <div v-else-if="state === TransactionState.NEW" class="new nq-orange">
-            <AlertTriangleIcon/>
+            <AlertTriangleIcon />
         </div>
         <div class="identicon">
-            <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
+            <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC" />
             <Identicon v-else-if="swapData && swapData.asset === SwapAsset.NIM" :address="peerAddress" />
-            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
+            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR" />
             <UsdtIcon v-else-if="transaction.event && transaction.event.name === 'Swap'" class="nq-blue" />
-            <Avatar v-else :label="isCancelledSwap ? '' : (peerLabel || '')"/>
-            <div v-if="swapInfo /* || isSwapProxy */
-                || (transaction.event && transaction.event.name === 'Swap')" class="swap"><SwapSmallIcon/></div>
+            <Avatar v-else :label="isCancelledSwap ? '' : peerLabel || ''" />
+            <div
+                v-if="swapInfo /* || isSwapProxy */ || (transaction.event && transaction.event.name === 'Swap')"
+                class="swap"
+            >
+                <SwapSmallIcon />
+            </div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -44,15 +45,19 @@
                     <strong class="dot">&middot;</strong>{{ data }}
                     <TransactionListOasisPayoutStatus
                         v-if="swapData && swapData.asset === SwapAsset.EUR"
-                        :data="swapData"/>
+                        :data="swapData"
+                    />
                 </span>
             </div>
         </div>
-        <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="txValue" :currency="ticker" value-mask/>
+        <div class="amounts" :class="{ isIncoming }">
+            <Amount :amount="txValue" :currency="ticker" value-mask />
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING"
-                    :amount="txValue" currency="usdt" value-mask
+                <FiatConvertedAmount
+                    v-if="state === TransactionState.PENDING"
+                    :amount="txValue"
+                    currency="usdt"
+                    value-mask
                 />
                 <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -61,44 +66,42 @@
                 <div v-else class="fiat-amount flex-row">
                     <!-- <HistoricValueIcon/> -->
                     <FiatAmount
-                        :amount="fiat.value / transaction.value * txValue"
+                        :amount="(fiat.value / transaction.value) * txValue"
                         :currency="fiat.currency"
                         value-mask
                     />
                 </div>
             </transition>
-            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
-                :amount="(swapData.amount / 100)
-                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                    * (isIncoming ? 1 : -1)"
-                :currency="assetToCurrency(swapData.asset)" value-mask/>
+            <FiatAmount
+                v-else-if="swapData.asset === SwapAsset.EUR"
+                :amount="
+                    swapData.amount / 100
+                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0) * (isIncoming ? 1 : -1)
+                "
+                :currency="assetToCurrency(swapData.asset)"
+                value-mask
+            />
         </div>
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import {
-    CircleSpinner,
-    AlertTriangleIcon,
-    Identicon,
-    FiatAmount,
-    CrossIcon,
-} from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { Transaction, TransactionState } from '../stores/UsdtTransactions';
-import Avatar from './Avatar.vue';
-import Amount from './Amount.vue';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
-// import HistoricValueIcon from './icons/HistoricValueIcon.vue';
-import BitcoinIcon from './icons/BitcoinIcon.vue';
-import BankIcon from './icons/BankIcon.vue';
-import UsdtIcon from './icons/UsdtIcon.vue';
-import SwapSmallIcon from './icons/SwapSmallIcon.vue';
+import { CircleSpinner, AlertTriangleIcon, Identicon, FiatAmount, CrossIcon } from '@nimiq/vue-components';
+import { defineComponent, computed } from 'vue';
+import { useFormattedDate } from '../composables/useFormattedDate';
+import { useUsdtTransactionInfo } from '../composables/useUsdtTransactionInfo';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
-import { useUsdtTransactionInfo } from '../composables/useUsdtTransactionInfo';
-import { useFormattedDate } from '../composables/useFormattedDate';
+import { Transaction, TransactionState } from '../stores/UsdtTransactions';
+import Amount from './Amount.vue';
+import Avatar from './Avatar.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import BankIcon from './icons/BankIcon.vue';
+// import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+import BitcoinIcon from './icons/BitcoinIcon.vue';
+import SwapSmallIcon from './icons/SwapSmallIcon.vue';
+import UsdtIcon from './icons/UsdtIcon.vue';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({
@@ -115,17 +118,8 @@ export default defineComponent({
 
         const transaction = computed(() => props.transaction);
 
-        const {
-            txValue,
-            data,
-            isCancelledSwap,
-            isIncoming,
-            peerAddress,
-            peerLabel,
-            swapData,
-            swapInfo,
-            fiat,
-        } = useUsdtTransactionInfo(transaction);
+        const { txValue, data, isCancelledSwap, isIncoming, peerAddress, peerLabel, swapData, swapInfo, fiat } =
+            useUsdtTransactionInfo(transaction);
 
         const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
@@ -173,7 +167,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use "../scss/variables.scss" as *;
+@use '../scss/variables.scss' as *;
 
 svg {
     display: block;
@@ -187,7 +181,7 @@ svg {
     padding: 1.5rem 1rem;
     border: 0;
     background: transparent;
-    border-radius: .75rem;
+    border-radius: 0.75rem;
     cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
     font-size: var(--body-size);
@@ -197,7 +191,7 @@ svg {
         background: var(--nimiq-highlight-bg);
 
         .identicon .swap {
-            border-color: #F2F2F4;
+            border-color: #f2f2f4;
         }
     }
 
@@ -249,11 +243,11 @@ svg {
         flex-shrink: 0;
 
         .avatar {
-            margin: .375rem;
+            margin: 0.375rem;
         }
 
         img {
-            height: 100%
+            height: 100%;
         }
 
         svg {
@@ -300,7 +294,7 @@ svg {
         .label,
         .address {
             white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
         }
 
         .label {
@@ -317,7 +311,7 @@ svg {
             font-weight: 600;
             color: var(--text-50);
             white-space: nowrap;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 
             .dot {
                 margin: 0 0.875rem;
@@ -396,7 +390,8 @@ svg {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .transaction {
         padding: 1rem 1rem;
 

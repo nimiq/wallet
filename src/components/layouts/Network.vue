@@ -1,10 +1,12 @@
 <template>
-    <div class="network nq-blue-bg" :class="{'no-footer': !$config.enableBitcoin && !$config.polygon.enabled }">
+    <div class="network nq-blue-bg" :class="{ 'no-footer': !$config.enableBitcoin && !$config.polygon.enabled }">
         <div class="menu-bar full-width flex-row">
-            <button class="reset menu-button"
-                @click="$router.push({ name: 'network', query: { sidebar: !router.currentRoute.query.sidebar } })">
-                <MenuIcon/>
-                <AttentionDot v-if="updateAvailable"/>
+            <button
+                class="reset menu-button"
+                @click="$router.push({ name: 'network', query: { sidebar: !router.currentRoute.query.sidebar } })"
+            >
+                <MenuIcon />
+                <AttentionDot v-if="updateAvailable" />
             </button>
             <button
                 class="nq-button-s inverse account-button"
@@ -14,7 +16,7 @@
                 {{ $t('Back to addresses') }}
             </button>
             <button class="reset info-button" @click="showNetworkInfo = true">
-                <InfoCircleIcon/>
+                <InfoCircleIcon />
             </button>
         </div>
 
@@ -22,34 +24,34 @@
             <NetworkStats>
                 <template #network>NIM</template>
                 <template #network-info>
-                    <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
+                    <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon /></button>
                 </template>
                 <template #consensus>{{ consensusStateString }}</template>
                 <template #peerCount>{{ $tc('{count} Peer | {count} Peers', peerCount) }}</template>
                 <template #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatConvertedAmount :amount="0" :currency="CryptoCurrency.NIM" roundDown/>
+                            <FiatConvertedAmount :amount="0" :currency="CryptoCurrency.NIM" roundDown />
                         </template>
                     </i18n>
                 </template>
                 <template #txTime>{{ $t('1-2 sec') }}</template>
             </NetworkStats>
             <div class="map flex-column" ref="map$">
-                <NetworkMap @own-x-coordinate="scrollMap"/>
+                <NetworkMap @own-x-coordinate="scrollMap" />
             </div>
             <div class="unconnected-nodes-notice">
                 <p>Other browser nodes are not shown.</p>
             </div>
         </section>
 
-        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.polygon.enabled || !stablecoin}">
+        <section v-if="$config.enableBitcoin" :class="{ 'full-width': !$config.polygon.enabled || !stablecoin }">
             <NetworkStats>
                 <template #network>BTC</template>
                 <template v-if="btcFee" #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatConvertedAmount :amount="btcFee" :currency="CryptoCurrency.BTC"/>
+                            <FiatConvertedAmount :amount="btcFee" :currency="CryptoCurrency.BTC" />
                         </template>
                     </i18n>
                 </template>
@@ -58,13 +60,13 @@
             </NetworkStats>
         </section>
 
-        <section v-if="$config.polygon.enabled && stablecoin" :class="{'full-width': !$config.enableBitcoin}">
+        <section v-if="$config.polygon.enabled && stablecoin" :class="{ 'full-width': !$config.enableBitcoin }">
             <NetworkStats>
                 <template #network>{{ stablecoin.toUpperCase() }}</template>
                 <template v-if="polygonFee" #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatConvertedAmount :amount="polygonFee" :currency="stablecoin"/>
+                            <FiatConvertedAmount :amount="polygonFee" :currency="stablecoin" />
                         </template>
                     </i18n>
                 </template>
@@ -74,38 +76,38 @@
         </section>
 
         <transition name="modal">
-            <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>
+            <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed" />
         </transition>
 
         <Portal>
             <transition name="modal">
-                <router-view name="modal"/>
+                <router-view name="modal" />
             </transition>
         </Portal>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
-import { isGaslessTransferConfigured, quoteGaslessFee } from '@/lib/usdc/Gasless';
-import { estimateFees } from '@/lib/BitcoinTransactionUtils';
+import { storeToRefs } from 'pinia';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
 import { getElectrumClient } from '@/electrum';
+import { estimateFees } from '@/lib/BitcoinTransactionUtils';
+import { isGaslessTransferConfigured, quoteGaslessFee } from '@/lib/usdc/Gasless';
 import { useI18n } from '@/lib/useI18n';
-import { useSettingsStore } from '../../stores/Settings';
-import { useNetworkStore } from '../../stores/Network';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency } from '../../lib/Constants';
 import { WIDTH } from '../../lib/NetworkMap';
-import NetworkMap from '../NetworkMap.vue';
-import NetworkStats from '../NetworkStats.vue';
-import MenuIcon from '../icons/MenuIcon.vue';
-import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
+import router from '../../router';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useNetworkStore } from '../../stores/Network';
+import { useSettingsStore } from '../../stores/Settings';
 import AttentionDot from '../AttentionDot.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import router from '../../router';
+import MenuIcon from '../icons/MenuIcon.vue';
+import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
+import NetworkMap from '../NetworkMap.vue';
+import NetworkStats from '../NetworkStats.vue';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
@@ -115,12 +117,15 @@ export default defineComponent({
         const { effectiveConsensus: consensus, peerCount } = storeToRefs(useNetworkStore());
         const { config } = useConfig();
 
-        const consensusStateString = computed(() => ({
-            stalled: $t('paused'),
-            syncing: $t('syncing'),
-            connecting: $t('connecting'),
-            established: $t('established'),
-        }[consensus.value as 'stalled' | 'syncing' | 'connecting' | 'established']));
+        const consensusStateString = computed(
+            () =>
+                ({
+                    stalled: $t('paused'),
+                    syncing: $t('syncing'),
+                    connecting: $t('connecting'),
+                    established: $t('established'),
+                })[consensus.value as 'stalled' | 'syncing' | 'connecting' | 'established'],
+        );
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
 
@@ -134,7 +139,7 @@ export default defineComponent({
             const mapWidth = map$.value!.children[0]!.clientWidth;
             const adjustedX = x * (mapWidth / WIDTH);
 
-            const scrollTarget = adjustedX - (window.innerWidth / 2);
+            const scrollTarget = adjustedX - window.innerWidth / 2;
             map$.value!.scrollTo(scrollTarget, 0);
         }
 
@@ -162,15 +167,17 @@ export default defineComponent({
             if (config.enableBitcoin) {
                 const client = await getElectrumClient();
                 await client.waitForConsensusEstablished();
-                const fees = await client.estimateFees([/* blocks */12]);
+                const fees = await client.estimateFees([/* blocks */ 12]);
                 btcFee.value = estimateFees(2, 2, fees[12]);
             }
 
             if (config.polygon.enabled && stablecoin.value && isGaslessTransferConfigured()) {
                 try {
-                    const quote = await quoteGaslessFee(stablecoin.value === CryptoCurrency.USDC
-                        ? config.polygon.usdc.tokenContract
-                        : config.polygon.usdt_bridged.tokenContract);
+                    const quote = await quoteGaslessFee(
+                        stablecoin.value === CryptoCurrency.USDC
+                            ? config.polygon.usdc.tokenContract
+                            : config.polygon.usdt_bridged.tokenContract,
+                    );
                     polygonFee.value = Number(quote.fee);
                 } catch (error) {
                     console.warn('Failed to fetch the gasless transfer fee', error); // eslint-disable-line no-console
@@ -209,7 +216,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .network {
     background: var(--nimiq-blue);
@@ -358,7 +365,7 @@ section {
     }
 
     .fiat-amount {
-        margin-right: -.75rem;
+        margin-right: -0.75rem;
     }
 
     ::v-deep .circle-spinner {
@@ -392,7 +399,6 @@ section {
             margin-top: 0.5rem;
         }
     }
-
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

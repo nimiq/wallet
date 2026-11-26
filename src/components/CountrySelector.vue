@@ -4,7 +4,7 @@
             <slot name="trigger">
                 <div class="flex-row">
                     <CountryFlag :code="currentCountryCode || 'all'" />
-                    <img src="../assets/mini-arrow-down.svg" alt="open"/>
+                    <img src="../assets/mini-arrow-down.svg" alt="open" />
                 </div>
             </slot>
         </button>
@@ -12,19 +12,16 @@
             <div class="search">
                 <!-- Search icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
-                    <g fill="none" stroke="#FFF" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="1.5px">
+                    <g fill="none" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5px">
                         <circle cx="5.5" cy="5.5" r="4.5" />
                         <line x1="13" y1="13" x2="9" y2="9" />
                     </g>
                 </svg>
-                <input class="nq-input"
-                    :placeholder="$t('Search')"
-                    v-model="searchTerm"
-                    ref="input$"/>
+                <input class="nq-input" :placeholder="$t('Search')" v-model="searchTerm" ref="input$" />
             </div>
             <ul class="list" ref="list$">
-                <li v-for="(country, index) in sortedCountries"
+                <li
+                    v-for="(country, index) in sortedCountries"
                     :key="country.code"
                     :class="{ selected: index === selectedIndex }"
                     @click="selectCountry(country)"
@@ -34,32 +31,29 @@
                     <CountryFlag :code="country.code" />
                     {{ country.name }}
                 </li>
-                <slot name="info"/>
+                <slot name="info" />
             </ul>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
-import { useI18n } from '@/lib/useI18n';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { useI18n } from '@/lib/useI18n';
+import { ALL_COUNTRY_CODES } from '../lib/Countries';
 import I18nDisplayNames from '../lib/I18nDisplayNames';
 import CountryFlag from './CountryFlag.vue';
-import { ALL_COUNTRY_CODES } from '../lib/Countries';
 
 type Country = {
-    code: string,
-    name: string,
-}
+    code: string;
+    name: string;
+};
 
 function normalize(str: string) {
-    return str
-        .replace(/ä/ig, 'a')
-        .replace(/ö/ig, 'o')
-        .replace(/ü/ig, 'u');
+    return str.replace(/ä/gi, 'a').replace(/ö/gi, 'o').replace(/ü/gi, 'u');
 }
 
 export default defineComponent({
@@ -125,13 +119,15 @@ export default defineComponent({
         });
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
-        const sortedCountries = computed(() => [...filteredCountries.value].sort((a, b) => {
-            if (a.code === 'all') return -1;
-            if (b.code === 'all') return 1;
-            return intlCollator.compare(a.name, b.name);
-        }));
+        const sortedCountries = computed(() =>
+            [...filteredCountries.value].sort((a, b) => {
+                if (a.code === 'all') return -1;
+                if (b.code === 'all') return 1;
+                return intlCollator.compare(a.name, b.name);
+            }),
+        );
 
-        watch(searchTerm, () => selectedIndex.value = 0, { immediate: true });
+        watch(searchTerm, () => (selectedIndex.value = 0), { immediate: true });
 
         function onKeyDown(event: KeyboardEvent) {
             if (!isOpen.value) return;
@@ -141,16 +137,12 @@ export default defineComponent({
             switch (event.key) {
                 case 'ArrowDown':
                     event.preventDefault();
-                    selectedIndex.value = Math.max(0, Math.min(
-                        countryCount - 1, selectedIndex.value + 1),
-                    );
+                    selectedIndex.value = Math.max(0, Math.min(countryCount - 1, selectedIndex.value + 1));
                     break;
 
                 case 'ArrowUp':
                     event.preventDefault();
-                    selectedIndex.value = Math.max(0, Math.min(
-                        countryCount - 1, selectedIndex.value - 1),
-                    );
+                    selectedIndex.value = Math.max(0, Math.min(countryCount - 1, selectedIndex.value - 1));
                     break;
 
                 case 'Enter':
@@ -244,13 +236,13 @@ export default defineComponent({
         align-items: center;
 
         padding: 1rem;
-        border-bottom: 1.5px solid rgba(white, .15);
+        border-bottom: 1.5px solid rgba(white, 0.15);
 
         svg {
             width: 1.75rem;
             height: 1.75rem;
             flex-shrink: 0;
-            opacity: .4;
+            opacity: 0.4;
             margin-left: 0.75rem;
             margin-right: 1rem;
         }
@@ -259,7 +251,7 @@ export default defineComponent({
             --border-color: transparent;
             width: auto;
             padding: 0.625rem;
-            color: rgba(white, .6);
+            color: rgba(white, 0.6);
             min-width: 0;
 
             &:focus {
@@ -267,7 +259,7 @@ export default defineComponent({
             }
 
             &::placeholder {
-                color: rgba(white, .4);
+                color: rgba(white, 0.4);
             }
         }
     }
@@ -278,12 +270,7 @@ export default defineComponent({
         margin: 0;
         overflow-y: auto;
 
-        mask: linear-gradient(180deg,
-            rgba(255, 255, 255, 0) 2%,
-            white 12%,
-            white 83%,
-            rgba(255, 255, 255, 0) 98%
-        );
+        mask: linear-gradient(180deg, rgba(255, 255, 255, 0) 2%, white 12%, white 83%, rgba(255, 255, 255, 0) 98%);
 
         @extend %custom-scrollbar-inverse;
 
@@ -303,7 +290,7 @@ export default defineComponent({
 
                 &:hover,
                 &.selected {
-                    background-color: rgba(white, .12);
+                    background-color: rgba(white, 0.12);
                 }
             }
 

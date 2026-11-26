@@ -1,10 +1,10 @@
 import { useAccountStore } from '../../stores/Account';
-import { toMs, Transaction as NimTx } from '../../stores/Transactions';
+import { useAddressStore } from '../../stores/Address';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
+import { toMs, Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
 import { Format } from './Format';
-import { useAddressStore } from '../../stores/Address';
 import { ExportFormat } from './TransactionExport';
 
 export class BlockpitAppFormat extends Format {
@@ -31,7 +31,7 @@ export class BlockpitAppFormat extends Format {
 
     constructor(
         public override nimAddresses: string[],
-        public override btcAddresses: { internal: string[], external: string[] },
+        public override btcAddresses: { internal: string[]; external: string[] },
         public override usdcAddresses: string[],
         public override usdtAddresses: string[],
         public override transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
@@ -65,8 +65,10 @@ export class BlockpitAppFormat extends Format {
                 if (this.btcAddresses.external.length) {
                     return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];
                 }
-                return !!accountInfo.polygonAddresses?.includes(this.usdcAddresses[0])
-                    || !!accountInfo.polygonAddresses?.includes(this.usdtAddresses[0]);
+                return (
+                    !!accountInfo.polygonAddresses?.includes(this.usdcAddresses[0])
+                    || !!accountInfo.polygonAddresses?.includes(this.usdtAddresses[0])
+                );
             })!.label;
         }
     }
@@ -98,8 +100,10 @@ export class BlockpitAppFormat extends Format {
         }
 
         let message = messageOverride || '';
-        if (!message && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
-            || (txOut && txOut.asset === 'NIM' && !txIn))) {
+        if (
+            !message
+            && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut) || (txOut && txOut.asset === 'NIM' && !txIn))
+        ) {
             message = this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn);
         }
 

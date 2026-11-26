@@ -7,10 +7,10 @@ export type Stablecoin = CryptoCurrency.USDC | CryptoCurrency.USDT;
 export type AccountSettingsState = {
     settings: {
         [accountId: string]: {
-            stablecoin: Stablecoin | null,
-            knowsAboutUsdt?: boolean,
-        },
-    },
+            stablecoin: Stablecoin | null;
+            knowsAboutUsdt?: boolean;
+        };
+    };
 };
 
 export const useAccountSettingsStore = defineStore('account-settings', {
@@ -46,7 +46,7 @@ export const useAccountSettingsStore = defineStore('account-settings', {
         },
         setKnowsAboutUsdt(knowsAboutUsdt: boolean, accountId?: string) {
             const activeAccountId = accountId || useAccountStore().activeAccountId;
-            if (!activeAccountId) return;// Need to assign whole object for change detection of new settings.
+            if (!activeAccountId) return; // Need to assign whole object for change detection of new settings.
             // TODO: Simply set new settings in Vue 3.
             this.$state.settings = {
                 ...this.$state.settings,

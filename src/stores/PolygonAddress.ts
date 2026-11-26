@@ -3,15 +3,15 @@ import { useAccountStore } from './Account';
 // import { useUsdcTransactionsStore } from './UsdcTransactions';
 
 export type PolygonAddressState = {
-    addressInfos: {[id: string]: PolygonAddressInfo},
-}
+    addressInfos: { [id: string]: PolygonAddressInfo };
+};
 
 export type PolygonAddressInfo = {
-    address: string,
-    balanceUsdcBridged: number | null,
-    balanceUsdc: number | null,
-    balanceUsdtBridged: number | null,
-    pol: number | null, // For testing until OpenGSN contract is available
+    address: string;
+    balanceUsdcBridged: number | null;
+    balanceUsdc: number | null;
+    balanceUsdtBridged: number | null;
+    pol: number | null; // For testing until OpenGSN contract is available
 };
 
 export const usePolygonAddressStore = defineStore('polygonAddresses', {
@@ -60,7 +60,7 @@ export const usePolygonAddressStore = defineStore('polygonAddresses', {
             };
         },
         setAddressInfos(addressInfos: PolygonAddressInfo[]) {
-            const newAddressInfos: {[address: string]: PolygonAddressInfo} = {};
+            const newAddressInfos: { [address: string]: PolygonAddressInfo } = {};
 
             for (const addressInfo of addressInfos) {
                 newAddressInfos[addressInfo.address] = addressInfo;

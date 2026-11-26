@@ -3,7 +3,7 @@ name: Sentry Notify Release
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   createSentryRelease:

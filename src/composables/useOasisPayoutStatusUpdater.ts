@@ -1,6 +1,6 @@
-import { onUnmounted, Ref, watch } from 'vue';
-import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
+import { onUnmounted, Ref, watch } from 'vue';
 import { SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';
 
 // TODO: Remove logging when stable
@@ -20,9 +20,10 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         const settlement = data.htlc!.settlement!;
 
         // Determine check interval
-        const checkInterval = !settlement.eta || settlement.eta - Date.now() < 5 * 60 * 1000
-            ? 30 * 1000 // If no ETA, or ETA is in less than 5 minutes, check every 30 seconds
-            : 30 * 60 * 1000; // Otherwise check every 30 minutes
+        const checkInterval =
+            !settlement.eta || settlement.eta - Date.now() < 5 * 60 * 1000
+                ? 30 * 1000 // If no ETA, or ETA is in less than 5 minutes, check every 30 seconds
+                : 30 * 60 * 1000; // Otherwise check every 30 minutes
         console.log('Check interval determined as', checkInterval / 1000, 'seconds');
 
         // If enough passed since last check, query HTLC status now
@@ -53,10 +54,13 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         }
 
         // Schedule next check
-        oasisPayoutCheckTimeout = window.setTimeout(() => {
-            oasisPayoutCheckTimeout = null;
-            checkOasisPayoutStatus();
-        }, checkInterval - (Date.now() - settlement.lastUpdated!));
+        oasisPayoutCheckTimeout = window.setTimeout(
+            () => {
+                oasisPayoutCheckTimeout = null;
+                checkOasisPayoutStatus();
+            },
+            checkInterval - (Date.now() - settlement.lastUpdated!),
+        );
         console.log(
             'Scheduled next check in',
             (checkInterval - (Date.now() - settlement.lastUpdated!)) / 1000,
@@ -72,15 +76,20 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
         }
     }
 
-    watch(swapData, (data, previousData) => { // eslint-disable-line consistent-return
-        if (previousData?.asset === SwapAsset.EUR) {
-            stop();
-        }
-        if (data?.asset !== SwapAsset.EUR) return stop();
-        if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return stop();
-        if (oasisPayoutCheckTimeout) return; // eslint-disable-line consistent-return
-        checkOasisPayoutStatus();
-    }, { immediate: true });
+    watch(
+        swapData,
+        // eslint-disable-next-line consistent-return
+        (data, previousData) => {
+            if (previousData?.asset === SwapAsset.EUR) {
+                stop();
+            }
+            if (data?.asset !== SwapAsset.EUR) return stop();
+            if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return stop();
+            if (oasisPayoutCheckTimeout) return; // eslint-disable-line consistent-return
+            checkOasisPayoutStatus();
+        },
+        { immediate: true },
+    );
 
     onUnmounted(() => {
         stop();

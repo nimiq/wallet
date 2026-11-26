@@ -1,7 +1,10 @@
 <template>
-    <Modal class="swap-modal"
+    <Modal
+        class="swap-modal"
         :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened || stablecoinMaintenanceOverlayOpened"
-        :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :emitClose="true"
+        @close="onClose"
+        @close-overlay="onClose"
     >
         <PageHeader>
             {{ $t('Swap Currencies') }}
@@ -14,8 +17,13 @@
                         @input="setLeftAsset"
                     />
                     <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
-                        <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key"
-                            :value="key" :selected="key === leftAsset" :disabled="option.disabled">
+                        <option
+                            v-for="[key, option] in Object.entries(leftButtonGroupOptions)"
+                            :key="key"
+                            :value="key"
+                            :selected="key === leftAsset"
+                            :disabled="option.disabled"
+                        >
                             {{ option.label }}
                         </option>
                     </select>
@@ -27,8 +35,13 @@
                         @input="setRightAsset"
                     />
                     <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
-                        <option v-for="[key, option] in Object.entries(rightButtonGroupOptions)" :key="key"
-                            :value="key" :selected="key === rightAsset" :disabled="option.disabled">
+                        <option
+                            v-for="[key, option] in Object.entries(rightButtonGroupOptions)"
+                            :key="key"
+                            :value="key"
+                            :selected="key === rightAsset"
+                            :disabled="option.disabled"
+                        >
                             {{ option.label }}
                         </option>
                     </select>
@@ -40,10 +53,10 @@
                 <div v-if="disabledSwap" class="swap-disabled-text">
                     {{ $t('Swap not possible. Your balance is lower than the fee.') }}
                 </div>
-                <div v-else-if="swapIsNotSupported"  class="swap-disabled-text">
+                <div v-else-if="swapIsNotSupported" class="swap-disabled-text">
                     {{ $t('Swap not possible. Ledger accounts are not supported.') }}
                 </div>
-                <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row" >
+                <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row">
                     <SwapFeesTooltip
                         preferredPosition="bottom left"
                         :nimFeeFiat="nimFeeFiat"
@@ -55,29 +68,31 @@
                         :currency="currency"
                         :container="_self"
                     >
-                        <div slot="trigger" class="flex-row" :class="{'high-fees': isHighRelativeFees}">
-                            <LightningIcon v-if="isHighRelativeFees"/>
+                        <div slot="trigger" class="flex-row" :class="{ 'high-fees': isHighRelativeFees }">
+                            <LightningIcon v-if="isHighRelativeFees" />
                             <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
                                 <template #amount>
-                                    <FiatAmount :amount="fiatSmUnit"
-                                        :hideDecimals="false" :currency="fiatCurrency"/>
+                                    <FiatAmount :amount="fiatSmUnit" :hideDecimals="false" :currency="fiatCurrency" />
                                 </template>
                             </i18n>
                             <i18n v-else tag="span" path="{amount} fee" class="fee">
                                 <template #amount>
-                                    <FiatAmount :amount="totalFeeFiat"
-                                        :hideDecimals="false" :currency="fiatCurrency"/>
+                                    <FiatAmount :amount="totalFeeFiat" :hideDecimals="false" :currency="fiatCurrency" />
                                 </template>
                             </i18n>
                         </div>
 
                         <div
                             v-if="rightUnitsPerLeftCoin !== Infinity && rightUnitsPerLeftCoin !== -Infinity"
-                            slot="exchange-rate" class="exchange-rate">
+                            slot="exchange-rate"
+                            class="exchange-rate"
+                        >
                             <span>
                                 1 {{ assetToCurrency(leftAsset).toUpperCase() }} =
-                                <Amount :amount="Math.round(rightUnitsPerLeftCoin)"
-                                    :currency="assetToCurrency(rightAsset)"/>
+                                <Amount
+                                    :amount="Math.round(rightUnitsPerLeftCoin)"
+                                    :currency="assetToCurrency(rightAsset)"
+                                />
                             </span>
                             <label>{{ $t('Exchange rate') }}</label>
                         </div>
@@ -85,34 +100,46 @@
 
                     <strong class="dot">&middot;</strong>
 
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="_self"
-                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="limitsTooltip$">
-                        <div slot="trigger" class="limits flex-row" :class="{
-                            'limit-reached': isLimitReached,
-                            'kyc-connected': kycUser,
-                        }">
-                            <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+                    <Tooltip
+                        :styles="{ width: '28.75rem' }"
+                        preferredPosition="bottom left"
+                        :container="_self"
+                        class="limits-tooltip"
+                        :class="{ 'kyc-connected': kycUser }"
+                        ref="limitsTooltip$"
+                    >
+                        <div
+                            slot="trigger"
+                            class="limits flex-row"
+                            :class="{
+                                'limit-reached': isLimitReached,
+                                'kyc-connected': kycUser,
+                            }"
+                        >
+                            <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals />
                             <KycIcon v-if="kycUser" />
                         </div>
                         <div class="price-breakdown">
                             <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.monthly.luna" currency="nim" roundDown/>
+                            <FiatConvertedAmount v-if="limits" :amount="limits.monthly.luna" currency="nim" roundDown />
                             <span v-else>{{ $t('loading...') }}</span>
                         </div>
                         <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                            <FiatConvertedAmount slot="value"
-                                :amount="limits.remaining.luna" currency="nim" roundDown/>
+                            <FiatConvertedAmount
+                                slot="value"
+                                :amount="limits.remaining.luna"
+                                currency="nim"
+                                roundDown
+                            />
                         </i18n>
                         <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
                             {{ $t('Settings') }}
                         </router-link> -->
-                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser"
-                            @click="kycOverlayOpened = true" />
+                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
-                <div v-else class="flex-row" :class="{'fees-limits-loading': feeIsLoading || !limits}">
-                    <CircleSpinner/>
+                <div v-else class="flex-row" :class="{ 'fees-limits-loading': feeIsLoading || !limits }">
+                    <CircleSpinner />
                     {{ $t('Loading fees and limits') }}
                 </div>
             </div>
@@ -129,9 +156,15 @@
                 @onActiveAddressClick="addressListOverlayOpened = true"
             />
             <div class="columns swap-amounts flex-row" :class="{ disabled: disabledSwap }">
-                <div class="left-column" :class="!wantLeft && !getLeft
-                    ? 'no-value'
-                    : direction === SwapDirection.LEFT_TO_RIGHT ? 'nq-blue' : 'nq-green'"
+                <div
+                    class="left-column"
+                    :class="
+                        !wantLeft && !getLeft
+                            ? 'no-value'
+                            : direction === SwapDirection.LEFT_TO_RIGHT
+                              ? 'nq-blue'
+                              : 'nq-green'
+                    "
                 >
                     <AmountInput
                         :value="wantLeft || capDecimals(getLeft, leftAsset)"
@@ -143,20 +176,30 @@
                             'negative-value': wantLeft < 0 || getLeft < 0,
                         }"
                         :placeholder="getPlaceholder(leftAsset)"
-                        :maxFontSize="2.5" :decimals="effectiveDecimals(leftAsset)" preserveSign>
+                        :maxFontSize="2.5"
+                        :decimals="effectiveDecimals(leftAsset)"
+                        preserveSign
+                    >
                         <span slot="suffix" class="ticker">
-                            {{ leftAsset === SwapAsset.BTC
-                                ? btcUnit.ticker
-                                : assetToCurrency(leftAsset).toUpperCase() }}
+                            {{
+                                leftAsset === SwapAsset.BTC ? btcUnit.ticker : assetToCurrency(leftAsset).toUpperCase()
+                            }}
                         </span>
                     </AmountInput>
                     <FiatConvertedAmount
                         :amount="Math.abs(wantLeft || getLeft)"
-                        :currency="assetToCurrency(leftAsset)"/>
+                        :currency="assetToCurrency(leftAsset)"
+                    />
                 </div>
-                <div class="right-column" :class="!wantRight && !getRight
-                    ? 'no-value'
-                    : direction === SwapDirection.RIGHT_TO_LEFT ? 'nq-blue' : 'nq-green'"
+                <div
+                    class="right-column"
+                    :class="
+                        !wantRight && !getRight
+                            ? 'no-value'
+                            : direction === SwapDirection.RIGHT_TO_LEFT
+                              ? 'nq-blue'
+                              : 'nq-green'
+                    "
                 >
                     <AmountInput
                         :value="wantRight || capDecimals(getRight, rightAsset)"
@@ -168,16 +211,22 @@
                             'negative-value': wantRight < 0 || getRight < 0,
                         }"
                         :placeholder="getPlaceholder(rightAsset)"
-                        :maxFontSize="2.5" :decimals="effectiveDecimals(rightAsset)" preserveSign>
+                        :maxFontSize="2.5"
+                        :decimals="effectiveDecimals(rightAsset)"
+                        preserveSign
+                    >
                         <span slot="suffix" class="ticker">
-                            {{ rightAsset === SwapAsset.BTC
-                                ? btcUnit.ticker
-                                : assetToCurrency(rightAsset).toUpperCase() }}
+                            {{
+                                rightAsset === SwapAsset.BTC
+                                    ? btcUnit.ticker
+                                    : assetToCurrency(rightAsset).toUpperCase()
+                            }}
                         </span>
                     </AmountInput>
                     <FiatConvertedAmount
                         :amount="Math.abs(wantRight || getRight)"
-                        :currency="assetToCurrency(rightAsset)"/>
+                        :currency="assetToCurrency(rightAsset)"
+                    />
                 </div>
             </div>
         </PageBody>
@@ -192,45 +241,47 @@
             @click="sign"
         >
             <template v-slot:cta>{{ $t('Confirm') }}</template>
-            <i18n v-if="isMainnet"
+            <i18n
+                v-if="isMainnet"
                 path="By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
                 tag="span"
             >
                 <span slot="text">{{ $t('Confirm') }}</span>
-                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link"
-                    target="_blank" rel="noopener"
-                >Fastspot</a>
-                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link"
-                    target="_blank" rel="noopener"
-                >Fastspot GO</a>
+                <a slot="Fastspot" href="https://fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
+                    >Fastspot</a
+                >
+                <a slot="FastspotGO" href="https://go.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
+                    >Fastspot GO</a
+                >
             </i18n>
-            <i18n v-else
-                path="By clicking '{text}', you agree to the ToS of {Fastspot}."
-                tag="span"
-            >
+            <i18n v-else path="By clicking '{text}', you agree to the ToS of {Fastspot}." tag="span">
                 <span slot="text">{{ $t('Confirm') }}</span>
-                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link"
-                    target="_blank" rel="noopener"
-                >Fastspot</a>
+                <a slot="Fastspot" href="https://test.fastspot.io/terms" class="nq-link" target="_blank" rel="noopener"
+                    >Fastspot</a
+                >
             </i18n>
         </SendModalFooter>
         <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem;" class="flex-column">
+            <PageBody style="padding: 0.75rem" class="flex-column">
                 <SwapAnimation
                     :swapId="swap.id"
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="'contract' in swap.contracts[swap.from.asset].htlc
-                        ? swap.contracts[swap.from.asset].htlc.contract
-                        : swap.contracts[swap.from.asset].htlc.address"
+                    :fromAddress="
+                        'contract' in swap.contracts[swap.from.asset].htlc
+                            ? swap.contracts[swap.from.asset].htlc.contract
+                            : swap.contracts[swap.from.asset].htlc.address
+                    "
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="'contract' in swap.contracts[swap.to.asset].htlc
-                        ? swap.contracts[swap.to.asset].htlc.contract
-                        : swap.contracts[swap.to.asset].htlc.address"
+                    :toAddress="
+                        'contract' in swap.contracts[swap.to.asset].htlc
+                            ? swap.contracts[swap.to.asset].htlc.contract
+                            : swap.contracts[swap.to.asset].htlc.address
+                    "
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error && swap.error.split(' req={')[0]"
                     :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
@@ -242,43 +293,30 @@
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
-                <MinimizeIcon/>
+                <MinimizeIcon />
             </button>
         </div>
 
         <div v-else-if="addressListOverlayOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader>{{ $t('Choose an Address') }}</PageHeader>
             <PageBody>
-                <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
+                <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected" />
             </PageBody>
         </div>
 
         <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
 
-        <WarningModal v-else-if="stablecoinMaintenanceOverlayOpened" slot="overlay" embedded
-            v-bind="stablecoinSwapMaintenanceWarning()" @close="stablecoinMaintenanceOverlayOpened = false" />
+        <WarningModal
+            v-else-if="stablecoinMaintenanceOverlayOpened"
+            slot="overlay"
+            embedded
+            v-bind="stablecoinSwapMaintenanceWarning()"
+            @close="stablecoinMaintenanceOverlayOpened = false"
+        />
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
-import { storeToRefs } from 'pinia';
-import {
-    PageHeader,
-    PageBody,
-    Tooltip,
-    FiatAmount,
-    CircleSpinner,
-    InfoCircleSmallIcon,
-} from '@nimiq/vue-components';
-import {
-    SetupSwapRequest,
-    HtlcCreationInstructions,
-    HtlcSettlementInstructions,
-    SetupSwapResult,
-    SignedTransaction,
-    SignedBtcTransaction,
-} from '@nimiq/hub-api';
 import {
     cancelSwap,
     createSwap,
@@ -293,50 +331,60 @@ import {
     Swap,
     Contract,
 } from '@nimiq/fastspot-api';
+import {
+    SetupSwapRequest,
+    HtlcCreationInstructions,
+    HtlcSettlementInstructions,
+    SetupSwapResult,
+    SignedTransaction,
+    SignedBtcTransaction,
+} from '@nimiq/hub-api';
 import { CurrencyInfo } from '@nimiq/utils';
+import { PageHeader, PageBody, Tooltip, FiatAmount, CircleSpinner, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
 
 import { useI18n } from '@/lib/useI18n';
-import Modal from '../modals/Modal.vue';
-import WarningModal from '../modals/WarningModal.vue';
-import Amount from '../Amount.vue';
-import AmountInput from '../AmountInput.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import SwapBalanceBar from './SwapBalanceBar.vue';
-import MinimizeIcon from '../icons/MinimizeIcon.vue';
-import KycIcon from '../icons/KycIcon.vue';
-import LightningIcon from '../icons/LightningIcon.vue';
-import SwapFeesTooltip from './SwapFeesTooltip.vue';
+import { useConfig } from '../../composables/useConfig';
+import { useSwapLimits } from '../../composables/useSwapLimits';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { getElectrumClient } from '../../electrum';
+import { setupSwap } from '../../hub';
+import { i18n } from '../../i18n/i18n-setup';
+import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
+import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { reportToSentry } from '../../lib/Sentry';
+import { assetToCurrency, getWalletEnabledSwapAssets, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
+import { getNetworkClient } from '../../network';
+import { AccountType, useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
-import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
-import { i18n } from '../../i18n/i18n-setup';
-import { setupSwap } from '../../hub';
-import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
-import { useAddressStore } from '../../stores/Address';
-import { useNetworkStore } from '../../stores/Network';
-import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
-import { AccountType, useAccountStore } from '../../stores/Account';
-import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
+import { useNetworkStore } from '../../stores/Network';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
-import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { assetToCurrency, getWalletEnabledSwapAssets, SupportedSwapAsset }
-    from '../../lib/swap/utils/Assets';
+import { useSettingsStore } from '../../stores/Settings';
+import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import AddressList from '../AddressList.vue';
-import SwapAnimation from './SwapAnimation.vue';
-import SendModalFooter from '../SendModalFooter.vue';
-import { useConfig } from '../../composables/useConfig';
-import { useWindowSize } from '../../composables/useWindowSize';
-import { useSwapLimits } from '../../composables/useSwapLimits';
-import { getNetworkClient } from '../../network';
-import { getElectrumClient } from '../../electrum';
-import KycPrompt from '../kyc/KycPrompt.vue';
-import KycOverlay from '../kyc/KycOverlay.vue';
+import Amount from '../Amount.vue';
+import AmountInput from '../AmountInput.vue';
 import ButtonGroup from '../ButtonGroup.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import KycIcon from '../icons/KycIcon.vue';
+import LightningIcon from '../icons/LightningIcon.vue';
+import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
-import { reportToSentry } from '../../lib/Sentry';
+import KycOverlay from '../kyc/KycOverlay.vue';
+import KycPrompt from '../kyc/KycPrompt.vue';
+import Modal from '../modals/Modal.vue';
+import WarningModal from '../modals/WarningModal.vue';
+import SendModalFooter from '../SendModalFooter.vue';
+import SwapAnimation from './SwapAnimation.vue';
+import SwapBalanceBar from './SwapBalanceBar.vue';
+import SwapFeesTooltip from './SwapFeesTooltip.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -372,12 +420,12 @@ export default defineComponent({
         const leftAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.NIM
-                : props.pair.split('-')[0] as SupportedSwapAsset,
+                : (props.pair.split('-')[0] as SupportedSwapAsset),
         );
         const rightAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.BTC
-                : props.pair.split('-')[1] as SupportedSwapAsset,
+                : (props.pair.split('-')[1] as SupportedSwapAsset),
         );
 
         const swapHasBtc = computed(() => leftAsset.value === SwapAsset.BTC || rightAsset.value === SwapAsset.BTC);
@@ -392,8 +440,9 @@ export default defineComponent({
 
         const disabledAssetError = computed(() => {
             if (!config.fastspot.enabled) return i18n.t('Crypto swaps are currently under maintenance.') as string;
-            const disabledAsset = [leftAsset.value, rightAsset.value]
-                .find((asset) => !config.fastspot.enabledSwapAssets.includes(asset));
+            const disabledAsset = [leftAsset.value, rightAsset.value].find(
+                (asset) => !config.fastspot.enabledSwapAssets.includes(asset),
+            );
             if (!disabledAsset) return null;
             return i18n.t('{disabledAsset} swaps are currently under maintenance.', { disabledAsset }) as string;
         });
@@ -425,7 +474,11 @@ export default defineComponent({
             }
         });
 
-        const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
+        const {
+            limits,
+            nimAddress: limitsNimAddress,
+            recalculate: recalculateLimits,
+        } = useSwapLimits({
             nimAddress: activeAddress.value!,
             usdcAddress: activePolygonAddress.value,
             usdtAddress: activePolygonAddress.value,
@@ -437,9 +490,13 @@ export default defineComponent({
         });
 
         // Re-run limit calculation when exchange rates change
-        watch(exchangeRates, () => {
-            if (limits.value) recalculateLimits();
-        }, { deep: true });
+        watch(
+            exchangeRates,
+            () => {
+                if (limits.value) recalculateLimits();
+            },
+            { deep: true },
+        );
 
         const currentLimitFiat = computed(() => {
             if (!limits.value) return null;
@@ -497,14 +554,10 @@ export default defineComponent({
 
         const rightUnitsPerLeftCoin = computed<number | undefined>(() => {
             // Only use estimate to calculate ratio when the estimate is for the two currently selected assets
-            const isEstimateForCurrentPair = !!estimate.value
-                && [
-                    estimate.value.from.asset,
-                    estimate.value.to.asset,
-                ].sort().join() === [
-                    leftAsset.value,
-                    rightAsset.value,
-                ].sort().join();
+            const isEstimateForCurrentPair =
+                !!estimate.value
+                && [estimate.value.from.asset, estimate.value.to.asset].sort().join()
+                    === [leftAsset.value, rightAsset.value].sort().join();
 
             if (!estimate.value || !isEstimateForCurrentPair) {
                 const leftRate = exchangeRates.value[assetToCurrency(leftAsset.value)][currency.value];
@@ -541,7 +594,7 @@ export default defineComponent({
             const leftCoinsToUnits = 10 ** DECIMALS[leftAsset.value];
             const rightCoinsToUnits = 10 ** DECIMALS[rightAsset.value];
 
-            return ((rightAmount / rightCoinsToUnits) / (leftAmount / leftCoinsToUnits)) * rightCoinsToUnits;
+            return (rightAmount / rightCoinsToUnits / (leftAmount / leftCoinsToUnits)) * rightCoinsToUnits;
         });
 
         const wantLeft = ref(0);
@@ -653,35 +706,35 @@ export default defineComponent({
             return asset === SwapAsset.NIM
                 ? 0 // 0 NIM
                 : asset === SwapAsset.BTC
-                    ? 1 // 1 sat
-                    : 200e9; // 200 Gwei - For USDC/T it doesn't matter, since we get the fee from the network anyway
+                  ? 1 // 1 sat
+                  : 200e9; // 200 Gwei - For USDC/T it doesn't matter, since we get the fee from the network anyway
         }
 
         // 48 extra weight units for BTC HTLC funding tx
         const btcFeeForSendingAll = computed(() =>
-            estimateFees(accountUtxos.value.length, 1, feePerUnit(SwapAsset.BTC), 48));
-        const btcMaxSendableAmount = computed(() =>
-            Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
+            estimateFees(accountUtxos.value.length, 1, feePerUnit(SwapAsset.BTC), 48),
+        );
+        const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
-        function calculateMyFees(feesPerUnit?: { nim: number, btc: number }): {
-            fundingFee: number,
-            settlementFee: number,
+        function calculateMyFees(feesPerUnit?: { nim: number; btc: number }): {
+            fundingFee: number;
+            settlementFee: number;
         };
-        function calculateMyFees(feesPerUnit: { nim: number, btc: number } | undefined, asPromise: true): {
-            fundingFee: number | Promise<number>,
-            settlementFee: number | Promise<number>,
+        function calculateMyFees(
+            feesPerUnit: { nim: number; btc: number } | undefined,
+            asPromise: true,
+        ): {
+            fundingFee: number | Promise<number>;
+            settlementFee: number | Promise<number>;
         };
         function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }, asPromise = false) {
             let fundingFee: number | Promise<number> | null = null;
             let settlementFee: number | Promise<number> | null = null;
 
-            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
-                ? leftAsset.value
-                : rightAsset.value;
+            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT ? leftAsset.value : rightAsset.value;
 
-            const settlementAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
-                ? rightAsset.value
-                : leftAsset.value;
+            const settlementAsset =
+                direction.value === SwapDirection.LEFT_TO_RIGHT ? rightAsset.value : leftAsset.value;
 
             const fundingFeePerUnit = feePerUnit(fundingAsset);
             const settlementFeePerUnit = feePerUnit(settlementAsset);
@@ -702,7 +755,8 @@ export default defineComponent({
                             feesPerUnit.btc || fundingFeePerUnit,
                             48, // 48 extra weight units for BTC HTLC funding tx
                         );
-                        fundingFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0)
+                        fundingFee =
+                            selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0)
                             - btcAmount
                             - selected.changeAmount;
                     } else {
@@ -714,13 +768,15 @@ export default defineComponent({
                 case SwapAsset.USDT_MATIC:
                     if (polygonFeeStuff.value) fundingFee = polygonFeeStuff.value.fee;
                     else if (!asPromise) fundingFee = 0;
-                    else fundingFee = new Promise<number>((resolve) => { // eslint-disable-line curly
-                        const stop = watch(polygonFeeStuff, (stuff) => {
-                            if (!stuff) return;
-                            resolve(stuff.fee);
-                            stop();
+                    else {
+                        fundingFee = new Promise<number>((resolve) => {
+                            const stop = watch(polygonFeeStuff, (stuff) => {
+                                if (!stuff) return;
+                                resolve(stuff.fee);
+                                stop();
+                            });
                         });
-                    });
+                    }
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for funding ${fundingAsset}`);
@@ -739,13 +795,15 @@ export default defineComponent({
                 case SwapAsset.USDT_MATIC:
                     if (polygonFeeStuff.value) settlementFee = polygonFeeStuff.value.fee;
                     else if (!asPromise) settlementFee = 0;
-                    else settlementFee = new Promise<number>((resolve) => { // eslint-disable-line curly
-                        const stop = watch(polygonFeeStuff, (stuff) => {
-                            if (!stuff) return;
-                            resolve(stuff.fee);
-                            stop();
+                    else {
+                        settlementFee = new Promise<number>((resolve) => {
+                            const stop = watch(polygonFeeStuff, (stuff) => {
+                                if (!stuff) return;
+                                resolve(stuff.fee);
+                                stop();
+                            });
                         });
-                    });
+                    }
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for settling ${settlementAsset}`);
@@ -760,15 +818,13 @@ export default defineComponent({
         }
 
         function calculateServiceFees(feesPerUnit = { nim: 0, btc: 0 }): {
-            fundingFee: number,
-            settlementFee: number,
+            fundingFee: number;
+            settlementFee: number;
         } {
             let fundingFee: number | null = null;
             let settlementFee: number | null = null;
 
-            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
-                ? leftAsset.value
-                : rightAsset.value;
+            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT ? leftAsset.value : rightAsset.value;
             const settlementAsset = otherAsset(fundingAsset);
 
             const fundingFeePerUnit = feePerUnit(fundingAsset);
@@ -817,12 +873,9 @@ export default defineComponent({
             };
         }
 
-        function calculateRequestData({ fundingFee, settlementFee }: {
-            fundingFee: number,
-            settlementFee: number,
-        }): {
-            from: SwapAsset | RequestAsset<SwapAsset>,
-            to: RequestAsset<SwapAsset> | SwapAsset,
+        function calculateRequestData({ fundingFee, settlementFee }: { fundingFee: number; settlementFee: number }): {
+            from: SwapAsset | RequestAsset<SwapAsset>;
+            to: RequestAsset<SwapAsset> | SwapAsset;
         } {
             let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
             let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
@@ -865,11 +918,11 @@ export default defineComponent({
 
         type PolygonFees = {
             /** Fee in USDC/T units */
-            fee: number,
+            fee: number;
             /** The relay address of the fee quote */
-            relay: string,
+            relay: string;
             /** The HTLC operation that this fee was quoted for */
-            operation: 'htlc.open' | 'htlc.redeem',
+            operation: 'htlc.open' | 'htlc.redeem';
         };
 
         const polygonFeeStuff = ref<PolygonFees | null>(null);
@@ -913,10 +966,9 @@ export default defineComponent({
                     stopPolygonFeeUpdates();
                     return false;
                 }
-                polygonFeeError.value = $t(
-                    'Failed to fetch Polygon fees. Retrying... (Error: {message})',
-                    { message: e instanceof Error ? e.message : String(e) },
-                ) as string;
+                polygonFeeError.value = $t('Failed to fetch Polygon fees. Retrying... (Error: {message})', {
+                    message: e instanceof Error ? e.message : String(e),
+                }) as string;
                 if (polygonFeeUpdateTimeout === 0) {
                     // Retry in 10s if timer is still to be started and has not been started yet.
                     polygonFeeUpdateTimeout = window.setTimeout(startPolygonFeeUpdates, 10e3);
@@ -932,14 +984,18 @@ export default defineComponent({
             polygonFeeError.value = null;
         }
 
-        watch([leftAsset, rightAsset], () => {
-            if (swapHasUsdc.value || swapHasUsdt.value) {
-                // (Re)start USDC fee updates if USDC was selected or the USDC swap direction switched.
-                startPolygonFeeUpdates();
-            } else {
-                stopPolygonFeeUpdates();
-            }
-        }, { immediate: true });
+        watch(
+            [leftAsset, rightAsset],
+            () => {
+                if (swapHasUsdc.value || swapHasUsdt.value) {
+                    // (Re)start USDC fee updates if USDC was selected or the USDC swap direction switched.
+                    startPolygonFeeUpdates();
+                } else {
+                    stopPolygonFeeUpdates();
+                }
+            },
+            { immediate: true },
+        );
 
         onBeforeUnmount(stopPolygonFeeUpdates);
 
@@ -981,24 +1037,29 @@ export default defineComponent({
                 );
 
                 // Update local fees with latest feePerUnit values
-                const { fundingFee, settlementFee } = calculateMyFees({
-                    nim: newEstimate.from.asset === SwapAsset.NIM
-                        ? newEstimate.from.feePerUnit!
-                        : newEstimate.to.asset === SwapAsset.NIM
-                            ? newEstimate.to.feePerUnit!
-                            : 0,
-                    btc: newEstimate.from.asset === SwapAsset.BTC
-                        ? newEstimate.from.feePerUnit!
-                        : newEstimate.to.asset === SwapAsset.BTC
-                            ? newEstimate.to.feePerUnit!
-                            : 0,
-                }, true);
+                const { fundingFee, settlementFee } = calculateMyFees(
+                    {
+                        nim:
+                            newEstimate.from.asset === SwapAsset.NIM
+                                ? newEstimate.from.feePerUnit!
+                                : newEstimate.to.asset === SwapAsset.NIM
+                                  ? newEstimate.to.feePerUnit!
+                                  : 0,
+                        btc:
+                            newEstimate.from.asset === SwapAsset.BTC
+                                ? newEstimate.from.feePerUnit!
+                                : newEstimate.to.asset === SwapAsset.BTC
+                                  ? newEstimate.to.feePerUnit!
+                                  : 0,
+                    },
+                    true,
+                );
 
                 newEstimate.from.fee = await fundingFee;
                 newEstimate.to.fee = await settlementFee;
 
                 // Check against minimums
-                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
+                if (!newEstimate.from.amount || newEstimate.to.amount - newEstimate.to.fee <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
                     estimateError.value = $t('The fees determine the minimum amount.') as string;
                 } else if (
@@ -1028,14 +1089,22 @@ export default defineComponent({
 
         const isLimitReached = ref(false);
 
-        function accountBalance(asset: SupportedSwapAsset): number { // eslint-disable-line consistent-return
-            switch (asset) { // eslint-disable-line default-case
-                case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
-                case SwapAsset.BTC: return accountBtcBalance.value;
-                case SwapAsset.USDC: return 0; // not supported for swapping
-                case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
-                case SwapAsset.USDT_MATIC: return accountUsdtBridgedBalance.value;
-                case SwapAsset.EUR: return 0;
+        // eslint-disable-next-line consistent-return
+        function accountBalance(asset: SupportedSwapAsset): number {
+            // eslint-disable-next-line default-case
+            switch (asset) {
+                case SwapAsset.NIM:
+                    return activeAddressInfo.value?.balance ?? 0;
+                case SwapAsset.BTC:
+                    return accountBtcBalance.value;
+                case SwapAsset.USDC:
+                    return 0; // not supported for swapping
+                case SwapAsset.USDC_MATIC:
+                    return accountUsdcBalance.value;
+                case SwapAsset.USDT_MATIC:
+                    return accountUsdtBridgedBalance.value;
+                case SwapAsset.EUR:
+                    return 0;
             }
         }
 
@@ -1054,9 +1123,10 @@ export default defineComponent({
             if (asset === leftAsset.value) {
                 fixedAsset.value = leftAsset.value;
                 const leftRate = exchangeRates.value[assetToCurrency(leftAsset.value)][currency.value];
-                const limit = leftRate && currentLimitFiat.value !== null
-                    ? Math.floor((currentLimitFiat.value / leftRate) * 10 ** DECIMALS[leftAsset.value])
-                    : Infinity;
+                const limit =
+                    leftRate && currentLimitFiat.value !== null
+                        ? Math.floor((currentLimitFiat.value / leftRate) * 10 ** DECIMALS[leftAsset.value])
+                        : Infinity;
                 wantLeft.value = Math.min(limit, Math.max(-limit, amount));
                 wantRight.value = 0;
 
@@ -1071,9 +1141,10 @@ export default defineComponent({
             if (asset === rightAsset.value) {
                 fixedAsset.value = rightAsset.value;
                 const rightRate = exchangeRates.value[assetToCurrency(rightAsset.value)][currency.value];
-                const limit = rightRate && currentLimitFiat.value !== null
-                    ? Math.floor((currentLimitFiat.value / rightRate) * 10 ** DECIMALS[rightAsset.value])
-                    : Infinity;
+                const limit =
+                    rightRate && currentLimitFiat.value !== null
+                        ? Math.floor((currentLimitFiat.value / rightRate) * 10 ** DECIMALS[rightAsset.value])
+                        : Infinity;
                 wantRight.value = Math.min(limit, Math.max(-limit, amount));
                 wantLeft.value = 0;
 
@@ -1201,9 +1272,7 @@ export default defineComponent({
                 }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === leftAsset.value
-                    ? data.from.serviceNetworkFee
-                    : data.to.serviceNetworkFee;
+                fee = data.from.asset === leftAsset.value ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
             }
             const unitsToCoins = 10 ** DECIMALS[leftAsset.value];
             return (fee / unitsToCoins) * (exchangeRates.value[assetToCurrency(leftAsset.value)][currency.value] || 0);
@@ -1215,7 +1284,6 @@ export default defineComponent({
                 if (rightAsset.value === SwapAsset.USDC_MATIC || rightAsset.value === SwapAsset.USDT_MATIC) {
                     if (
                         !(polygonGasPrice.value || assets.value?.[rightAsset.value].feePerUnit)
-
                         || !stableUsdPriceInWei.value
                     ) {
                         return 0;
@@ -1230,16 +1298,14 @@ export default defineComponent({
                 }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === rightAsset.value
-                    ? data.from.serviceNetworkFee
-                    : data.to.serviceNetworkFee;
+                fee = data.from.asset === rightAsset.value ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
             }
             const unitsToCoins = 10 ** DECIMALS[rightAsset.value];
             return (fee / unitsToCoins) * (exchangeRates.value[assetToCurrency(rightAsset.value)][currency.value] || 0);
         });
 
         // watch([myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat], (prices) => {
-        //     // eslint-disable-next-line @typescript-eslint/no-shadow
+        //     // oxlint-disable-next-line @typescript-eslint/no-shadow
         //     const [myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat] = prices;
         //     console.log({ myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat });
         // });
@@ -1256,8 +1322,10 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const feeAmount = (data.from.amount - data.from.serviceNetworkFee) * data.serviceFeePercentage;
-            return (Math.max(0, feeAmount) / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
-                * (exchangeRates.value[assetToCurrency(data.from.asset as SupportedSwapAsset)][currency.value] || 0);
+            return (
+                (Math.max(0, feeAmount) / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
+                * (exchangeRates.value[assetToCurrency(data.from.asset as SupportedSwapAsset)][currency.value] || 0)
+            );
         });
 
         const feeFiat = (asset: SupportedSwapAsset) => {
@@ -1269,12 +1337,13 @@ export default defineComponent({
         const btcFeeFiat = computed(() => feeFiat(SwapAsset.BTC));
         const usdcFeeFiat = computed(() => feeFiat(SwapAsset.USDC_MATIC));
         const usdtFeeFiat = computed(() => feeFiat(SwapAsset.USDT_MATIC));
-        const totalFeeFiat = computed(() =>
-            (nimFeeFiat.value || 0)
-            + (btcFeeFiat.value || 0)
-            + (usdcFeeFiat.value || 0)
-            + (usdtFeeFiat.value || 0)
-            + serviceSwapFeeFiat.value,
+        const totalFeeFiat = computed(
+            () =>
+                (nimFeeFiat.value || 0)
+                + (btcFeeFiat.value || 0)
+                + (usdcFeeFiat.value || 0)
+                + (usdtFeeFiat.value || 0)
+                + serviceSwapFeeFiat.value,
         );
 
         const feeIsLoading = computed(() => {
@@ -1289,9 +1358,10 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const fromAmount = data.from.amount - data.from.serviceNetworkFee;
-            const fromFiat = (fromAmount / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
+            const fromFiat =
+                (fromAmount / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
                 * (exchangeRates.value[assetToCurrency(data.from.asset as SupportedSwapAsset)][currency.value] || 0);
-            return (totalFeeFiat.value / fromFiat) >= 0.3;
+            return totalFeeFiat.value / fromFiat >= 0.3;
         });
 
         const fiatSmUnit = computed(() => {
@@ -1299,8 +1369,7 @@ export default defineComponent({
             return 1 / 10 ** currencyInfo.decimals;
         });
 
-        const roundedUpFeeFiat = computed(() =>
-            Math.ceil(totalFeeFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
+        const roundedUpFeeFiat = computed(() => Math.ceil(totalFeeFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
 
         const feeSmallerThanSmUnit = computed(() => roundedUpFeeFiat.value <= fiatSmUnit.value);
 
@@ -1318,7 +1387,8 @@ export default defineComponent({
             }
         }
 
-        const canSign = computed(() => { // eslint-disable-line arrow-body-style
+        // eslint-disable-next-line arrow-body-style
+        const canSign = computed(() => {
             // console.log(
             //     'canSign:\n',
             //     `config.fastspot.enabled: ${config.fastspot.enabled}\n`
@@ -1337,12 +1407,18 @@ export default defineComponent({
             // BTC, and for USDC waiting for polygonFeeStuff is covered by fetchingEstimate via calculateMyFees in
             // updateEstimate, which waits for polygonFeeStuff (but polygonFeeStuff is also re-fetched in sign()
             // anyways).
-            return config.fastspot.enabled
-                && !disabledAssetError.value && !estimateError.value && !swapError.value && !polygonFeeError.value
+            return (
+                config.fastspot.enabled
+                && !disabledAssetError.value
+                && !estimateError.value
+                && !swapError.value
+                && !polygonFeeError.value
                 && estimate.value
                 && limits.value?.current.usd
                 && !fetchingEstimate.value
-                && newLeftBalance.value >= 0 && newRightBalance.value >= 0;
+                && newLeftBalance.value >= 0
+                && newRightBalance.value >= 0
+            );
         });
 
         /**
@@ -1367,7 +1443,7 @@ export default defineComponent({
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
 
-                if (!await wasFeeUpdateSuccessful) {
+                if (!(await wasFeeUpdateSuccessful)) {
                     // If first attempt to update fee was not successful, abort signing. An error message will be shown
                     // in the UI via polygonFeeError.
                     reject(new Error(polygonFeeError.value || undefined));
@@ -1384,7 +1460,7 @@ export default defineComponent({
                         // Ensure we send only what's possible with the updated fee
                         from[SwapAsset.USDC_MATIC] = Math.min(
                             from[SwapAsset.USDC_MATIC]!,
-                            (accountUsdcBalance.value - await fees.fundingFee) / 1e6,
+                            (accountUsdcBalance.value - (await fees.fundingFee)) / 1e6,
                         );
                     }
 
@@ -1392,7 +1468,7 @@ export default defineComponent({
                         // Ensure we send only what's possible with the updated fee
                         from[SwapAsset.USDT_MATIC] = Math.min(
                             from[SwapAsset.USDT_MATIC]!,
-                            (accountUsdtBridgedBalance.value - await fees.fundingFee) / 1e6,
+                            (accountUsdtBridgedBalance.value - (await fees.fundingFee)) / 1e6,
                         );
                     }
 
@@ -1402,18 +1478,23 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateMyFees({
-                        nim: swapSuggestion.from.asset === SwapAsset.NIM
-                            ? swapSuggestion.from.feePerUnit!
-                            : swapSuggestion.to.asset === SwapAsset.NIM
-                                ? swapSuggestion.to.feePerUnit!
-                                : 0,
-                        btc: swapSuggestion.from.asset === SwapAsset.BTC
-                            ? swapSuggestion.from.feePerUnit!
-                            : swapSuggestion.to.asset === SwapAsset.BTC
-                                ? swapSuggestion.to.feePerUnit!
-                                : 0,
-                    }, true);
+                    const { fundingFee, settlementFee } = calculateMyFees(
+                        {
+                            nim:
+                                swapSuggestion.from.asset === SwapAsset.NIM
+                                    ? swapSuggestion.from.feePerUnit!
+                                    : swapSuggestion.to.asset === SwapAsset.NIM
+                                      ? swapSuggestion.to.feePerUnit!
+                                      : 0,
+                            btc:
+                                swapSuggestion.from.asset === SwapAsset.BTC
+                                    ? swapSuggestion.from.feePerUnit!
+                                    : swapSuggestion.to.asset === SwapAsset.BTC
+                                      ? swapSuggestion.to.feePerUnit!
+                                      : 0,
+                        },
+                        true,
+                    );
 
                     swapSuggestion.from.fee = await fundingFee;
                     swapSuggestion.to.fee = await settlementFee;
@@ -1480,7 +1561,11 @@ export default defineComponent({
                     // Assemble BTC inputs
                     // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
-                        accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
+                        accountUtxos.value,
+                        swapSuggestion.from.amount,
+                        swapSuggestion.from.feePerUnit,
+                        48,
+                    );
                     let changeAddress: string;
                     if (requiredInputs.changeAmount > 0) {
                         const { nextChangeAddress } = storeToRefs(useBtcAddressStore());
@@ -1503,12 +1588,14 @@ export default defineComponent({
                         output: {
                             value: swapSuggestion.from.amount,
                         },
-                        ...(requiredInputs.changeAmount > 0 ? {
-                            changeOutput: {
-                                address: changeAddress!,
-                                value: requiredInputs.changeAmount,
-                            },
-                        } : {}),
+                        ...(requiredInputs.changeAmount > 0
+                            ? {
+                                  changeOutput: {
+                                      address: changeAddress!,
+                                      value: requiredInputs.changeAmount,
+                                  },
+                              }
+                            : {}),
                         refundAddress: btcAddress,
                     };
                 }
@@ -1572,7 +1659,7 @@ export default defineComponent({
 
                 const serviceSwapFee = Math.round(
                     (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
-                    * swapSuggestion.serviceFeePercentage,
+                        * swapSuggestion.serviceFeePercentage,
                 );
 
                 const { accountAddressInfos: addressInfos } = storeToRefs(useAddressStore());
@@ -1586,12 +1673,10 @@ export default defineComponent({
                     layout: 'slider',
                     direction: leftAsset.value === fund.type ? 'left-to-right' : 'right-to-left',
                     fiatCurrency: currency.value,
-                    fundingFiatRate: exchangeRates.value[assetToCurrency(
-                        fund.type as SupportedSwapAsset,
-                    )][currency.value]!,
-                    redeemingFiatRate: exchangeRates.value[assetToCurrency(
-                        redeem.type as SupportedSwapAsset,
-                    )][currency.value]!,
+                    fundingFiatRate:
+                        exchangeRates.value[assetToCurrency(fund.type as SupportedSwapAsset)][currency.value]!,
+                    redeemingFiatRate:
+                        exchangeRates.value[assetToCurrency(redeem.type as SupportedSwapAsset)][currency.value]!,
                     fundFees: {
                         processing: 0,
                         redeeming: swapSuggestion.from.serviceNetworkFee,
@@ -1608,11 +1693,15 @@ export default defineComponent({
                     bitcoinAccount: {
                         balance: accountBtcBalance.value,
                     },
-                    polygonAddresses: activePolygonAddress.value ? [{
-                        address: activePolygonAddress.value,
-                        usdcBalance: accountUsdcBalance.value,
-                        usdtBalance: accountUsdtBridgedBalance.value,
-                    }] : [],
+                    polygonAddresses: activePolygonAddress.value
+                        ? [
+                              {
+                                  address: activePolygonAddress.value,
+                                  usdcBalance: accountUsdcBalance.value,
+                                  usdtBalance: accountUsdtBridgedBalance.value,
+                              },
+                          ]
+                        : [],
                 };
 
                 resolve(request);
@@ -1673,20 +1762,22 @@ export default defineComponent({
                 confirmedSwap = swapOrPreSwap;
 
                 // Apply the correct local fees from the swap request
-                confirmedSwap.from.fee = fund.type === SwapAsset.NIM
-                    ? fund.fee
-                    : fund.type === SwapAsset.BTC
-                        ? fund.inputs.reduce((sum, input) => sum + input.value, 0)
+                confirmedSwap.from.fee =
+                    fund.type === SwapAsset.NIM
+                        ? fund.fee
+                        : fund.type === SwapAsset.BTC
+                          ? fund.inputs.reduce((sum, input) => sum + input.value, 0)
                             - fund.output.value
                             - (fund.changeOutput?.value || 0)
-                        : fund.type === SwapAsset.USDC_MATIC || fund.type === SwapAsset.USDT_MATIC
+                          : fund.type === SwapAsset.USDC_MATIC || fund.type === SwapAsset.USDT_MATIC
                             ? polygonFeeStuff.value!.fee
                             : 0;
-                confirmedSwap.to.fee = redeem.type === SwapAsset.NIM
-                    ? redeem.fee
-                    : redeem.type === SwapAsset.BTC
-                        ? redeem.input.value - redeem.output.value
-                        : redeem.type === SwapAsset.USDC_MATIC || redeem.type === SwapAsset.USDT_MATIC
+                confirmedSwap.to.fee =
+                    redeem.type === SwapAsset.NIM
+                        ? redeem.fee
+                        : redeem.type === SwapAsset.BTC
+                          ? redeem.input.value - redeem.output.value
+                          : redeem.type === SwapAsset.USDC_MATIC || redeem.type === SwapAsset.USDT_MATIC
                             ? polygonFeeStuff.value!.fee
                             : 0;
             } catch (error) {
@@ -1705,9 +1796,10 @@ export default defineComponent({
 
             if (SwapAsset.NIM in confirmedSwap.contracts) {
                 // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
-                const nimHtlcAddress = confirmedSwap.from.asset === SwapAsset.NIM
-                    ? signedTransactions.nim!.raw.recipient
-                    : signedTransactions.nim!.raw.sender;
+                const nimHtlcAddress =
+                    confirmedSwap.from.asset === SwapAsset.NIM
+                        ? signedTransactions.nim!.raw.recipient
+                        : signedTransactions.nim!.raw.sender;
                 (confirmedSwap.contracts[SwapAsset.NIM] as Contract<SwapAsset.NIM>).htlc.address = nimHtlcAddress;
             }
 
@@ -1716,12 +1808,14 @@ export default defineComponent({
                 state: SwapState.AWAIT_INCOMING,
                 stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
-                fundingSerializedTx: 'serializedTx' in fundingSignedTx
-                    ? fundingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify(fundingSignedTx), // USDC/T: the signed gasless HTLC opening
-                settlementSerializedTx: 'serializedTx' in redeemingSignedTx
-                    ? redeemingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify(redeemingSignedTx), // USDC/T: the signed gasless HTLC redeem
+                fundingSerializedTx:
+                    'serializedTx' in fundingSignedTx
+                        ? fundingSignedTx.serializedTx // NIM & BTC
+                        : JSON.stringify(fundingSignedTx), // USDC/T: the signed gasless HTLC opening
+                settlementSerializedTx:
+                    'serializedTx' in redeemingSignedTx
+                        ? redeemingSignedTx.serializedTx // NIM & BTC
+                        : JSON.stringify(redeemingSignedTx), // USDC/T: the signed gasless HTLC redeem
                 nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });
 
@@ -1751,22 +1845,24 @@ export default defineComponent({
                         redeem: settlementSerializedTx,
                         ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        throw new Error((await response.json()).message);
-                    }
+                })
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            throw new Error((await response.json()).message);
+                        }
 
-                    setActiveSwap({
-                        ...swap.value!,
-                        watchtowerNotified: true,
+                        setActiveSwap({
+                            ...swap.value!,
+                            watchtowerNotified: true,
+                        });
+                        console.debug('Swap watchtower notified'); // eslint-disable-line no-console
+                    })
+                    .catch((error) => {
+                        reportToSentry(error);
                     });
-                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
-                }).catch((error) => {
-                    reportToSentry(error);
-                });
             }
 
-            setTimeout(() => currentlySigning.value = false, 1000);
+            setTimeout(() => (currentlySigning.value = false), 1000);
         }
 
         function cancel() {
@@ -1778,13 +1874,11 @@ export default defineComponent({
             onClose();
         }
 
-        function onSwapBalanceBarChange(swapInfo: { asset: SupportedSwapAsset, amount: number }) {
+        function onSwapBalanceBarChange(swapInfo: { asset: SupportedSwapAsset; amount: number }) {
             const { asset, amount } = swapInfo;
 
             // Only cap decimals on the amount when not the whole address/account balance is used
-            const cappedAmount = Math.abs(amount) < accountBalance(asset)
-                ? capDecimals(amount, asset)
-                : undefined;
+            const cappedAmount = Math.abs(amount) < accountBalance(asset) ? capDecimals(amount, asset) : undefined;
 
             onInput(asset, cappedAmount || amount, amount);
         }
@@ -1806,8 +1900,9 @@ export default defineComponent({
         const stablecoinMaintenanceOverlayOpened = ref(false);
 
         function isUnderGasAbstractionMaintenance(asset: SupportedSwapAsset) {
-            return config.polygon.maintenance.swaps
-                && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC);
+            return (
+                config.polygon.maintenance.swaps && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC)
+            );
         }
 
         const { hasBitcoinAddresses, hasPolygonAddresses } = storeToRefs(useAccountStore());
@@ -1815,29 +1910,30 @@ export default defineComponent({
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SupportedSwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return getWalletEnabledSwapAssets().reduce((result, asset) => {
-                if (asset === SwapAsset.USDC_MATIC && stablecoin.value !== CryptoCurrency.USDC) return result;
-                if (asset === SwapAsset.USDT_MATIC && stablecoin.value !== CryptoCurrency.USDT) return result;
+            return getWalletEnabledSwapAssets().reduce(
+                (result, asset) => {
+                    if (asset === SwapAsset.USDC_MATIC && stablecoin.value !== CryptoCurrency.USDC) return result;
+                    if (asset === SwapAsset.USDT_MATIC && stablecoin.value !== CryptoCurrency.USDT) return result;
 
-                return {
-                    ...result,
-                    [asset]: {
-                        label: assetToCurrency(asset as SupportedSwapAsset).toUpperCase(),
-                        // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
-                        // but instead show a maintenance message in the footer.
-                        disabled: (
-                            // The asset is not activated in the active account.
-                            (asset === SwapAsset.NIM && config.disableNetworkInteraction)
-                            || (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
-                            || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
-                            || (asset === SwapAsset.USDT_MATIC && !hasPolygonAddresses.value)
-                        ) || (
-                            // Asset pair has no balance to swap.
-                            !otherAssetBalance && !accountBalance(asset as SupportedSwapAsset)
-                        ),
-                    },
-                };
-            }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
+                    return {
+                        ...result,
+                        [asset]: {
+                            label: assetToCurrency(asset as SupportedSwapAsset).toUpperCase(),
+                            // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
+                            // but instead show a maintenance message in the footer.
+                            disabled:
+                                // The asset is not activated in the active account.
+                                (asset === SwapAsset.NIM && config.disableNetworkInteraction)
+                                || (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                                || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
+                                || (asset === SwapAsset.USDT_MATIC && !hasPolygonAddresses.value)
+                                // Asset pair has no balance to swap.
+                                || (!otherAssetBalance && !accountBalance(asset as SupportedSwapAsset)),
+                        },
+                    };
+                },
+                {} as { [asset in SwapAsset]: { label: string; disabled: boolean } },
+            );
         }
 
         const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
@@ -1871,8 +1967,9 @@ export default defineComponent({
             });
         }
 
-        const swapIsNotSupported = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER
-            && (swapHasUsdc.value || swapHasUsdt.value));
+        const swapIsNotSupported = computed(
+            () => activeAccountInfo.value?.type === AccountType.LEDGER && (swapHasUsdc.value || swapHasUsdt.value),
+        );
 
         const disabledSwap = computed(() => {
             const leftRate = exchangeRates.value[assetToCurrency(leftAsset.value)][currency.value]!;
@@ -2090,7 +2187,7 @@ export default defineComponent({
 }
 
 .swap-disabled-text {
-    color: #D94432;
+    color: #d94432;
     font-weight: 600;
 }
 
@@ -2175,7 +2272,6 @@ export default defineComponent({
         .kyc-icon {
             margin: 0 -0.75rem 0 0.75rem;
         }
-
     }
 
     .high-fees,
@@ -2244,23 +2340,23 @@ export default defineComponent({
         form {
             .nq-input {
                 color: var(--nimiq-green);
-                --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
+                --border-color: rgba(33, 188, 165, 0.3); /* Based on Nimiq Green */
             }
 
             .nq-input:focus-within,
             .nq-input:hover {
-                --border-color: rgba(33,188,165,0.4); /* Based on Nimiq Green */
+                --border-color: rgba(33, 188, 165, 0.4); /* Based on Nimiq Green */
             }
         }
     }
 
-    &.negative-value ::v-deep form{
+    &.negative-value ::v-deep form {
         .nq-input {
             color: var(--nimiq-blue);
         }
 
         .nq-input:focus-within,
-        .nq-input:hover  {
+        .nq-input:hover {
             color: var(--nimiq-light-blue);
             --border-color: rgba(5, 130, 202, 0.2);
         }
@@ -2270,7 +2366,7 @@ export default defineComponent({
         &.positive-value ::v-deep {
             .nq-input:focus-within,
             .nq-input:hover {
-                --border-color: rgba(33,188,165,0.5); /* Based on Nimiq Green */
+                --border-color: rgba(33, 188, 165, 0.5); /* Based on Nimiq Green */
             }
         }
 
@@ -2285,7 +2381,7 @@ export default defineComponent({
             }
 
             .nq-input:focus-within,
-            .nq-input:hover  {
+            .nq-input:hover {
                 color: var(--nimiq-light-blue);
                 --border-color: rgba(5, 130, 202, 0.3);
             }
@@ -2319,7 +2415,6 @@ export default defineComponent({
             color: var(--nimiq-blue);
         }
     }
-
 }
 
 .new-balances .fiat-amount {
@@ -2389,7 +2484,7 @@ export default defineComponent({
     height: 4rem;
     width: 4rem;
     border-radius: 50%;
-    transition: background .2s var(--nimiq-ease);
+    transition: background 0.2s var(--nimiq-ease);
 
     &::before {
         border-radius: 50%;
@@ -2398,7 +2493,7 @@ export default defineComponent({
     &:hover,
     &:active,
     &:focus {
-        background: rgba(255, 255, 255, 0.20);
+        background: rgba(255, 255, 255, 0.2);
     }
 
     &.top-right {
@@ -2429,7 +2524,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .modal ::v-deep .small-page {
         overflow-y: auto;
     }

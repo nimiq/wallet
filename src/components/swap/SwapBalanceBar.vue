@@ -1,15 +1,17 @@
 <template>
     <div class="swap-balance-bar flex-column" ref="root" :class="{ animating: animatingBars, disabled }">
         <div class="balance-bar-header flex-row">
-            <button v-if="leftAsset === SwapAsset.NIM" class="reset left nimiq currency"
+            <button
+                v-if="leftAsset === SwapAsset.NIM"
+                class="reset left nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
                 <div class="identicon-stack">
                     <div v-if="disabled" class="disabled"></div>
-                    <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-                    <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
-                    <Identicon class="primary" :address="activeAddressInfo.address"/>
+                    <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]" />
+                    <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]" />
+                    <Identicon class="primary" :address="activeAddressInfo.address" />
                 </div>
                 <label>{{ activeAddressInfo.label }}</label>
                 <Amount :amount="newLeftBalance" currency="nim" :decimals="0" />
@@ -29,16 +31,18 @@
                 <label>{{ $t('Tether USD') }}</label>
                 <Amount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
             </div>
-            <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq currency"
+            <button
+                v-if="rightAsset === SwapAsset.NIM"
+                class="reset right nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
                 <label>{{ activeAddressInfo.label }}</label>
                 <Amount :amount="newRightBalance" currency="nim" :decimals="0" />
-                 <div class="identicon-stack">
-                    <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-                    <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
-                    <Identicon class="primary" :address="activeAddressInfo.address"/>
+                <div class="identicon-stack">
+                    <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]" />
+                    <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]" />
+                    <Identicon class="primary" :address="activeAddressInfo.address" />
                 </div>
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
@@ -62,7 +66,8 @@
             <CurvedLine :width="rightConnectingLineWidth" :height="35" direction="left" />
         </div>
         <div class="balance-bar flex-row">
-            <div class="bar left flex-row"
+            <div
+                class="bar left flex-row"
                 v-for="barDef in leftDistributionData"
                 :key="barDef.address"
                 :ref="barDef.active ? 'leftActiveBar$' : null"
@@ -74,19 +79,17 @@
             </div>
             <div class="separator nq-light-blue-bg" ref="separator$">
                 <transition name="fade">
-                    <SlideHint direction="left" v-if="!disabled && distributionPercents.right <= 2"/>
+                    <SlideHint direction="left" v-if="!disabled && distributionPercents.right <= 2" />
                 </transition>
-                <div class="handle"
-                    @mousedown="onMouseDown"
-                    @touchstart="onMouseDown"
-                >
+                <div class="handle" @mousedown="onMouseDown" @touchstart="onMouseDown">
                     <div v-if="disabled" class="disabled"></div>
                 </div>
                 <transition name="fade">
-                    <SlideHint direction="right" v-if="!disabled && distributionPercents.left <= 2"/>
+                    <SlideHint direction="right" v-if="!disabled && distributionPercents.left <= 2" />
                 </transition>
             </div>
-            <div class="bar right flex-row"
+            <div
+                class="bar right flex-row"
                 v-for="barDef in rightDistributionData"
                 :key="barDef.address"
                 :ref="barDef.active ? 'rightActiveBar$' : null"
@@ -99,21 +102,28 @@
         </div>
         <div class="scale flex-row">
             <div v-for="index in 10" :key="index" class="tenth">
-                <div v-if="index === 1"
+                <div
+                    v-if="index === 1"
                     class="left-total-percent"
                     :class="{
                         hidden: distributionPercents.left <= 5 || (equiPointPositionX < 10 && equiPointPositionX > 5),
                     }"
-                >{{distributionPercents.left}}%</div>
-                <div v-else-if="index === 10"
+                >
+                    {{ distributionPercents.left }}%
+                </div>
+                <div
+                    v-else-if="index === 10"
                     class="right-total-percent"
                     :class="{
                         hidden: distributionPercents.right <= 5 || (equiPointPositionX > 90 && equiPointPositionX < 95),
                     }"
-                >{{distributionPercents.right}}%</div>
+                >
+                    {{ distributionPercents.right }}%
+                </div>
             </div>
         </div>
-        <div class="equilibrium-point nq-light-blue-bg"
+        <div
+            class="equilibrium-point nq-light-blue-bg"
             :class="{
                 hidden: !equiPointVisible || equiPointPositionX <= 5 || equiPointPositionX >= 95,
             }"
@@ -124,32 +134,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { Identicon, Amount } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { getColorClass } from '../../lib/AddressColor';
+import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
+import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
-import { useAddressStore } from '../../stores/Address';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
-import { getColorClass } from '../../lib/AddressColor';
-import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
-import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
 
 type BarDefinition = {
-    readonly address: string,
-    readonly balance: number,
-    readonly active: boolean,
-    readonly newFiatBalance: number,
-    readonly barColorClass: string,
-    readonly balanceChange: number,
-    readonly fiatBalanceChange: number,
-}
+    readonly address: string;
+    readonly balance: number;
+    readonly active: boolean;
+    readonly newFiatBalance: number;
+    readonly barColorClass: string;
+    readonly balanceChange: number;
+    readonly fiatBalanceChange: number;
+};
 
 enum MovingDirection {
     RIGHT = 1,
@@ -196,72 +206,84 @@ export default defineComponent({
 
         const root = ref<HTMLDivElement | null>(null);
 
-        const leftExchangeRate = computed(() =>
-            exchangeRates.value?.[assetToCurrency(props.leftAsset)][currency.value] || 0);
-        const rightExchangeRate = computed(() =>
-            exchangeRates.value?.[assetToCurrency(props.rightAsset)][currency.value] || 0);
+        const leftExchangeRate = computed(
+            () => exchangeRates.value?.[assetToCurrency(props.leftAsset)][currency.value] || 0,
+        );
+        const rightExchangeRate = computed(
+            () => exchangeRates.value?.[assetToCurrency(props.rightAsset)][currency.value] || 0,
+        );
 
         // TODO: Deduplicate leftDistributionData and rightDistributionData code
         const leftDistributionData = computed<BarDefinition[]>(() => {
             switch (props.leftAsset) {
                 case SwapAsset.NIM:
-                    return addressInfos.value.map((addressInfo) => ({
-                        ...addressInfo,
-                        get active() {
-                            return (activeAddressInfo.value?.address === this.address);
-                        },
-                        get newFiatBalance() {
-                            if (!this.active) {
-                                return ((this.balance || 0) / 1e5) * leftExchangeRate.value;
-                            }
+                    return addressInfos.value.map(
+                        (addressInfo) =>
+                            ({
+                                ...addressInfo,
+                                get active() {
+                                    return activeAddressInfo.value?.address === this.address;
+                                },
+                                get newFiatBalance() {
+                                    if (!this.active) {
+                                        return ((this.balance || 0) / 1e5) * leftExchangeRate.value;
+                                    }
 
-                            return (props.newLeftBalance / 1e5) * leftExchangeRate.value;
-                        },
-                        get balanceChange() {
-                            if (!this.active) return 0;
+                                    return (props.newLeftBalance / 1e5) * leftExchangeRate.value;
+                                },
+                                get balanceChange() {
+                                    if (!this.active) return 0;
 
-                            return (props.newLeftBalance - (this.balance || 0));
-                        },
-                        get fiatBalanceChange() {
-                            return (this.balanceChange / 1e5) * leftExchangeRate.value;
-                        },
-                        get barColorClass() {
-                            return getColorClass(this.address);
-                        },
-                    } as BarDefinition));
+                                    return props.newLeftBalance - (this.balance || 0);
+                                },
+                                get fiatBalanceChange() {
+                                    return (this.balanceChange / 1e5) * leftExchangeRate.value;
+                                },
+                                get barColorClass() {
+                                    return getColorClass(this.address);
+                                },
+                            }) as BarDefinition,
+                    );
                 case SwapAsset.BTC:
-                    return [{
-                        address: availableExternalAddresses.value[0] || 'bitcoin',
-                        balance: btcAccountBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newLeftBalance / 1e8) * leftExchangeRate.value,
-                        barColorClass: 'bitcoin',
-                        balanceChange: (props.newLeftBalance - btcAccountBalance.value),
-                        fiatBalanceChange: ((props.newLeftBalance - btcAccountBalance.value) / 1e8)
-                            * leftExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: availableExternalAddresses.value[0] || 'bitcoin',
+                            balance: btcAccountBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newLeftBalance / 1e8) * leftExchangeRate.value,
+                            barColorClass: 'bitcoin',
+                            balanceChange: props.newLeftBalance - btcAccountBalance.value,
+                            fiatBalanceChange:
+                                ((props.newLeftBalance - btcAccountBalance.value) / 1e8) * leftExchangeRate.value,
+                        },
+                    ];
                 case SwapAsset.USDC_MATIC:
-                    return [{
-                        address: polygonAddressInfo.value?.address || 'usdc',
-                        balance: accountUsdcBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
-                        barColorClass: 'usdc',
-                        balanceChange: (props.newLeftBalance - accountUsdcBalance.value),
-                        fiatBalanceChange: ((props.newLeftBalance - accountUsdcBalance.value) / 1e6)
-                            * leftExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: polygonAddressInfo.value?.address || 'usdc',
+                            balance: accountUsdcBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
+                            barColorClass: 'usdc',
+                            balanceChange: props.newLeftBalance - accountUsdcBalance.value,
+                            fiatBalanceChange:
+                                ((props.newLeftBalance - accountUsdcBalance.value) / 1e6) * leftExchangeRate.value,
+                        },
+                    ];
                 case SwapAsset.USDT_MATIC:
-                    return [{
-                        address: polygonAddressInfo.value?.address || 'usdt',
-                        balance: accountUsdtBridgedBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
-                        barColorClass: 'usdt',
-                        balanceChange: (props.newLeftBalance - accountUsdtBridgedBalance.value),
-                        fiatBalanceChange: ((props.newLeftBalance - accountUsdtBridgedBalance.value) / 1e6)
-                            * leftExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: polygonAddressInfo.value?.address || 'usdt',
+                            balance: accountUsdtBridgedBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
+                            barColorClass: 'usdt',
+                            balanceChange: props.newLeftBalance - accountUsdtBridgedBalance.value,
+                            fiatBalanceChange:
+                                ((props.newLeftBalance - accountUsdtBridgedBalance.value) / 1e6)
+                                * leftExchangeRate.value,
+                        },
+                    ];
                 default:
                     throw new Error('Invalid leftAsset');
             }
@@ -269,63 +291,73 @@ export default defineComponent({
         const rightDistributionData = computed<BarDefinition[]>(() => {
             switch (props.rightAsset) {
                 case SwapAsset.NIM:
-                    return addressInfos.value.map((addressInfo) => ({
-                        ...addressInfo,
-                        get active() {
-                            return (activeAddressInfo.value?.address === this.address);
-                        },
-                        get newFiatBalance() {
-                            if (!this.active) {
-                                return ((this.balance || 0) / 1e5) * rightExchangeRate.value;
-                            }
+                    return addressInfos.value.map(
+                        (addressInfo) =>
+                            ({
+                                ...addressInfo,
+                                get active() {
+                                    return activeAddressInfo.value?.address === this.address;
+                                },
+                                get newFiatBalance() {
+                                    if (!this.active) {
+                                        return ((this.balance || 0) / 1e5) * rightExchangeRate.value;
+                                    }
 
-                            return (props.newRightBalance / 1e5) * rightExchangeRate.value;
-                        },
-                        get balanceChange() {
-                            if (!this.active) return 0;
+                                    return (props.newRightBalance / 1e5) * rightExchangeRate.value;
+                                },
+                                get balanceChange() {
+                                    if (!this.active) return 0;
 
-                            return (props.newRightBalance - (this.balance || 0));
-                        },
-                        get fiatBalanceChange() {
-                            return (this.balanceChange / 1e5) * rightExchangeRate.value;
-                        },
-                        get barColorClass() {
-                            return getColorClass(this.address);
-                        },
-                    } as BarDefinition));
+                                    return props.newRightBalance - (this.balance || 0);
+                                },
+                                get fiatBalanceChange() {
+                                    return (this.balanceChange / 1e5) * rightExchangeRate.value;
+                                },
+                                get barColorClass() {
+                                    return getColorClass(this.address);
+                                },
+                            }) as BarDefinition,
+                    );
                 case SwapAsset.BTC:
-                    return [{
-                        address: availableExternalAddresses.value[0] || 'bitcoin',
-                        balance: btcAccountBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newRightBalance / 1e8) * rightExchangeRate.value,
-                        barColorClass: 'bitcoin',
-                        balanceChange: (props.newRightBalance - btcAccountBalance.value),
-                        fiatBalanceChange: ((props.newRightBalance - btcAccountBalance.value) / 1e8)
-                            * rightExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: availableExternalAddresses.value[0] || 'bitcoin',
+                            balance: btcAccountBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newRightBalance / 1e8) * rightExchangeRate.value,
+                            barColorClass: 'bitcoin',
+                            balanceChange: props.newRightBalance - btcAccountBalance.value,
+                            fiatBalanceChange:
+                                ((props.newRightBalance - btcAccountBalance.value) / 1e8) * rightExchangeRate.value,
+                        },
+                    ];
                 case SwapAsset.USDC_MATIC:
-                    return [{
-                        address: polygonAddressInfo.value?.address || 'usdc',
-                        balance: accountUsdcBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
-                        barColorClass: 'usdc',
-                        balanceChange: (props.newRightBalance - accountUsdcBalance.value),
-                        fiatBalanceChange: ((props.newRightBalance - accountUsdcBalance.value) / 1e6)
-                            * rightExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: polygonAddressInfo.value?.address || 'usdc',
+                            balance: accountUsdcBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
+                            barColorClass: 'usdc',
+                            balanceChange: props.newRightBalance - accountUsdcBalance.value,
+                            fiatBalanceChange:
+                                ((props.newRightBalance - accountUsdcBalance.value) / 1e6) * rightExchangeRate.value,
+                        },
+                    ];
                 case SwapAsset.USDT_MATIC:
-                    return [{
-                        address: polygonAddressInfo.value?.address || 'usdt',
-                        balance: accountUsdtBridgedBalance.value,
-                        active: true,
-                        newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
-                        barColorClass: 'usdt',
-                        balanceChange: (props.newRightBalance - accountUsdtBridgedBalance.value),
-                        fiatBalanceChange: ((props.newRightBalance - accountUsdtBridgedBalance.value) / 1e6)
-                            * rightExchangeRate.value,
-                    }];
+                    return [
+                        {
+                            address: polygonAddressInfo.value?.address || 'usdt',
+                            balance: accountUsdtBridgedBalance.value,
+                            active: true,
+                            newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
+                            barColorClass: 'usdt',
+                            balanceChange: props.newRightBalance - accountUsdtBridgedBalance.value,
+                            fiatBalanceChange:
+                                ((props.newRightBalance - accountUsdtBridgedBalance.value) / 1e6)
+                                * rightExchangeRate.value,
+                        },
+                    ];
                 default:
                     throw new Error('Invalid rightAsset');
             }
@@ -342,9 +374,7 @@ export default defineComponent({
             }
             return rightDistributionData.value[0].newFiatBalance;
         });
-        const totalNewFiatBalance = computed(() =>
-            leftTotalNewFiatBalance.value + rightTotalNewFiatBalance.value,
-        );
+        const totalNewFiatBalance = computed(() => leftTotalNewFiatBalance.value + rightTotalNewFiatBalance.value);
         const distributionPercents = computed(() => ({
             left: Math.round((leftTotalNewFiatBalance.value / totalNewFiatBalance.value) * 100),
             right: Math.round((rightTotalNewFiatBalance.value / totalNewFiatBalance.value) * 100),
@@ -358,12 +388,8 @@ export default defineComponent({
 
         const leftActiveBar$ = ref<HTMLDivElement[] | null>(null);
         const rightActiveBar$ = ref<HTMLDivElement[] | null>(null);
-        const leftActiveBar = computed(() =>
-            leftDistributionData.value.find((def) => def.active)!,
-        );
-        const rightActiveBar = computed(() =>
-            rightDistributionData.value.find((def) => def.active)!,
-        );
+        const leftActiveBar = computed(() => leftDistributionData.value.find((def) => def.active)!);
+        const rightActiveBar = computed(() => rightDistributionData.value.find((def) => def.active)!);
 
         function onMouseDown(event: MouseEvent | TouchEvent) {
             isGrabbing = true;
@@ -425,7 +451,7 @@ export default defineComponent({
             if (initialCursorPosition === 0) initialCursorPosition = separatorPositionX;
 
             const cursorPositionDiff = (cursorPosition || currentCursorPosition) - initialCursorPosition;
-            initialCursorPosition = (cursorPosition || currentCursorPosition);
+            initialCursorPosition = cursorPosition || currentCursorPosition;
 
             if (cursorPositionDiff === 0) return undefined;
 
@@ -440,21 +466,27 @@ export default defineComponent({
             const rightCoinsToUnits = 10 ** DECIMALS[props.rightAsset];
 
             /* Amounts calculation */
-            const fiatAmount = (Math.abs(cursorSeparatorPositionDiff) / root.value.clientWidth)
-                * totalNewFiatBalance.value;
-            const leftUnits = leftActiveBar.value.balanceChange
-                + (((fiatAmount / leftExchangeRate.value) * leftCoinsToUnits) * movingDirection);
-            const rightUnits = rightActiveBar.value.balanceChange
-                + (((fiatAmount / rightExchangeRate.value) * rightCoinsToUnits) * -movingDirection);
+            const fiatAmount =
+                (Math.abs(cursorSeparatorPositionDiff) / root.value.clientWidth) * totalNewFiatBalance.value;
+            const leftUnits =
+                leftActiveBar.value.balanceChange
+                + (fiatAmount / leftExchangeRate.value) * leftCoinsToUnits * movingDirection;
+            const rightUnits =
+                rightActiveBar.value.balanceChange
+                + (fiatAmount / rightExchangeRate.value) * rightCoinsToUnits * -movingDirection;
 
             /* Limits */
             if (props.fiatLimit && typeof props.fiatLimit === 'number') {
-                if ((leftUnits / leftCoinsToUnits) * leftExchangeRate.value < -props.fiatLimit
-                    && movingDirection === MovingDirection.LEFT) {
+                if (
+                    (leftUnits / leftCoinsToUnits) * leftExchangeRate.value < -props.fiatLimit
+                    && movingDirection === MovingDirection.LEFT
+                ) {
                     return emit(props.leftAsset, -(props.fiatLimit / leftExchangeRate.value) * leftCoinsToUnits);
                 }
-                if ((rightUnits / rightCoinsToUnits) * rightExchangeRate.value < -props.fiatLimit
-                    && movingDirection === MovingDirection.RIGHT) {
+                if (
+                    (rightUnits / rightCoinsToUnits) * rightExchangeRate.value < -props.fiatLimit
+                    && movingDirection === MovingDirection.RIGHT
+                ) {
                     return emit(props.rightAsset, -(props.fiatLimit / rightExchangeRate.value) * rightCoinsToUnits);
                 }
             }
@@ -507,18 +539,22 @@ export default defineComponent({
         onUnmounted(() => detachEventListeners());
 
         /* Bars' width */
-        const widthToSubstractPercent = computed(() => Math.round(
-            root.value ? (((0.625 * remSize.value) // separator right margin & width
-            + ((leftDistributionData.value.length - 1) * (0.875 * remSize.value))) // bar right margin & border width
-            / root.value.offsetWidth) * 100 : 0,
-        ) / 100);
+        const widthToSubstractPercent = computed(
+            () =>
+                Math.round(
+                    root.value
+                        ? ((0.625 * remSize.value // separator right margin & width
+                              + (leftDistributionData.value.length - 1) * (0.875 * remSize.value)) // bar right margin & border width
+                              / root.value.offsetWidth)
+                              * 100
+                        : 0,
+                ) / 100,
+        );
 
         const getBarWidth = (barDef: BarDefinition) =>
             (barDef.newFiatBalance / (totalNewFiatBalance.value * (1 + widthToSubstractPercent.value))) * 100;
         const getChangeBarWidth = (barDef: BarDefinition) =>
-            barDef.balanceChange > 0
-                ? (barDef.fiatBalanceChange / barDef.newFiatBalance) * 100
-                : 0;
+            barDef.balanceChange > 0 ? (barDef.fiatBalanceChange / barDef.newFiatBalance) * 100 : 0;
 
         /* Connecting lines between icon and active bar */
         const remSize = computed(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
@@ -527,12 +563,12 @@ export default defineComponent({
 
         function updateConnectingLinesWidth() {
             if (leftActiveBar$.value && leftActiveBar$.value[0].parentElement) {
-                leftConnectingLineWidth.value = (leftActiveBar$.value[0].offsetWidth / 2)
-                    + (leftActiveBar$.value[0].offsetLeft) - (remSize.value * 2.5);
+                leftConnectingLineWidth.value =
+                    leftActiveBar$.value[0].offsetWidth / 2 + leftActiveBar$.value[0].offsetLeft - remSize.value * 2.5;
             }
 
             if (rightActiveBar$.value) {
-                rightConnectingLineWidth.value = (rightActiveBar$.value[0].offsetWidth / 2) - (remSize.value * 2.5);
+                rightConnectingLineWidth.value = rightActiveBar$.value[0].offsetWidth / 2 - remSize.value * 2.5;
             }
         }
 
@@ -551,19 +587,25 @@ export default defineComponent({
             const { offsetLeft } = separator$.value;
 
             /* hide the point if close to the handle/separator */
-            if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / root.value.offsetWidth) * 100
-                && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / root.value.offsetWidth) * 100) {
+            if (
+                equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / root.value.offsetWidth) * 100
+                && equiPointPositionX.value > ((offsetLeft - equiPointThreshold) / root.value.offsetWidth) * 100
+            ) {
                 equiPointVisible.value = false;
             } else {
                 equiPointVisible.value = true;
             }
         }
 
-        watch(() => [props.leftAsset, props.rightAsset], async () => {
-            await nextTick();
-            const { offsetLeft } = separator$.value!;
-            equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
-        }, { immediate: true });
+        watch(
+            () => [props.leftAsset, props.rightAsset],
+            async () => {
+                await nextTick();
+                const { offsetLeft } = separator$.value!;
+                equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
+            },
+            { immediate: true },
+        );
 
         function animatedReset() {
             animatingBars.value = true;
@@ -600,7 +642,8 @@ export default defineComponent({
             animatingBars.value = true;
 
             if (asset === props.leftAsset) {
-                const posX = separator$.value.getBoundingClientRect().left
+                const posX =
+                    separator$.value.getBoundingClientRect().left
                     - ((event.target as HTMLElement).offsetWidth - event.offsetX);
 
                 updateSwapBalanceBar(posX);
@@ -769,7 +812,7 @@ export default defineComponent({
         font-weight: 600;
     }
 
-    &.left  {
+    &.left {
         --currency-columns: 1fr auto;
     }
 
@@ -819,11 +862,11 @@ export default defineComponent({
 .balance-bar-header .nimiq {
     &:not(.single) {
         &:before {
-            content: "";
+            content: '';
             border-radius: 0.75rem;
             position: absolute;
-            top: -.5rem;
-            bottom: -.5rem;
+            top: -0.5rem;
+            bottom: -0.5rem;
             left: -1.5rem;
             right: -1.5rem;
             background: transparent;
@@ -903,7 +946,7 @@ export default defineComponent({
 }
 
 .connecting-lines {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     margin-bottom: -3rem;
     padding-left: 3.5rem;
 
@@ -921,7 +964,7 @@ export default defineComponent({
     height: 4.5rem;
     border-radius: 0.5rem;
     background-color: currentColor;
-    border: .25rem solid currentColor;
+    border: 0.25rem solid currentColor;
     opacity: 0.25;
     align-items: center;
     justify-content: flex-end;
@@ -932,7 +975,9 @@ export default defineComponent({
     transition: opacity 300ms;
 
     .animating & {
-        transition: opacity 300ms, width 300ms;
+        transition:
+            opacity 300ms,
+            width 300ms;
     }
 
     &:not(:last-child) {
@@ -962,17 +1007,17 @@ export default defineComponent({
 
     &.bitcoin {
         background-color: var(--bitcoin-orange);
-        border: .25rem solid var(--bitcoin-orange);
+        border: 0.25rem solid var(--bitcoin-orange);
     }
 
     &.usdc {
         background-color: var(--usdc-blue);
-        border: .25rem solid var(--usdc-blue);
+        border: 0.25rem solid var(--usdc-blue);
     }
 
     &.usdt {
         background-color: var(--usdt-green);
-        border: .25rem solid var(--usdt-green);
+        border: 0.25rem solid var(--usdt-green);
     }
 
     .change {
@@ -1005,7 +1050,7 @@ export default defineComponent({
 }
 
 .separator {
-    width: .25rem;
+    width: 0.25rem;
     margin-right: 0.375rem;
     height: 10.5rem;
     position: relative;
@@ -1022,9 +1067,9 @@ export default defineComponent({
         background: white url('../../assets/horizontal-double-arrow.svg') no-repeat center;
         border-radius: 100%;
         box-shadow:
-            0px .5rem 2rem rgba(0, 0, 0, 0.07),
-            0px .1875rem .375rem rgba(0, 0, 0, 0.05),
-            0px .0421rem .25rem rgba(0, 0, 0, 0.025);
+            0px 0.5rem 2rem rgba(0, 0, 0, 0.07),
+            0px 0.1875rem 0.375rem rgba(0, 0, 0, 0.05),
+            0px 0.0421rem 0.25rem rgba(0, 0, 0, 0.025);
 
         position: absolute;
         top: calc(50% - (var(--height) / 2));
@@ -1038,12 +1083,12 @@ export default defineComponent({
 }
 
 .equilibrium-point {
-    height: .5rem;
-    width: .5rem;
+    height: 0.5rem;
+    width: 0.5rem;
     border-radius: 50%;
     cursor: pointer;
     position: absolute;
-    bottom: .25rem;
+    bottom: 0.25rem;
     opacity: 1;
 
     transition: opacity 0.3s var(--nimiq-ease);
@@ -1086,5 +1131,4 @@ export default defineComponent({
         }
     }
 }
-
 </style>

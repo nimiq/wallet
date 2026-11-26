@@ -3,9 +3,7 @@ import { i18n } from '../i18n/i18n-setup';
 import { isProxyData, ProxyTransactionDirection, ProxyType } from './ProxyDetection';
 
 function hex2Bytes(hexString: string): Uint8Array {
-    return hexString
-        ? new Uint8Array(hexString.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16)))
-        : new Uint8Array(0);
+    return hexString ? new Uint8Array(hexString.match(/.{1,2}/g)!.map((hex) => parseInt(hex, 16))) : new Uint8Array(0);
 }
 
 export function parseData(data: string | Readonly<string>): string {

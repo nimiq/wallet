@@ -1,10 +1,9 @@
 import type { PlainHtlcData, PlainTransactionDetails } from '@nimiq/core';
-import Vue from 'vue';
-import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { defineStore } from 'pinia';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import Config from 'config';
-import { useFiatStore } from './Fiat';
+import { defineStore } from 'pinia';
+import Vue from 'vue';
 import {
     CryptoCurrency,
     ENV_MAIN,
@@ -13,13 +12,14 @@ import {
     FIAT_PRICE_UNAVAILABLE,
 } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
-import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { AddressInfo, useAddressStore } from './Address';
+import { useFiatStore } from './Fiat';
+import { useSwapsStore } from './Swaps';
 
 export type Transaction = PlainTransactionDetails & {
-    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
-    relatedTransactionHash?: string,
+    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>;
+    relatedTransactionHash?: string;
 };
 
 export enum TransactionState {
@@ -44,13 +44,13 @@ const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<strin
 
 export const useTransactionsStore = defineStore('transactions', {
     state: () => ({
-        transactions: {} as {[hash: string]: Transaction},
+        transactions: {} as { [hash: string]: Transaction },
     }),
     getters: {
         // activeAccount: state => state.accounts[state.activeAccountId],
         pendingTransactionsBySender: (state) => {
             const pendingTxs = Object.values(state.transactions).filter((tx) => tx.state === 'pending');
-            const txsBySender: {[address: string]: Transaction[] | undefined} = {};
+            const txsBySender: { [address: string]: Transaction[] | undefined } = {};
             for (const tx of pendingTxs) {
                 const array = txsBySender[tx.sender] || [];
                 array.push(tx);
@@ -105,14 +105,17 @@ export const useTransactionsStore = defineStore('transactions', {
                 }
             }
 
-            const newTxs = txs.reduce((newOrUpdatedTxs, tx) => {
-                newOrUpdatedTxs[tx.transactionHash] = Object.assign(
-                    // Get the newest transaction from the store in case it was updated via setRelatedTransaction
-                    this.$state.transactions[tx.transactionHash] || tx,
-                    tx,
-                );
-                return newOrUpdatedTxs;
-            }, {} as { [hash: string]: Transaction });
+            const newTxs = txs.reduce(
+                (newOrUpdatedTxs, tx) => {
+                    newOrUpdatedTxs[tx.transactionHash] = Object.assign(
+                        // Get the newest transaction from the store in case it was updated via setRelatedTransaction
+                        this.$state.transactions[tx.transactionHash] || tx,
+                        tx,
+                    );
+                    return newOrUpdatedTxs;
+                },
+                {} as { [hash: string]: Transaction },
+            );
             // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.
             this.$state.transactions = {
@@ -154,18 +157,20 @@ export const useTransactionsStore = defineStore('transactions', {
             const lastExchangeRateUpdateTime = fiatStore.timestamp;
             const currentRate = fiatStore.exchangeRates[CryptoCurrency.NIM]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates[CryptoCurrency.NIM]?.[FiatCurrency.USD];
-            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter((tx) =>
-                // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
-                // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
-                // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
-                // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
-                // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
-                typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
+            const transactionsToUpdate = (transactions || Object.values(this.$state.transactions)).filter(
+                (tx) =>
+                    // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
+                    // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
+                    // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
+                    // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
+                    // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
+                    typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
                     && typeof tx.fiatValue?.[historyFiatCurrency] !== 'number'
                     && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
                     // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.
-                    && tx.timestamp && toMs(tx.timestamp) >= toMs(1532736000),
+                    && tx.timestamp
+                    && toMs(tx.timestamp) >= toMs(1532736000),
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
@@ -208,10 +213,11 @@ export const useTransactionsStore = defineStore('transactions', {
                 for (let tx of historicTransactions) {
                     const exchangeRate = historicExchangeRates.get(toMs(tx.timestamp));
                     // Get the newest transaction from the store in case it was updated via setRelatedTransaction.
-                    tx = this.$state.transactions[tx.transactionHash] as typeof tx || tx;
-                    Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
-                        ? exchangeRate * (tx.value / 1e5)
-                        : FIAT_PRICE_UNAVAILABLE,
+                    tx = (this.$state.transactions[tx.transactionHash] as typeof tx) || tx;
+                    Vue.set(
+                        tx.fiatValue!,
+                        historyFiatCurrency,
+                        exchangeRate !== undefined ? exchangeRate * (tx.value / 1e5) : FIAT_PRICE_UNAVAILABLE,
                     );
 
                     scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.delete(tx.transactionHash);
@@ -259,11 +265,9 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
     }
 
     // HTLC Refunding
-    if ('creator' in transaction.proof
-        && !(
-            'signer' in transaction.proof
-            && Config.nimiqPay.cosignerPublicKeys.includes(transaction.proof.publicKey!)
-        )
+    if (
+        'creator' in transaction.proof
+        && !('signer' in transaction.proof && Config.nimiqPay.cosignerPublicKeys.includes(transaction.proof.publicKey!))
     ) {
         // Find funding transaction
         const selector = (tx: Transaction) => tx.recipient === transaction.sender && 'hashRoot' in tx.data;

@@ -1,66 +1,72 @@
 <template>
-    <div id="app" :class="{'consensus-stalled': consensus === 'stalled'}">
+    <div id="app" :class="{ 'consensus-stalled': consensus === 'stalled' }">
         <div v-if="consensus === 'stalled'" class="red-notice">
-            <i18n v-if="isMainnet" path="A network issue occurred, please stand by. Click {link} for updates."
-                :tag="false">
+            <i18n
+                v-if="isMainnet"
+                path="A network issue occurred, please stand by. Click {link} for updates."
+                :tag="false"
+            >
                 <template #link>
                     <a href="https://x.com/nimiq/status/1860886491292913679" target="_blank">{{ $t('here') }}</a>
                 </template>
             </i18n>
             <template v-else>{{
-                $t('The network is temporarily not processing transactions or staking rewards, thank you for your '
-                + 'patience.')
+                $t(
+                    'The network is temporarily not processing transactions or staking rewards, thank you for your '
+                        + 'patience.',
+                )
             }}</template>
         </div>
         <main :class="activeMobileColumn" ref="$main">
-            <Sidebar/>
+            <Sidebar />
 
             <transition name="delay">
-                <router-view name="basement"/>
+                <router-view name="basement" />
             </transition>
 
             <transition name="slide-right">
                 <keep-alive>
-                    <router-view name="groundfloor"/>
+                    <router-view name="groundfloor" />
                 </keep-alive>
             </transition>
         </main>
 
-        <SwapNotification/>
+        <SwapNotification />
 
-        <UpdateNotification/>
+        <UpdateNotification />
 
         <transition name="fade">
             <div v-if="$config.showHelpButton && $route.name !== 'network' && $route.name !== 'settings'">
-                <WalletStatusButton/>
+                <WalletStatusButton />
             </div>
         </transition>
 
         <div v-if="!hasAccounts" class="loader flex-row">
-            <LoadingSpinner/>
+            <LoadingSpinner />
         </div>
-    </div><!-- #app -->
+    </div>
+    <!-- #app -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted, Ref, getCurrentInstance } from 'vue';
-import { storeToRefs } from 'pinia';
 import { LoadingSpinner } from '@nimiq/vue-components';
-import { provideI18n } from '@/lib/useI18n';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref, watch, computed, onMounted, Ref, getCurrentInstance } from 'vue';
 import { nextTick } from '@/lib/nextTick';
+import { provideI18n } from '@/lib/useI18n';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
+import WalletStatusButton from './components/WalletStatusButton.vue';
+import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
+import { useConfig } from './composables/useConfig';
+import { useSwipes } from './composables/useSwipes';
+import { useWindowSize } from './composables/useWindowSize';
+import { ENV_MAIN } from './lib/Constants';
 import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
-import { useSettingsStore } from './stores/Settings';
-import { useWindowSize } from './composables/useWindowSize';
-import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
-import { useSwipes } from './composables/useSwipes';
 import { useNetworkStore } from './stores/Network';
-import { useConfig } from './composables/useConfig';
-import { ENV_MAIN } from './lib/Constants';
-import WalletStatusButton from './components/WalletStatusButton.vue';
+import { useSettingsStore } from './stores/Settings';
 
 export default defineComponent({
     name: 'app',
@@ -79,10 +85,14 @@ export default defineComponent({
 
         const { amountsHidden, swipingEnabled } = storeToRefs(useSettingsStore());
 
-        watch(amountsHidden, (hidden) => {
-            if (hidden) document.body.classList.add('value-masked');
-            else document.body.classList.remove('value-masked');
-        }, { immediate: true });
+        watch(
+            amountsHidden,
+            (hidden) => {
+                if (hidden) document.body.classList.add('value-masked');
+                else document.body.classList.remove('value-masked');
+            },
+            { immediate: true },
+        );
 
         // Swiping
         const main$ = ref<HTMLDivElement | null>(null);
@@ -106,16 +116,17 @@ export default defineComponent({
             const sidebarBarrier = -192 / 2;
             const transactionsBarrier = -(window.innerWidth / 2 + 192);
 
-            if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
+            if (currentXPosition >= sidebarBarrier && initialXPosition < sidebarBarrier) {
                 // Go to sidebar
                 await router.push({ name: router.currentRoute.name!, query: { sidebar: 'true' } });
-            } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
+            } else if (currentXPosition <= transactionsBarrier && initialXPosition > transactionsBarrier) {
                 // Go to transactions
                 if (router.currentRoute.name === 'root') {
                     await router.push('/transactions');
                 }
             } else if (
-                (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
+                currentXPosition <= sidebarBarrier
+                && currentXPosition >= transactionsBarrier
                 && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
             ) {
                 // Go back to root (addresses)
@@ -130,7 +141,7 @@ export default defineComponent({
                 mobileTapArea$ = document.querySelector('.mobile-tap-area') as HTMLDivElement;
             }
             mobileTapArea$.style.transition = 'initial';
-            mobileTapArea$.style.opacity = `${1 - (position / -192)}`;
+            mobileTapArea$.style.opacity = `${1 - position / -192}`;
         }
 
         function resetStyles() {
@@ -225,7 +236,8 @@ export default defineComponent({
     //     --account-column-width: 35.125rem;
     // }
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         --account-column-width: 100vw;
         --address-column-width: 100vw;
     }
@@ -263,10 +275,10 @@ export default defineComponent({
 
         ::v-deep .address-overview {
             width: clamp(
-                        0px,
-                        calc(100vw - var(--sidebar-width) - var(--account-column-width)),
-                        var(--address-column-width)
-                    );
+                0px,
+                calc(100vw - var(--sidebar-width) - var(--account-column-width)),
+                var(--address-column-width)
+            );
             min-width: 0;
             z-index: 3;
         }
@@ -297,7 +309,8 @@ export default defineComponent({
         z-index: 100;
     }
 
-    @media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+    @media (max-width: $halfMobileBreakpoint) {
+        // Half mobile breakpoint
         main {
             width: calc(var(--sidebar-width) + 100vw);
             transition: transform var(--transition-time) var(--nimiq-ease);
@@ -321,16 +334,13 @@ export default defineComponent({
             }
 
             ::v-deep .address-overview {
-                width: clamp(
-                        0px,
-                        calc(100vw - var(--account-column-width)),
-                        var(--address-column-width)
-                    );
+                width: clamp(0px, calc(100vw - var(--account-column-width)), var(--address-column-width));
             }
         }
     }
 
-    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) {
+        // Full mobile breakpoint
         main {
             width: calc(var(--sidebar-width) + 200vw);
 
@@ -411,7 +421,8 @@ export default defineComponent({
     padding-top: 4.5rem;
 }
 
-@media (max-width: 751px) { /* When notice text breaks into two lines */
+@media (max-width: 751px) {
+    /* When notice text breaks into two lines */
     #app.consensus-stalled {
         padding-top: 6.75rem;
         .red-notice {
@@ -420,7 +431,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 418px) { /* When notice text breaks into three lines */
+@media (max-width: 418px) {
+    /* When notice text breaks into three lines */
     #app.consensus-stalled {
         padding-top: 9.125rem;
         .red-notice {
@@ -433,7 +445,8 @@ export default defineComponent({
 <style lang="scss">
 @use './scss/variables.scss' as *; // Import the variables
 
-html, body {
+html,
+body {
     // Disable viewport overscrolling on iOS
     // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
     position: fixed;
@@ -450,7 +463,8 @@ body {
     --transition-time: 0.75s;
 }
 
-@media (max-width: $halfMobileBreakpoint) { /* Half mobile breakpoint */
+@media (max-width: $halfMobileBreakpoint) {
+    /* Half mobile breakpoint */
     :root {
         --transition-time: 0.5s;
     }
@@ -471,7 +485,8 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity var(--transition-time) cubic-bezier(0.5, 0, 0.15, 1);
 
     &.settings {
@@ -527,7 +542,8 @@ body {
     }
 }
 
-@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) {
+    // Half mobile breakpoint
     .groundfloor {
         &.slide-right-enter,
         &.slide-right-leave-to {
@@ -543,7 +559,8 @@ body {
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
 
     .address-overview {
         &.slide-right-enter,

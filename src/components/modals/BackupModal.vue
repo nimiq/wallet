@@ -1,6 +1,10 @@
 <template>
-    <Modal ref="modal$" class="backup-modal" :class="{ 'hide-close-button': showBackButton && !hasStartedBackup }"
-        closeButtonInverse>
+    <Modal
+        ref="modal$"
+        class="backup-modal"
+        :class="{ 'hide-close-button': showBackButton && !hasStartedBackup }"
+        closeButtonInverse
+    >
         <PageBody class="flex-column">
             <button v-if="showBackButton" class="reset back-button" @click="goBack">
                 <ArrowLeftIcon />
@@ -9,8 +13,12 @@
             <div class="header">
                 <h1 class="nq-h1">{{ $t('Important: Create a backup') }}</h1>
                 <p class="nq-text">
-                    {{ $t('There is no \'forgot password\' or Login File recovery. '
-                        + 'Create a backup to stay in control.') }}
+                    {{
+                        $t(
+                            "There is no 'forgot password' or Login File recovery. "
+                                + 'Create a backup to stay in control.',
+                        )
+                    }}
                 </p>
             </div>
 
@@ -24,11 +32,18 @@
                         <p>{{ $t('Takes two ways of writing to yourself, like a messenger + email.') }}</p>
                     </div>
                     <div class="time-estimate">
-                        <Tooltip preferredPosition="top right" theme="inverse"
-                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
+                        <Tooltip
+                            preferredPosition="top right"
+                            theme="inverse"
+                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }"
+                        >
                             <ShieldIcon slot="trigger" variant="orange" />
-                            {{ $t('Sending yourself backup codes is convenient but only as secure as the '
-                                + 'channels you use.') }}
+                            {{
+                                $t(
+                                    'Sending yourself backup codes is convenient but only as secure as the '
+                                        + 'channels you use.',
+                                )
+                            }}
                         </Tooltip>
                         <span>~3min</span>
                     </div>
@@ -43,8 +58,11 @@
                         <p>{{ $t('Takes a pen, a piece of paper and a safe place to store it.') }}</p>
                     </div>
                     <div class="time-estimate">
-                        <Tooltip preferredPosition="top right" theme="inverse"
-                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
+                        <Tooltip
+                            preferredPosition="top right"
+                            theme="inverse"
+                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }"
+                        >
                             <ShieldIcon slot="trigger" variant="green" />
                             {{ $t('Recovery words are the most secure way of backing up your account.') }}
                         </Tooltip>
@@ -62,17 +80,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody, ArrowLeftIcon, Tooltip } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
-import CaretRightIcon from '../icons/CaretRightIcon.vue';
-import MessagesIcon from '../icons/MessagesIcon.vue';
-import WordsIcon from '../icons/WordsIcon.vue';
-import ShieldIcon from '../icons/ShieldIcon.vue';
+import { storeToRefs } from 'pinia';
+import { defineComponent, ref } from 'vue';
+import { backup } from '../../hub';
 import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
-import { backup } from '../../hub';
+import CaretRightIcon from '../icons/CaretRightIcon.vue';
+import MessagesIcon from '../icons/MessagesIcon.vue';
+import ShieldIcon from '../icons/ShieldIcon.vue';
+import WordsIcon from '../icons/WordsIcon.vue';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     name: 'BackupModal',
@@ -135,7 +153,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .modal ::v-deep .small-page {
     background: var(--nimiq-blue);

@@ -1,50 +1,48 @@
 <template>
     <button v-on="$listeners" class="address-button reset flex-row">
         <div class="identicon-wrapper">
-            <BitcoinIcon v-if="addressInfo.type === CryptoCurrency.BTC"/>
-            <UsdcIcon v-else-if="addressInfo.type === CryptoCurrency.USDC"/>
-            <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
-            <Identicon v-else :address="addressInfo.address"/>
+            <BitcoinIcon v-if="addressInfo.type === CryptoCurrency.BTC" />
+            <UsdcIcon v-else-if="addressInfo.type === CryptoCurrency.USDC" />
+            <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT" />
+            <Identicon v-else :address="addressInfo.address" />
 
             <TwoLeafStakingIcon v-if="!embedded && totalStake" />
-            <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING"/>
+            <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING" />
         </div>
         <span class="label">{{ addressInfo.label }}</span>
         <div v-if="addressInfo.balance !== null" class="balances">
             <span class="crypto-balance">
-                <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
-                <Amount
-                    :amount="addressInfo.balance + totalStake"
-                    :currency="currentCurrency"
-                    value-mask/>
+                <LockLockedIcon v-if="addressInfo.hasLockedBalance" />
+                <Amount :amount="addressInfo.balance + totalStake" :currency="currentCurrency" value-mask />
             </span>
             <FiatConvertedAmount
                 class="fiat-balance"
                 :amount="addressInfo.balance + totalStake"
                 :currency="currentCurrency"
-                value-mask/>
+                value-mask
+            />
         </div>
         <div v-else class="balances">
-            <CircleSpinner/>
+            <CircleSpinner />
         </div>
         <div class="mobile-arrow"></div>
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { Identicon, LockLockedIcon, CircleSpinner } from '@nimiq/vue-components';
-import Amount from './Amount.vue';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import VestingIcon from './icons/VestingIcon.vue';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
+import { CryptoCurrency } from '../lib/Constants';
 import { AddressInfo, AddressType } from '../stores/Address';
 import { useStakingStore } from '../stores/Staking';
-import { CryptoCurrency } from '../lib/Constants';
+import Amount from './Amount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import TwoLeafStakingIcon from './icons/Staking/TwoLeafStakingIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
-import TwoLeafStakingIcon from './icons/Staking/TwoLeafStakingIcon.vue';
+import VestingIcon from './icons/VestingIcon.vue';
 
 export default defineComponent({
     props: {
@@ -53,20 +51,25 @@ export default defineComponent({
             default: false,
         },
         addressInfo: {
-            type: Object as () => AddressInfo |
-                Pick<AddressInfo, 'address' | 'label' | 'balance'> & {
-                    type: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT,
-                },
+            type: Object as () =>
+                | AddressInfo
+                | (Pick<AddressInfo, 'address' | 'label' | 'balance'> & {
+                      type: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT;
+                  }),
             required: true,
         },
     },
     setup(props) {
         const currentCurrency = computed(() => {
             switch (props.addressInfo.type) {
-                case CryptoCurrency.BTC: return CryptoCurrency.BTC;
-                case CryptoCurrency.USDC: return CryptoCurrency.USDC;
-                case CryptoCurrency.USDT: return CryptoCurrency.USDT;
-                default: return CryptoCurrency.NIM;
+                case CryptoCurrency.BTC:
+                    return CryptoCurrency.BTC;
+                case CryptoCurrency.USDC:
+                    return CryptoCurrency.USDC;
+                case CryptoCurrency.USDT:
+                    return CryptoCurrency.USDT;
+                default:
+                    return CryptoCurrency.NIM;
             }
         });
 
@@ -155,7 +158,7 @@ export default defineComponent({
         padding: 0.125rem !important;
         background: var(--nimiq-green-bg);
         color: var(--nimiq-white);
-        outline: 2px solid #E7E8EA;
+        outline: 2px solid #e7e8ea;
         transition: outline 350ms var(--nimiq-ease);
 
         ::v-deep path {
@@ -167,7 +170,7 @@ export default defineComponent({
 .address-button:not(.active):hover,
 .address-button:not(.active):focus {
     .identicon-wrapper > svg.two-leaf-staking-icon {
-        outline-color: #DBDCE0;
+        outline-color: #dbdce0;
     }
 }
 
@@ -220,7 +223,8 @@ export default defineComponent({
     display: none;
 }
 
-@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) {
+    // Tablet breakpoint
     .label {
         margin-right: 0;
     }
@@ -230,7 +234,8 @@ export default defineComponent({
     }
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .label {
         margin: 0 1.5rem;
     }

@@ -1,16 +1,16 @@
 <template>
-    <img v-if="'name' in validator && validator.logo"
+    <img
+        v-if="'name' in validator && validator.logo"
         class="validator-icon"
         :src="validator.logo.startsWith('/') ? `${$config.staking.validatorsApiBase}${validator.logo}` : validator.logo"
-        :alt="validator.name" />
-    <Identicon v-else
-        class="validator-icon"
-        :address="validator.address" />
+        :alt="validator.name"
+    />
+    <Identicon v-else class="validator-icon" :address="validator.address" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { Identicon } from '@nimiq/vue-components';
+import { defineComponent } from 'vue';
 import { Validator } from '../../stores/Staking';
 
 export default defineComponent({

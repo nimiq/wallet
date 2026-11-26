@@ -3,32 +3,34 @@
         <button class="receive nq-button-s flex-row" @click="receive" @mousedown.prevent>
             <ArrowRightSmallIcon />{{ $t('Receive') }}
         </button>
-        <button class="send nq-button-pill light-blue flex-row"
-            @click="send" @mousedown.prevent
+        <button
+            class="send nq-button-pill light-blue flex-row"
+            @click="send"
+            @mousedown.prevent
             :disabled="sendDisabled"
         >
             <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>
         <button class="reset scan-qr" @click="$router.push({ name: RouteName.Scan })">
-            <ScanQrCodeIcon/>
+            <ScanQrCodeIcon />
         </button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { useConfig } from '@/composables/useConfig';
 import { useRouter, RouteName } from '@/router';
-import { AddressType, useAddressStore } from '../stores/Address';
-import { useAccountStore } from '../stores/Account';
-import { CryptoCurrency } from '../lib/Constants';
-import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useWindowSize } from '../composables/useWindowSize';
 import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
-import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import { useWindowSize } from '../composables/useWindowSize';
+import { CryptoCurrency } from '../lib/Constants';
+import { useAccountStore } from '../stores/Account';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { AddressType, useAddressStore } from '../stores/Address';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
 export default defineComponent({
     setup() {
@@ -43,20 +45,25 @@ export default defineComponent({
 
         function nimOrBtcOrStable<T>(nim: T, btc: T, stable: T): T {
             switch (activeCurrency.value) {
-                case CryptoCurrency.NIM: return nim;
-                case CryptoCurrency.BTC: return btc;
+                case CryptoCurrency.NIM:
+                    return nim;
+                case CryptoCurrency.BTC:
+                    return btc;
                 case CryptoCurrency.USDC:
                 case CryptoCurrency.USDT:
                     return stable;
-                default: throw new Error('Invalid active currency');
+                default:
+                    throw new Error('Invalid active currency');
             }
         }
 
-        const hasMultipleReceivableAddresses = computed(() => (
-            addressInfos.value.filter(({ type }) => type === AddressType.BASIC).length > 1));
+        const hasMultipleReceivableAddresses = computed(
+            () => addressInfos.value.filter(({ type }) => type === AddressType.BASIC).length > 1,
+        );
 
         function receive() {
-            if (isMobile.value
+            if (
+                isMobile.value
                 && activeMobileColumn.value !== ColumnType.ADDRESS
                 && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
             ) {
@@ -73,11 +80,13 @@ export default defineComponent({
             }
         }
 
-        const hasMultipleSendableAddresses = computed(() =>
-            activeAccountInfo.value && activeAccountInfo.value.addresses.length > 1);
+        const hasMultipleSendableAddresses = computed(
+            () => activeAccountInfo.value && activeAccountInfo.value.addresses.length > 1,
+        );
 
         function send() {
-            if (isMobile.value
+            if (
+                isMobile.value
                 && activeMobileColumn.value !== ColumnType.ADDRESS
                 && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
             ) {
@@ -98,14 +107,17 @@ export default defineComponent({
 
         const sendDisabled = computed(() => {
             if (config.disableNetworkInteraction && activeCurrency.value === CryptoCurrency.NIM) return true;
-            return router.currentRoute.path !== '/' && nimOrBtcOrStable(
-                !activeAddressInfo.value || !activeAddressInfo.value.balance,
-                !btcBalance.value,
-                (stablecoin.value === CryptoCurrency.USDC
-                    ? !accountUsdcBalance.value
-                    : stablecoin.value === CryptoCurrency.USDT
-                        ? !accountUsdtBridgedBalance.value
-                        : true),
+            return (
+                router.currentRoute.path !== '/'
+                && nimOrBtcOrStable(
+                    !activeAddressInfo.value || !activeAddressInfo.value.balance,
+                    !btcBalance.value,
+                    stablecoin.value === CryptoCurrency.USDC
+                        ? !accountUsdcBalance.value
+                        : stablecoin.value === CryptoCurrency.USDT
+                          ? !accountUsdtBridgedBalance.value
+                          : true,
+                )
             );
         });
 
@@ -137,7 +149,8 @@ export default defineComponent({
     display: none;
 }
 
-.send, .receive {
+.send,
+.receive {
     margin: 0;
     justify-content: center;
     align-items: center;
@@ -157,7 +170,7 @@ export default defineComponent({
     &:disabled {
         pointer-events: none;
         background: rgba(131, 131, 131, 0.07);
-        color: #B5B6C1;
+        color: #b5b6c1;
     }
 }
 
@@ -180,7 +193,8 @@ export default defineComponent({
     margin-left: 2rem;
 }
 
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) {
+    // Full mobile breakpoint
     .mobile-action-bar {
         display: flex;
     }

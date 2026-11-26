@@ -1,23 +1,20 @@
 <template>
-    <button
-        v-if="!multiAddressAccount"
-        class="nq-button light-blue"
-        @click="onboard(false)"
-        @mousedown.prevent
-    >{{ $t('Create a new account') }}</button>
+    <button v-if="!multiAddressAccount" class="nq-button light-blue" @click="onboard(false)" @mousedown.prevent>
+        {{ $t('Create a new account') }}
+    </button>
     <button v-else class="nq-button light-blue" @click="onTransferFunds" @mousedown.prevent>
         {{ $t('Transfer funds') }}
     </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from '@/router';
+import { onboard } from '../hub';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
-import { onboard } from '../hub';
 
 export default defineComponent({
     setup(props, context) {
@@ -26,7 +23,8 @@ export default defineComponent({
         const { activeAddressInfo } = storeToRefs(useAddressStore());
 
         const multiAddressAccount = computed(() =>
-            Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY));
+            Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY),
+        );
 
         function onTransferFunds() {
             const options: GeneralRequestLinkOptions = {
@@ -49,6 +47,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

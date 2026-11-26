@@ -7,7 +7,7 @@
                         {{ $t('Please transfer') }}
                     </h1>
                     <Copyable :text="(amount / 100).toString().replace('.', ',')" class="glass">
-                        <FiatAmount :amount="amount / 100" currency="eur"/>
+                        <FiatAmount :amount="amount / 100" currency="eur" />
                     </Copyable>
                 </div>
                 <div class="row flex-row">
@@ -24,16 +24,20 @@
                             preferredPosition="top left"
                             :container="_self"
                             theme="inverse"
-                            :styles="{'width': '35rem'}"
+                            :styles="{ width: '35rem' }"
                         >
-                            <InfoCircleSmallIcon slot="trigger"/>
+                            <InfoCircleSmallIcon slot="trigger" />
                             <p class="intro">
                                 {{ $t('TEN31 Bank provides a bank account to lock your payment.') }}
                             </p>
                             <p class="explainer">
-                                {{ $t('As soon as your crypto is available, your Euro is processed to the seller.'
-                                    + ' In case of a problem or a time-out, your payment will be returned to your'
-                                    + ' bank account.') }}
+                                {{
+                                    $t(
+                                        'As soon as your crypto is available, your Euro is processed to the seller.'
+                                            + ' In case of a problem or a time-out, your payment will be returned to your'
+                                            + ' bank account.',
+                                    )
+                                }}
                             </p>
                         </Tooltip>
                     </div>
@@ -64,20 +68,28 @@
                         preferredPosition="top left"
                         :container="_self"
                         theme="inverse"
-                        :styles="{'width': '35rem'}"
+                        :styles="{ width: '35rem' }"
                     >
-                        <InfoCircleSmallIcon slot="trigger"/>
+                        <InfoCircleSmallIcon slot="trigger" />
                         <p class="intro">{{ $t('Please ensure that you are sending an instant transaction!') }}</p>
                         <p class="explainer">
-                            {{ $t('Regular transactions are too slow and will not process. Your bank might'
-                                + ' use another name, like ‘real-time transactions’ i.a.') }}
+                            {{
+                                $t(
+                                    'Regular transactions are too slow and will not process. Your bank might'
+                                        + ' use another name, like ‘real-time transactions’ i.a.',
+                                )
+                            }}
                         </p>
                     </Tooltip>
                 </div>
                 <div class="row flex-row">
-                    <button class="nq-button-s inverse lighter"
-                        @click="showCancelConfirmation = true" @mousedown.prevent
-                    >{{ $t('Cancel') }}</button>
+                    <button
+                        class="nq-button-s inverse lighter"
+                        @click="showCancelConfirmation = true"
+                        @mousedown.prevent
+                    >
+                        {{ $t('Cancel') }}
+                    </button>
                     <button class="nq-button-pill inverse light-blue" @click="onPaid" @mousedown.prevent>
                         {{ $t('I paid') }}
                     </button>
@@ -102,7 +114,7 @@
             </div>
             <div v-else-if="page === Pages.PROCESSING" class="processing">
                 <h2 class="nq-h2">
-                    {{ $t('The bank is processing your transaction.') }}<br>
+                    {{ $t('The bank is processing your transaction.') }}<br />
                     {{ $t('This might take up to {min} minutes.', { min: OASIS_EUR_DETECTION_DELAY }) }}
                 </h2>
                 <p v-if="!takesLongerThanUsual" class="nq-gray">
@@ -111,13 +123,17 @@
                 <p v-else class="nq-orange">
                     {{ $t('Your payment has not been received yet. There might be an issue.') }}
                 </p>
-                <p class="nq-gray flex-row action-row" :class="{'nq-orange': takesLongerThanUsual}">
+                <p class="nq-gray flex-row action-row" :class="{ 'nq-orange': takesLongerThanUsual }">
                     <span class="timer">{{ timer }}</span>
-                    <a v-if="takesLongerThanUsual"
+                    <a
+                        v-if="takesLongerThanUsual"
                         class="nq-button-s orange inverse"
-                        href="https://fastspot.io/faq" target="_blank" rel="noopener"
+                        href="https://fastspot.io/faq"
+                        target="_blank"
+                        rel="noopener"
                         @mousedown.prevent
-                    >{{ $t('Troubleshooting') }}</a>
+                        >{{ $t('Troubleshooting') }}</a
+                    >
                 </p>
                 <button class="nq-button-s inverse lighter" @click="page = Pages.PAYMENT_DETAILS" @mousedown.prevent>
                     {{ $t('Back to Bank Details') }}
@@ -128,8 +144,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, ref } from 'vue';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { defineComponent, onUnmounted, ref } from 'vue';
 import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 
 enum Pages {
@@ -243,7 +259,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use "../../scss/variables.scss" as *;
+@use '../../scss/variables.scss' as *;
 
 .swap-sepa-funding-instructions {
     padding: 2.25rem;
@@ -325,7 +341,7 @@ export default defineComponent({
 .bic {
     color: rgba(255, 255, 255, 0.3);
     font-weight: 600;
-    letter-spacing: .06em;
+    letter-spacing: 0.06em;
 }
 
 .reference {
@@ -460,7 +476,8 @@ export default defineComponent({
         max-width: 100%;
         align-items: center;
 
-        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) {
+            // Full mobile breakpoint
             width: calc(100% - 2rem);
         }
 

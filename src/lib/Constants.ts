@@ -11,11 +11,51 @@ export const ENV_TEST = 'test';
 export const ENV_DEV = 'dev';
 
 // Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
-export const FIAT_CURRENCIES_OFFERED = ([
-    'AED', 'ARS', 'AUD', 'BRL', 'CAD', 'CHF', 'CLP', 'CNY', 'CRC', 'CZK', 'DKK', 'EUR', 'GBP', 'GMD', 'GTQ', 'HKD',
-    'HUF', 'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK',
-    'SGD', 'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
-] as const).map((ticker) => FiatCurrency[ticker]);
+export const FIAT_CURRENCIES_OFFERED = (
+    [
+        'AED',
+        'ARS',
+        'AUD',
+        'BRL',
+        'CAD',
+        'CHF',
+        'CLP',
+        'CNY',
+        'CRC',
+        'CZK',
+        'DKK',
+        'EUR',
+        'GBP',
+        'GMD',
+        'GTQ',
+        'HKD',
+        'HUF',
+        'IDR',
+        'ILS',
+        'INR',
+        'JPY',
+        'KRW',
+        'MXN',
+        'MYR',
+        'NGN',
+        'NOK',
+        'NZD',
+        'PHP',
+        'PKR',
+        'PLN',
+        'RUB',
+        'SEK',
+        'SGD',
+        'THB',
+        'TRY',
+        'TWD',
+        'UAH',
+        'USD',
+        'VND',
+        'XOF',
+        'ZAR',
+    ] as const
+).map((ticker) => FiatCurrency[ticker]);
 export type FiatCurrencyOffered = (typeof FIAT_CURRENCIES_OFFERED)[number];
 
 // Changelog of used exchange rate provider:

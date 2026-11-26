@@ -1,35 +1,36 @@
 <template>
-    <button class="staking-preview nq-button-pill green flex-row"
+    <button
+        class="staking-preview nq-button-pill green flex-row"
         :disabled="$config.disableNetworkInteraction"
-        @click="$router.push({ name: RouteName.Staking })" @mousedown.prevent>
+        @click="$router.push({ name: RouteName.Staking })"
+        @mousedown.prevent
+    >
         <!-- The percentages below should also match in AmountSlider.vue -->
-        <OneLeafStakingIcon v-if="currentPercentage < 50"/>
-        <TwoLeafStakingIcon v-else-if="currentPercentage < 75"/>
-        <ThreeLeafStakingIcon v-else/>
+        <OneLeafStakingIcon v-if="currentPercentage < 50" />
+        <TwoLeafStakingIcon v-else-if="currentPercentage < 75" />
+        <ThreeLeafStakingIcon v-else />
 
         <Amount
-            :amount="stake && (stake.activeBalance + stake.inactiveBalance + stake.retiredBalance) || 0"
+            :amount="(stake && stake.activeBalance + stake.inactiveBalance + stake.retiredBalance) || 0"
             value-mask
         />
 
         <div class="flex-grow"></div>
 
-        <div v-if="restakingRewards" class="gain flex-row">
-            +<Amount :amount="restakingRewards" value-mask />
-        </div>
+        <div v-if="restakingRewards" class="gain flex-row">+<Amount :amount="restakingRewards" value-mask /></div>
     </button>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { computed, defineComponent } from 'vue';
 import { RouteName } from '@/router';
-import Amount from '../Amount.vue';
-import { useStakingStore } from '../../stores/Staking';
-import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
-import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
-import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
 import { useAddressStore } from '../../stores/Address';
+import { useStakingStore } from '../../stores/Staking';
+import Amount from '../Amount.vue';
+import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
+import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -78,14 +79,16 @@ export default defineComponent({
         // Same style as for disabled send and receive buttons in AddressOverview
         pointer-events: none;
         background: rgba(131, 131, 131, 0.07);
-        color: #B5B6C1;
+        color: #b5b6c1;
 
         .gain {
-            color: #B5B6C1;
+            color: #b5b6c1;
         }
     }
 
-    & > .amount { margin-right: 1.5rem }
+    & > .amount {
+        margin-right: 1.5rem;
+    }
 }
 
 .nq-icon {
@@ -103,7 +106,7 @@ export default defineComponent({
 }
 
 .one-leaf-staking-icon {
-    margin: .2rem .35rem -0.25rem .2rem;
+    margin: 0.2rem 0.35rem -0.25rem 0.2rem;
 }
 
 .gain {

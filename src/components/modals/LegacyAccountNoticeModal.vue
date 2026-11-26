@@ -2,34 +2,39 @@
     <!-- Pass down all attributes not declared as props --->
     <Modal v-bind="$attrs" v-on="$listeners" class="legacy-account-notice-modal">
         <PageBody class="flex-column">
-            <LegacyAccountNotice v-if="!hasMultiAddressAccount"/>
+            <LegacyAccountNotice v-if="!hasMultiAddressAccount" />
             <div v-else>
                 <h1 class="nq-h1">{{ $t('This is a Legacy\u00a0Account') }}</h1>
                 <p class="nq-text">
-                    {{ $t('Your NIM are stored in a legacy account. Transfer them to a regular account '
-                        + 'to profit from new features.') }}
+                    {{
+                        $t(
+                            'Your NIM are stored in a legacy account. Transfer them to a regular account '
+                                + 'to profit from new features.',
+                        )
+                    }}
                 </p>
-                <LegacyAccountUpgradeButton @click="$emit('close')"/>
+                <LegacyAccountUpgradeButton @click="$emit('close')" />
             </div>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import { PageBody } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import { storeToRefs } from 'pinia';
+import { defineComponent, computed } from 'vue';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
-import { useAccountStore, AccountType } from '../../stores/Account';
+import Modal from './Modal.vue';
 
 export default defineComponent({
     setup() {
         const { accountInfos } = storeToRefs(useAccountStore());
 
         const hasMultiAddressAccount = computed(() =>
-            Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY));
+            Object.values(accountInfos.value).find((accountInfo) => accountInfo.type !== AccountType.LEGACY),
+        );
 
         return {
             hasMultiAddressAccount,
@@ -72,7 +77,8 @@ export default defineComponent({
     }
 }
 
-h1, p {
+h1,
+p {
     text-align: center;
 }
 

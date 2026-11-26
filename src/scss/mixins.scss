@@ -92,7 +92,6 @@
             }
         }
     }
-
 }
 
 @mixin blue-tooltip($position: left) {
@@ -101,7 +100,7 @@
     --arrowWidth: 2.75rem;
     --arrowHeight: 2.5rem;
     --arrowDistance: 2rem;
-    --fadeInTranslate: .5rem;
+    --fadeInTranslate: 0.5rem;
 
     width: var(--blueTooltipWidth);
     padding: var(--blueTooltipPadding);
@@ -126,18 +125,15 @@
         top: 50%;
         right: calc(100% + var(--arrowDistance));
         transform: translateY(-50%) translateX(calc(0px - var(--fadeInTranslate)));
-    }
-    @else if $position == top {
+    } @else if $position == top {
         left: 60%;
         bottom: calc(100% + var(--arrowDistance));
         transform: translateY(calc(0px - var(--fadeInTranslate))) translateX(-50%);
-    }
-    @else if $position == right {
+    } @else if $position == right {
         top: 50%;
         left: calc(100% + var(--arrowDistance));
         transform: translateY(-50%) translateX(var(--fadeInTranslate));
-    }
-    @else if $position == bottom {
+    } @else if $position == bottom {
         left: 60%;
         top: calc(100% + var(--arrowDistance));
         transform: translateY(var(--fadeInTranslate)) translateX(-50%);
@@ -161,29 +157,25 @@
             </svg>');
         mask-size: contain;
         z-index: 10;
-        background: #1A6AD2;
+        background: #1a6ad2;
 
         @if $position == left {
             top: 50%;
             right: 0;
-            transform: translateY(-50%) translateX(calc(100% - .25rem)) rotate(90deg);
-        }
-        @else if $position == top {
+            transform: translateY(-50%) translateX(calc(100% - 0.25rem)) rotate(90deg);
+        } @else if $position == top {
             left: 50%;
             bottom: 0;
-            transform: translateY(calc(100% - .25rem)) translateX(-50%) rotate(180deg);
-        }
-        @else if $position == right {
+            transform: translateY(calc(100% - 0.25rem)) translateX(-50%) rotate(180deg);
+        } @else if $position == right {
             top: 50%;
             left: 0;
-            transform: translateY(-50%) translateX(calc(-100% + .25rem)) rotate(-90deg);
-        }
-        @else if $position == bottom {
+            transform: translateY(-50%) translateX(calc(-100% + 0.25rem)) rotate(-90deg);
+        } @else if $position == bottom {
             left: 50%;
             top: 0;
-            transform: translateY(calc(-100% + .25rem)) translateX(-50%);
+            transform: translateY(calc(-100% + 0.25rem)) translateX(-50%);
         }
-
     }
 }
 
@@ -192,15 +184,15 @@
 
     @if $position == left or $position == right {
         transform: translateY(-50%) translateX(0);
-    }
-    @else if $position == top or $position == bottom {
+    } @else if $position == top or $position == bottom {
         transform: translateY(0) translateX(-50%);
     }
 }
 
 // Breathing animation for loading placeholders
 @keyframes amount-loading-breathe {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 0.4;
     }
     50% {

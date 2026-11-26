@@ -1,14 +1,16 @@
-const libPromises: {[name: string]: Promise<boolean>} = {};
+const libPromises: { [name: string]: Promise<boolean> } = {};
 
 export async function loadScript(globalName: string, src: string, integrityHash?: string) {
-    return libPromises[globalName] || (
-        libPromises[globalName] = new Promise<boolean>((resolve, reject) => {
+    return (
+        libPromises[globalName]
+        || (libPromises[globalName] = new Promise<boolean>((resolve, reject) => {
             const script = document.createElement('script');
             script.addEventListener('load', async () => {
                 // Wait for script to be parsed: check if global variable is available yet
                 // @ts-expect-error Window has no index signature
                 while (typeof window[globalName] === 'undefined') {
-                    await new Promise((res) => { // eslint-disable-line no-await-in-loop
+                    // eslint-disable-next-line no-await-in-loop
+                    await new Promise((res) => {
                         setTimeout(res, 50);
                     });
                 }
@@ -21,6 +23,6 @@ export async function loadScript(globalName: string, src: string, integrityHash?
             }
             script.src = src;
             document.body.appendChild(script);
-        })
+        }))
     );
 }

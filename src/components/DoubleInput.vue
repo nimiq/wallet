@@ -1,6 +1,5 @@
 <template>
-    <section class="double-input" :class="{ 'extended': extended }">
-
+    <section class="double-input" :class="{ extended: extended }">
         <transition name="slide-n-fade">
             <div ref="secondInput$" class="second-input-wrapper" v-if="extended">
                 <slot name="second"></slot>
@@ -18,11 +17,12 @@
         </MessageTransition>
 
         <transition name="slide">
-            <div class="fake-border" v-if="extended"
+            <div
+                class="fake-border"
+                v-if="extended"
                 :style="labelInputHeight ? `--inputHeight: ${labelInputHeight}px` : ''"
             ></div>
         </transition>
-
     </section>
 </template>
 
@@ -109,7 +109,9 @@ $inputHeight: 6rem;
         position: relative; // For correct z-index positioning
 
         & ::v-deep input {
-            transition: all 200ms, width 50ms;
+            transition:
+                all 200ms,
+                width 50ms;
         }
 
         & ::v-deep form {
@@ -142,8 +144,8 @@ $inputHeight: 6rem;
             }
 
             &:focus-within ::v-deep input {
-                border-bottom-left-radius: .5rem;
-                border-bottom-right-radius: .5rem;
+                border-bottom-left-radius: 0.5rem;
+                border-bottom-right-radius: 0.5rem;
             }
         }
 
@@ -157,8 +159,8 @@ $inputHeight: 6rem;
                 z-index: 2;
 
                 ::v-deep input {
-                    border-top-left-radius: .5rem;
-                    border-top-right-radius: .5rem;
+                    border-top-left-radius: 0.5rem;
+                    border-top-right-radius: 0.5rem;
                 }
             }
         }
@@ -190,25 +192,19 @@ $inputHeight: 6rem;
 
     .second-input-wrapper:focus-within ~ &,
     .main-input-wrapper:focus-within ~ & {
-        will-change: #{$animatedProps}
+        will-change: #{$animatedProps};
     }
 
     .main-input-wrapper:focus-within ~ & {
         border-top-left-radius: #{$inputBoxShadowSize};
         border-top-right-radius: #{$inputBoxShadowSize};
-        box-shadow:
-            0 #{calc(($borderSize / 2 + $inputBoxShadowSize) * -1)}
-            0 #{calc($borderSize / 2)}
-            $borderColor;
+        box-shadow: 0 #{calc(($borderSize / 2 + $inputBoxShadowSize) * -1)} 0 #{calc($borderSize / 2)} $borderColor;
     }
 
     .second-input-wrapper:focus-within ~ & {
         border-bottom-left-radius: $inputBoxShadowSize;
         border-bottom-right-radius: $inputBoxShadowSize;
-        box-shadow:
-            0 #{calc($borderSize / 2 + $inputBoxShadowSize)}
-            0 #{calc($borderSize / 2)}
-            $borderColor;
+        box-shadow: 0 #{calc($borderSize / 2 + $inputBoxShadowSize)} 0 #{calc($borderSize / 2)} $borderColor;
     }
 
     /* Vue transition: slide */
@@ -228,5 +224,4 @@ $inputHeight: 6rem;
         top: 0;
     }
 }
-
 </style>

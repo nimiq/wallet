@@ -39,7 +39,7 @@ export default {
     albatrossWatchtower: {
         endpoint: 'https://watchtower.pos.nimiq-testnet.com',
         username: 'nimiq',
-        password: ALBATROSS_WATCHTOWER_PASSWORD_LOCAL, // injected in vue.config.js
+        password: ALBATROSS_WATCHTOWER_PASSWORD_LOCAL, // injected in vite.config.ts
     },
 
     polygon: {
@@ -52,9 +52,9 @@ export default {
             swaps: false,
         },
         networkId: 80002,
-        rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vue.config.js
+        rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vite.config.ts
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
-        // eslint-disable-next-line max-len
+        // oxlint-disable-next-line eslint-js/max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdc_bridged: {
             /** @deprecated */
@@ -111,7 +111,7 @@ export default {
                 // The deployment's mock USDT0. It is not the Wallet's USDT (`usdt_bridged.tokenContract`), which
                 // therefore cannot be sent, and which the Keyguard rejects on this network.
                 usdt0Contract: '0xfA9Dabbf3C68a126a627ad48098700DFc6F27c82',
-            } as { usdcDomainName: string, usdt0Contract: string } | null,
+            } as { usdcDomainName: string; usdt0Contract: string } | null,
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config
             deniedRecipients: [] as string[],
         },
@@ -122,7 +122,7 @@ export default {
     },
 
     unstoppableDomains: {
-        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vue.config.js.
+        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vite.config.ts.
         ethereumRpcEndpoint: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY_LOCAL}`,
     },
 
@@ -143,7 +143,7 @@ export default {
         underMaintenance: true,
         apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
         feePercentage: 0.01, // 1% - only used for estimate creation
-        minFee: 0.50, // Euro
+        minFee: 0.5, // Euro
         minBuyAmount: 35, // Euro
         maxFreeAmount: 999, // Euro
         maxKycAmount: 4999, // Euro
@@ -152,13 +152,14 @@ export default {
     ten31Pass: {
         enabled: false,
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
-            // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
-            // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.
-            ? `http://${window.location.hostname}:8082`
+            ? // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
+              // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.
+              `http://${window.location.hostname}:8082`
             : 'https://test.pass.ten31.com',
-        appId: window.location.protocol === 'https:'
-            ? 'ecf6f03e-7af0-4af8-a4a8-c3a8cc16e168'
-            : 'acd38dfa-f77b-4c40-b6b1-f461bf47f9d4',
+        appId:
+            window.location.protocol === 'https:'
+                ? 'ecf6f03e-7af0-4af8-a4a8-c3a8cc16e168'
+                : 'acd38dfa-f77b-4c40-b6b1-f461bf47f9d4',
         services: {
             s3: {
                 // Fastspot test instance
